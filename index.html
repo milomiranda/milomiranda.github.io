@@ -102,43 +102,40 @@
       margin-top: 15px;
       font-size: 16px;
     }
-    .tooltip {
+        /* Modal Styles */
+    .modal-container {
+      position: fixed;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      z-index: 2000;
+    }
+    .modal-content {
+      background: white;
+      padding: 20px;
+      max-width: 400px;
+      border-radius: 8px;
+      text-align: center;
       position: relative;
-      display: inline-block;
-      cursor: pointer;
+    }
+    .modal-content a {
       color: #333;
-      border-bottom: 1px dotted #999;
+      text-decoration: underline;
     }
-
-    .tooltip .tooltiptext {
-      visibility: hidden;
-      width: 220px;
-      background-color: rgba(0, 0, 0, 0.85);
-      color: #fff;
-      text-align: left;
-      border-radius: 6px;
-      padding: 10px;
+    .modal-close {
       position: absolute;
-      z-index: 1;
-      bottom: 125%; /* Above the text */
-      left: 50%;
-      transform: translateX(-50%);
-      opacity: 0;
-      transition: opacity 0.3s;
-      font-size: 12px;
+      top: 10px;
+      right: 15px;
+      font-size: 18px;
+      cursor: pointer;
     }
-
-    .tooltip:hover .tooltiptext {
-      visibility: visible;
-      opacity: 1;
-    }
-
-    .tooltip .tooltiptext a {
-      color: #aaa;
-      text-decoration: none;
-    }
-
-    .tooltip .tooltiptext a:hover {
+    .modal-name {
+      color: #007BFF;
+      cursor: pointer;
       text-decoration: underline;
     }
 
@@ -147,29 +144,14 @@
 <body>
 
   <h1>Concreto en Juego</h1>
+
   <p>
-    <span class="tooltip">Milo Miranda
-      <span class="tooltiptext">
-        Instagram: <a href="https://instagram.com/milomiranda/" target="_blank">@milomiranda</a>
-      </span>
-    </span>,
-    <span class="tooltip">Saskia Benitez
-      <span class="tooltiptext">
-        Instagram: <a href="https://instagram.com/sasbube/" target="_blank">@sasbube</a>
-      </span>
-    </span>,
-    <span class="tooltip">Ida Osten
-      <span class="tooltiptext">
-        Instagram: <a href="https://instagram.com/idaosten/" target="_blank">@idaosten</a>
-      </span>
-    </span>,
-    <span class="tooltip">Luis Esteban Rodriguez
-      <span class="tooltiptext">
-        Website: <a href="https://metalerk.github.io/" target="_blank">Sacred Circuits</a><br>
-        Instagram: <a href="https://instagram.com/lesteban05/" target="_blank">@lesteban05</a>
-      </span>
-    </span>
+    <span class="modal-name" onclick="openModal('Milo Miranda', 'Instagram: <a href=\'https://instagram.com/milomiranda/\' target=\'_blank\'>@milomiranda</a>')">Milo Miranda</span>,
+    <span class="modal-name" onclick="openModal('Saskia Benitez', 'Instagram: <a href=\'https://instagram.com/sasbube/\' target=\'_blank\'>@sasbube</a>')">Saskia Benitez</span>,
+    <span class="modal-name" onclick="openModal('Ida Osten', 'Instagram: <a href=\'https://instagram.com/idaosten/\' target=\'_blank\'>@idaosten</a>')">Ida Osten</span>,
+    <span class="modal-name" onclick="openModal('Luis Esteban Rodriguez', 'Website: <a href=\'https://metalerk.github.io/\' target=\'_blank\'>Sacred Circuits</a><br>Instagram: <a href=\'https://instagram.com/lesteban05/\' target=\'_blank\'>@lesteban05</a>')">Luis Esteban Rodriguez</span>
   </p>
+  
   <p>Amsterdam, 2025</p>
 
   <h2>Descripción</h2>
@@ -196,6 +178,15 @@
   <div id="lightbox" class="lightbox" onclick="closeLightbox(event)">
     <img id="lightbox-img" src="" alt="Preview" />
     <div class="caption" id="lightbox-caption"></div>
+  </div>
+
+  <!-- Modal -->
+  <div id="modal" class="modal-container" onclick="closeModal(event)">
+    <div class="modal-content" id="modal-content">
+      <span class="modal-close" onclick="closeModal(event)">&times;</span>
+      <h2 id="modal-title"></h2>
+      <p id="modal-body"></p>
+    </div>
   </div>
 
   <!-- Buttons -->
@@ -300,6 +291,24 @@
       }
       isDragging = false;
     });
+
+        // Modal functionality
+    const modal = document.getElementById('modal');
+    const modalTitle = document.getElementById('modal-title');
+    const modalBody = document.getElementById('modal-body');
+
+    function openModal(name, info) {
+      modalTitle.textContent = name;
+      modalBody.innerHTML = info;
+      modal.style.display = 'flex';
+    }
+
+    function closeModal(e) {
+      if (e.target === modal || e.target.classList.contains('modal-close')) {
+        modal.style.display = 'none';
+      }
+    }
+
   </script>
 
 </body>
