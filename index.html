@@ -122,9 +122,16 @@
       text-align: center;
       position: relative;
     }
-    .modal-content a {
-      color: #333;
-      text-decoration: underline;
+    .modal-content {
+      background: white;
+      padding: 20px;
+      width: 90%;
+      max-width: 800px;
+      border-radius: 8px;
+      text-align: center;
+      position: relative;
+      overflow-y: auto;
+      max-height: 90%;
     }
     .modal-close {
       position: absolute;
@@ -138,6 +145,24 @@
       cursor: pointer;
       text-decoration: underline;
     }
+
+    .modal-content.transparent-modal {
+      background: transparent;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      max-width: 100%;
+      max-height: 100%;
+      border-radius: 0;
+      box-shadow: none;
+      overflow: hidden;
+    }
+
+
+    .modal-close.transparent-close {
+      color: white;
+    }
+
 
   </style>
 </head>
@@ -192,7 +217,7 @@
   <!-- Buttons -->
   <div class="buttons">
     <a href="#" target="_blank">Subscribe</a>
-    <a href="https://shop.weeztix.com/ab6bdee4-bd65-4b42-ad36-fe9033c21be1/tickets" target="_blank">Donate</a>
+    <a href="#" class="modal-name" onclick="openShopModal()">Donate</a>
   </div>
 
   <!-- Social -->
@@ -306,8 +331,31 @@
     function closeModal(e) {
       if (e.target === modal || e.target.classList.contains('modal-close')) {
         modal.style.display = 'none';
+        modalBody.innerHTML = '';
+        modalTitle.textContent = '';
+        
+        // Remove transparent classes if present
+        document.getElementById('modal-content').classList.remove('transparent-modal');
+        document.querySelector('.modal-close').classList.remove('transparent-close');
       }
     }
+
+    function openShopModal() {
+      modalTitle.textContent = '';
+      modalBody.innerHTML = `
+        <iframe src="https://shop.weeztix.com/ab6bdee4-bd65-4b42-ad36-fe9033c21be1/tickets"
+          width="100%" height="100%" style="border:none; width:100vw; height:100vh;"></iframe>
+      `;
+      
+      // Add transparent & full-size styles
+      document.getElementById('modal-content').classList.add('transparent-modal');
+      document.querySelector('.modal-close').classList.add('transparent-close');
+      
+      modal.style.display = 'flex';
+    }
+
+
+
 
   </script>
 
