@@ -123,9 +123,16 @@
       text-align: center;
       position: relative;
     }
-    .modal-content a {
-      color: #000;
-      text-decoration: underline;
+    .modal-content {
+      background: white;
+      padding: 20px;
+      width: 90%;
+      max-width: 800px;
+      border-radius: 8px;
+      text-align: center;
+      position: relative;
+      overflow-y: auto;
+      max-height: 90%;
     }
     .modal-close {
       position: absolute;
@@ -139,21 +146,46 @@
       cursor: pointer;
       text-decoration: underline;
     }
+    .modal-content.transparent-modal {
+      background: transparent;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      max-width: 100%;
+      max-height: 100%;
+      border-radius: 0;
+      box-shadow: none;
+      overflow: hidden;
+    }
+
+    .modal-close.transparent-close {
+      color: white;
+    }
 
   </style>
 </head>
 <body>
 
-  <h1>"Concreto en Juego", Amsterdam, 2025.</h1>
+  <h1><q>Concreto en Juego", Amsterdam, 2025.</q></h1>
 
   <p>
-    <span class="modal-name" onclick="openModal('Milo Miranda', 'Instagram: <a href=\'https://instagram.com/milomiranda/\' target=\'_blank\'>@milomiranda</a>')">Milo Miranda</span>,
-    <span class="modal-name" onclick="openModal('Saskia Benitez', 'Instagram: <a href=\'https://instagram.com/sasbube/\' target=\'_blank\'>@sasbube</a>')">Saskia Benitez</span>,
-    <span class="modal-name" onclick="openModal('Ida Osten', 'Instagram: <a href=\'https://instagram.com/idaosten/\' target=\'_blank\'>@idaosten</a>')">Ida Osten</span>,
-    <span class="modal-name" onclick="openModal('Luis Esteban Rodriguez', 'Website: <a href=\'https://metalerk.github.io/\' target=\'_blank\'>Sacred Circuits</a><br>Instagram: <a href=\'https://instagram.com/lesteban05/\' target=\'_blank\'>@lesteban05</a>')">Luis Esteban Rodriguez</span>
+    <span class="modal-name" onclick="openModal(
+        'Milo Miranda', '<br>Instagram: <a href=\'https://instagram.com/milomiranda/\' target=\'_blank\'>@milomiranda</a>\
+        <br><br>Facebook: <a href=\'https://www.facebook.com/milomiranda2019/\' target=\'_blank\'>Milo Miranda Escamilla </a>\
+        <br><br>Email: <a href=\'mailto:milo.miranda.escamilla@gmail.com\'>milo.miranda.escamilla@gmail.com</a>'
+      )">
+      Milo Miranda
+    </span>,
+    <span class="modal-name" onclick="openModal('Saskia Benitez', '<br>Instagram: <a href=\'https://instagram.com/sasbube/\' target=\'_blank\'>@sasbube</a>')">Saskia Benitez</span>,
+    <span class="modal-name" onclick="openModal('Ida Osten', '<br>Instagram: <a href=\'https://instagram.com/idaosten/\' target=\'_blank\'>@idaosten</a>')">Ida Osten</span>,
+    <span class="modal-name" onclick="openModal(
+      'Luis Esteban Rodriguez', '<br>Website: <a href=\'https://metalerk.github.io/\' target=\'_blank\'>Sacred Circuits</a>\
+      <br><br>Instagram: <a href=\'https://instagram.com/lesteban05/\' target=\'_blank\'>@lesteban05</a>'
+      )">
+      Luis Esteban Rodriguez
+    </span>
   </p>
   
-
   <h2>Description</h2>
   <div class="description">
     <p> <!-- Description --> </p>
@@ -305,8 +337,98 @@
     function closeModal(e) {
       if (e.target === modal || e.target.classList.contains('modal-close')) {
         modal.style.display = 'none';
+        modalBody.innerHTML = '';
+        modalTitle.textContent = '';
+        
+        // Remove transparent classes if present
+        document.getElementById('modal-content').classList.remove('transparent-modal');
+        document.querySelector('.modal-close').classList.remove('transparent-close');
       }
     }
+
+    function openShopModal() {
+      modalTitle.textContent = '';
+      modalBody.innerHTML = `
+        <iframe src="https://shop.weeztix.com/ab6bdee4-bd65-4b42-ad36-fe9033c21be1/tickets"
+          width="100%" height="100%" style="border:none; width:100vw; height:100vh;"></iframe>
+      `;
+      
+      // Add transparent & full-size styles
+      document.getElementById('modal-content').classList.add('transparent-modal');
+      document.querySelector('.modal-close').classList.add('transparent-close');
+      
+      modal.style.display = 'flex';
+    }
+
+    function openSubscribeModal() {
+  modalTitle.textContent = 'Subscribe';
+
+  modalBody.innerHTML = `
+    <div id="mc_embed_shell">
+      <link href="//cdn-images.mailchimp.com/embedcode/classic-061523.css" rel="stylesheet" type="text/css">
+      <style type="text/css">
+        #mc_embed_signup{background:#fff; clear:left; font:14px Helvetica,Arial,sans-serif; width: 100%; max-width:600px; margin:0 auto; padding:20px;}
+      </style>
+      <div id="mc_embed_signup">
+        <form action="https://gmail.us13.list-manage.com/subscribe/post?u=0b3f545d15774ad2b02db0f67&amp;id=f88d1cc96a&amp;f_id=0054e6e2f0"
+              method="post" target="_blank" class="validate">
+          <div id="mc_embed_signup_scroll">
+            <div class="indicates-required"><span class="asterisk">*</span> indicates required</div>
+            <div class="mc-field-group"><label for="mce-EMAIL">Email Address <span class="asterisk">*</span></label>
+              <input type="email" name="EMAIL" class="required email" id="mce-EMAIL" required="">
+            </div>
+            <div class="mc-field-group"><label for="mce-FNAME">First Name </label>
+              <input type="text" name="FNAME" class="text" id="mce-FNAME" value="">
+            </div>
+            <div class="mc-field-group"><label for="mce-LNAME">Last Name </label>
+              <input type="text" name="LNAME" class="text" id="mce-LNAME" value="">
+            </div>
+            <div id="mce-responses" class="clear foot">
+              <div class="response" id="mce-error-response" style="display:none"></div>
+              <div class="response" id="mce-success-response" style="display:none"></div>
+            </div>
+            <div aria-hidden="true" style="position:absolute; left:-5000px;">
+              <input type="text" name="b_0b3f545d15774ad2b02db0f67_f88d1cc96a" tabindex="-1" value="">
+            </div>
+            <div class="optionalParent">
+              <div class="clear foot">
+                <input type="submit" name="subscribe" class="button" value="Subscribe">
+                <p style="margin:0 auto;">
+                  <a href="http://eepurl.com/jayQUc" title="Mailchimp - email marketing made easy and fun">
+                    <span style="display:inline-block; background-color:transparent; border-radius:4px;">
+                      <img class="refferal_badge" src="https://digitalasset.intuit.com/render/content/dam/intuit/mc-fe/en_us/images/intuit-mc-rewards-text-dark.svg" alt="Intuit Mailchimp" style="width:220px; height:40px; display:flex; padding:2px 0px; justify-content:center; align-items:center;">
+                    </span>
+                  </a>
+                </p>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  `;
+
+  // Ensure styles are not transparent
+  document.getElementById('modal-content').classList.remove('transparent-modal');
+  document.querySelector('.modal-close').classList.remove('transparent-close');
+
+  modal.style.display = 'flex';
+}
+
+  </script>
+
+  <script src="//s3.amazonaws.com/downloads.mailchimp.com/js/mc-validate.js"></script>
+  <script>
+  (function($) {
+    window.fnames = new Array(); window.ftypes = new Array();
+    fnames[0]='EMAIL';ftypes[0]='email';
+    fnames[1]='FNAME';ftypes[1]='text';
+    fnames[2]='LNAME';ftypes[2]='text';
+    fnames[3]='ADDRESS';ftypes[3]='address';
+    fnames[4]='PHONE';ftypes[4]='phone';
+    fnames[5]='BIRTHDAY';ftypes[5]='birthday';
+    fnames[6]='COMPANY';ftypes[6]='text';
+  })(jQuery); var $mcj = jQuery.noConflict(true);
 
   </script>
 
