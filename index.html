@@ -77,95 +77,230 @@
         margin: 5px 0;
       }
     }
-    /* Lightbox styles */
+
+    /* Lightbox Styles */
     .lightbox {
-      display: none;
       position: fixed;
-      z-index: 999;
-      padding: 20px;
-      top: 0;
-      left: 0;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      top: 0; left: 0;
       width: 100%;
       height: 100%;
-      overflow: auto;
-      background-color: rgba(0, 0, 0, 0.9);
+      background: rgba(0,0,0,0.9);
+      z-index: 1000;
+      overflow: hidden;
     }
     .lightbox img {
-      margin: auto;
-      display: block;
       max-width: 90%;
       max-height: 80%;
+      border-radius: 10px;
     }
-    .lightbox:target {
-      display: block;
+    .lightbox .caption {
+      color: #fff;
+      margin-top: 15px;
+      font-size: 16px;
     }
-    .close {
+    .tooltip {
+      position: relative;
+      display: inline-block;
+      cursor: pointer;
+      color: #333;
+      border-bottom: 1px dotted #999;
+    }
+
+    .tooltip .tooltiptext {
+      visibility: hidden;
+      width: 220px;
+      background-color: rgba(0, 0, 0, 0.85);
+      color: #fff;
+      text-align: left;
+      border-radius: 6px;
+      padding: 10px;
       position: absolute;
-      top: 30px;
-      right: 40px;
-      color: white;
-      font-size: 40px;
-      font-weight: bold;
+      z-index: 1;
+      bottom: 125%; /* Above the text */
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0;
+      transition: opacity 0.3s;
+      font-size: 12px;
+    }
+
+    .tooltip:hover .tooltiptext {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .tooltip .tooltiptext a {
+      color: #aaa;
       text-decoration: none;
     }
+
+    .tooltip .tooltiptext a:hover {
+      text-decoration: underline;
+    }
+
   </style>
 </head>
 <body>
 
-  <!-- Header -->
   <h1>Concreto en Juego</h1>
-  <p>Milo Miranda, Saskia Benitez, Ida Osten, Luis Esteban Rodriguez</p>
+  <p>
+    <span class="tooltip">Milo Miranda
+      <span class="tooltiptext">
+        Instagram: <a href="https://instagram.com/milomiranda/" target="_blank">@milomiranda</a>
+      </span>
+    </span>,
+    <span class="tooltip">Saskia Benitez
+      <span class="tooltiptext">
+        Instagram: <a href="https://instagram.com/sasbube/" target="_blank">@sasbube</a>
+      </span>
+    </span>,
+    <span class="tooltip">Ida Osten
+      <span class="tooltiptext">
+        Instagram: <a href="https://instagram.com/idaosten/" target="_blank">@idaosten</a>
+      </span>
+    </span>,
+    <span class="tooltip">Luis Esteban Rodriguez
+      <span class="tooltiptext">
+        Website: <a href="https://metalerk.github.io/" target="_blank">Sacred Circuits</a><br>
+        Instagram: <a href="https://instagram.com/lesteban05/" target="_blank">@lesteban05</a>
+      </span>
+    </span>
+  </p>
   <p>Amsterdam, 2025</p>
 
-  <!-- Description -->
   <h2>Descripción</h2>
   <div class="description">
-    <p> <!-- Your description goes here --> </p>
+    <p> <!-- Description --> </p>
   </div>
 
-  <!-- Image Gallery -->
   <h2>Proceso</h2>
   <div class="gallery">
-    <!-- Image thumbnails with links -->
-    <a href="#img1"><img src="img/Proceso1.jpg" alt="Process Image 1" /></a>
-    <a href="#img2"><img src="img/Proceso2.jpg" alt="Process Image 2" /></a>
-    <a href="#img3"><img src="img/Proceso3.jpg" alt="Process Image 3" /></a>
-    <a href="#img4"><img src="img/Proceso4.jpg" alt="Process Image 4" /></a>
-    <a href="#img5"><img src="img/Proceso5.jpg" alt="Process Image 5" /></a>
-    <a href="#img6"><img src="img/Proceso6.JPG" alt="Process Image 6" /></a>
-    <a href="#img7"><img src="img/Proceso7.jpg" alt="Process Image 7" /></a>
-    <a href="#img8"><img src="img/Proceso8.jpg" alt="Process Image 8" /></a>
-    <a href="#img9"><img src="img/Proceso9.PNG" alt="Process Image 9" /></a>
-    <a href="#img10"><img src="img/Proceso10.PNG" alt="Process Image 10" /></a>
-    <a href="#img11"><img src="img/Proceso11.PNG" alt="Process Image 11" /></a>
+    <img src="img/Proceso1.jpg" alt="Process Image 1" onclick="openLightbox(0)" />
+    <img src="img/Proceso2.jpg" alt="Process Image 2" onclick="openLightbox(1)" />
+    <img src="img/Proceso3.jpg" alt="Process Image 3" onclick="openLightbox(2)" />
+    <img src="img/Proceso4.jpg" alt="Process Image 4" onclick="openLightbox(3)" />
+    <img src="img/Proceso5.jpg" alt="Process Image 5" onclick="openLightbox(4)" />
+    <img src="img/Proceso6.JPG" alt="Process Image 6" onclick="openLightbox(5)" />
+    <img src="img/Proceso7.jpg" alt="Process Image 7" onclick="openLightbox(6)" />
+    <img src="img/Proceso8.jpg" alt="Process Image 8" onclick="openLightbox(7)" />
+    <img src="img/Proceso9.PNG" alt="Process Image 9" onclick="openLightbox(8)" />
+    <img src="img/Proceso10.PNG" alt="Process Image 10" onclick="openLightbox(9)" />
+    <img src="img/Proceso11.PNG" alt="Process Image 11" onclick="openLightbox(10)" />
   </div>
 
-  <!-- Lightbox Modals -->
-  <div id="img1" class="lightbox"><a href="#" class="close">&times;</a><img src="img/Proceso1.jpg" /></div>
-  <div id="img2" class="lightbox"><a href="#" class="close">&times;</a><img src="img/Proceso2.jpg" /></div>
-  <div id="img3" class="lightbox"><a href="#" class="close">&times;</a><img src="img/Proceso3.jpg" /></div>
-  <div id="img4" class="lightbox"><a href="#" class="close">&times;</a><img src="img/Proceso4.jpg" /></div>
-  <div id="img5" class="lightbox"><a href="#" class="close">&times;</a><img src="img/Proceso5.jpg" /></div>
-  <div id="img6" class="lightbox"><a href="#" class="close">&times;</a><img src="img/Proceso6.JPG" /></div>
-  <div id="img7" class="lightbox"><a href="#" class="close">&times;</a><img src="img/Proceso7.jpg" /></div>
-  <div id="img8" class="lightbox"><a href="#" class="close">&times;</a><img src="img/Proceso8.jpg" /></div>
-  <div id="img9" class="lightbox"><a href="#" class="close">&times;</a><img src="img/Proceso9.PNG" /></div>
-  <div id="img10" class="lightbox"><a href="#" class="close">&times;</a><img src="img/Proceso10.PNG" /></div>
-  <div id="img11" class="lightbox"><a href="#" class="close">&times;</a><img src="img/Proceso11.PNG" /></div>
+  <!-- Lightbox -->
+  <div id="lightbox" class="lightbox" onclick="closeLightbox(event)">
+    <img id="lightbox-img" src="" alt="Preview" />
+    <div class="caption" id="lightbox-caption"></div>
+  </div>
 
-  <!-- Subscribe & Donate Buttons -->
+  <!-- Buttons -->
   <div class="buttons">
     <a href="#" target="_blank">Subscribe</a>
     <a href="https://shop.weeztix.com/ab6bdee4-bd65-4b42-ad36-fe9033c21be1/tickets" target="_blank">Donate</a>
   </div>
 
-  <!-- Social Media Links -->
+  <!-- Social -->
   <div class="social-links">
-  
     <a href="https://www.instagram.com/milomiranda/" target="_blank">Instagram</a> |
     <a href="https://www.facebook.com/milomiranda2019/" target="_blank">Facebook</a> |
     <a href="mailto:milo.miranda.escamilla@gmail.com">Email</a>
   </div>
+
+  <script>
+    const images = [
+      {src: "img/Proceso1.jpg", caption: "Process Image 1"},
+      {src: "img/Proceso2.jpg", caption: "Process Image 2"},
+      {src: "img/Proceso3.jpg", caption: "Process Image 3"},
+      {src: "img/Proceso4.jpg", caption: "Process Image 4"},
+      {src: "img/Proceso5.jpg", caption: "Process Image 5"},
+      {src: "img/Proceso6.JPG", caption: "Process Image 6"},
+      {src: "img/Proceso7.jpg", caption: "Process Image 7"},
+      {src: "img/Proceso8.jpg", caption: "Process Image 8"},
+      {src: "img/Proceso9.PNG", caption: "Process Image 9"},
+      {src: "img/Proceso10.PNG", caption: "Process Image 10"},
+      {src: "img/Proceso11.PNG", caption: "Process Image 11"}
+    ];
+
+    let currentIndex = 0;
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    const lightboxCaption = document.getElementById('lightbox-caption');
+
+    function openLightbox(index) {
+      currentIndex = index;
+      showImage();
+      lightbox.style.display = 'flex';
+    }
+
+    function closeLightbox(e) {
+      // Close if clicked outside image
+      if (e.target === lightbox) {
+        lightbox.style.display = 'none';
+      }
+    }
+
+    function showImage() {
+      lightboxImg.src = images[currentIndex].src;
+      lightboxCaption.textContent = images[currentIndex].caption;
+    }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (lightbox.style.display === 'flex') {
+        if (e.key === 'ArrowRight') {
+          currentIndex = (currentIndex + 1) % images.length;
+          showImage();
+        } else if (e.key === 'ArrowLeft') {
+          currentIndex = (currentIndex - 1 + images.length) % images.length;
+          showImage();
+        } else if (e.key === 'Escape') {
+          lightbox.style.display = 'none';
+        }
+      }
+    });
+
+    // Touch swipe support
+    let startX = 0;
+    lightbox.addEventListener('touchstart', e => {
+      startX = e.touches[0].clientX;
+    });
+
+    lightbox.addEventListener('touchend', e => {
+      const endX = e.changedTouches[0].clientX;
+      if (endX - startX > 50) { // Swipe right
+        currentIndex = (currentIndex - 1 + images.length) % images.length;
+        showImage();
+      } else if (startX - endX > 50) { // Swipe left
+        currentIndex = (currentIndex + 1) % images.length;
+        showImage();
+      }
+    });
+
+    // Mouse drag for desktop
+    let isDragging = false;
+    let dragStartX = 0;
+    lightbox.addEventListener('mousedown', e => {
+      isDragging = true;
+      dragStartX = e.clientX;
+    });
+    lightbox.addEventListener('mouseup', e => {
+      if (!isDragging) return;
+      const dragEndX = e.clientX;
+      if (dragEndX - dragStartX > 50) {
+        currentIndex = (currentIndex - 1 + images.length) % images.length;
+        showImage();
+      } else if (dragStartX - dragEndX > 50) {
+        currentIndex = (currentIndex + 1) % images.length;
+        showImage();
+      }
+      isDragging = false;
+    });
+  </script>
 
 </body>
 </html>
