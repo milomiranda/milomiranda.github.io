@@ -1,297 +1,203 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emilio Miranda</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-  <meta property="og:title" content="Concreto en Juego" />
-  <meta property="og:description" content="Concreto en Juego, Amsterdam, 2025." />
-  <meta property="og:image" content="https://raw.githubusercontent.com/milomiranda/milomiranda.github.io/refs/heads/main/img/videothumbnail.jpg" />
-  <meta property="og:url" content="https://milomiranda.github.io/" />
-  <meta property="og:type" content="website" />
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #fff;
+            color: #333;
+            overflow-y: scroll;
+        }
 
-  <title>Concreto en Juego</title>
-  <link rel="icon" type="image/jpeg" href="img/Favicon.jpg">
-  <style>
-    body {
-      font-family: Helvetica;
-      text-align: center;
-      margin: 20px;
-      padding: 0;
-    }
-    h1, h2 {
-      color: #000;
-      margin-bottom: 10px;
-    }
-    .description {
-      max-width: 800px;
-      margin: 20px auto;
-      text-align: justify;
-      padding: 0 10px;
-    } 
-    .locale-link {
-      text-decoration: none;
-      color: #000;
-    }
-    .buttons {
-      margin-top: 20px;
-    }
-    .buttons a {
-      display: inline-block;
-      text-decoration: none;
-      background-color: #000;
-      color: white;
-      padding: 10px 20px;
-      margin: 5px;
-      border-radius: 5px;
-      transition: background-color 0.3s;
-    }
-    .buttons a:hover {
-      background-color: #555;
-    }
-    .social-links {
-      margin-top: 40px;
-    }
-    .social-links a {
-      margin: 10px;
-      text-decoration: none;
-      color: #555;
-    }
-    .video-container {
-      width: 560px;
-      height: 315px;
-      margin: 0 auto; /* Center it */
-      position: relative;
-    }
+        .container {
+            width: 90%;
+            margin: auto;
+            max-width: 1200px;
+        }
 
-    @media (max-width: 600px) {
-      .video-container {
-        width: 100%;
-        height: 0;
-        padding-bottom: 56.25%; /* 16:9 ratio */
-      }
-      
-      .video-container iframe {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-      }
+        header {
+            position: sticky;
+            top: 0;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 20px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
 
-      .buttons a {
-        display: block;
-        margin: 10px auto;
-        width: 80%;
-      }
-      .social-links {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-      }
-      .social-links a {
-        margin: 5px 0;
-      }
-    }
+        nav {
+            margin-top: 10px;
+        }
 
-    /* Modal Styles */
-    .modal-container {
-      position: fixed;
-      display: none;
-      justify-content: center;
-      align-items: center;
-      top: 0; left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.8);
-      z-index: 2000;
-    }
-    .modal-content {
-      background: white;
-      padding: 20px;
-      width: 90%;
-      max-width: 800px;
-      border-radius: 8px;
-      text-align: center;
-      position: relative;
-      overflow-y: auto;
-      max-height: 90%;
-    }
-    .modal-close {
-      position: absolute;
-      top: 10px;
-      right: 15px;
-      font-size: 18px;
-      cursor: pointer;
-    }
-    .modal-name {
-      color: #007BFF;
-      cursor: pointer;
-      text-decoration: underline;
-    }
-    .modal-content.transparent-modal {
-      background: transparent;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      max-width: 100%;
-      max-height: 100%;
-      border-radius: 0;
-      box-shadow: none;
-      overflow: hidden;
-    }
-    .modal-close.transparent-close {
-      color: white;
-    }
-  </style>
+        nav a {
+            margin: 0 10px;
+            text-decoration: none;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .centered-image {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .centered-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+
+        .links-section {
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .links-section a {
+            display: inline-block;
+            margin: 5px 10px;
+            text-decoration: none;
+            color: #0066cc;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            font-size: 0.9em;
+            border-top: 1px solid #eee;
+            margin-top: 40px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .modal-content h2 {
+            margin-bottom: 15px;
+        }
+
+        .modal-content a {
+            display: block;
+            margin: 10px 0;
+            color: #0066cc;
+            text-decoration: none;
+        }
+
+        .modal-close {
+            margin-top: 20px;
+            cursor: pointer;
+            color: red;
+            font-weight: bold;
+        }
+        .about-section {
+            text-align: center;
+        }
+
+        @media (min-width: 600px) {
+            header {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+
+            nav {
+                margin-top: 0;
+            }
+        }
+    </style>
 </head>
 <body>
-  <br>
-  <h1><q>Concreto en Juego</q>, Amsterdam, 2025.</h1>
 
-  <p>
-    <span class="modal-name" onclick="openModal(
-        'Milo Miranda', 'Instagram: <a href=\'https://instagram.com/milomiranda/\' target=\'_blank\'>@milomiranda</a>\
-        <br><br>Facebook: <a href=\'https://www.facebook.com/milomiranda2019/\' target=\'_blank\'>Milo Miranda Escamilla </a>\
-        <br><br>Email: <a href=\'mailto:milo.miranda.escamilla@gmail.com\'>milo.miranda.escamilla@gmail.com</a>'
-      )">
-      Milo Miranda
-    </span>,
-    <span class="modal-name" onclick="openModal('Saskia Benitez', 'Instagram: <a href=\'https://instagram.com/sasbube/\' target=\'_blank\'>@sasbube</a>')">Saskia Benitez</span>,
-    <span class="modal-name" onclick="openModal('Ida Osten', 'Instagram: <a href=\'https://instagram.com/idaosten/\' target=\'_blank\'>@idaosten</a>')">Ida Osten</span>,
-    <span class="modal-name" onclick="openModal(
-      'Luis Esteban Rodriguez', 'Website: <a href=\'https://metalerk.github.io/\' target=\'_blank\'>Sacred Circuits</a>\
-      <br><br>Instagram: <a href=\'https://instagram.com/lesteban05/\' target=\'_blank\'>@lesteban05</a>'
-      )">
-      Luis Esteban Rodriguez
-    </span>
-  </p>
+<div class="container">
+    <header>
+        <h1>Emilio Miranda</h1>
+        <nav>
+            <a id="contact-link">Contact</a>
+        </nav>
+    </header>
 
-  <br>
+    <section class="centered-image">
+        <img src="https://scontent-ams2-1.xx.fbcdn.net/v/t51.75761-15/482483688_18490917877015038_1208333364493458712_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=127cfc&_nc_ohc=O3H_nBzQsQYQ7kNvwFtvvI3&_nc_oc=Adm3_aVXVQTGcaIJ347XJmy0SfVMIuqbFv5lz8EGdbjhtJUy17xn4hBOvkfgiwed8q7Ph6qW6QRlTmsdEc7skP27&_nc_zt=23&_nc_ht=scontent-ams2-1.xx&_nc_gid=U4e_eRj0wvh-UjKRBUKAzg&oh=00_AfHHIBwSB0xuF4OUZTQy0ydwtXxUXOtVqygbhJeeISCG6g&oe=68140738" alt="Featured Artwork">
+    </section>
 
-  <div class="video-container">
-    <iframe src="https://www.youtube.com/embed/KSPJfB7Yr9A?si=N1LtkU-Go6ZRooXN" width="560" height="315" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-  </div> 
+    <section id="about" class="about-section">
+        <h2>About the Artist</h2>
+        <p style="margin-top:10px;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur vehicula fermentum erat, nec varius velit dignissim non. Proin porttitor, nibh vitae blandit cursus, sapien orci sodales erat, eget tincidunt justo nisi id dolor. Integer et risus vel orci placerat pretium. Suspendisse potenti. Sed at metus risus. Cras eget ex eget felis lacinia imperdiet.</p>
+    </section>
 
-  <br><br>
-  <div class="description">
+    <section class="links-section">
+        <h2>Selected Works</h2>
+        <a href="#">Work 1</a>
+        <a href="#">Work 2</a>
+        <a href="#">Work 3</a>
+    </section>
 
-    <h3>NL | <a href="concreto_en_juego_en.html" class="locale-link">EN</a> | <a href="concreto_en_juego_es.html" class="locale-link">ES</a></h3>
-    <p>
-    Was het resultaat van een samenkomst waarin een dialoog tussen diverse creatieve disciplines de ervaring van het betreden van een speelruimte onderzoekt. Meer dan enkel een afgebakende ruimte, vormt het spel een ontmoetingspunt tussen omgeving en mens. Dit werk verkent de mogelijkheden van samenwerking, beweging, materialisatie en digitalisering.
-    </p>
-    <h3><a href="concreto_en_juego_nl_full_text.html" class="locale-link">Lees Meer</a></h3>
-  </div>
+    <footer>
+        © 2025 Emilio Miranda. All rights reserved.
+    </footer>
+</div>
 
-  <!-- Modal -->
-  <div id="modal" class="modal-container" onclick="closeModal(event)">
-    <div class="modal-content" id="modal-content">
-      <span class="modal-close" onclick="closeModal(event)">&times;</span>
-      <h2 id="modal-title"></h2>
-      <p id="modal-body"></p>
+<div class="modal" id="contact-modal">
+    <div class="modal-content">
+        <h2>Connect & Resume</h2>
+        <a href="#">LinkedIn</a>
+        <a href="#">Instagram</a>
+        <a href="#">Resume</a>
+        <h2 style="margin-top:30px;">Contact</h2>
+        <p>Email: bebeson@example.com</p>
+        <div class="modal-close" id="modal-close">Close</div>
     </div>
-  </div>
+</div>
 
-  <!-- Buttons -->
-  <div class="buttons">
-    <a href="#" class="modal-name" onclick="openSubscribeModal()">Abonneren</a>
-    <a href="#" class="modal-name" onclick="openShopModal()">Schenken</a>
-  </div>
+<script>
+    const contactLink = document.getElementById('contact-link');
+    const modal = document.getElementById('contact-modal');
+    const modalClose = document.getElementById('modal-close');
 
-  <!-- Modal Scripts -->
-  <script>
-    const modal = document.getElementById('modal');
-    const modalTitle = document.getElementById('modal-title');
-    const modalBody = document.getElementById('modal-body');
+    contactLink.addEventListener('click', () => {
+        modal.style.display = 'flex';
+    });
 
-    function openModal(name, info) {
-      modalTitle.textContent = name;
-      modalBody.innerHTML = info;
-      modal.style.display = 'flex';
-    }
-
-    function closeModal(e) {
-      if (e.target === modal || e.target.classList.contains('modal-close')) {
+    modalClose.addEventListener('click', () => {
         modal.style.display = 'none';
-        modalBody.innerHTML = '';
-        modalTitle.textContent = '';
-        document.getElementById('modal-content').classList.remove('transparent-modal');
-        document.querySelector('.modal-close').classList.remove('transparent-close');
-      }
-    }
+    });
 
-    function openShopModal() {
-      modalTitle.textContent = '';
-      modalBody.innerHTML = `
-        <iframe src="https://shop.weeztix.com/ab6bdee4-bd65-4b42-ad36-fe9033c21be1/tickets"
-          width="100%" height="100%" style="border:none; width:100vw; height:100vh;"></iframe>
-      `;
-      document.getElementById('modal-content').classList.add('transparent-modal');
-      document.querySelector('.modal-close').classList.add('transparent-close');
-      modal.style.display = 'flex';
-    }
-
-    function openSubscribeModal() {
-      modalTitle.textContent = 'Stay in the loop';
-      modalBody.innerHTML = `
-    <div id="mc_embed_shell">
-      <link href="//cdn-images.mailchimp.com/embedcode/classic-061523.css" rel="stylesheet" type="text/css">
-      <style type="text/css">
-        #mc_embed_signup{background:#fff; clear:left; font:14px Helvetica,Arial,sans-serif; width: 100%; max-width:600px; margin:0 auto; padding:20px;}
-      </style>
-      <div id="mc_embed_signup">
-        <form action="https://gmail.us13.list-manage.com/subscribe/post?u=0b3f545d15774ad2b02db0f67&amp;id=f88d1cc96a&amp;f_id=0054e6e2f0"
-              method="post" target="_blank" class="validate">
-          <div id="mc_embed_signup_scroll">
-            <div class="indicates-required"><span class="asterisk">*</span> indicates required</div>
-            <div class="mc-field-group"><label for="mce-EMAIL">Email Address <span class="asterisk">*</span></label>
-              <input type="email" name="EMAIL" class="required email" id="mce-EMAIL" required="">
-            </div>
-            <div class="mc-field-group"><label for="mce-FNAME">First Name </label>
-              <input type="text" name="FNAME" class="text" id="mce-FNAME" value="">
-            </div>
-            <div class="mc-field-group"><label for="mce-LNAME">Last Name </label>
-              <input type="text" name="LNAME" class="text" id="mce-LNAME" value="">
-            </div>
-            <div id="mce-responses" class="clear foot">
-              <div class="response" id="mce-error-response" style="display:none"></div>
-              <div class="response" id="mce-success-response" style="display:none"></div>
-            </div>
-            <div aria-hidden="true" style="position:absolute; left:-5000px;">
-              <input type="text" name="b_0b3f545d15774ad2b02db0f67_f88d1cc96a" tabindex="-1" value="">
-            </div>
-            <div class="optionalParent">
-              <div class="clear foot">
-                <input type="submit" name="subscribe" class="button" value="Subscribe">
-                <p style="margin:0 auto;">
-                  <a href="http://eepurl.com/jayQUc" title="Mailchimp - email marketing made easy and fun">
-                    <span style="display:inline-block; background-color:transparent; border-radius:4px;">
-                      <img class="refferal_badge" src="https://digitalasset.intuit.com/render/content/dam/intuit/mc-fe/en_us/images/intuit-mc-rewards-text-dark.svg" alt="Intuit Mailchimp" style="width:220px; height:40px; display:flex; padding:2px 0px; justify-content:center; align-items:center;">
-                    </span>
-                  </a>
-                </p>
-              </div>
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
-  `;
-      document.getElementById('modal-content').classList.remove('transparent-modal');
-      document.querySelector('.modal-close').classList.remove('transparent-close');
-      modal.style.display = 'flex';
-    }
-  </script>
-
-  <script src="//s3.amazonaws.com/downloads.mailchimp.com/js/mc-validate.js"></script>
-  <script>
-  (function($) {
-    window.fnames = new Array(); window.ftypes = new Array();
-    fnames[0]='EMAIL';ftypes[0]='email';
-    fnames[1]='FNAME';ftypes[1]='text';
-    fnames[2]='LNAME';ftypes[2]='text';
-  })(jQuery); var $mcj = jQuery.noConflict(true);
-  </script>
+    window.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+</script>
 
 </body>
 </html>
