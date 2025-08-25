@@ -1,205 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Milo Miranda</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Milo Miranda</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400&display=swap">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: #fff;
+      color: #222;
+      margin: 0;
+      padding: 40px 20px;
+      line-height: 1.7;
+    }
 
-        body {
-            font-family: 'Roboto', sans-serif;
-            background: #fff;
-            color: #333;
-            overflow-y: scroll;
-        }
+    main {
+      max-width: 800px;
+      margin: 0 auto;
+    }
 
-        .container {
-            width: 90%;
-            margin: auto;
-            max-width: 1200px;
-        }
+    h1 {
+      font-size: 3rem;
+      font-weight: 300;
+      margin-bottom: 2rem;
+      text-align: left; /* Or center if you prefer */
+    }
 
-        header {
-            position: sticky;
-            top: 0;
-            background: rgba(255, 255, 255, 0.8);
-            padding: 20px 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            border-bottom: 1px solid #eee;
-            z-index: 1000;
-            backdrop-filter: blur(10px);
-        }
+    .bio-text p {
+      margin-bottom: 1.5rem;
+      font-size: 1.2rem;
+    }
 
-        nav {
-            margin-top: 10px;
-        }
+    .works {
+      margin-top: 3rem;
+    }
 
-        nav a {
-            margin: 0 10px;
-            text-decoration: none;
-            color: #333;
-            cursor: pointer;
-        }
+    .works a {
+      display: block;
+      font-size: 1.2rem;
+      color: #222;
+      text-decoration: none;
+      margin-bottom: 1rem;
+    }
 
-        .centered-image {
-            display: flex;
-            justify-content: center;
-            margin-top: 30px;
-        }
+    .works a:hover {
+      text-decoration: underline;
+    }
 
-        .centered-image img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 5px;
-        }
+    footer {
+      margin-top: 4rem;
+      font-size: 0.9rem;
+      text-align: left;
+      color: #555;
+    }
 
-        .links-section {
-            margin-top: 40px;
-            text-align: center;
-        }
+    footer a {
+      color: #555;
+      text-decoration: none;
+      margin-right: 15px;
+    }
 
-        .links-section a {
-            display: inline-block;
-            margin: 5px 10px;
-            text-decoration: none;
-            color: #0066cc;
-        }
+    footer a:hover {
+      text-decoration: underline;
+    }
 
-        footer {
-            text-align: center;
-            padding: 40px 0;
-            font-size: 0.9em;
-            border-top: 1px solid #eee;
-            margin-top: 40px;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-        }
-
-        .modal-content {
-            background: white;
-            padding: 30px;
-            border-radius: 8px;
-            max-width: 500px;
-            width: 90%;
-            text-align: center;
-        }
-
-        .modal-content h2 {
-            margin-bottom: 15px;
-        }
-
-        .modal-content a {
-            display: block;
-            margin: 10px 0;
-            color: #0066cc;
-            text-decoration: none;
-        }
-
-        .modal-close {
-            margin-top: 20px;
-            cursor: pointer;
-            color: red;
-            font-weight: bold;
-        }
-        .about-section {
-            text-align: center;
-        }
-
-        @media (min-width: 600px) {
-            header {
-                flex-direction: row;
-                justify-content: space-between;
-            }
-
-            nav {
-                margin-top: 0;
-            }
-        }
-    </style>
+    img.feature {
+      width: 100%;
+      max-height: 500px;
+      object-fit: cover;
+      margin-bottom: 3rem;
+    }
+  </style>
 </head>
 <body>
+  <main>
+    <h1>Milo Miranda</h1>
+    <img src="https://i.imgur.com/7TtYl4W.jpeg" alt="Milo Miranda work" class="feature">
+    
+    <div class="bio-text">
+      <p><strong>Milo Miranda (b. 1994, Mexico City)</strong> is an artist and content producer working at the intersection of photography, video, and digital manipulation. With a background in Digital Culture Studies and years of experience across Mexico, the Netherlands, Germany, and Spain, his practice explores themes of identity, cultural heritage, and migration.</p>
+      
+      <p>Combining experimental and performative approaches, Milo merges traditional image-making with emerging technologies—3D scanning, CCTV, and virtual modeling—to create works that challenge perceptions of belonging and presence. His projects function as both artistic research and visual storytelling, producing immersive narratives that invite connection while questioning how cultural memory survives in a digitized world.</p>
+    </div>
 
-<div class="container">
-    <header>
-        <h1>Milo Miranda</h1>
-        <nav>
-            <a id="contact-link">Contact</a>
-        </nav>
-    </header>
-
-    <section class="centered-image">
-        <img src="https://i.imgur.com/7TtYl4W.jpeg" alt="">
-    </section>
-
-    <section id="about" class="about-section">
-        <h2>About</h2>
-        <p style="margin-top:10px;">Milo Miranda (b. 1994, Mexico City) is an artist and content producer working at the intersection of photography, video, and digital manipulation. With a background in Digital Culture Studies and years of experience across Mexico, the Netherlands, Germany, and Spain, his practice explores themes of identity, cultural heritage, and migration.</p>
-<p style="margin-top:10px;">
-Combining experimental and performative approaches, Milo merges traditional image-making with emerging technologies—3D scanning, CCTV, and virtual modeling—to create works that challenge perceptions of belonging and presence. His projects function as both artistic research and visual storytelling, producing immersive narratives that invite connection while questioning how cultural memory survives in a digitized world.</p>
-    </section>
-
-    <section class="links-section">
-        <h2>Selected Works</h2>
-        <a href="#">Work 1</a>
-        <a href="#">Work 2</a>
-        <a href="#">Work 3</a>
+    <section class="works">
+      <h2>Selected Works</h2>
+      <a href="#">Desde lejos, lo nuestro</a>
+      <a href="#">Digital Relics</a>
+      <a href="#">Migration as Form</a>
     </section>
 
     <footer>
-        © 2025 Emilio Miranda. All rights reserved.
+      <p>© 2025 Milo Miranda</p>
+      <a href="mailto:milo.miranda.escamilla@gmail.com">Email</a>
+      <a href="https://www.instagram.com/milomiranda/">Instagram</a>
+      <a href="https://www.linkedin.com/in/milomiranda/">LinkedIn</a>
     </footer>
-</div>
-
-<div class="modal" id="contact-modal">
-    <div class="modal-content">
-        <h2>Connect & Resume</h2>
-        <a href="https://www.linkedin.com/in/milomiranda/">LinkedIn</a>
-        <a href="https://www.instagram.com/milomiranda/">Instagram</a>
-        <a href="#">Resume</a>
-        <h2 style="margin-top:30px;">Contact</h2>
-        <p>Email: milo.miranda.escamilla@gmail.com</p>
-        <div class="modal-close" id="modal-close">Close</div>
-    </div>
-</div>
-
-<script>
-    const contactLink = document.getElementById('contact-link');
-    const modal = document.getElementById('contact-modal');
-    const modalClose = document.getElementById('modal-close');
-
-    contactLink.addEventListener('click', () => {
-        modal.style.display = 'flex';
-    });
-
-    modalClose.addEventListener('click', () => {
-        modal.style.display = 'none';
-    });
-
-    window.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            modal.style.display = 'none';
-        }
-    });
-</script>
-
+  </main>
 </body>
 </html>
