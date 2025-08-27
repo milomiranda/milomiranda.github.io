@@ -163,5 +163,16 @@ h1, h2, h3, h4, h5, h6, p, a, strong {
       <p>© 2025 Milo Miranda</p>
     </footer>
   </main>
+ 
+ <script>
+  const btn = document.getElementById('show-all-btn');
+  const hiddenWorks = document.querySelectorAll('.extra-work');
+
+  btn.addEventListener('click', () => {
+    hiddenWorks.forEach(link => link.style.display = 'block');
+    btn.style.display = 'none'; // hide the button after clicking
+  });
+</script>
+ 
 </body>
 </html>
