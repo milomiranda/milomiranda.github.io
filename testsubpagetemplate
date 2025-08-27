@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Work Title | Milo Miranda</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      font-weight: 400;
+      margin: 0;
+      padding: 0;
+    }
+
+    main {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 1rem;
+    }
+
+    h1 {
+      font-size: 1rem;
+      font-weight: 300;
+      margin-bottom: 1rem;
+    }
+
+    .back-button {
+      display: inline-block;
+      margin-bottom: 1rem;
+      font-size: 0.8rem;
+      text-decoration: none;
+      color: #222;
+      border: 1px solid #222;
+      padding: 0.3rem 0.6rem;
+      border-radius: 4px;
+    }
+
+    .back-button:hover {
+      background: #222;
+      color: #fff;
+    }
+
+    .description {
+      font-size: 0.8rem;
+      line-height: 1.4;
+      text-align: justify;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Carousel Container */
+    .carousel {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+    }
+
+    .carousel-track {
+      display: flex;
+      transition: transform 0.4s ease-in-out;
+    }
+
+    .carousel img {
+      width: 100%;
+      max-width: 800px;
+      flex-shrink: 0;
+    }
+
+    .carousel-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .carousel-buttons button {
+      border: none;
+      background: #222;
+      color: white;
+      padding: 0.3rem 0.8rem;
+      cursor: pointer;
+      font-size: 0.8rem;
+      border-radius: 4px;
+    }
+
+    .links {
+      margin-top: 1.5rem;
+    }
+
+    .links a {
+      display: block;
+      font-size: 0.8rem;
+      color: #222;
+      text-decoration: none;
+      margin-bottom: 0.5rem;
+    }
+
+    .links a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <!-- Back to main -->
+    <a href="index.html" class="back-button">← Back to Main</a>
+
+    <!-- Title -->
+    <h1>Work Title</h1>
+
+    <!-- Description -->
+    <div class="description">
+      <p>This is the description of the work. Explain the concept, process, and details in a concise way.</p>
+    </div>
+
+    <!-- Carousel -->
+    <div class="carousel">
+      <div class="carousel-track">
+        <img src="img/work1.jpg" alt="Work Image 1">
+        <img src="img/work2.jpg" alt="Work Image 2">
+        <img src="img/work3.jpg" alt="Work Image 3">
+        <img src="img/work4.jpg" alt="Work Image 4">
+        <img src="img/work5.jpg" alt="Work Image 5">
+      </div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="carousel-buttons">
+      <button id="prev">Prev</button>
+      <button id="next">Next</button>
+    </div>
+
+    <!-- Related Links -->
+    <div class="links">
+      <a href="#" target="_blank" rel="noopener noreferrer">Related Link 1</a>
+      <a href="#" target="_blank" rel="noopener noreferrer">Related Link 2</a>
+      <a href="#" target="_blank" rel="noopener noreferrer">Related Link 3</a>
+    </div>
+  </main>
+
+  <script>
+    const track = document.querySelector('.carousel-track');
+    const images = Array.from(track.children);
+    let index = 0;
+
+    document.getElementById('next').addEventListener('click', () => {
+      index = (index + 1) % images.length;
+      track.style.transform = `translateX(-${index * 100}%)`;
+    });
+
+    document.getElementById('prev').addEventListener('click', () => {
+      index = (index - 1 + images.length) % images.length;
+      track.style.transform = `translateX(-${index * 100}%)`;
+    });
+  </script>
+</body>
+</html>
