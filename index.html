@@ -81,7 +81,7 @@ h1, h2, h3, h4, h5, h6, p, a, strong {
   display: inline-block;
   margin-top: 1rem;
   padding: 0.4rem 0.8rem;
-  font-size: 0.8rem; /* Same as .works a */
+  font-size: 0.8rem;
   font-family: 'Roboto', sans-serif;
   font-weight: 400;
   color: #222;
@@ -89,27 +89,34 @@ h1, h2, h3, h4, h5, h6, p, a, strong {
   border-radius: 12px;
   background: none;
   cursor: pointer;
-  transition: background-color 0.2s, color 0.2s;
+  transition: all 0.2s;
 }
+
 
 #show-all-btn:hover {
   background-color: #222;
   color: #fff;
+  border: none;
 }
 
+footer {
+  text-align: center; /* Centers links and text */
+  margin-top: 2rem;
+}
 
-   footer a,
+footer a,
 footer p {
-  font-size: 0.8rem; /* Same as .works a */
+  font-size: 0.8rem;
   font-family: 'Roboto', sans-serif;
   font-weight: 400;
   color: #222;
+  text-decoration: none;
+  margin: 0 0.5rem;
 }
 
-    footer a:hover {
-      text-decoration: underline;
-    }
-
+footer a:hover {
+  text-decoration: underline;
+}
     img.feature {
   width: 50%;       /* smaller width */
   max-width: 300px; /* limit maximum size */
