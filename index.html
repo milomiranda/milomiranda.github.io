@@ -66,20 +66,34 @@ h1, h2, h3, h4, h5, h6, p, a, strong {
       text-decoration: underline;
     }
 
-   .extra-work {
-  display: none;      /* hidden by default */
-  color: #999;        /* grey color when shown */
+   /* Hide extra works by default */
+.works a.extra-work {
+  display: none;
+  color: #999; /* grey color when revealed */
 }
 
-.show-all .extra-work {
-  display: block;     /* show all extra works when parent has show-all */
+/* When section has .show-all, reveal hidden links */
+.works.show-all a.extra-work {
+  display: block;
+}
 
-    footer {
-  margin-top: 4rem;
+ #show-all-btn {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.4rem 0.8rem;
   font-size: 0.8rem;
-  text-align: center; /* Change this */
-  color: #222;
+  border: 1px solid #222;
+  border-radius: 12px;
+  background: none;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
 }
+
+#show-all-btn:hover {
+  background-color: #222;
+  color: #fff;
+}
+
 
     footer a {
       color: #222;
@@ -118,7 +132,7 @@ h1, h2, h3, h4, h5, h6, p, a, strong {
 
     <section class="works" id="selected-works">
       <h1>Selected Works</h1>
-      <a href="work/concreto_en_juego/index.html" class="extra-work">2025 - Presentation - "Concreto en juego", Milo Miranda. Vondelbunker, Amsterdam, NL</a>
+      <a href="work/concreto_en_juego/index.html">2025 - Presentation - "Concreto en juego", Milo Miranda. Vondelbunker, Amsterdam, NL</a>
       <a href="">2024 - Fashion Editorial - December campaign for WeLoveColors. Amsterdam, NL</a>
       <a href="" class="extra-work">2024 - Exhibition - Step into "U" by Miguel Gori. ARC Amsterdam, Amsterdam, NL</a>
       <a href="https://www.riebeek.net/betweenyouandme.html">2023 - Exhibition - "Vigilante #1" & "Vigilante #2", Milo Miranda for Between YOU&ME, Tilburg, NL</a>
@@ -134,8 +148,8 @@ h1, h2, h3, h4, h5, h6, p, a, strong {
       <a href="https://www.redbull.com/es-es/music-los-5-favoritos-de-pedro-ladroga"> 2018 - Fashion Editorial - "Los 5 favoritos (+1) de Pedro LaDroga" for Red Bull Magazine Global. Spain, ES</a>
       <a href="https://www.kaltblut-magazine.com/?s=Milo+Miranda+">2018 - Fashion Editorial - "VOIR Chapter #1" & "VOIR Chapter #2", Milo Miranda for Kaltblut Magazine and Neo2Magazine. Berlin, BE & Barcelona, ES</a>
       <a href="" class="extra-work">2018 - Fashion Editorial - Digital Lookbook by Milo Miranda for Barreto. Mexico City, MX</a>
-      
-     <button id="show-all-btn">Show All Works</button>
+      <button id="show-all-btn">Show All Works</button>
+    
      
 <a href="testsubpagetemplate.html">Check Subpage Template</a>
 
@@ -149,17 +163,18 @@ h1, h2, h3, h4, h5, h6, p, a, strong {
       <p>© 2025 Milo Miranda</p>
     </footer>
   </main>
- 
+
  <script>
 document.addEventListener('DOMContentLoaded', function () {
   const btn = document.getElementById('show-all-btn');
   const worksSection = document.querySelector('.works');
 
-  btn.addEventListener('click', () => {
-    worksSection.classList.toggle('show-all'); // toggle class on container
+  btn.addEventListener('click', function () {
+    worksSection.classList.toggle('show-all');
 
+    // Toggle button text
     if (worksSection.classList.contains('show-all')) {
-      btn.textContent = 'Hide Extra Works'; // button text changes
+      btn.textContent = 'Hide Extra Works';
     } else {
       btn.textContent = 'Show All Works';
     }
