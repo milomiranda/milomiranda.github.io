@@ -77,26 +77,34 @@ h1, h2, h3, h4, h5, h6, p, a, strong {
   display: block;
 }
 
+   /* Extra spacing below "Selected Works" */
+.works h1 {
+  margin-bottom: 0.8rem; /* Adjust as needed */
+}
+
  #show-all-btn {
-  display: inline-block;
-  margin-top: 1rem;
-  padding: 0.4rem 0.8rem;
+  display: block;
   font-size: 0.8rem;
   font-family: 'Roboto', sans-serif;
   font-weight: 400;
   color: #222;
-  border: 1px solid #222;
-  border-radius: 12px;
+  text-decoration: none;
   background: none;
+  border: none;
   cursor: pointer;
-  transition: all 0.2s;
+  padding: 0; /* No extra padding */
+  margin-bottom: 1rem; /* Space between button and links */
+  text-align: left; /* Align like links */
 }
 
+/* When active (toggle ON), change color to grey */
+.works.show-all #show-all-btn {
+  color: #999; /* Grey when extra works shown */
+}
 
+/* Hover effect like links */
 #show-all-btn:hover {
-  background-color: #222;
-  color: #fff;
-  border: none;
+  text-decoration: underline;
 }
 
 footer {
