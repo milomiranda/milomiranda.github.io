@@ -67,26 +67,12 @@ h1, h2, h3, h4, h5, h6, p, a, strong {
     }
 
    .extra-work {
-  display: none;          /* hidden by default */
-  color: #999;            /* grey color when shown */
+  display: none;      /* hidden by default */
+  color: #999;        /* grey color when shown */
 }
 
-#show-all-btn {
-  display: inline-block;
-  margin-top: 1rem;
-  padding: 0.4rem 0.8rem;
-  font-size: 0.8rem;
-  border: 1px solid #222;
-  border-radius: 12px;
-  background: none;
-  cursor: pointer;
-  transition: background-color 0.2s, color 0.2s;
-}
-
-#show-all-btn:hover {
-  background-color: #222;
-  color: #fff;
-}
+.show-all .extra-work {
+  display: block;     /* show all extra works when parent has show-all */
 
     footer {
   margin-top: 4rem;
@@ -165,13 +151,20 @@ h1, h2, h3, h4, h5, h6, p, a, strong {
   </main>
  
  <script>
+document.addEventListener('DOMContentLoaded', function () {
   const btn = document.getElementById('show-all-btn');
-  const hiddenWorks = document.querySelectorAll('.extra-work');
+  const worksSection = document.querySelector('.works');
 
   btn.addEventListener('click', () => {
-    hiddenWorks.forEach(link => link.style.display = 'block');
-    btn.style.display = 'none'; // hide the button after clicking
+    worksSection.classList.toggle('show-all'); // toggle class on container
+
+    if (worksSection.classList.contains('show-all')) {
+      btn.textContent = 'Hide Extra Works'; // button text changes
+    } else {
+      btn.textContent = 'Show All Works';
+    }
   });
+});
 </script>
  
 </body>
