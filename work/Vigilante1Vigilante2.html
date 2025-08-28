@@ -102,6 +102,19 @@
       border-radius: 4px;
     }
 
+.video-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 2rem;
+  gap: 1.5rem;
+}
+
+iframe {
+  max-width: 100%;
+}
+    
+
     .links {
       margin-top: 1.5rem;
     }
@@ -148,12 +161,13 @@
       <button id="prev">Prev</button>
       <button id="next">Next</button>
     </div>
-
+<div class="video-section">
 <iframe width="560" height="315" src="https://www.youtube.com/embed/-XGM52e6wso?si=RK1KhRCDV4PGPc-K" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 <iframe width="560" height="315" src="https://www.youtube.com/embed/kV1kFtAPB2c?si=qwjBxnDP4sXBYL0A" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-    
+</div>
     <!-- Related Links -->
     <div class="links">
+      <h1>Relevant Links</h1>
       <a href="https://www.riebeek.net/betweenyouandme.html" target="_blank" rel="noopener noreferrer">Riebeek - BetweenYOU&ME Website</a>
     </div>
   </main>
