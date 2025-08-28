@@ -81,10 +81,12 @@
     }
 
     .carousel img {
-      width: 100%;
-      max-width: 800px;
-      flex-shrink: 0;
-    }
+  width: 100%;
+  height: auto;   /* mantiene la proporción */
+  max-width: 800px;
+  flex-shrink: 0;
+  object-fit: contain; /* evita distorsión */
+}
 
     .carousel-buttons {
       display: flex;
@@ -177,5 +179,15 @@ With a clear intention in mind and love in your heart, connect with yourself and
       track.style.transform = `translateX(-${index * 100}%)`;
     });
   </script>
+
+<script>
+  // Disable right-click on all images
+  document.addEventListener("contextmenu", function(e){
+    if(e.target.tagName === "IMG"){
+      e.preventDefault();
+    }
+  });
+</script>
+  
 </body>
 </html>
