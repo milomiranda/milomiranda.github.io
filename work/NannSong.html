@@ -87,7 +87,7 @@
   flex-shrink: 0;
   object-fit: contain; /* evita distorsión */
 }
-
+    
     .carousel-buttons {
       display: flex;
       justify-content: center;
@@ -124,7 +124,8 @@
 <body>
   <main>
    
-
+     <!-- Back to main -->
+   <a href="../index.html#selected-works" class="return-button">← Back to Selected Works</a>
 
     <!-- Title -->
     <h1>Nann Song for Revista 192 by Milo Miranda, Mexico City, Mexico</h1>
@@ -180,5 +181,15 @@
       track.style.transform = `translateX(-${index * 100}%)`;
     });
   </script>
+
+<script>
+  // Disable right-click on all images
+  document.addEventListener("contextmenu", function(e){
+    if(e.target.tagName === "IMG"){
+      e.preventDefault();
+    }
+  });
+</script>
+  
 </body>
 </html>
