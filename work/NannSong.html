@@ -80,11 +80,13 @@
       transition: transform 0.4s ease-in-out;
     }
 
-    .carousel img {
-      width: 100%;
-      max-width: 800px;
-      flex-shrink: 0;
-    }
+     .carousel img {
+  width: 100%;
+  height: auto;   /* mantiene la proporción */
+  max-width: 800px;
+  flex-shrink: 0;
+  object-fit: contain; /* evita distorsión */
+}
 
     .carousel-buttons {
       display: flex;
@@ -121,8 +123,7 @@
 </head>
 <body>
   <main>
-    <!-- Back to main -->
-   <a href="../index.html#selected-works" class="return-button">← Back to Selected Works</a>
+   
 
 
     <!-- Title -->
@@ -150,6 +151,8 @@
       <button id="prev">Prev</button>
       <button id="next">Next</button>
     </div>
+
+      <a href="../index.html#selected-works" class="return-button">← Back to Selected Works</a>
 
     <!-- Related Links -->
     <div class="links">
