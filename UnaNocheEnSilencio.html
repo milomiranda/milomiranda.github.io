@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="icon" type="image/jpeg" href="img/Favicon2025.jpg">
+  <link rel="icon" type="image/jpeg" href="../img/Favicon2025.jpg">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Work Title | Milo Miranda</title>
+  <title> Milo Miranda Live at Berlin | Milo Miranda</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap">
   <style>
 
@@ -80,11 +80,21 @@
       transition: transform 0.4s ease-in-out;
     }
 
-    .carousel img {
-      width: 100%;
-      max-width: 800px;
-      flex-shrink: 0;
-    }
+    .carousel img,
+.carousel video {
+  width: 100%;
+  height: auto;   /* mantiene la proporción */
+  max-width: 800px;
+  flex-shrink: 0;
+  object-fit: contain; /* evita distorsión */
+}
+
+    .carousel video {
+  width: 100%;
+  max-width: 800px;
+  flex-shrink: 0;
+  object-fit: contain;
+}
 
     .carousel-buttons {
       display: flex;
@@ -122,25 +132,33 @@
 <body>
   <main>
     <!-- Back to main -->
-   <a href="index.html#selected-works" class="return-button">← Back to Selected Works</a>
+   <a href="../index.html#selected-works" class="return-button">← Back to Selected Works</a>
 
 
     <!-- Title -->
-    <h1>Work Title</h1>
+    <h1>"Una Noche En Silecio", Milo Miranda (QOHR) Live at Berlin by Silencio EPI, 2019. Berlin, DE </h1>
 
     <!-- Description -->
     <div class="description">
-      <p>This is the description of the work. Explain the concept, process, and details in a concise way.</p>
+      <p>
+
+QOHR is a sonic project that constructs intricate, organic soundscapes from reworked and manipulated audio fragments. Through these layered compositions, the artist explores the subtle tension between presence and absence, creating spaces that invite introspection and deep listening. The work reflects on the emotional void often found in a society driven by speed and instant gratification, particularly within today’s fast-moving music scene. Each performance encourages the audience to slow down, immerse themselves in the textures, and reconsider the pace, intensity, and emotional resonance of contemporary sound.</p>
     </div>
 
     <!-- Carousel -->
     <div class="carousel">
       <div class="carousel-track">
-        <img src="img/work1.jpg" alt="Work Image 1">
-        <img src="img/work2.jpg" alt="Work Image 2">
-        <img src="img/work3.jpg" alt="Work Image 3">
-        <img src="img/work4.jpg" alt="Work Image 4">
-        <img src="img/work5.jpg" alt="Work Image 5">
+        <img src="../img/berlin.jpg" alt="Work Image 1">
+        <img src="../img/berlin1.jpg" alt="Work Image 2">
+        <img src="../img/berlin2.jpg" alt="Work Image 3">
+        <img src="../img/berlin3.jpg" alt="Work Image 4">
+  
+<!--
+<video controls>
+  <source src="../img/___.mp4" type="video/mp4">
+</video>
+        -->
+        
       </div>
     </div>
 
@@ -151,11 +169,15 @@
     </div>
 
     <!-- Related Links -->
-    <div class="links">
-      <a href="#" target="_blank" rel="noopener noreferrer">Related Link 1</a>
-      <a href="#" target="_blank" rel="noopener noreferrer">Related Link 2</a>
-      <a href="#" target="_blank" rel="noopener noreferrer">Related Link 3</a>
+
+     <div class="links">
+
+      <h1>Relevant Links</h1>
+      
+      <a href="http://maze.berlin/event/una-noche-en-silencio-silencio-epi/" target="_blank" rel="noopener noreferrer">Maze Berlin</a>
+    
     </div>
+   
   </main>
 
   <script>
@@ -173,5 +195,15 @@
       track.style.transform = `translateX(-${index * 100}%)`;
     });
   </script>
+
+<script>
+  // Disable right-click on all images
+  document.addEventListener("contextmenu", function(e){
+    if(e.target.tagName === "IMG"){
+      e.preventDefault();
+    }
+  });
+</script>
+  
 </body>
 </html>
