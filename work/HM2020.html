@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="icon" type="image/jpeg" href="img/Favicon2025.jpg">
+  <link rel="icon" type="image/jpeg" href="../img/Favicon2025.jpg">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Work Title | Milo Miranda</title>
+  <title> H&M Autumn/Winter 2020 Campaign Global | Milo Miranda</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap">
   <style>
 
@@ -80,11 +80,21 @@
       transition: transform 0.4s ease-in-out;
     }
 
-    .carousel img {
-      width: 100%;
-      max-width: 800px;
-      flex-shrink: 0;
-    }
+    .carousel img,
+.carousel video {
+  width: 100%;
+  height: auto;   /* mantiene la proporción */
+  max-width: 800px;
+  flex-shrink: 0;
+  object-fit: contain; /* evita distorsión */
+}
+
+    .carousel video {
+  width: 100%;
+  max-width: 800px;
+  flex-shrink: 0;
+  object-fit: contain;
+}
 
     .carousel-buttons {
       display: flex;
@@ -122,25 +132,30 @@
 <body>
   <main>
     <!-- Back to main -->
-   <a href="index.html#selected-works" class="return-button">← Back to Selected Works</a>
+   <a href="../index.html#selected-works" class="return-button">← Back to Selected Works</a>
 
 
     <!-- Title -->
-    <h1>Work Title</h1>
+    <h1>H&M Autumn/Winter 2020 Campaign Global Live Stream Presentation, Milo Miranda. Mexico City, MX</h1>
 
     <!-- Description -->
     <div class="description">
-      <p>This is the description of the work. Explain the concept, process, and details in a concise way.</p>
+      <p>We created “Styled by Me, Myself & I”, an interactive brand experience for H&M designed to celebrate individuality, break stereotypes, and bring the party anywhere. Influencers and guests received curated Shooting Party Boxes with exclusive pieces from the collection, props, playlists, and styling tools to prepare for private FaceTime shoots and a live Zoom “Posing Party”. The campaign invited participants to embrace the idea of “Wear it for you. Boy or girl? Who cares?”, showcasing fashion as a tool of self-expression, rebellion, and inclusion. Through social media activations, at-home experiences, and a collective virtual event, the concept highlighted a new era of fashion built on creativity, personality, and authenticity.</p>
     </div>
 
     <!-- Carousel -->
     <div class="carousel">
       <div class="carousel-track">
-        <img src="img/work1.jpg" alt="Work Image 1">
-        <img src="img/work2.jpg" alt="Work Image 2">
-        <img src="img/work3.jpg" alt="Work Image 3">
-        <img src="img/work4.jpg" alt="Work Image 4">
-        <img src="img/work5.jpg" alt="Work Image 5">
+        <img src="../img/HM1.jpg" alt="Work Image 1">
+        <img src="../img/HM2.jpg" alt="Work Image 2">
+        <img src="../img/HM3.jpg" alt="Work Image 3">
+        <img src="../img/HM4.jpg" alt="Work Image 4">
+        <img src="../img/HM5.jpg" alt="Work Image 5">
+<!--
+<video controls>
+  <source src="../img/___.mp4" type="video/mp4">
+</video>
+        -->
       </div>
     </div>
 
@@ -151,11 +166,16 @@
     </div>
 
     <!-- Related Links -->
-    <div class="links">
-      <a href="#" target="_blank" rel="noopener noreferrer">Related Link 1</a>
-      <a href="#" target="_blank" rel="noopener noreferrer">Related Link 2</a>
-      <a href="#" target="_blank" rel="noopener noreferrer">Related Link 3</a>
+<!--
+     <div class="links">
+
+      <h1>Relevant Links</h1>
+      
+      <a href="" target="_blank" rel="noopener noreferrer">LINK</a>
+      <a href="" target="_blank" rel="noopener noreferrer">LINK</a>
+      <a href="" target="_blank" rel="noopener noreferrer">LINK</a>
     </div>
+   -->
   </main>
 
   <script>
@@ -173,5 +193,15 @@
       track.style.transform = `translateX(-${index * 100}%)`;
     });
   </script>
+
+<script>
+  // Disable right-click on all images
+  document.addEventListener("contextmenu", function(e){
+    if(e.target.tagName === "IMG"){
+      e.preventDefault();
+    }
+  });
+</script>
+  
 </body>
 </html>
