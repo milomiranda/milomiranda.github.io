@@ -80,7 +80,8 @@
       transition: transform 0.4s ease-in-out;
     }
 
-    .carousel img {
+    .carousel img,
+.carousel video {
   width: 100%;
   height: auto;   /* mantiene la proporción */
   max-width: 800px;
@@ -88,12 +89,7 @@
   object-fit: contain; /* evita distorsión */
 }
 
-    .carousel video {
-  width: 100%;
-  max-width: 800px;
-  flex-shrink: 0;
-  object-fit: contain;
-}
+  
 
     .carousel-buttons {
       display: flex;
@@ -149,6 +145,8 @@
 
 <video controls>
   <source src="../img/todopornada1.mp4" type="video/mp4">
+</video>
+        <video controls>
   <source src="../img/todopornada2.mp4" type="video/mp4">
 </video>
         
