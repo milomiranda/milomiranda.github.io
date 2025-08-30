@@ -147,47 +147,47 @@
       <div class="tab" data-tab="voir2">VOIR No.2</div>
     </div>
 
-    <!-- VOIR 1 Content -->
-    <div class="tab-content active" id="voir1">
-      <div class="carousel">
-        <div class="carousel-track" id="track1">
-          <img src="../img/voir1a.jpg" alt="Voir 1 - Image 1">
-          <img src="../img/voir1b.jpg" alt="Voir 1 - Image 2">
-          <img src="../img/voir1c.jpg" alt="Voir 1 - Image 3">
-        </div>
-      </div>
-      <div class="carousel-buttons">
-        <button data-track="track1" class="prev">Prev</button>
-        <button data-track="track1" class="next">Next</button>
-      </div>
+     <!-- Voir 1 content -->
+  <div id="voir1" class="content active">
+    <div class="carousel">
+      <img src="img1.jpg" alt="Image 1">
+      <img src="img2.jpg" alt="Image 2">
+      <img src="img3.jpg" alt="Image 3">
     </div>
-
-    <!-- VOIR 2 Content -->
-    <div class="tab-content" id="voir2">
-      <div class="carousel">
-        <div class="carousel-track" id="track2">
-          <img src="../img/voir2a.jpg" alt="Voir 2 - Image 1">
-          <img src="../img/voir2b.jpg" alt="Voir 2 - Image 2">
-          <img src="../img/voir2c.jpg" alt="Voir 2 - Image 3">
-        </div>
-      </div>
-      <div class="carousel-buttons">
-        <button data-track="track2" class="prev">Prev</button>
-        <button data-track="track2" class="next">Next</button>
-      </div>
+    <div class="video-container">
+      <iframe src="https://www.youtube.com/embed/VIDEO_ID_1" allowfullscreen></iframe>
     </div>
-
-    <!-- YouTube Video -->
-    <iframe width="560" height="315" src="https://www.youtube.com/embed/YOUR_VIDEO_ID"
-      title="YouTube video player" frameborder="0"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-      allowfullscreen></iframe>
-
-    <!-- Links -->
-    <div class="links">
-      <h1>Relevant Links</h1>
-      <a href="#" target="_blank">→ Continue the Journey</a>
+    <div class="relevant-link">
+      <a href="https://example.com/voir1" target="_blank">Explore more about Voir 1</a>
     </div>
+  </div>
+
+  <!-- Voir 2 content -->
+  <div id="voir2" class="content">
+    <div class="carousel">
+      <img src="img4.jpg" alt="Image 4">
+      <img src="img5.jpg" alt="Image 5">
+      <img src="img6.jpg" alt="Image 6">
+    </div>
+    <div class="video-container">
+      <iframe src="https://www.youtube.com/embed/VIDEO_ID_2" allowfullscreen></iframe>
+    </div>
+    <div class="relevant-link">
+      <a href="https://example.com/voir2" target="_blank">Discover more about Voir 2</a>
+    </div>
+  </div>
+
+  <script>
+    function openTab(tabId) {
+      // hide all content
+      document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+      // remove active class from tabs
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      // show selected tab
+      document.getElementById(tabId).classList.add('active');
+      event.target.classList.add('active');
+    }
+  </script>
   </main>
 
   <script>
