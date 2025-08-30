@@ -80,7 +80,8 @@
       transition: transform 0.4s ease-in-out;
     }
 
-    .carousel img {
+    .carousel img,
+.carousel video {
   width: 100%;
   height: auto;   /* mantiene la proporción */
   max-width: 800px;
@@ -88,6 +89,7 @@
   object-fit: contain; /* evita distorsión */
 }
 
+    
     .carousel-buttons {
       display: flex;
       justify-content: center;
@@ -153,9 +155,18 @@ iframe {
       <div class="carousel-track">
         <img src="../img/cambiameellook2.jpg" alt="Work Image 1">
         <img src="../img/cambiameellook1.jpg" alt="Work Image 5">
-        <img src="../img/cambiameellook1.mp4" alt="Work Image 2">
-        <img src="../img/cambiameellook2.mp4" alt="Work Image 3">
-        <img src="../img/cambiameellook3.mp4" alt="Work Image 4">
+      
+
+<video controls>
+  <source src="../img/cambiameellook1.mp4" type="video/mp4">
+</video>
+        <video controls>
+  <source src="../img/cambiameellook2.mp4" type="video/mp4">
+</video>
+        <video controls>
+  <source src="../img/cambiameellook3.mp4" type="video/mp4">
+</video>
+        
       </div>
     </div>
 
