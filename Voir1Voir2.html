@@ -1,63 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="icon" type="image/jpeg" href="img/Favicon2025.jpg">
+  <link rel="icon" type="image/jpeg" href="../img/Favicon2025.jpg">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Work Title | Milo Miranda</title>
+  <title>VOIR No.1 & No.2 | Milo Miranda</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap">
   <style>
-
-.return-button {
-  display: inline-block;
-  padding: 0.4rem 0.8rem; /* espacio dentro del botón */
-  margin-bottom: 1.5rem;   /* separación de lo que viene abajo */
-  font-size: 0.8rem;
-  text-decoration: none;
-  color: #222;
-  border: 1px solid #222; /* contorno delgado */
-  border-radius: 12px;    /* bordes redondeados */
-  transition: background-color 0.2s, color 0.2s; /* efecto hover suave */
-}
-
-.return-button:hover {
-  background-color: #222; /* fondo oscuro al pasar mouse */
-  color: #fff;            /* texto blanco */
-}
-    
     body {
       font-family: 'Roboto', sans-serif;
-      font-weight: 400;
       margin: 0;
       padding: 0;
+      background: #fff;
+      color: #222;
     }
 
     main {
-      max-width: 800px;
+      max-width: 900px;
       margin: 0 auto;
       padding: 1rem;
+    }
+
+    .return-button {
+      display: inline-block;
+      padding: 0.4rem 0.8rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.8rem;
+      text-decoration: none;
+      color: #222;
+      border: 1px solid #222;
+      border-radius: 12px;
+      transition: background-color 0.2s, color 0.2s;
+    }
+    .return-button:hover {
+      background-color: #222;
+      color: #fff;
     }
 
     h1 {
       font-size: 1rem;
       font-weight: 300;
       margin-bottom: 1rem;
-    }
-
-    .back-button {
-      display: inline-block;
-      margin-bottom: 1rem;
-      font-size: 0.8rem;
-      text-decoration: none;
-      color: #222;
-      border: 1px solid #222;
-      padding: 0.3rem 0.6rem;
-      border-radius: 4px;
-    }
-
-    .back-button:hover {
-      background: #222;
-      color: #fff;
     }
 
     .description {
@@ -67,31 +50,58 @@
       margin-bottom: 1.5rem;
     }
 
-    /* Carousel Container */
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .tab {
+      padding: 0.5rem 1rem;
+      border: 1px solid #222;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      background: #f8f8f8;
+      transition: all 0.2s ease;
+    }
+    .tab.active {
+      background: #222;
+      color: #fff;
+    }
+
+    /* Tab content */
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Carousel */
     .carousel {
       position: relative;
       width: 100%;
       overflow: hidden;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1rem;
     }
-
     .carousel-track {
       display: flex;
       transition: transform 0.4s ease-in-out;
     }
-
-    .carousel img {
+    .carousel img, .carousel video {
       width: 100%;
+      height: auto;
       max-width: 800px;
       flex-shrink: 0;
+      object-fit: contain;
     }
-
     .carousel-buttons {
       display: flex;
       justify-content: center;
       gap: 10px;
+      margin-bottom: 2rem;
     }
-
     .carousel-buttons button {
       border: none;
       background: #222;
@@ -102,10 +112,15 @@
       border-radius: 4px;
     }
 
+    iframe {
+      max-width: 100%;
+      border-radius: 12px;
+      margin: 2rem 0;
+    }
+
     .links {
       margin-top: 1.5rem;
     }
-
     .links a {
       display: block;
       font-size: 0.8rem;
@@ -113,7 +128,6 @@
       text-decoration: none;
       margin-bottom: 0.5rem;
     }
-
     .links a:hover {
       text-decoration: underline;
     }
@@ -121,56 +135,94 @@
 </head>
 <body>
   <main>
-    <!-- Back to main -->
-   <a href="index.html#selected-works" class="return-button">← Back to Selected Works</a>
-
-
-    <!-- Title -->
-    <h1>Work Title</h1>
-
-    <!-- Description -->
+    <a href="../index.html#selected-works" class="return-button">← Back to Selected Works</a>
+    <h1>VOIR No.1 & No.2</h1>
     <div class="description">
-      <p>This is the description of the work. Explain the concept, process, and details in a concise way.</p>
+      <p>A dual exploration — two visions in dialogue. Select VOIR No.1 or VOIR No.2 to experience each narrative.</p>
     </div>
 
-    <!-- Carousel -->
-    <div class="carousel">
-      <div class="carousel-track">
-        <img src="img/work1.jpg" alt="Work Image 1">
-        <img src="img/work2.jpg" alt="Work Image 2">
-        <img src="img/work3.jpg" alt="Work Image 3">
-        <img src="img/work4.jpg" alt="Work Image 4">
-        <img src="img/work5.jpg" alt="Work Image 5">
+    <!-- Tabs -->
+    <div class="tabs">
+      <div class="tab active" data-tab="voir1">VOIR No.1</div>
+      <div class="tab" data-tab="voir2">VOIR No.2</div>
+    </div>
+
+    <!-- VOIR 1 Content -->
+    <div class="tab-content active" id="voir1">
+      <div class="carousel">
+        <div class="carousel-track" id="track1">
+          <img src="../img/voir1a.jpg" alt="Voir 1 - Image 1">
+          <img src="../img/voir1b.jpg" alt="Voir 1 - Image 2">
+          <img src="../img/voir1c.jpg" alt="Voir 1 - Image 3">
+        </div>
+      </div>
+      <div class="carousel-buttons">
+        <button data-track="track1" class="prev">Prev</button>
+        <button data-track="track1" class="next">Next</button>
       </div>
     </div>
 
-    <!-- Buttons -->
-    <div class="carousel-buttons">
-      <button id="prev">Prev</button>
-      <button id="next">Next</button>
+    <!-- VOIR 2 Content -->
+    <div class="tab-content" id="voir2">
+      <div class="carousel">
+        <div class="carousel-track" id="track2">
+          <img src="../img/voir2a.jpg" alt="Voir 2 - Image 1">
+          <img src="../img/voir2b.jpg" alt="Voir 2 - Image 2">
+          <img src="../img/voir2c.jpg" alt="Voir 2 - Image 3">
+        </div>
+      </div>
+      <div class="carousel-buttons">
+        <button data-track="track2" class="prev">Prev</button>
+        <button data-track="track2" class="next">Next</button>
+      </div>
     </div>
 
-    <!-- Related Links -->
+    <!-- YouTube Video -->
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/YOUR_VIDEO_ID"
+      title="YouTube video player" frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen></iframe>
+
+    <!-- Links -->
     <div class="links">
-      <a href="#" target="_blank" rel="noopener noreferrer">Related Link 1</a>
-      <a href="#" target="_blank" rel="noopener noreferrer">Related Link 2</a>
-      <a href="#" target="_blank" rel="noopener noreferrer">Related Link 3</a>
+      <h1>Relevant Links</h1>
+      <a href="#" target="_blank">→ Continue the Journey</a>
     </div>
   </main>
 
   <script>
-    const track = document.querySelector('.carousel-track');
-    const images = Array.from(track.children);
-    let index = 0;
-
-    document.getElementById('next').addEventListener('click', () => {
-      index = (index + 1) % images.length;
-      track.style.transform = `translateX(-${index * 100}%)`;
+    // Tabs
+    const tabs = document.querySelectorAll(".tab");
+    const contents = document.querySelectorAll(".tab-content");
+    tabs.forEach(tab => {
+      tab.addEventListener("click", () => {
+        tabs.forEach(t => t.classList.remove("active"));
+        contents.forEach(c => c.classList.remove("active"));
+        tab.classList.add("active");
+        document.getElementById(tab.dataset.tab).classList.add("active");
+      });
     });
 
-    document.getElementById('prev').addEventListener('click', () => {
-      index = (index - 1 + images.length) % images.length;
-      track.style.transform = `translateX(-${index * 100}%)`;
+    // Carousels
+    const carousels = {
+      track1: { index: 0, track: document.getElementById("track1"), items: document.querySelectorAll("#track1 > *") },
+      track2: { index: 0, track: document.getElementById("track2"), items: document.querySelectorAll("#track2 > *") }
+    };
+    document.querySelectorAll(".carousel-buttons button").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const c = carousels[btn.dataset.track];
+        if (btn.classList.contains("next")) {
+          c.index = (c.index + 1) % c.items.length;
+        } else {
+          c.index = (c.index - 1 + c.items.length) % c.items.length;
+        }
+        c.track.style.transform = `translateX(-${c.index * 100}%)`;
+      });
+    });
+
+    // Disable right click on images
+    document.addEventListener("contextmenu", e => {
+      if (e.target.tagName === "IMG") e.preventDefault();
     });
   </script>
 </body>
