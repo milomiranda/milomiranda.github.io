@@ -77,10 +77,16 @@
       margin-bottom: 1.5rem;
     }
 
-    .carousel-track {
-      display: flex;
-      transition: transform 0.4s ease-in-out;
-    }
+    .carousel img {
+  width: 100%;        /* each image takes full width of the carousel */
+  flex-shrink: 0;     /* prevents shrinking */
+}
+
+.carousel-track {
+  display: flex;
+  transition: transform 0.4s ease-in-out;
+  width: 100%;
+}
 
     .carousel-buttons {
       display: flex;
