@@ -142,19 +142,11 @@ iframe {
       text-decoration: underline;
     }
 
-.soundcloud-footer {
-  position: fixed;      /* lo pega a la pantalla */
-  bottom: 0;            /* al fondo */
-  left: 0;              /* empieza desde la izquierda */
-  width: 100%;          /* ancho completo */
-  background-color: #fff; /* fondo blanco para que contraste */
-  padding: 10px 0;      /* espacio arriba y abajo */
-  box-shadow: 0 -2px 10px rgba(0,0,0,0.1); /* sombra suave */
-  z-index: 9999;        /* que esté encima de todo */
-}
-
-    main {
-  padding-bottom: 180px; /* suficiente para que no tape el footer del reproductor */
+.soundcloud-embed {
+  margin: 2rem 0; /* espacio arriba y abajo */
+  max-width: 800px; /* opcional, para que no sea más ancho que tu contenido */
+  margin-left: auto; /* centrar */
+  margin-right: auto;
 }
     
     
@@ -176,6 +168,14 @@ iframe {
 QOHR is a sonic project that constructs intricate, organic soundscapes from reworked and manipulated audio fragments. Through these layered compositions, the artist explores the subtle tension between presence and absence, creating spaces that invite introspection and deep listening. The work reflects on the emotional void often found in a society driven by speed and instant gratification, particularly within today’s fast-moving music scene. Each performance encourages the audience to slow down, immerse themselves in the textures, and reconsider the pace, intensity, and emotional resonance of contemporary sound.</p>
     </div>
 
+
+<!-- SoundCloud Embed -->
+<div class="soundcloud-embed">
+  <iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" 
+    src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/712187185&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true">
+  </iframe>
+</div>
+    
     <!-- Carousel -->
     <div class="carousel">
       <div class="carousel-track">
@@ -214,11 +214,8 @@ QOHR is a sonic project that constructs intricate, organic soundscapes from rewo
     
     </div>
 
-<div class="soundcloud-footer">
-  <iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" 
-    src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/712187185&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true">
-  </iframe>
-</div>
+
+
 
     
   </main>
