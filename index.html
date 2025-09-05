@@ -56,22 +56,26 @@ h1, h2, h3, h4, h5, h6, p, a, strong {
 
     }
 
-works a {
+.works a {
   display: block;
-  position: relative; /* ← allows movement */
-  transition: transform 0.5s ease; /* ← smooth transition */
+  position: relative;           /* needed for FLIP animation */
+  transition: transform 0.5s ease; /* smooth movement */
+  font-family: 'Roboto', sans-serif; /* ensures font */
+  font-weight: 400;             /* keeps regular weight */
   font-size: 0.8rem;
-  color: #222;
-  text-decoration: none;
-    margin-bottom: 0.3rem; /* Ajusta el valor según lo que quieras */
-  line-height: 1.2; /* Esto reduce la altura entre líneas */
-  text-align: left; /* aligning the text to the left*/
+  color: #222;                  /* your link color */
+  text-decoration: none;        /* remove underline by default */
+  margin-bottom: 0.3rem;
+  line-height: 1.2;
+  text-align: left;
 }
-   
 
-    .works a:hover {
-      text-decoration: underline;
-    }
+.works a:hover {
+  text-decoration: underline;  /* hover effect */
+  color: #222;                 /* keep color on hover */
+}
+
+  
 
    /* Hide extra works by default */
 .works a.extra-work {
