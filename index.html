@@ -211,36 +211,14 @@ footer a:hover {
 document.addEventListener('DOMContentLoaded', function () {
   const btn = document.getElementById('show-all-btn');
   const worksSection = document.querySelector('.works');
-
-  btn.addEventListener('click', function () {
-    worksSection.classList.toggle('show-all');
-    worksSection.classList.toggle('show-years'); // toggle the years
-
-    // Toggle button text
-    if (worksSection.classList.contains('show-all')) {
-      btn.textContent = 'Hide Extra Works + Years';
-    } else {
-      btn.textContent = 'Show All Works';
-    }
-  });
-});
-</script>
-
- <script>
-document.addEventListener('DOMContentLoaded', function () {
-  const btn = document.getElementById('show-all-btn');
-  const worksSection = document.querySelector('.works');
   const allLinks = Array.from(worksSection.querySelectorAll('a'));
 
-  // Default type order
-  const typeOrder = [
-    "tv", "brand", "fashion", "exhibition",
-    "presentation", "musicp", "musicvp", "artwork"
-  ];
+  // Define type order for default view
+  const typeOrder = ["tv", "brand", "fashion", "exhibition", "presentation", "musicp", "musicvp", "artwork"];
 
-  // Re-render links in given order
+  // Function to render links in a given order
   function renderLinks(sortedLinks) {
-    allLinks.forEach(link => link.remove()); // clear
+    allLinks.forEach(link => link.remove()); // remove all links first
     sortedLinks.forEach(link => worksSection.insertBefore(link, btn)); // insert before button
   }
 
@@ -251,28 +229,30 @@ document.addEventListener('DOMContentLoaded', function () {
       .sort((a, b) => typeOrder.indexOf(a.dataset.type) - typeOrder.indexOf(b.dataset.type));
   }
 
-  // Sort all works by year (descending)
+  // Sort all works by year descending
   function sortByYear() {
-    return allLinks.sort((a, b) => b.dataset.year - a.dataset.year);
+    return allLinks.sort((a, b) => parseInt(b.dataset.year) - parseInt(a.dataset.year));
   }
 
-  // Initial render
+  // Initial render: main works sorted by type
   renderLinks(sortByType());
 
+  // Toggle button click
   btn.addEventListener('click', function () {
-    worksSection.classList.toggle('show-all');
+    const showingAll = worksSection.classList.toggle('show-all');
     worksSection.classList.toggle('show-years');
 
-    if (worksSection.classList.contains('show-all')) {
+    if (showingAll) {
       btn.textContent = 'Hide Extra Works + Years';
-      renderLinks(sortByYear()); // show all works by year
+      renderLinks(sortByYear()); // show all works sorted by year
     } else {
       btn.textContent = 'Show All Works';
-      renderLinks(sortByType()); // default type order
+      renderLinks(sortByType()); // revert to default type order
     }
   });
 });
 </script>
+
  
 </body>
 </html>
