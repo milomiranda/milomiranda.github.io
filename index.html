@@ -216,14 +216,8 @@ document.addEventListener('DOMContentLoaded', function () {
   const worksSection = document.querySelector('.works');
   const allLinks = Array.from(worksSection.querySelectorAll('a'));
 
-  // Define type order for default view
+  // Define default type order
   const typeOrder = ["tv", "brand", "fashion", "exhibition", "presentation", "musicp", "musicvp", "artwork"];
-
-  // Function to render links in a given order
-  function renderLinks(sortedLinks) {
-    allLinks.forEach(link => link.remove()); // remove all links first
-    sortedLinks.forEach(link => worksSection.insertBefore(link, btn)); // insert before button
-  }
 
   // Sort only main works by type
   function sortByType() {
@@ -237,8 +231,39 @@ document.addEventListener('DOMContentLoaded', function () {
     return allLinks.sort((a, b) => parseInt(b.dataset.year) - parseInt(a.dataset.year));
   }
 
+  // Animate reordering using FLIP
+  function animateReorder(sortedLinks) {
+    const positions = new Map();
+
+    // 1️⃣ Save current positions
+    allLinks.forEach(link => {
+      positions.set(link, link.getBoundingClientRect());
+    });
+
+    // 2️⃣ Reorder DOM
+    sortedLinks.forEach(link => worksSection.insertBefore(link, btn));
+
+    // 3️⃣ Animate movement
+    allLinks.forEach(link => {
+      const oldPos = positions.get(link);
+      const newPos = link.getBoundingClientRect();
+      const dx = oldPos.left - newPos.left;
+      const dy = oldPos.top - newPos.top;
+
+      // Invert
+      link.style.transform = `translate(${dx}px, ${dy}px)`;
+      link.style.transition = 'transform 0s';
+
+      // Play animation in next frame
+      requestAnimationFrame(() => {
+        link.style.transition = 'transform 0.5s ease';
+        link.style.transform = '';
+      });
+    });
+  }
+
   // Initial render: main works sorted by type
-  renderLinks(sortByType());
+  animateReorder(sortByType());
 
   // Toggle button click
   btn.addEventListener('click', function () {
@@ -247,10 +272,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (showingAll) {
       btn.textContent = 'Hide Extra Works + Years';
-      renderLinks(sortByYear()); // show all works sorted by year
+      animateReorder(sortByYear());
     } else {
       btn.textContent = 'Show All Works';
-      renderLinks(sortByType()); // revert to default type order
+      animateReorder(sortByType());
     }
   });
 });
