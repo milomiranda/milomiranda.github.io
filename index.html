@@ -380,29 +380,29 @@ document.addEventListener('DOMContentLoaded', function () {
   // Initial render: main works sorted by type
   animateReorder(sortByType());
 
-  // Toggle button click
-  btn.addEventListener('click', function () {
-    const showingAll = worksSection.classList.toggle('show-all');
-    worksSection.classList.toggle('show-years');
+ btn.addEventListener('click', function () {
+  const showingAll = worksSection.classList.toggle('show-all');
+  worksSection.classList.toggle('show-years');
 
-    if (showingAll) {
-      btn.textContent = 'Hide All Works';
-      // reorder to year view first, then reveal hidden works with stagger
-      animateReorder(sortByYear());
-      // small delay to ensure DOM reordered before revealing
-      requestAnimationFrame(() => {
-        setTimeout(() => revealExtraWorks(true), 40);
-      });
-    } else {
-      btn.textContent = 'Show All Works';
-      // hide extras with stagger, then reorder after hide animation ends
-      revealExtraWorks(false);
-      const hideDuration = extraLinks.length * 60 + 200;
-      setTimeout(() => {
-        animateReorder(sortByType());
-      }, hideDuration);
-    }
-  });
+  if (showingAll) {
+    btn.textContent = 'Hide All Works';
+    // mostrar todos primero: reordenar por año y luego revelar extras
+    animateReorder(sortByYear());
+    requestAnimationFrame(() => {
+      setTimeout(() => revealExtraWorks(true), 40);
+    });
+  } else {
+    btn.textContent = 'Show All Works';
+    // ocultar extras con stagger
+    revealExtraWorks(false);
+
+    // esperar a que terminen las transiciones antes de reordenar
+    const hideDuration = extraLinks.length * 60 + 300; // 300ms buffer extra
+    setTimeout(() => {
+      // solo reordenar los main works, no los extras (que están ocultos)
+      animateReorder(sortByType().filter(link => !link.classList.contains('extra-work')));
+    }, hideDuration);
+  }
 });
 </script>
 
