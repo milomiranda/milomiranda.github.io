@@ -39,11 +39,12 @@
   }
 }
 
-/* Aplicar animación a todos los elementos de texto */
-h1, h2, h3, h4, h5, h6, p, a, strong {
+/* Aplicar animación a todos los elementos de texto EXCEPTO los links .extra-work */
+h1, h2, h3, h4, h5, h6, p, a:not(.extra-work), strong {
   opacity: 0; /* ocultos al inicio */
   animation: fadeInUp 0.8s ease forwards;
 }
+
 
 /* Escalonar animaciones (para que no aparezcan todos a la vez) */
 h1:nth-of-type(1),
@@ -127,14 +128,27 @@ h1, h2, h3, h4, h5, h6, p, a, strong {
 }
 
   
-/* Default: hidden and invisible */
+/* Hidden by default but occupying 0 height (so transitions work) */
 .works a.extra-work {
-  display: none;
+  display: block;          /* keep in flow, but collapsed by max-height */
+  max-height: 0;           /* collapsed */
+  overflow: hidden;
   opacity: 0;
   transform: translateY(10px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  visibility: hidden;
+  transition: opacity 0.45s ease, transform 0.45s ease, max-height 0.45s ease;
   color: #999; /* grey color when revealed */
+  margin-bottom: 0.3rem;
 }
+
+/* Visible state applied by JS */
+.works a.extra-work.visible {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+  max-height: 40px; /* suficiente para una línea; aumenta si tus items tienen más de una línea */
+}
+
 
 /* When section has .show-all, reveal + fade in */
 .works.show-all a.extra-work {
@@ -296,6 +310,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const btn = document.getElementById('show-all-btn');
   const worksSection = document.querySelector('.works');
   const allLinks = Array.from(worksSection.querySelectorAll('a'));
+  const extraLinks = allLinks.filter(link => link.classList.contains('extra-work'));
 
   // Define default type order
   const typeOrder = ["tv", "brand", "fashion", "exhibition", "presentation", "musicp", "musicvp", "artwork"];
@@ -312,7 +327,7 @@ document.addEventListener('DOMContentLoaded', function () {
     return allLinks.sort((a, b) => parseInt(b.dataset.year) - parseInt(a.dataset.year));
   }
 
-  // Animate reordering using FLIP
+  // Animate reordering using FLIP (mantengo tu implementación)
   function animateReorder(sortedLinks) {
     const positions = new Map();
 
@@ -343,6 +358,25 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
+  // helper: reveal/hide extra links with stagger
+  function revealExtraWorks(show) {
+    if (show) {
+      extraLinks.forEach((el, i) => {
+        // stagger using setTimeout
+        setTimeout(() => {
+          el.classList.add('visible');
+        }, i * 80); // 80ms entre cada uno
+      });
+    } else {
+      // hide in reverse order for nicer effect
+      extraLinks.slice().reverse().forEach((el, i) => {
+        setTimeout(() => {
+          el.classList.remove('visible');
+        }, i * 60); // un poco más rápido al ocultar
+      });
+    }
+  }
+
   // Initial render: main works sorted by type
   animateReorder(sortByType());
 
@@ -353,14 +387,25 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (showingAll) {
       btn.textContent = 'Hide All Works';
+      // reorder to year view first, then reveal hidden works with stagger
       animateReorder(sortByYear());
+      // small delay to ensure DOM reordered before revealing
+      requestAnimationFrame(() => {
+        setTimeout(() => revealExtraWorks(true), 40);
+      });
     } else {
       btn.textContent = 'Show All Works';
-      animateReorder(sortByType());
+      // hide extras with stagger, then reorder after hide animation ends
+      revealExtraWorks(false);
+      const hideDuration = extraLinks.length * 60 + 200;
+      setTimeout(() => {
+        animateReorder(sortByType());
+      }, hideDuration);
     }
   });
 });
 </script>
+
 
  
 </body>
