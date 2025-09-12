@@ -27,6 +27,42 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap">
   <style>
 
+   /* Animación de fade-in + movimiento sutil */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Aplicar animación a todos los elementos de texto */
+h1, h2, h3, h4, h5, h6, p, a, strong {
+  opacity: 0; /* ocultos al inicio */
+  animation: fadeInUp 0.8s ease forwards;
+}
+
+/* Escalonar animaciones (para que no aparezcan todos a la vez) */
+h1:nth-of-type(1),
+h2:nth-of-type(1),
+p:nth-of-type(1),
+a:nth-of-type(1) { animation-delay: 0.2s; }
+
+h1:nth-of-type(2),
+h2:nth-of-type(2),
+p:nth-of-type(2),
+a:nth-of-type(2) { animation-delay: 0.4s; }
+
+h1:nth-of-type(3),
+h2:nth-of-type(3),
+p:nth-of-type(3),
+a:nth-of-type(3) { animation-delay: 0.6s; }
+
+/* y así sucesivamente */
+
     
    body {
   font-family: 'Roboto', sans-serif;
@@ -174,6 +210,9 @@ footer a:hover {
   </style>
 </head>
 <body>
+
+
+ 
   <main>
     <h1>Milo Miranda</h1>
   
