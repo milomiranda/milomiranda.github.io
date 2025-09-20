@@ -210,11 +210,9 @@ src="https://www.facebook.com/tr?id=1780642285838541&ev=PageView&noscript=1"
    
   <main>
 
-     <header id="sticky-header">
-  <h1 id="name-header">
-    <span id="burger-icon">&#9776;</span> Milo Miranda
-  </h1>
-  <div id="top-links-dropdown" class="hidden">
+  <header id="sticky-header">
+  <h1 id="name-header">Milo Miranda</h1>
+  <div id="top-links">
     <a href="mailto:milo.miranda.escamilla@gmail.com" target="_blank" rel="noopener noreferrer">Email</a>
     <a href="https://www.instagram.com/milomiranda/" target="_blank" rel="noopener noreferrer">Instagram</a>
     <a href="https://www.linkedin.com/in/milomiranda/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
@@ -226,66 +224,54 @@ src="https://www.facebook.com/tr?id=1780642285838541&ev=PageView&noscript=1"
 #sticky-header {
   position: sticky;
   top: 0;
-  background-color: white;
-  padding: 0.5rem 1rem; /* small padding */
-  z-index: 1000; /* stay on top of content */
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* subtle shadow */
+  background-color: rgba(255,255,255,1);
+  padding: 0.5rem 1rem;
+  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background-color 0.3s ease;
 }
 
-/* Name + burger */
+/* Slight transparency on scroll */
+#sticky-header.scrolled {
+  background-color: rgba(255,255,255,0.85);
+}
+
+/* Name styling */
 #name-header {
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  margin: 0; /* remove extra margin */
+  font-family: 'Roboto', sans-serif;
   font-weight: 300;
   font-size: 1rem;
-  user-select: none;
+  margin: 0;
 }
 
-#burger-icon {
-  font-size: 1.2rem; 
-  margin-right: 0.5rem;
-  transition: transform 0.3s ease;
-}
-
-#burger-icon.open {
-  transform: rotate(90deg);
-}
-
-/* Dropdown menu */
-#top-links-dropdown {
-  display: none;
-  margin-top: 0.3rem;
-}
-
-#top-links-dropdown a {
-  display: block;
+/* Top links */
+#top-links a {
   font-family: 'Roboto', sans-serif;
   font-weight: 400;
   font-size: 0.8rem;
   color: #222;
   text-decoration: none;
-  margin-bottom: 0.3rem;
+  margin-left: 1rem;
 }
 
-#top-links-dropdown a:hover {
+#top-links a:hover {
   text-decoration: underline;
-}
-
-#top-links-dropdown.show {
-  display: block;
 }
 </style>
 
 <script>
-const nameHeader = document.getElementById('name-header');
-const dropdown = document.getElementById('top-links-dropdown');
-const burger = document.getElementById('burger-icon');
+// Scroll event for transparency
+const header = document.getElementById('sticky-header');
 
-nameHeader.addEventListener('click', () => {
-  dropdown.classList.toggle('show');
-  burger.classList.toggle('open');
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 20) {
+    header.classList.add('scrolled');
+  } else {
+    header.classList.remove('scrolled');
+  }
 });
 </script>
 
