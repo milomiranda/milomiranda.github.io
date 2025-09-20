@@ -209,48 +209,31 @@ src="https://www.facebook.com/tr?id=1780642285838541&ev=PageView&noscript=1"
 /></noscript>
    
   <main>
-    <h1>Milo Miranda</h1>
-
-     <div class="top-links-container">
-  <button id="top-links-btn" aria-label="Toggle top links">
-    &#9776; <!-- hamburger icon -->
-  </button>
-  <div id="top-links-dropdown" class="hidden">
-    <a href="mailto:milo.miranda.escamilla@gmail.com" target="_blank" rel="noopener noreferrer">Email</a>
-    <a href="https://www.instagram.com/milomiranda/" target="_blank" rel="noopener noreferrer">Instagram</a>
-    <a href="https://www.linkedin.com/in/milomiranda/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-  </div>
+    <h1 id="name-header">Milo Miranda</h1>
+<div id="top-links-dropdown" class="hidden">
+  <a href="mailto:milo.miranda.escamilla@gmail.com" target="_blank" rel="noopener noreferrer">Email</a>
+  <a href="https://www.instagram.com/milomiranda/" target="_blank" rel="noopener noreferrer">Instagram</a>
+  <a href="https://www.linkedin.com/in/milomiranda/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
 </div>
 
 <style>
-.top-links-container {
-  position: relative;
-  display: inline-block;
-  margin-bottom: 1rem;
-}
-
-#top-links-btn {
-  font-size: 1.2rem;
-  background: none;
-  border: none;
+#name-header {
   cursor: pointer;
-  font-family: 'Roboto', sans-serif;
+  display: inline-block;
+  margin-bottom: 0.5rem;
+  font-weight: 300; /* matches your h1 style */
+  font-size: 1rem;  /* same as current */
 }
 
 #top-links-dropdown {
   display: none;
-  position: absolute;
-  left: 0;
-  top: 120%;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  padding: 0.5rem;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-  z-index: 100;
+  margin-top: 0.3rem; /* small spacing below name */
 }
 
 #top-links-dropdown a {
   display: block;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
   font-size: 0.8rem;
   color: #222;
   text-decoration: none;
@@ -261,17 +244,18 @@ src="https://www.facebook.com/tr?id=1780642285838541&ev=PageView&noscript=1"
   text-decoration: underline;
 }
 
-/* When visible */
+/* Show dropdown when active */
 #top-links-dropdown.show {
   display: block;
 }
 </style>
 
 <script>
-document.getElementById('top-links-btn').addEventListener('click', function() {
+document.getElementById('name-header').addEventListener('click', function() {
   document.getElementById('top-links-dropdown').classList.toggle('show');
 });
 </script>
+
 
     
     <div class="bio-text">
