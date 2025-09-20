@@ -229,48 +229,68 @@ footer a:hover {
   margin-right: auto; /* centers the image */
 }
 
-     /* ===== BANNER DE COOKIES MINIMAL ===== */
-   #cookie-banner {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background: rgba(255, 255, 255, 0.95);
-      color: #222;
-      font-size: 0.8rem;
-      font-family: 'Roboto', sans-serif;
-      padding: 0.8rem 1rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-top: 1px solid #ddd;
-      z-index: 2000;
-   }
+ /* ===== BANNER DE COOKIES COMPLETAMENTE RESPONSIVE ===== */
+#cookie-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  box-sizing: border-box; /* asegura que el padding no rompa el ancho */
+  background: rgba(255, 255, 255, 0.97);
+  color: #222;
+  font-size: 0.8rem;
+  font-family: 'Roboto', sans-serif;
+  padding: 1rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #ddd;
+  z-index: 2000;
+  flex-wrap: wrap; /* permite que los elementos se ajusten en móviles */
+}
 
-   #cookie-banner p {
-      margin: 0;
-   }
+#cookie-banner p {
+  margin: 0;
+  flex: 1 1 auto; /* texto ocupa espacio disponible */
+  min-width: 200px; /* evita que el texto se corte demasiado en móvil */
+}
 
-   #cookie-banner a {
-      color: #222;
-      text-decoration: underline;
-   }
+#cookie-banner a {
+  color: #222;
+  text-decoration: underline;
+}
 
-   #cookie-banner button {
-      background: none;
-      color: #222;
-      border: none;
-      font-size: 0.8rem;
-      font-family: 'Roboto', sans-serif;
-      cursor: pointer;
-      padding: 0;
-      margin-left: 1rem;
-      text-decoration: underline;
-   }
+#cookie-banner button {
+  background: none;
+  color: #222;
+  border: none;
+  font-size: 0.8rem;
+  font-family: 'Roboto', sans-serif;
+  cursor: pointer;
+  padding: 0.3rem 0.6rem;
+  margin-left: 1rem;
+  text-decoration: underline;
+  white-space: nowrap;
+}
 
-   #cookie-banner button:hover {
-      color: #999;
-   }
+#cookie-banner button:hover {
+  color: #999;
+}
+
+/* Ajustes para pantallas pequeñas */
+@media (max-width: 480px) {
+  #cookie-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    padding: 0.8rem 1rem;
+  }
+
+  #cookie-banner button {
+    margin: 0.5rem 0 0 0; /* separa el botón del texto */
+  }
+}
+
 
  
   </style>
