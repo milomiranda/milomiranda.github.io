@@ -64,10 +64,30 @@ fbq('track', 'PageView');
     padding: 0 0.5rem;
   }
 
+#main-header {
+  display: flex;
+  justify-content: space-between; /* nombre a la izquierda, links a la derecha */
+  align-items: center; /* verticalmente centrado */
+  flex-wrap: wrap; /* si la pantalla es muy pequeña, los links bajan */
+  margin-bottom: 1rem;
+}
+
+#top-links {
+  display: flex;
+  gap: 1rem; /* separa los links entre sí */
+}
+
+   @media (max-width: 480px) {
+  #top-links a {
+    font-size: 0.75rem; /* más pequeño en móviles */
+  }
+}
+
+   
   /* Header name styling on mobile */
   #name-header {
     font-size: 0.95rem; /* slightly smaller to match bio text */
-    margin-bottom: 0.5rem; /* smaller gap below header */
+    margin-bottom: 0.2rem; /* smaller gap below header */
     text-align: left; /* aligns with bio text */
   }
 
@@ -357,7 +377,7 @@ In his personal work, Milo experiments with merging traditional image-making and
      <img src="img/PortraitStepIntoUbyMickGori.jpg" alt="Milo Miranda portrait" class="profile-photo">
 
     <section class="works" id="selected-works">
-      <h1>Selected Works</h1>
+      <h1>Selected Projects</h1>
 
      
      
@@ -386,7 +406,7 @@ In his personal work, Milo experiments with merging traditional image-making and
    <a href="" class="extra-work" data-type="exhibition" data-year="2016"><span class="year">2016 - </span>Exhibition - "Tipping Point", Milo Miranda. Guangdong, CN</a>
 
       
-    <button id="show-all-btn">Show All Works</button>
+    <button id="show-all-btn">Show Extra Projects</button>
 
     </section>
 
@@ -464,10 +484,10 @@ document.addEventListener('DOMContentLoaded', function () {
     worksSection.classList.toggle('show-years');
 
     if (showingAll) {
-      btn.textContent = 'Hide All Works';
+      btn.textContent = 'Hide Extra Projects';
       animateReorder(sortByYear());
     } else {
-      btn.textContent = 'Show All Works';
+      btn.textContent = 'Show Extra Projects';
       animateReorder(sortByType());
     }
   });
