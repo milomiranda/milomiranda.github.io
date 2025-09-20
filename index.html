@@ -203,44 +203,46 @@ footer a:hover {
   
 </head>
 <body>
+<!-- Add this at the very top inside <body> -->
+<div id="sticky-header">
+  <button id="burger-btn" style="font-size:1.2rem; border:none; background:none; cursor:pointer; margin-right:0.5rem;">☰</button>
+  <span id="site-title" style="font-family:'Roboto', sans-serif; font-weight:300; font-size:1rem; cursor:pointer;">Milo Miranda</span>
+</div>
+
+<style>
+/* Optional: make burger & title aligned */
+#sticky-header {
+  display: flex;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  background-color: rgba(255,255,255,1);
+  padding: 0.5rem 1rem;
+  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  transition: background-color 0.3s ease;
+}
+
+#sticky-header.scrolled {
+  background-color: rgba(255,255,255,0.85);
+}
+
+#burger-btn {
+  font-size: 1.2rem;
+}
+
+#site-title {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 300;
+  font-size: 1rem;
+}
+</style>
 
    <noscript><img height="1" width="1" style="display:none"
 src="https://www.facebook.com/tr?id=1780642285838541&ev=PageView&noscript=1"
 /></noscript>
    
   <main>
-
-     <style>
-/* Sticky header with default white */
-#sticky-header {
-  position: sticky;
-  top: 0;
-  background-color: rgba(255,255,255,1); /* fully opaque by default */
-  padding: 0.5rem 1rem;
-  z-index: 1000;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-  transition: background-color 0.3s ease; /* smooth fade on scroll */
-}
-
-/* Slightly transparent when scrolled */
-#sticky-header.scrolled {
-  background-color: rgba(255,255,255,0.85);
-}
-</style>
-
-<script>
-// Scroll event for transparency
-const header = document.getElementById('sticky-header');
-
-window.addEventListener('scroll', () => {
-  if (window.scrollY > 20) { // start fading after 20px scroll
-    header.classList.add('scrolled');
-  } else {
-    header.classList.remove('scrolled');
-  }
-});
-</script>
-
 
     <div class="bio-text">
       <h1 style="text-align: center;">About</h1>
