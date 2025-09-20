@@ -203,40 +203,6 @@ footer a:hover {
   
 </head>
 <body>
-<!-- Add this at the very top inside <body> -->
-<div id="sticky-header">
-  <button id="burger-btn" style="font-size:1.2rem; border:none; background:none; cursor:pointer; margin-right:0.5rem;">☰</button>
-  <span id="site-title" style="font-family:'Roboto', sans-serif; font-weight:300; font-size:1rem; cursor:pointer;">Milo Miranda</span>
-</div>
-
-<style>
-/* Optional: make burger & title aligned */
-#sticky-header {
-  display: flex;
-  align-items: center;
-  position: sticky;
-  top: 0;
-  background-color: rgba(255,255,255,1);
-  padding: 0.5rem 1rem;
-  z-index: 1000;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-  transition: background-color 0.3s ease;
-}
-
-#sticky-header.scrolled {
-  background-color: rgba(255,255,255,0.85);
-}
-
-#burger-btn {
-  font-size: 1.2rem;
-}
-
-#site-title {
-  font-family: 'Roboto', sans-serif;
-  font-weight: 300;
-  font-size: 1rem;
-}
-</style>
 
    <noscript><img height="1" width="1" style="display:none"
 src="https://www.facebook.com/tr?id=1780642285838541&ev=PageView&noscript=1"
@@ -244,14 +210,93 @@ src="https://www.facebook.com/tr?id=1780642285838541&ev=PageView&noscript=1"
    
   <main>
 
+     <header id="sticky-header">
+  <h1 id="name-header">
+    <span id="burger-icon">&#9776;</span> Milo Miranda
+  </h1>
+  <div id="top-links-dropdown" class="hidden">
+    <a href="mailto:milo.miranda.escamilla@gmail.com" target="_blank" rel="noopener noreferrer">Email</a>
+    <a href="https://www.instagram.com/milomiranda/" target="_blank" rel="noopener noreferrer">Instagram</a>
+    <a href="https://www.linkedin.com/in/milomiranda/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+  </div>
+</header>
+
+<style>
+/* Sticky header */
+#sticky-header {
+  position: sticky;
+  top: 0;
+  background-color: white;
+  padding: 0.5rem 1rem; /* small padding */
+  z-index: 1000; /* stay on top of content */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* subtle shadow */
+}
+
+/* Name + burger */
+#name-header {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  margin: 0; /* remove extra margin */
+  font-weight: 300;
+  font-size: 1rem;
+  user-select: none;
+}
+
+#burger-icon {
+  font-size: 1.2rem; 
+  margin-right: 0.5rem;
+  transition: transform 0.3s ease;
+}
+
+#burger-icon.open {
+  transform: rotate(90deg);
+}
+
+/* Dropdown menu */
+#top-links-dropdown {
+  display: none;
+  margin-top: 0.3rem;
+}
+
+#top-links-dropdown a {
+  display: block;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 0.8rem;
+  color: #222;
+  text-decoration: none;
+  margin-bottom: 0.3rem;
+}
+
+#top-links-dropdown a:hover {
+  text-decoration: underline;
+}
+
+#top-links-dropdown.show {
+  display: block;
+}
+</style>
+
+<script>
+const nameHeader = document.getElementById('name-header');
+const dropdown = document.getElementById('top-links-dropdown');
+const burger = document.getElementById('burger-icon');
+
+nameHeader.addEventListener('click', () => {
+  dropdown.classList.toggle('show');
+  burger.classList.toggle('open');
+});
+</script>
+
+
     <div class="bio-text">
       <h1 style="text-align: center;">About</h1>
-      <p><strong>Milo Miranda (b. 1994, Mexico City)</strong> is an artist and content producer working at the intersection of photography, video, and digital manipulation. With a background in Digital Culture Studies and years of experience across Mexico and the Netherlands, his practice explores themes of identity, cultural heritage, and migration.
-      </p><p>
-      Combining experimental and performative approaches, Milo merges traditional image-making with emerging technologies, 3D scanning, CCTV, and virtual modeling, to create works that challenge perceptions of belonging and presence. His projects function as both artistic research and visual storytelling, producing immersive narratives that invite connection while questioning how cultural memory survives in a digitized world.</p>
-   
-    </div>
-<img src="img/PortraitStepIntoUbyMickGori.jpg" alt="Milo Miranda portrait" class="profile-photo">
+      <p><strong>Milo Miranda (b. 1994, Mexico City)</strong> is an artist and content producer working at the intersection of photography, video, and digital storytelling. With a background in Digital Culture Studies and experience across Mexico and the Netherlands, he collaborates with clients and brands to ground ideas and bring them to life, producing brand activations, marketing campaigns, television programs and series, music projects, photography, and film, as well as providing business consultancy to help shape creative strategies.
+<p>
+In his personal work, Milo experiments with merging traditional image-making and emerging technologies—such as 3D scanning, CCTV, and virtual modeling—to create immersive narratives that explore identity, cultural heritage, and migration. His projects function as both artistic research and visual storytelling, questioning how cultural memory survives in a digitized world.</div>
+</p>
+     <img src="img/PortraitStepIntoUbyMickGori.jpg" alt="Milo Miranda portrait" class="profile-photo">
 
     <section class="works" id="selected-works">
       <h1>Selected Works</h1>
