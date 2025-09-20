@@ -50,65 +50,41 @@ fbq('track', 'PageView');
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap">
   <style>
 
-/* General Layout */
+/* Header y main centrados */
 #main-header, main { 
   max-width: 800px; 
   margin: 0 auto; 
   padding: 0 1rem; 
   box-sizing: border-box; 
-  text-align: center; /* Center align the content */
+  text-align: center; /* centra nombre y links */
 }
 
-/* Mobile Adjustments */
-@media (max-width: 480px) {
-  #main-header {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 1rem;
-  }
-
-  #top-links {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-  }
-
-  #name-header {
-    font-size: 1.2rem;
-    margin-bottom: 0.5rem;
-  }
-
-  .bio-text h1 {
-    font-size: 1rem;
-    margin-bottom: 0.5rem;
-  }
-
-  .bio-text p {
-    font-size: 0.9rem;
-    line-height: 1.5;
-  }
-
-  .profile-photo {
-    width: 70%;
-    max-width: 200px;
-    margin: 1rem auto;
-  }
+/* Nombre del sitio */
+#name-header { 
+  font-family: 'Roboto', sans-serif; 
+  font-weight: 300; 
+  font-size: 1rem; 
+  margin: 0 auto 0.5rem; /* centrado y espacio debajo */
+  display: block;
 }
 
-/* Top Links */
-#top-links a {
-  font-family: 'Roboto', sans-serif;
-  font-weight: 400;
-  font-size: 0.9rem;
-  color: #222;
-  text-decoration: none;
-  margin: 0 0.5rem;
+/* Links debajo del nombre */
+#top-links {
+  margin-top: 0.5rem; /* espacio entre nombre y links */
 }
 
-#top-links a:hover {
-  text-decoration: underline;
+#top-links a { 
+  display: inline-block; 
+  margin: 0 0.5rem; 
+  font-family: 'Roboto', sans-serif; 
+  font-weight: 400; 
+  font-size: 0.8rem; 
+  color: #222; 
+  text-decoration: none; 
+}
+
+#top-links a:hover { 
+  text-decoration: underline; 
 }
 
 
