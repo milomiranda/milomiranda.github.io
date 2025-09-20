@@ -198,13 +198,18 @@ footer a:hover {
   margin-right: auto; /* centers the image */
 }
 
-/* Header */
-#sticky-header {
+#main-header {
+  display: flex;
+  justify-content: space-between; /* name left, links right */
+  align-items: center;            /* vertically center */
   background-color: white;
-  padding: 0.5rem 1rem; 
-  z-index: 1000;
+  padding: 0.5rem 1rem;
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  font-family: 'Roboto', sans-serif;
+  z-index: 1000;
 }
+
+
 
 /* Name styling */
 #name-header {
