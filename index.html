@@ -52,16 +52,13 @@ fbq('track', 'PageView');
 
      #main-header {
   display: flex;
-  justify-content: space-between; /* name left, links right */
-  align-items: center;            /* vertically center */
-  background-color: transparent;
-  padding: 0.5rem 1rem;
-  box-shadow: none;
-  font-family: 'Roboto', sans-serif;
-  z-index: 1000;
+  justify-content: space-between; /* mantiene links a la derecha */
+  align-items: center;
+  padding: 0 1rem; /* mismo que main */
+  max-width: 800px; 
+  margin: 0 auto;
+  box-sizing: border-box;
 }
-
-
 
 /* Name styling */
 #name-header {
@@ -202,9 +199,9 @@ h1, h2, h3, h4, h5, h6, p, a, strong {
 }
 
 footer {
-  text-align: center; /* Centers links and text */
-  margin-top: 2rem;
+  text-align: left; /* ahora coincide con el body */
 }
+
 
 footer a,
 footer p {
