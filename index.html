@@ -209,25 +209,53 @@ src="https://www.facebook.com/tr?id=1780642285838541&ev=PageView&noscript=1"
 /></noscript>
    
   <main>
-    <h1 id="name-header">Milo Miranda</h1>
-<div id="top-links-dropdown" class="hidden">
-  <a href="mailto:milo.miranda.escamilla@gmail.com" target="_blank" rel="noopener noreferrer">Email</a>
-  <a href="https://www.instagram.com/milomiranda/" target="_blank" rel="noopener noreferrer">Instagram</a>
-  <a href="https://www.linkedin.com/in/milomiranda/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-</div>
+    <header id="sticky-header">
+  <h1 id="name-header">
+    <span id="burger-icon">&#9776;</span> Milo Miranda
+  </h1>
+  <div id="top-links-dropdown" class="hidden">
+    <a href="mailto:milo.miranda.escamilla@gmail.com" target="_blank" rel="noopener noreferrer">Email</a>
+    <a href="https://www.instagram.com/milomiranda/" target="_blank" rel="noopener noreferrer">Instagram</a>
+    <a href="https://www.linkedin.com/in/milomiranda/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+  </div>
+</header>
 
 <style>
-#name-header {
-  cursor: pointer;
-  display: inline-block;
-  margin-bottom: 0.5rem;
-  font-weight: 300; /* matches your h1 style */
-  font-size: 1rem;  /* same as current */
+/* Sticky header */
+#sticky-header {
+  position: sticky;
+  top: 0;
+  background-color: white;
+  padding: 0.5rem 1rem; /* small padding */
+  z-index: 1000; /* stay on top of content */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* subtle shadow */
 }
 
+/* Name + burger */
+#name-header {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  margin: 0; /* remove extra margin */
+  font-weight: 300;
+  font-size: 1rem;
+  user-select: none;
+}
+
+#burger-icon {
+  font-size: 1.2rem; 
+  margin-right: 0.5rem;
+  transition: transform 0.3s ease;
+}
+
+#burger-icon.open {
+  transform: rotate(90deg);
+}
+
+/* Dropdown menu */
 #top-links-dropdown {
   display: none;
-  margin-top: 0.3rem; /* small spacing below name */
+  margin-top: 0.3rem;
 }
 
 #top-links-dropdown a {
@@ -244,18 +272,21 @@ src="https://www.facebook.com/tr?id=1780642285838541&ev=PageView&noscript=1"
   text-decoration: underline;
 }
 
-/* Show dropdown when active */
 #top-links-dropdown.show {
   display: block;
 }
 </style>
 
 <script>
-document.getElementById('name-header').addEventListener('click', function() {
-  document.getElementById('top-links-dropdown').classList.toggle('show');
+const nameHeader = document.getElementById('name-header');
+const dropdown = document.getElementById('top-links-dropdown');
+const burger = document.getElementById('burger-icon');
+
+nameHeader.addEventListener('click', () => {
+  dropdown.classList.toggle('show');
+  burger.classList.toggle('open');
 });
 </script>
-
 
     
     <div class="bio-text">
@@ -302,9 +333,6 @@ document.getElementById('name-header').addEventListener('click', function() {
     </section>
 
     <footer>
-      <a href="mailto:milo.miranda.escamilla@gmail.com" target="_blank" rel="noopener noreferrer">Email</a>
-      <a href="https://www.instagram.com/milomiranda/" target="_blank" rel="noopener noreferrer">Instagram</a>
-      <a href="https://www.linkedin.com/in/milomiranda/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
       <p>© 2025 Milo Miranda</p>
     </footer>
   </main>
