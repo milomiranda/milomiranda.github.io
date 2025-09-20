@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-   <!-- Meta Pixel Code -->
-<script>
+
+   <script>
 !function(f,b,e,v,n,t,s)
 {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
 n.callMethod.apply(n,arguments):n.queue.push(arguments)};
@@ -16,10 +16,6 @@ fbq('track', 'PageView');
 </script>
    
 
-   
-<!-- End Meta Pixel Code -->
-  
-<!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-JVRDWLMXL9"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -28,6 +24,7 @@ fbq('track', 'PageView');
 
   gtag('config', 'G-JVRDWLMXL9');
 </script>
+   
 <!-- Open Graph (WhatsApp, Facebook, LinkedIn) -->
 <meta property="og:title" content="Milo Miranda" />
 <meta property="og:description" content="Artist and content producer Emilio (Milo) Miranda explores identity, cultural heritage, and migration through photography, video, and digital manipulation." />
@@ -53,6 +50,40 @@ fbq('track', 'PageView');
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap">
   <style>
 
+     #main-header {
+  display: flex;
+  justify-content: space-between; /* name left, links right */
+  align-items: center;            /* vertically center */
+  background-color: transparent;
+  padding: 0.5rem 1rem;
+  box-shadow: none;
+  font-family: 'Roboto', sans-serif;
+  z-index: 1000;
+}
+
+
+
+/* Name styling */
+#name-header {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 300;
+  font-size: 1rem;
+  margin: 0;
+}
+
+/* Top links */
+#top-links a {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 0.8rem;
+  color: #222;
+  text-decoration: none;
+  margin-left: 1rem;
+}
+
+#top-links a:hover {
+  text-decoration: underline;
+}
     
    body {
   font-family: 'Roboto', sans-serif;
@@ -198,42 +229,50 @@ footer a:hover {
   margin-right: auto; /* centers the image */
 }
 
-#main-header {
-  display: flex;
-  justify-content: space-between; /* name left, links right */
-  align-items: center;            /* vertically center */
-  background-color: white;
-  padding: 0.5rem 1rem;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-  font-family: 'Roboto', sans-serif;
-  z-index: 1000;
-}
+     /* ===== BANNER DE COOKIES MINIMAL ===== */
+   #cookie-banner {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.95);
+      color: #222;
+      font-size: 0.8rem;
+      font-family: 'Roboto', sans-serif;
+      padding: 0.8rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid #ddd;
+      z-index: 2000;
+   }
 
+   #cookie-banner p {
+      margin: 0;
+   }
 
+   #cookie-banner a {
+      color: #222;
+      text-decoration: underline;
+   }
 
-/* Name styling */
-#name-header {
-  font-family: 'Roboto', sans-serif;
-  font-weight: 300;
-  font-size: 1rem;
-  margin: 0;
-}
+   #cookie-banner button {
+      background: none;
+      color: #222;
+      border: none;
+      font-size: 0.8rem;
+      font-family: 'Roboto', sans-serif;
+      cursor: pointer;
+      padding: 0;
+      margin-left: 1rem;
+      text-decoration: underline;
+   }
 
-/* Top links */
-#top-links a {
-  font-family: 'Roboto', sans-serif;
-  font-weight: 400;
-  font-size: 0.8rem;
-  color: #222;
-  text-decoration: none;
-  margin-left: 1rem;
-}
+   #cookie-banner button:hover {
+      color: #999;
+   }
 
-#top-links a:hover {
-  text-decoration: underline;
-}
-
-     
+ 
   </style>
   
 </head>
@@ -303,7 +342,16 @@ In his personal work, Milo experiments with merging traditional image-making and
     </footer>
   </main>
 
+
+    <!-- ===== BANNER DE COOKIES ===== -->
+  <div id="cookie-banner">
+    <p>This website uses cookies to ensure you get the best experience. <a href="/privacy-policy.html" target="_blank">Learn more</a></p>
+    <button id="accept-cookies">Accept</button>
+  </div>
+
+   
  <script>
+    
 document.addEventListener('DOMContentLoaded', function () {
   const btn = document.getElementById('show-all-btn');
   const worksSection = document.querySelector('.works');
@@ -372,9 +420,21 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 });
-</script>
 
- <script>
+// ===== COOKIE BANNER =====
+  const banner = document.getElementById("cookie-banner");
+  const cookieBtn = document.getElementById("accept-cookies");
+
+  if (localStorage.getItem("cookiesAccepted")) {
+    banner.style.display = "none";
+  }
+
+  cookieBtn.addEventListener("click", function () {
+    localStorage.setItem("cookiesAccepted", "true");
+    banner.style.display = "none";
+  });
+});
+    
 document.body.addEventListener('click', function(e) {
   const link = e.target.closest('a'); // detect the nearest <a> clicked
   if (!link) return; // exit if the click wasn't on a link
