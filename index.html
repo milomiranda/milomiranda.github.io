@@ -50,52 +50,91 @@ fbq('track', 'PageView');
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap">
   <style>
 
-     #main-header, main {
+     /* ===== CONTENEDOR PRINCIPAL ===== */
+#main-header, main {
+  max-width: 800px; /* ancho máximo para no estirarse demasiado */
+  margin: 0 auto;   /* centra horizontalmente */
+  padding: 0 1rem;  /* espacio lateral */
+  box-sizing: border-box; /* asegura que padding no rompa ancho */
+}
+
+/* ===== HEADER ===== */
+#main-header {
+  display: flex;                  /* activa flexbox para alinear elementos en fila */
+  justify-content: space-between; /* nombre a la izquierda, links a la derecha */
+  align-items: center;            /* centra verticalmente el contenido */
+  flex-wrap: nowrap;              /* en desktop, los links no bajan de línea */
+  margin-bottom: 1rem;            /* espacio debajo del header */
+}
+
+/* Links en header */
+#top-links {
+  display: flex;  /* pone los links en fila */
+  gap: 1rem;      /* espacio entre cada link */
+}
+
+/* Estilos generales de los links del header */
+#top-links a {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 0.8rem;
+  color: #222;
+  text-decoration: none; /* sin subrayado por defecto */
+  margin-left: 1rem;     /* espacio desde el primero (opcional) */
+}
+
+#top-links a:hover {
+  text-decoration: underline; /* subrayado al pasar el mouse */
+}
+
+/* Nombre del sitio */
+#name-header {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 300;
+  font-size: 1rem;
+  margin: 0;
+  /* en desktop ya queda a la izquierda gracias al flex */
+}
+
+/* ===== MAIN ===== */
+main {
   max-width: 800px;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 1rem; /* espacio lateral */
   box-sizing: border-box;
 }
 
+/* ===== ESTILOS MÓVIL (pantallas <=480px) ===== */
 @media (max-width: 480px) {
 
-  /* Reduce horizontal padding for main content */
+  /* reduce padding lateral en móviles */
   #main-header, main {
     padding: 0 0.5rem;
   }
 
-#main-header {
-  display: flex;
-  justify-content: space-between; /* nombre a la izquierda, links a la derecha */
-  align-items: center; /* verticalmente centrado */
-  flex-wrap: wrap; /* si la pantalla es muy pequeña, los links bajan */
-  margin-bottom: 1rem;
-}
-
-#top-links {
-  display: flex;
-  gap: 1rem; /* separa los links entre sí */
-}
-
-   @media (max-width: 480px) {
-  #top-links a {
-    font-size: 0.75rem; /* más pequeño en móviles */
+  /* Header en móvil: permite que los links bajen si no hay espacio */
+  #main-header {
+    flex-wrap: wrap; /* los elementos pueden romper línea */
+    margin-bottom: 1rem;
   }
-}
 
-   
-  /* Header name styling on mobile */
+  /* Ajuste de tamaño de links en móvil */
+  #top-links a {
+    font-size: 0.75rem; /* más pequeño en pantallas chicas */
+  }
+
+  /* Nombre del sitio en móvil */
   #name-header {
-    font-size: 0.95rem; /* slightly smaller to match bio text */
-    margin-bottom: 0.2rem; /* smaller gap below header */
-    text-align: left; /* aligns with bio text */
+    font-size: 0.95rem;  /* un poco más pequeño */
+    margin-bottom: 0.2rem; /* separa un poco del bloque de links si se rompen */
+    text-align: left;      /* alinea a la izquierda */
   }
 
   /* About section header */
   .bio-text h1 {
-    margin-bottom: 0.8rem; /* spacing consistent with header */
-    font-size: 0.95rem; /* same size as #name-header for alignment */
-    text-align: left;   /* aligns with header */
+    margin-bottom: 0.8rem;
+    font-size: 0.95rem;
+    text-align: left;
   }
 
   /* Bio paragraphs */
@@ -103,10 +142,10 @@ fbq('track', 'PageView');
     margin-bottom: 0.6rem;
     font-size: 0.8rem;
     line-height: 1.4;
-    text-align: left;  /* aligns text with header and About title */
+    text-align: left;
   }
 
-  /* Profile photo */
+  /* Profile photo en móvil */
   .profile-photo {
     width: 80%;
     max-width: 250px;
@@ -115,120 +154,70 @@ fbq('track', 'PageView');
   }
 }
 
+/* ===== RESTO DE ESTILOS YA EXISTENTES ===== */
 
-/* Name styling */
-#name-header {
-  font-family: 'Roboto', sans-serif;
-  font-weight: 300;
-  font-size: 1rem;
-  margin: 0;
+/* Profile photo en desktop */
+.profile-photo {
+  width: 300px;
+  height: auto;
+  display: block;
+  margin: 1.5rem auto;
 }
 
-/* Top links */
-#top-links a {
+/* Works section */
+.works {
+  margin-top: 0.8rem;
+  text-align: left;
+}
+
+/* Links works */
+.works a {
+  display: block;
+  position: relative;
+  transition: transform 3s cubic-bezier(0.4, 0, 0.2, 1);
   font-family: 'Roboto', sans-serif;
   font-weight: 400;
   font-size: 0.8rem;
   color: #222;
   text-decoration: none;
-  margin-left: 1rem;
-}
-
-#top-links a:hover {
-  text-decoration: underline;
-}
-    
-   body {
-  font-family: 'Roboto', sans-serif;
-  font-weight: 400; /* default weight */
-}
-
-h1, h2, h3, h4, h5, h6, p, a, strong {
-  font-family: 'Roboto', sans-serif;
-}
-
-    main {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 0 1rem; /* adds side spacing for all screens */
-}
-
-    h1 {
-      font-size: 1rem;
-      font-weight: 300;
-      margin-bottom: 2rem;
-      text-align: left; /* Or center if you prefer */
-    }
-
-    .bio-text p {
-  margin-bottom: 0.8rem; /* smaller spacing between paragraphs */
-  font-size: 0.8rem;
-  line-height: 1.4; /* keeps it readable */
-  text-align: justify;     /* justifies the text */
-}
-
-    .profile-photo {
-  width: 300px;       /* Small size */
-  height: auto;       /* Keep proportions */
- 
-  display: block;     
-  margin: 1.5rem auto; /* Space above and below, centered */
-}
-    
-    .works {
-      margin-top: 0.8rem;
-      text-align: left; /* ensures links are left-aligned */
-
-    }
-
-.works a {
-  display: block;
-  position: relative;           /* needed for FLIP animation */
-  transition: transform 3s cubic-bezier(0.4, 0, 0.2, 1); /* smooth movement */
-  font-family: 'Roboto', sans-serif; /* ensures font */
-  font-weight: 400;             /* keeps regular weight */
-  font-size: 0.8rem;
-  color: #222;                  /* your link color */
-  text-decoration: none;        /* remove underline by default */
   margin-bottom: 0.3rem;
   line-height: 1.2;
   text-align: left;
 }
 
 .works a:hover {
-  text-decoration: underline;  /* hover effect */
-  color: #222;                 /* keep color on hover */
+  text-decoration: underline;
+  color: #222;
 }
 
-  
-
-   /* Hide extra works by default */
+/* Ocultar trabajos extra por defecto */
 .works a.extra-work {
   display: none;
-  color: #999; /* grey color when revealed */
+  color: #999;
 }
 
-/* When section has .show-all, reveal hidden links */
+/* Mostrar trabajos extra cuando se activa */
 .works.show-all a.extra-work {
   display: block;
 }
 
-   /* Extra spacing below "Selected Works" */
+/* Espacio extra debajo del título Selected Works */
 .works h1 {
-  margin-bottom: 0.8rem; /* Adjust as needed */
+  margin-bottom: 0.8rem;
 }
 
-   /* Hide years by default */
+/* Ocultar años por defecto */
 .year {
   display: none;
 }
 
-/* When show-all is active, display years */
+/* Mostrar años cuando se activa show-all */
 .works.show-years .year {
   display: inline;
 }
 
- #show-all-btn {
+/* Botón show all */
+#show-all-btn {
   display: block;
   font-size: 0.8rem;
   font-family: 'Roboto', sans-serif;
@@ -238,26 +227,24 @@ h1, h2, h3, h4, h5, h6, p, a, strong {
   background: none;
   border: none;
   cursor: pointer;
-  padding: 0; /* No extra padding */
-  margin-top: 0.5rem; /* adds spacing above button */
-  margin-bottom: 1rem; /* Space between button and links */
-  text-align: left; /* Align like links */
+  padding: 0;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  text-align: left;
 }
 
-/* When active (toggle ON), change color to grey */
 .works.show-all #show-all-btn {
-  color: #999; /* Grey when extra works shown */
+  color: #999;
 }
 
-/* Hover effect like links */
 #show-all-btn:hover {
   text-decoration: underline;
 }
 
+/* Footer */
 footer {
-  text-align: center; /* ahora coincide con el body */
+  text-align: center;
 }
-
 
 footer a,
 footer p {
@@ -272,23 +259,23 @@ footer p {
 footer a:hover {
   text-decoration: underline;
 }
-    img.feature {
-  width: 50%;       /* smaller width */
-  max-width: 300px; /* limit maximum size */
-  height: auto;     /* keep proportions */
-  margin-bottom: 2rem;
+
+/* Feature image */
+img.feature {
+  width: 50%;
+  max-width: 300px;
+  height: auto;
   display: block;
-  margin-left: auto;
-  margin-right: auto; /* centers the image */
+  margin: 2rem auto 2rem auto; /* centrado */
 }
 
- /* ===== BANNER DE COOKIES COMPLETAMENTE RESPONSIVE ===== */
+/* Cookie banner */
 #cookie-banner {
   position: fixed;
   bottom: 0;
   left: 0;
   width: 100%;
-  box-sizing: border-box; /* asegura que el padding no rompa el ancho */
+  box-sizing: border-box;
   background: rgba(255, 255, 255, 0.97);
   color: #222;
   font-size: 0.8rem;
@@ -299,13 +286,13 @@ footer a:hover {
   align-items: center;
   border-top: 1px solid #ddd;
   z-index: 2000;
-  flex-wrap: wrap; /* permite que los elementos se ajusten en móviles */
+  flex-wrap: wrap;
 }
 
 #cookie-banner p {
   margin: 0;
-  flex: 1 1 auto; /* texto ocupa espacio disponible */
-  min-width: 200px; /* evita que el texto se corte demasiado en móvil */
+  flex: 1 1 auto;
+  min-width: 200px;
 }
 
 #cookie-banner a {
@@ -340,12 +327,11 @@ footer a:hover {
   }
 
   #cookie-banner button {
-    margin: 0.5rem 0 0 0; /* separa el botón del texto */
+    margin: 0.5rem 0 0 0;
   }
 }
 
-
- 
+    
   </style>
   
 </head>
