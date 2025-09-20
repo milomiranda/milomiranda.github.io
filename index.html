@@ -209,86 +209,39 @@ src="https://www.facebook.com/tr?id=1780642285838541&ev=PageView&noscript=1"
 /></noscript>
    
   <main>
-    <header id="sticky-header">
-  <h1 id="name-header">
-    <span id="burger-icon">&#9776;</span> Milo Miranda
-  </h1>
-  <div id="top-links-dropdown" class="hidden">
-    <a href="mailto:milo.miranda.escamilla@gmail.com" target="_blank" rel="noopener noreferrer">Email</a>
-    <a href="https://www.instagram.com/milomiranda/" target="_blank" rel="noopener noreferrer">Instagram</a>
-    <a href="https://www.linkedin.com/in/milomiranda/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-  </div>
-</header>
 
-<style>
-/* Sticky header */
+     <style>
+/* Sticky header with default white */
 #sticky-header {
   position: sticky;
   top: 0;
-  background-color: white;
-  padding: 0.5rem 1rem; /* small padding */
-  z-index: 1000; /* stay on top of content */
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* subtle shadow */
+  background-color: rgba(255,255,255,1); /* fully opaque by default */
+  padding: 0.5rem 1rem;
+  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  transition: background-color 0.3s ease; /* smooth fade on scroll */
 }
 
-/* Name + burger */
-#name-header {
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  margin: 0; /* remove extra margin */
-  font-weight: 300;
-  font-size: 1rem;
-  user-select: none;
-}
-
-#burger-icon {
-  font-size: 1.2rem; 
-  margin-right: 0.5rem;
-  transition: transform 0.3s ease;
-}
-
-#burger-icon.open {
-  transform: rotate(90deg);
-}
-
-/* Dropdown menu */
-#top-links-dropdown {
-  display: none;
-  margin-top: 0.3rem;
-}
-
-#top-links-dropdown a {
-  display: block;
-  font-family: 'Roboto', sans-serif;
-  font-weight: 400;
-  font-size: 0.8rem;
-  color: #222;
-  text-decoration: none;
-  margin-bottom: 0.3rem;
-}
-
-#top-links-dropdown a:hover {
-  text-decoration: underline;
-}
-
-#top-links-dropdown.show {
-  display: block;
+/* Slightly transparent when scrolled */
+#sticky-header.scrolled {
+  background-color: rgba(255,255,255,0.85);
 }
 </style>
 
 <script>
-const nameHeader = document.getElementById('name-header');
-const dropdown = document.getElementById('top-links-dropdown');
-const burger = document.getElementById('burger-icon');
+// Scroll event for transparency
+const header = document.getElementById('sticky-header');
 
-nameHeader.addEventListener('click', () => {
-  dropdown.classList.toggle('show');
-  burger.classList.toggle('open');
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 20) { // start fading after 20px scroll
+    header.classList.add('scrolled');
+  } else {
+    header.classList.remove('scrolled');
+  }
 });
 </script>
 
-    
+
     <div class="bio-text">
       <h1 style="text-align: center;">About</h1>
       <p><strong>Milo Miranda (b. 1994, Mexico City)</strong> is an artist and content producer working at the intersection of photography, video, and digital manipulation. With a background in Digital Culture Studies and years of experience across Mexico and the Netherlands, his practice explores themes of identity, cultural heritage, and migration.
