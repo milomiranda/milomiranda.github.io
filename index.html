@@ -50,85 +50,42 @@ fbq('track', 'PageView');
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap">
   <style>
 
+/* Header y main centrados */
 #main-header, main { 
   max-width: 800px; 
   margin: 0 auto; 
   padding: 0 1rem; 
   box-sizing: border-box; 
-} 
-
-@media (max-width: 480px) { 
-  /* Reduce horizontal padding for main content */ 
-  #main-header, main { 
-    padding: 0 0.5rem; 
-  } 
-
-  #main-header {
-  display: flex;
-  justify-content: space-between; /* nombre a la izquierda, links a la derecha */
-  align-items: center; /* verticalmente centrado */
-  flex-wrap: wrap; /* permite que los links bajen solo en pantallas muy pequeñas */
-  margin-bottom: 1rem;
+  text-align: center; /* centra nombre y links */
 }
 
-
-  #top-links { 
-    display: flex; 
-    gap: 1rem; /* espacio entre links */ 
-  } 
-
-  /* Header name styling on mobile */ 
-  #name-header { 
-    font-size: 0.95rem; /* slightly smaller to match bio text */ 
-    margin-bottom: 0.2rem; /* smaller gap below header */ 
-    text-align: left; /* aligns with bio text */ 
-  } 
-
-  /* About section header */ 
-  .bio-text h1 { 
-    margin-bottom: 0.8rem; /* spacing consistent with header */ 
-    font-size: 0.95rem; /* same size as #name-header for alignment */ 
-    text-align: left; /* aligns with header */ 
-  } 
-
-  /* Bio paragraphs */ 
-  .bio-text p { 
-    margin-bottom: 0.6rem; 
-    font-size: 0.8rem; 
-    line-height: 1.4; 
-    text-align: left; /* aligns text with header and About title */ 
-  } 
-
-  /* Profile photo */ 
-  .profile-photo { 
-    width: 80%; 
-    max-width: 250px; 
-    margin: 1rem auto; 
-    display: block; 
-  } 
-} 
-
-/* Name styling */ 
+/* Nombre del sitio */
 #name-header { 
   font-family: 'Roboto', sans-serif; 
   font-weight: 300; 
   font-size: 1rem; 
   margin: 0; 
-} 
+}
 
-/* Top links */ 
+/* Links debajo del nombre */
+#top-links {
+  margin-top: 0.5rem; /* espacio entre nombre y links */
+}
+
 #top-links a { 
+  display: inline-block; 
+  margin: 0 0.5rem; 
   font-family: 'Roboto', sans-serif; 
   font-weight: 400; 
   font-size: 0.8rem; 
   color: #222; 
   text-decoration: none; 
-  margin-left: 1rem; 
-} 
+}
 
 #top-links a:hover { 
   text-decoration: underline; 
-} 
+}
+
 
 body { 
   font-family: 'Roboto', sans-serif; 
