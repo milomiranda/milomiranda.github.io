@@ -2,238 +2,203 @@
 <html lang="en">
 <head>
 
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-JVRDWLMXL9"></script>
+<!-- Google Tag Manager -->
 <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-JVRDWLMXL9');
+(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-MTWG9BFT');
 </script>
+<!-- End Google Tag Manager -->
   
-<link rel="icon" type="image/jpeg" href="../img/Favicon2025.jpg">
+  <link rel="icon" type="image/jpeg" href="../img/Favicon2025.jpg">
 <link rel="apple-touch-icon" href="../img/Favicon2025.jpg">
 <link rel="icon" sizes="192x192" href="../img/Favicon2025.jpg">
-  
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title> _____ TITULO _ _ ____ | Milo Miranda</title>
+  <title> "TITULO" | Milo Miranda</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap">
   <style>
+
 .return-button {
   display: inline-block;
-  padding: 0.4rem 0.8rem;
-  margin-bottom: 1.5rem;
+  padding: 0.4rem 0.8rem; /* espacio dentro del botón */
+  margin-bottom: 1.5rem;   /* separación de lo que viene abajo */
   font-size: 0.8rem;
   text-decoration: none;
   color: #222;
-  border: 1px solid #222;
-  border-radius: 12px;
-  transition: background-color 0.2s, color 0.2s;
+  border: 1px solid #222; /* contorno delgado */
+  border-radius: 12px;    /* bordes redondeados */
+  transition: background-color 0.2s, color 0.2s; /* efecto hover suave */
 }
+
 .return-button:hover {
-  background-color: #222;
-  color: #fff;
+  background-color: #222; /* fondo oscuro al pasar mouse */
+  color: #fff;            /* texto blanco */
 }
-body {
-  font-family: 'Roboto', sans-serif;
-  font-weight: 400;
-  margin: 0;
-  padding: 0;
-}
-main {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 1rem;
-}
-h1 {
-  font-size: 1rem;
-  font-weight: 300;
-  margin-bottom: 1rem;
-}
-.description {
-  font-size: 0.8rem;
-  line-height: 1.4;
-  text-align: justify;
-  margin-bottom: 1.5rem;
-}
-/* Tabs */
-.tabs {
-  display: flex;
-  justify-content: center;
-  margin: 1.5rem 0;
-}
-.tab {
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-  border: 1px solid #222;
-  margin: 0 0.5rem;
-  border-radius: 8px;
-  font-size: 0.8rem;
-}
-.tab.active {
-  background: #222;
-  color: #fff;
-}
-/* Tab content */
-.tab-content {
-  display: none;
-}
-.tab-content.active {
-  display: block;
-}
-/* Carousel */
-.carousel {
-  position: relative;
+    
+    body {
+      font-family: 'Roboto', sans-serif;
+      font-weight: 400;
+      margin: 0;
+      padding: 0;
+    }
+
+    main {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 1rem;
+    }
+
+    h1 {
+      font-size: 1rem;
+      font-weight: 300;
+      margin-bottom: 1rem;
+    }
+
+    .back-button {
+      display: inline-block;
+      margin-bottom: 1rem;
+      font-size: 0.8rem;
+      text-decoration: none;
+      color: #222;
+      border: 1px solid #222;
+      padding: 0.3rem 0.6rem;
+      border-radius: 4px;
+    }
+
+    .back-button:hover {
+      background: #222;
+      color: #fff;
+    }
+
+    .description {
+      font-size: 0.8rem;
+      line-height: 1.4;
+      text-align: justify;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Carousel Container */
+    .carousel {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+    }
+
+    .carousel-track {
+      display: flex;
+      transition: transform 0.4s ease-in-out;
+    }
+
+    .carousel img {
   width: 100%;
-  overflow: hidden;
-  margin-bottom: 1.5rem;
-}
-.carousel-track {
-  display: flex;
-  transition: transform 0.4s ease-in-out;
-}
-.carousel img,
-.carousel video {
-  width: 100%;
-  height: auto;
+  height: auto;   /* mantiene la proporción */
   max-width: 800px;
   flex-shrink: 0;
-  object-fit: contain;
+  object-fit: contain; /* evita distorsión */
 }
-/* Buttons */
-.carousel-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 1.5rem;
-}
-.carousel-buttons button {
-  border: none;
-  background: #222;
-  color: white;
-  padding: 0.3rem 0.8rem;
-  cursor: pointer;
-  font-size: 0.8rem;
-  border-radius: 4px;
-}
-/* Center video */
-.video-container {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 1.5rem;
-}
-.video-container iframe {
-  width: 100%;
-  max-width: 560px;
-  height: 315px;
-  border: none;
-}
-/* Links */
-.links {
-  margin-top: 1.5rem;
-}
-.links a {
-  display: block;
-  font-size: 0.8rem;
-  color: #222;
-  text-decoration: none;
-  margin-bottom: 0.5rem;
-}
-.links a:hover {
-  text-decoration: underline;
-}
+
+    .carousel-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .carousel-buttons button {
+      border: none;
+      background: #222;
+      color: white;
+      padding: 0.3rem 0.8rem;
+      cursor: pointer;
+      font-size: 0.8rem;
+      border-radius: 4px;
+    }
+
+    .links {
+      margin-top: 1.5rem;
+    }
+
+    .links a {
+      display: block;
+      font-size: 0.8rem;
+      color: #222;
+      text-decoration: none;
+      margin-bottom: 0.5rem;
+    }
+
+    .links a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
+
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MTWG9BFT"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+  
   <main>
     <!-- Back to main -->
-    <a href="../index.html#selected-works" class="return-button">← Back to Selected Works</a>
+   <a href="../index.html#selected-works" class="return-button">← Back to Selected Works</a>
+
 
     <!-- Title -->
-    <h1>____ TITULO ____</h1>
+    <h1>"TITULO", PAIS </h1>
 
     <!-- Description -->
     <div class="description">
-      <p>__ DESCRIPTION__</p>
-    </div>
+      <p> DESCRIPCION </p>
+       </div>
 
-    <!-- Tabs -->
-    <div class="tabs">
-      <div class="tab active" onclick="openTab('voir1')">Voir 1</div>
-      <div class="tab" onclick="openTab('voir2')">Voir 2</div>
-    </div>
-
-    <!-- Voir 1 -->
-    <div id="voir1" class="tab-content active">
-      <div class="carousel">
-        <div class="carousel-track" id="track1">
-          <img src="../img/__.jpg" alt="Work Image 1">
-          <img src="../img/__.jpg" alt="Work Image 2">
-          <img src="../img/__.jpg" alt="Work Image 3">
-        </div>
-      </div>
-      <div class="carousel-buttons">
-        <button onclick="moveCarousel('track1', -1)">Prev</button>
-        <button onclick="moveCarousel('track1', 1)">Next</button>
-      </div>
-      <div class="video-container">
-        <iframe src="https://www.youtube.com/embed/VIDEO_ID_1" allowfullscreen></iframe>
-      </div>
-      <div class="links">
-        <h1>Relevant Links</h1>
-        <a href="" target="_blank" rel="noopener noreferrer">Link 1</a>
+    <!-- Carousel -->
+    <div class="carousel">
+      <div class="carousel-track">
+        <img src="../img/....jpg" alt="Work Image 1">
+        <img src="../img/....jpg" alt="Work Image 2">
+        <img src="../img/....jpg" alt="Work Image 3">
+        <img src="../img/....jpg" alt="Work Image 4">
+        <img src="../img/....jpg" alt="Work Image 5">
       </div>
     </div>
 
-    <!-- Voir 2 -->
-    <div id="voir2" class="tab-content">
-      <div class="carousel">
-        <div class="carousel-track" id="track2">
-          <img src="../img/__.jpg" alt="Work Image 4">
-          <img src="../img/__.jpg" alt="Work Image 5">
-        </div>
-      </div>
-      <div class="carousel-buttons">
-        <button onclick="moveCarousel('track2', -1)">Prev</button>
-        <button onclick="moveCarousel('track2', 1)">Next</button>
-      </div>
-      <div class="video-container">
-        <iframe src="https://www.youtube.com/embed/VIDEO_ID_2" allowfullscreen></iframe>
-      </div>
-      <div class="links">
-        <h1>Relevant Links</h1>
-        <a href="" target="_blank" rel="noopener noreferrer">Link A</a>
-        <a href="" target="_blank" rel="noopener noreferrer">Link B</a>
-      </div>
+    <!-- Buttons -->
+    <div class="carousel-buttons">
+      <button id="prev">Prev</button>
+      <button id="next">Next</button>
     </div>
+
+    <!-- Related Links -->
+   
   </main>
 
   <script>
-    // Tabs
-    function openTab(tabId) {
-      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      document.getElementById(tabId).classList.add('active');
-      event.target.classList.add('active');
-    }
+    const track = document.querySelector('.carousel-track');
+    const images = Array.from(track.children);
+    let index = 0;
 
-    // Carousel
-    let positions = { track1: 0, track2: 0 };
-    function moveCarousel(trackId, direction) {
-      const track = document.getElementById(trackId);
-      const items = track.children.length;
-      positions[trackId] = (positions[trackId] + direction + items) % items;
-      track.style.transform = `translateX(-${positions[trackId] * 100}%)`;
-    }
+    document.getElementById('next').addEventListener('click', () => {
+      index = (index + 1) % images.length;
+      track.style.transform = `translateX(-${index * 100}%)`;
+    });
 
-    // Disable right-click on images
-    document.addEventListener("contextmenu", function(e){
-      if(e.target.tagName === "IMG"){
-        e.preventDefault();
-      }
+    document.getElementById('prev').addEventListener('click', () => {
+      index = (index - 1 + images.length) % images.length;
+      track.style.transform = `translateX(-${index * 100}%)`;
     });
   </script>
+
+<script>
+  // Disable right-click on all images
+  document.addEventListener("contextmenu", function(e){
+    if(e.target.tagName === "IMG"){
+      e.preventDefault();
+    }
+  });
+</script>
+  
 </body>
 </html>
