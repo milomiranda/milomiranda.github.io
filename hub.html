@@ -3,210 +3,236 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Built by Milo Miranda</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap">
+  <title>Builts by Milo Miranda</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
-    #main-header, main {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 0 1rem;
-      box-sizing: border-box;
-      text-align: center;
-    }
-    #name-header {
-      text-align: center;
-      font-family: 'Roboto', sans-serif;
-      font-weight: 300;
-      font-size: 1rem;
-      margin: 0.5rem auto;
-      display: block;
-    }
-    body {
-      font-family: 'Roboto', sans-serif;
-      font-weight: 400;
-    }
-    h1, h2, h3, h4, h5, h6, p, a, strong {
-      font-family: 'Roboto', sans-serif;
-    }
-    main {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 0 1rem;
-    }
-    h1 {
-      font-size: 1.2rem;
-      font-weight: 300;
-      margin-bottom: 2rem;
-      text-align: center;
-    }
-    h2 {
-      font-size: 1rem;
-      font-weight: 300;
-      margin-bottom: 1rem;
-      text-align: left;
-    }
-    h3 {
-      font-size: 0.95rem;
-      font-weight: 400;
-      margin-bottom: 0.5rem;
-      margin-top: 1.2rem;
-      text-align: left;
-      color: #222;
-    }
-    .links-section {
-      margin-top: 0.8rem;
-      text-align: left;
-    }
-    .divider {
-      border: none;
-      border-top: 1px solid #eee;
-      margin: 1.2rem 0;
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --accent: #c5fe00;
+      --bg: #f6f6f4;
+      --card: #ffffff;
+      --border: #ebebeb;
+      --text: #111111;
+      --muted: #aaaaaa;
     }
 
-    /* Link row wrapper */
-    .link-item {
-      margin-bottom: 0.6rem;
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 44px 24px 64px;
     }
+
+    /* ── Header ── */
+    .header { text-align: center; margin-bottom: 36px; }
+    .badge {
+      display: inline-block;
+      background: var(--accent);
+      border-radius: 20px;
+      padding: 4px 16px;
+      margin-bottom: 16px;
+      font-size: 10px;
+      font-weight: 800;
+      color: #111;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+    h1 {
+      font-size: clamp(24px, 4vw, 40px);
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+    }
+    .subtitle { margin-top: 10px; color: var(--muted); font-size: 14px; }
+
+    /* ── Card ── */
+    .card {
+      background: var(--card);
+      border: 2px solid var(--border);
+      border-radius: 20px;
+      padding: 28px;
+      max-width: 680px;
+      margin: 0 auto 20px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .card-icon {
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      background: var(--accent);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    .card-title {
+      font-size: 14px; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+    }
+
+    /* ── Section label ── */
+    .section-label {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+      margin-top: 20px;
+    }
+    .section-label:first-of-type { margin-top: 0; }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 16px 0;
+    }
+
+    /* ── Link item ── */
+    .link-item { margin-bottom: 4px; }
 
     .link-row {
       display: flex;
-      align-items: baseline;
-      gap: 0.4rem;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 0;
     }
 
     .link-row a {
-      font-family: 'Roboto', sans-serif;
-      font-weight: 400;
-      font-size: 0.8rem;
-      color: #222;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--text);
       text-decoration: none;
       line-height: 1.2;
+      flex: 1;
+      transition: color 0.15s;
     }
-    .link-row a:hover {
-      text-decoration: underline;
-    }
+    .link-row a:hover { color: #555; text-decoration: underline; }
 
-    /* Arrow toggle button */
+    /* Arrow toggle */
     .toggle-desc {
-      background: none;
+      background: #f0f0f0;
       border: none;
-      padding: 0;
+      border-radius: 6px;
+      width: 22px; height: 22px;
+      display: flex; align-items: center; justify-content: center;
       cursor: pointer;
-      font-size: 0.65rem;
+      font-size: 9px;
       color: #999;
-      line-height: 1;
-      transition: transform 0.25s ease, color 0.2s ease;
-      transform-origin: center;
-      display: inline-block;
-      margin-left: 0.1rem;
-      vertical-align: middle;
+      flex-shrink: 0;
+      transition: background 0.15s, color 0.15s, transform 0.25s ease;
     }
-    .toggle-desc:hover {
-      color: #222;
-    }
+    .toggle-desc:hover { background: var(--accent); color: #111; }
     .toggle-desc.open {
       transform: rotate(180deg);
-      color: #222;
+      background: var(--accent);
+      color: #111;
     }
 
-    /* Description text */
+    /* Description */
     .link-desc {
       display: none;
-      font-size: 0.75rem;
-      font-weight: 300;
-      color: #888;
-      line-height: 1.4;
-      margin-top: 0.25rem;
-      padding-left: 0;
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--muted);
+      line-height: 1.5;
+      padding: 6px 0 10px 0;
+      border-bottom: 1px solid #f5f5f5;
     }
-    .link-desc.visible {
-      display: block;
-    }
+    .link-desc.visible { display: block; }
 
+    /* ── Footer ── */
     footer {
       text-align: center;
-      margin-top: 3rem;
+      margin-top: 40px;
+      font-size: 12px;
+      color: #bbb;
     }
-    footer p, footer h3 {
-      font-size: 0.8rem;
-      font-family: 'Roboto', sans-serif;
-      font-weight: 300;
-      color: #222;
-      margin: 0.5rem auto;
-      text-align: center;
-    }
+    footer strong { color: #888; }
   </style>
 </head>
 <body>
-  <main>
-    <header id="main-header">
-      <h1 id="name-header">Builts by Emilio (Milo) Miranda</h1>
-    </header>
 
-    <section class="links-section">
-      <h2>Apps</h2>
-      <hr class="divider">
+  <div class="header">
+    <div class="badge">🛠 Builts</div>
+    <h1>Builts by Emilio (Milo) Miranda</h1>
+    <p class="subtitle">A collection of apps and tools I've built.</p>
+  </div>
 
-      <h3>Personal</h3>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon">⚡</div>
+      <div class="card-title">Apps</div>
+    </div>
 
-      <div class="link-item">
-        <div class="link-row">
-          <a href="apps/budgettracker.html">Budget Tracker (Monthly)</a>
-          <button class="toggle-desc" aria-label="Show description">▼</button>
-        </div>
-        <p class="link-desc">A short description of what this personal app does and why it exists.</p>
+    <!-- Personal -->
+    <div class="section-label">Personal</div>
+
+    <div class="link-item">
+      <div class="link-row">
+        <a href="apps/budgettracker.html">Budget Tracker (Monthly)</a>
+        <button class="toggle-desc" aria-label="Show description">▼</button>
       </div>
+      <p class="link-desc">A short description of what this personal app does and why it exists.</p>
+    </div>
 
-      <div class="link-item">
-        <div class="link-row">
-          <a href="#">Personal App Example 2</a>
-          <button class="toggle-desc" aria-label="Show description">▼</button>
-        </div>
-        <p class="link-desc">A short description of what this personal app does and why it exists.</p>
+    <div class="link-item">
+      <div class="link-row">
+        <a href="#">Personal App Example 2</a>
+        <button class="toggle-desc" aria-label="Show description">▼</button>
       </div>
+      <p class="link-desc">A short description of what this personal app does and why it exists.</p>
+    </div>
 
-      <div class="link-item">
-        <div class="link-row">
-          <a href="#">Personal App Example 3</a>
-          <button class="toggle-desc" aria-label="Show description">▼</button>
-        </div>
-        <p class="link-desc">A short description of what this personal app does and why it exists.</p>
+    <div class="link-item">
+      <div class="link-row">
+        <a href="#">Personal App Example 3</a>
+        <button class="toggle-desc" aria-label="Show description">▼</button>
       </div>
+      <p class="link-desc">A short description of what this personal app does and why it exists.</p>
+    </div>
 
-      <hr class="divider">
+    <div class="divider"></div>
 
-      <h3>Work</h3>
+    <!-- Work -->
+    <div class="section-label">Work</div>
 
-      <div class="link-item">
-        <div class="link-row">
-          <a href="apps/ticketcalculator.html">Service Fee and Booking Calculator</a>
-          <button class="toggle-desc" aria-label="Show description">▼</button>
-        </div>
-        <p class="link-desc">A calculator tool to estimate service fees and booking costs for ticketing operations.</p>
+    <div class="link-item">
+      <div class="link-row">
+        <a href="apps/ticketcalculator.html">Service Fee and Booking Calculator</a>
+        <button class="toggle-desc" aria-label="Show description">▼</button>
       </div>
+      <p class="link-desc">A calculator tool to estimate service fees and booking costs for ticketing operations.</p>
+    </div>
 
-      <div class="link-item">
-        <div class="link-row">
-          <a href="#">Work App Example 2</a>
-          <button class="toggle-desc" aria-label="Show description">▼</button>
-        </div>
-        <p class="link-desc">A short description of what this work app does and why it exists.</p>
+    <div class="link-item">
+      <div class="link-row">
+        <a href="#">Work App Example 2</a>
+        <button class="toggle-desc" aria-label="Show description">▼</button>
       </div>
+      <p class="link-desc">A short description of what this work app does and why it exists.</p>
+    </div>
 
-      <div class="link-item">
-        <div class="link-row">
-          <a href="#">Work App Example 3</a>
-          <button class="toggle-desc" aria-label="Show description">▼</button>
-        </div>
-        <p class="link-desc">A short description of what this work app does and why it exists.</p>
+    <div class="link-item">
+      <div class="link-row">
+        <a href="#">Work App Example 3</a>
+        <button class="toggle-desc" aria-label="Show description">▼</button>
       </div>
+      <p class="link-desc">A short description of what this work app does and why it exists.</p>
+    </div>
 
-    </section>
+  </div>
 
-    <footer>
-      <p><h3>© 2025 Milo Miranda</h3></p>
-    </footer>
-  </main>
+  <footer>built by <strong>Emilio Miranda Escamilla</strong></footer>
 
   <script>
     document.querySelectorAll('.toggle-desc').forEach(btn => {
