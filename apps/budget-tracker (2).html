@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Budget Tracker</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --accent: #c5fe00;
+      --accent-dark: #8ab800;
+      --bg: #f6f6f4;
+      --card: #ffffff;
+      --border: #ebebeb;
+      --text: #111111;
+      --muted: #aaaaaa;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 44px 24px 64px;
+    }
+
+    .header { text-align: center; margin-bottom: 36px; }
+    .badge {
+      display: inline-block;
+      background: var(--accent);
+      border-radius: 20px;
+      padding: 4px 16px;
+      margin-bottom: 16px;
+      font-size: 10px;
+      font-weight: 800;
+      color: #111;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+    h1 {
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+    }
+    .subtitle { margin-top: 10px; color: var(--muted); font-size: 14px; }
+
+    .layout {
+      display: flex;
+      gap: 20px;
+      max-width: 900px;
+      margin: 0 auto;
+      flex-wrap: wrap;
+      align-items: flex-start;
+    }
+
+    .card {
+      background: var(--card);
+      border: 2px solid var(--border);
+      border-radius: 20px;
+      padding: 28px;
+      flex: 1;
+      min-width: 280px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+    }
+
+    .card-header { display: flex; align-items: center; gap: 10px; }
+    .card-icon {
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      background: var(--accent);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; flex-shrink: 0;
+    }
+    .card-title { font-size: 14px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+
+    .field { display: flex; flex-direction: column; gap: 7px; }
+    .field-label { font-size: 11px; color: #aaa; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 600; }
+
+    .input-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .input-wrap {
+      display: flex; align-items: center;
+      background: #fafafa;
+      border: 1.5px solid #ebebeb;
+      border-radius: 10px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .input-wrap:focus-within { border-color: #ccc; }
+    .prefix {
+      padding: 10px 12px;
+      font-size: 13px; color: #ccc;
+      border-right: 1.5px solid #ebebeb;
+      background: #f5f5f5;
+      user-select: none; white-space: nowrap;
+    }
+    input[type="text"], input[type="number"], select {
+      background: transparent; border: none; outline: none;
+      color: #222; font-size: 15px;
+      font-family: 'DM Sans', sans-serif;
+      padding: 10px 14px; width: 100%;
+      -moz-appearance: textfield;
+    }
+    input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+    select { cursor: pointer; appearance: none; }
+
+    .add-btn {
+      background: var(--accent);
+      border: none; border-radius: 10px;
+      padding: 11px 20px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px; font-weight: 800; color: #111;
+      cursor: pointer; white-space: nowrap;
+      transition: background 0.15s, box-shadow 0.15s;
+      flex-shrink: 0; align-self: flex-end;
+    }
+    .add-btn:hover { background: #b8ef00; box-shadow: 0 4px 16px rgba(197,254,0,0.4); }
+
+    /* Display currency row */
+    .display-row {
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    }
+    .display-label { font-size: 11px; color: #aaa; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 600; white-space: nowrap; }
+    .currency-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+    .currency-btn {
+      padding: 4px 12px; border-radius: 8px;
+      border: 2px solid #e5e5e5; background: #fff; color: #777;
+      font-size: 12px; font-weight: 600; font-family: 'DM Sans', sans-serif;
+      cursor: pointer; transition: all 0.15s;
+    }
+    .currency-btn:hover { border-color: var(--accent); }
+    .currency-btn.active { border-color: var(--accent); background: var(--accent); color: #111; font-weight: 800; }
+
+    /* Item tag */
+    .item-tag {
+      font-size: 10px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase;
+      background: #f0f0f0; color: #999; padding: 2px 7px; border-radius: 6px; white-space: nowrap;
+    }
+
+    .items-list { display: flex; flex-direction: column; gap: 0; }
+
+    .item-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 0; border-bottom: 1px solid #f0f0f0; gap: 8px;
+      animation: fadeIn 0.2s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .item-name { flex: 1; font-size: 14px; font-weight: 500; color: #222; }
+    .item-amount { font-size: 14px; font-weight: 600; font-family: monospace; color: #444; white-space: nowrap; }
+    .item-delete {
+      background: none; border: none; cursor: pointer;
+      font-size: 12px; color: #ddd; padding: 0 0 0 8px;
+      transition: color 0.15s; line-height: 1;
+    }
+    .item-delete:hover { color: #111; }
+
+    .empty-msg { font-size: 13px; color: #ccc; text-align: center; padding: 16px 0; }
+
+    .total-block {
+      border-top: 2px solid #111; padding-top: 14px;
+      display: flex; flex-direction: column; gap: 4px;
+    }
+    .total-top { display: flex; justify-content: space-between; align-items: baseline; }
+    .total-label { font-size: 12px; color: #999; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+    .total-value { font-size: 32px; font-weight: 800; font-family: monospace; letter-spacing: -0.02em; color: #111; }
+    .total-note { font-size: 11px; color: #ccc; text-align: right; }
+    .total-loading { font-size: 14px; color: #bbb; font-style: italic; }
+
+    /* Summary */
+    .summary-card {
+      background: var(--accent); border: 2px solid transparent; border-radius: 20px;
+      padding: 28px; width: 100%; max-width: 900px; margin: 0 auto;
+      display: none; flex-direction: column; gap: 14px;
+      box-shadow: 0 8px 40px rgba(197,254,0,0.45); animation: fadeUp 0.35s ease;
+    }
+    .summary-card.visible { display: flex; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .summary-header { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.14em; color: rgba(0,0,0,0.4); }
+    .summary-title { font-size: clamp(22px, 3vw, 32px); font-weight: 800; color: #111; letter-spacing: -0.03em; }
+    .summary-rows { display: flex; flex-wrap: wrap; gap: 12px 28px; margin-top: 4px; }
+    .summary-stat { display: flex; flex-direction: column; gap: 2px; }
+    .summary-stat-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(0,0,0,0.4); }
+    .summary-stat-value { font-size: 18px; font-weight: 800; font-family: monospace; color: #111; }
+
+    /* Budget card */
+    .budget-card {
+      background: var(--card); border: 2px solid var(--border); border-radius: 20px;
+      padding: 28px; max-width: 900px; margin: 20px auto 0;
+      display: flex; flex-direction: column; gap: 18px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+    }
+    .balance-row {
+      display: flex; justify-content: space-between; align-items: baseline;
+      padding: 14px 0 0; border-top: 2px solid #111;
+    }
+    .balance-label { font-size: 12px; color: #999; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+    .balance-value {
+      font-size: 32px; font-weight: 800; font-family: monospace;
+      letter-spacing: -0.02em; transition: color 0.3s;
+    }
+    .balance-value.positive { color: #111; }
+    .balance-value.negative { color: #e74c3c; }
+    .balance-value.zero     { color: #aaa; }
+    .breakdown-mini { display: flex; flex-direction: column; gap: 8px; }
+    .breakdown-mini-row { display: flex; justify-content: space-between; align-items: center; }
+    .breakdown-mini-label { font-size: 12px; color: #bbb; }
+    .breakdown-mini-value { font-size: 13px; font-family: monospace; color: #666; }
+
+    .clear-btn {
+      background: none; border: none; font-family: 'DM Sans', sans-serif;
+      font-size: 12px; color: #ccc; cursor: pointer; text-decoration: underline;
+      padding: 0; align-self: flex-start; transition: color 0.15s;
+    }
+    .clear-btn:hover { color: #666; }
+
+    footer { text-align: center; margin-top: 48px; font-size: 12px; color: #bbb; }
+    footer strong { color: #888; }
+
+    .spin { display: inline-block; animation: spin 0.8s linear infinite; }
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="badge">💰 Budget Tracker</div>
+    <h1>Track your expenses</h1>
+    <p class="subtitle">Mix currencies freely — totals convert automatically.</p>
+  </div>
+
+  <div class="layout">
+
+    <!-- Input card -->
+    <div class="card" style="max-width: 440px;">
+      <div class="card-header">
+        <div class="card-icon">＋</div>
+        <div class="card-title">Add Item</div>
+      </div>
+
+      <div class="input-row">
+        <div class="field" style="flex:2; min-width:130px;">
+          <label class="field-label">Item name</label>
+          <div class="input-wrap">
+            <input type="text" id="input-name" placeholder="e.g. Studio rent" />
+          </div>
+        </div>
+        <div class="field" style="min-width:100px; max-width:130px;">
+          <label class="field-label">Amount</label>
+          <div class="input-wrap">
+            <input type="number" id="input-amount" placeholder="0.00" min="0" step="0.01" />
+          </div>
+        </div>
+        <div class="field" style="min-width:80px; max-width:100px;">
+          <label class="field-label">Currency</label>
+          <div class="input-wrap">
+            <select id="input-currency">
+              <option value="EUR">EUR €</option>
+              <option value="USD">USD $</option>
+              <option value="MXN">MXN</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <button class="add-btn" onclick="addItem()">Add →</button>
+    </div>
+
+    <!-- List card -->
+    <div class="card" style="flex: 2; min-width: 280px;">
+      <div class="card-header">
+        <div class="card-icon">📋</div>
+        <div class="card-title">Items</div>
+      </div>
+
+      <div class="items-list" id="items-list">
+        <p class="empty-msg" id="empty-msg">No items yet. Add your first one →</p>
+      </div>
+
+      <div class="display-row" id="display-row" style="display:none;">
+        <span class="display-label">Show total in</span>
+        <div class="currency-btns">
+          <button class="currency-btn active" data-code="EUR" onclick="setDisplayCurrency(this)">EUR €</button>
+          <button class="currency-btn" data-code="USD" onclick="setDisplayCurrency(this)">USD $</button>
+          <button class="currency-btn" data-code="MXN" onclick="setDisplayCurrency(this)">MXN</button>
+        </div>
+      </div>
+
+      <div class="total-block" id="total-block" style="display:none;">
+        <div class="total-top">
+          <span class="total-label">Total</span>
+          <span class="total-value" id="total-value">—</span>
+        </div>
+        <div class="total-note" id="total-note"></div>
+      </div>
+
+      <button class="clear-btn" onclick="clearAll()" id="clear-btn" style="display:none;">Clear all items</button>
+    </div>
+
+  </div>
+
+  <!-- Summary -->
+  <div class="summary-card" id="summary-card" style="margin-top: 20px;">
+    <div class="summary-header">Summary</div>
+    <div class="summary-title" id="summary-title">—</div>
+    <div class="summary-rows">
+      <div class="summary-stat">
+        <span class="summary-stat-label">Items</span>
+        <span class="summary-stat-value" id="summary-count">0</span>
+      </div>
+      <div class="summary-stat">
+        <span class="summary-stat-label">Currencies used</span>
+        <span class="summary-stat-value" id="summary-currencies" style="font-size:14px;">—</span>
+      </div>
+      <div class="summary-stat">
+        <span class="summary-stat-label">Rates date</span>
+        <span class="summary-stat-value" id="summary-date" style="font-size:13px;">—</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Budget card -->
+  <div class="budget-card">
+    <div class="card-header">
+      <div class="card-icon">🎯</div>
+      <div class="card-title">Fixed Budget</div>
+    </div>
+    <div style="display:flex; gap:10px; align-items:flex-end; flex-wrap:wrap;">
+      <div class="field" style="flex:1; min-width:140px;">
+        <label class="field-label">Your budget amount</label>
+        <div class="input-wrap">
+          <input type="number" id="budget-input" placeholder="e.g. 2000.00" min="0" step="0.01" oninput="saveBudget()" />
+        </div>
+      </div>
+      <div class="field" style="min-width:90px; max-width:110px;">
+        <label class="field-label">Currency</label>
+        <div class="input-wrap">
+          <select id="budget-currency" onchange="saveBudget()">
+            <option value="EUR">EUR €</option>
+            <option value="USD">USD $</option>
+            <option value="MXN">MXN</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="breakdown-mini" id="budget-breakdown" style="display:none;">
+      <div class="breakdown-mini-row">
+        <span class="breakdown-mini-label">Fixed budget</span>
+        <span class="breakdown-mini-value" id="budget-fixed-val">—</span>
+      </div>
+      <div class="breakdown-mini-row">
+        <span class="breakdown-mini-label">Total spent</span>
+        <span class="breakdown-mini-value" id="budget-spent-val">—</span>
+      </div>
+    </div>
+    <div class="balance-row" id="balance-row" style="display:none;">
+      <span class="balance-label" id="balance-label">Remaining</span>
+      <span class="balance-value" id="balance-value">—</span>
+    </div>
+  </div>
+
+  <footer>built by <strong>Emilio Miranda Escamilla</strong></footer>
+
+  <script>
+    const STORAGE_KEY     = 'milo_budget_v3';
+    const DISPLAY_KEY     = 'milo_budget_display_v3';
+    const BUDGET_KEY      = 'milo_budget_fixed_v3';
+    const RATES_CACHE_KEY = 'milo_rates_cache_v3';
+
+    const SYMBOLS = { EUR: '€', USD: '$', MXN: 'MX$' };
+
+    let ratesCache = null;
+    let lastComputedTotal = null; // in displayCurrency
+
+    let displayCurrency = localStorage.getItem(DISPLAY_KEY) || 'EUR';
+
+    // Restore display currency buttons
+    document.querySelectorAll('.currency-btn[data-code]').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.code === displayCurrency);
+    });
+
+    // ── Helpers ──────────────────────────────────────────────
+
+    function getItems() {
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+      catch { return []; }
+    }
+    function saveItems(items) { localStorage.setItem(STORAGE_KEY, JSON.stringify(items)); }
+
+    function sym(code) { return SYMBOLS[code] || code; }
+
+    function fmt(n, code) {
+      return sym(code || displayCurrency) + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    // ── Rates ─────────────────────────────────────────────────
+
+    async function getRates() {
+      if (ratesCache) return ratesCache;
+      try {
+        const cached = JSON.parse(localStorage.getItem(RATES_CACHE_KEY));
+        if (cached && (Date.now() - cached.timestamp < 3600000)) {
+          ratesCache = cached;
+          return ratesCache;
+        }
+      } catch {}
+      const res = await fetch('https://api.frankfurter.app/latest?from=EUR&to=USD,MXN');
+      if (!res.ok) throw new Error('API error');
+      const data = await res.json();
+      ratesCache = {
+        rates: { EUR: 1, USD: data.rates.USD, MXN: data.rates.MXN },
+        date: data.date,
+        timestamp: Date.now()
+      };
+      localStorage.setItem(RATES_CACHE_KEY, JSON.stringify(ratesCache));
+      return ratesCache;
+    }
+
+    function convertAmount(amount, fromCode, toCode, rates) {
+      if (fromCode === toCode) return amount;
+      const inEUR = amount / rates.rates[fromCode];
+      return inEUR * rates.rates[toCode];
+    }
+
+    // ── Display currency ──────────────────────────────────────
+
+    function setDisplayCurrency(btn) {
+      displayCurrency = btn.dataset.code;
+      localStorage.setItem(DISPLAY_KEY, displayCurrency);
+      document.querySelectorAll('.currency-btn[data-code]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderTotal();
+    }
+
+    // ── Render items list ─────────────────────────────────────
+
+    function render() {
+      const items = getItems();
+      const list        = document.getElementById('items-list');
+      const emptyMsg    = document.getElementById('empty-msg');
+      const totalBlock  = document.getElementById('total-block');
+      const clearBtn    = document.getElementById('clear-btn');
+      const summaryCard = document.getElementById('summary-card');
+      const displayRow  = document.getElementById('display-row');
+
+      Array.from(list.querySelectorAll('.item-row')).forEach(el => el.remove());
+
+      if (items.length === 0) {
+        emptyMsg.style.display = 'block';
+        totalBlock.style.display = 'none';
+        clearBtn.style.display = 'none';
+        displayRow.style.display = 'none';
+        summaryCard.classList.remove('visible');
+        lastComputedTotal = null;
+        renderBudget();
+        return;
+      }
+
+      emptyMsg.style.display = 'none';
+      totalBlock.style.display = 'flex';
+      clearBtn.style.display = 'block';
+      displayRow.style.display = 'flex';
+
+      items.forEach((item, i) => {
+        const row = document.createElement('div');
+        row.className = 'item-row';
+        row.innerHTML = `
+          <span class="item-name">${escHtml(item.name)}</span>
+          <span class="item-tag">${item.currency}</span>
+          <span class="item-amount">${fmt(item.amount, item.currency)}</span>
+          <button class="item-delete" onclick="deleteItem(${i})" title="Remove">✕</button>
+        `;
+        list.appendChild(row);
+      });
+
+      const used = [...new Set(items.map(i => i.currency))];
+      document.getElementById('summary-count').textContent = items.length;
+      document.getElementById('summary-currencies').textContent = used.join(' · ');
+      summaryCard.classList.add('visible');
+
+      renderTotal();
+    }
+
+    // ── Compute & render total ────────────────────────────────
+
+    async function renderTotal() {
+      const items = getItems();
+      if (items.length === 0) return;
+
+      const totalEl = document.getElementById('total-value');
+      const noteEl  = document.getElementById('total-note');
+
+      const allSame = items.every(i => i.currency === displayCurrency);
+
+      if (allSame) {
+        const total = items.reduce((s, i) => s + i.amount, 0);
+        totalEl.textContent = fmt(total);
+        noteEl.textContent = '';
+        lastComputedTotal = total;
+        document.getElementById('summary-title').textContent = 'Total: ' + fmt(total);
+        renderBudget();
+        return;
+      }
+
+      // Mixed currencies — need API
+      totalEl.innerHTML = '<span class="total-loading"><span class="spin">⏳</span> Converting…</span>';
+      noteEl.textContent = '';
+
+      try {
+        const rates = await getRates();
+        let total = 0;
+        items.forEach(item => {
+          total += convertAmount(item.amount, item.currency, displayCurrency, rates);
+        });
+
+        totalEl.textContent = fmt(total);
+        noteEl.textContent = `Live rates via frankfurter.app · ${rates.date}`;
+        lastComputedTotal = total;
+        document.getElementById('summary-title').textContent = 'Total: ' + fmt(total);
+        document.getElementById('summary-date').textContent = rates.date;
+        renderBudget();
+
+      } catch (err) {
+        totalEl.textContent = '—';
+        noteEl.textContent = '⚠️ Could not fetch rates. Check your connection.';
+        lastComputedTotal = null;
+        renderBudget();
+      }
+    }
+
+    // ── Budget ────────────────────────────────────────────────
+
+    function saveBudget() {
+      const val = document.getElementById('budget-input').value;
+      const cur = document.getElementById('budget-currency').value;
+      localStorage.setItem(BUDGET_KEY, JSON.stringify({ amount: val, currency: cur }));
+      renderBudget();
+    }
+
+    async function renderBudget() {
+      const budgetVal      = parseFloat(document.getElementById('budget-input').value) || 0;
+      const budgetCurrency = document.getElementById('budget-currency').value;
+      const breakdown      = document.getElementById('budget-breakdown');
+      const balanceRow     = document.getElementById('balance-row');
+
+      if (!budgetVal || lastComputedTotal === null) {
+        breakdown.style.display = 'none';
+        balanceRow.style.display = 'none';
+        return;
+      }
+
+      // Convert budget to displayCurrency if needed
+      let budgetInDisplay = budgetVal;
+      if (budgetCurrency !== displayCurrency) {
+        try {
+          const rates = await getRates();
+          budgetInDisplay = convertAmount(budgetVal, budgetCurrency, displayCurrency, rates);
+        } catch {
+          breakdown.style.display = 'none';
+          balanceRow.style.display = 'none';
+          return;
+        }
+      }
+
+      breakdown.style.display = 'flex';
+      balanceRow.style.display = 'flex';
+
+      const remaining = budgetInDisplay - lastComputedTotal;
+      document.getElementById('budget-fixed-val').textContent = fmt(budgetInDisplay);
+      document.getElementById('budget-spent-val').textContent = fmt(lastComputedTotal);
+
+      const balEl   = document.getElementById('balance-value');
+      const labelEl = document.getElementById('balance-label');
+      balEl.textContent = fmt(Math.abs(remaining));
+      balEl.className = 'balance-value';
+      if (remaining > 0.005) {
+        balEl.classList.add('positive');
+        labelEl.textContent = 'Remaining';
+      } else if (remaining < -0.005) {
+        balEl.classList.add('negative');
+        labelEl.textContent = 'Over budget by';
+      } else {
+        balEl.classList.add('zero');
+        labelEl.textContent = 'Remaining';
+      }
+    }
+
+    // ── Actions ───────────────────────────────────────────────
+
+    function addItem() {
+      const nameEl     = document.getElementById('input-name');
+      const amountEl   = document.getElementById('input-amount');
+      const currencyEl = document.getElementById('input-currency');
+      const name     = nameEl.value.trim();
+      const amount   = parseFloat(amountEl.value);
+      const currency = currencyEl.value;
+
+      if (!name || isNaN(amount) || amount < 0) {
+        if (!name)         nameEl.closest('.input-wrap').style.borderColor = '#ffaaaa';
+        if (isNaN(amount)) amountEl.closest('.input-wrap').style.borderColor = '#ffaaaa';
+        setTimeout(() => {
+          document.querySelectorAll('.input-wrap').forEach(el => el.style.borderColor = '');
+        }, 800);
+        return;
+      }
+
+      const items = getItems();
+      items.push({ name, amount, currency });
+      saveItems(items);
+      render();
+
+      nameEl.value = '';
+      amountEl.value = '';
+      nameEl.focus();
+    }
+
+    function deleteItem(index) {
+      const items = getItems();
+      items.splice(index, 1);
+      saveItems(items);
+      render();
+    }
+
+    function clearAll() {
+      if (confirm('Clear all items?')) {
+        localStorage.removeItem(STORAGE_KEY);
+        render();
+      }
+    }
+
+    function escHtml(str) {
+      return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    document.addEventListener('keydown', e => { if (e.key === 'Enter') addItem(); });
+
+    // Restore budget from storage on load
+    const storedBudget = (() => {
+      try { return JSON.parse(localStorage.getItem(BUDGET_KEY)) || {}; } catch { return {}; }
+    })();
+    if (storedBudget.amount) {
+      document.getElementById('budget-input').value = storedBudget.amount;
+      document.getElementById('budget-currency').value = storedBudget.currency || 'EUR';
+    }
+
+    render();
+  </script>
+</body>
+</html>
