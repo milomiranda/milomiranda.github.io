@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Builts by Milo Miranda</title>
+  <link rel="icon" type="image/jpeg" href="https://milomiranda.github.io/img/Favicon2025.jpg">
+  <link rel="apple-touch-icon" href="https://milomiranda.github.io/img/Favicon2025.jpg">
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -25,6 +27,130 @@
       padding: 44px 24px 64px;
     }
 
+    /* ── Lock screen ── */
+    #lock-screen {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 24px;
+    }
+
+    .lock-card {
+      background: var(--card);
+      border: 2px solid var(--border);
+      border-radius: 20px;
+      padding: 40px 36px;
+      max-width: 380px;
+      width: 100%;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      animation: fadeUp 0.35s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      15%       { transform: translateX(-8px); }
+      30%       { transform: translateX(8px); }
+      45%       { transform: translateX(-6px); }
+      60%       { transform: translateX(6px); }
+      75%       { transform: translateX(-3px); }
+      90%       { transform: translateX(3px); }
+    }
+
+    .lock-card.shake { animation: shake 0.5s ease; }
+
+    .lock-icon {
+      width: 56px; height: 56px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px;
+    }
+
+    .lock-title {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      text-align: center;
+    }
+
+    .lock-subtitle {
+      font-size: 13px;
+      color: var(--muted);
+      text-align: center;
+      margin-top: -12px;
+    }
+
+    .lock-input-wrap {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      background: #fafafa;
+      border: 1.5px solid #ebebeb;
+      border-radius: 10px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .lock-input-wrap:focus-within { border-color: #bbb; }
+    .lock-input-wrap.error { border-color: #ffaaaa; }
+
+    .lock-input-wrap input {
+      flex: 1;
+      background: transparent; border: none; outline: none;
+      color: var(--text); font-size: 15px;
+      font-family: 'DM Sans', sans-serif;
+      padding: 12px 16px;
+    }
+
+    .toggle-pw {
+      background: none; border: none;
+      padding: 0 14px;
+      font-size: 16px; cursor: pointer;
+      color: var(--muted);
+      transition: color 0.15s;
+      flex-shrink: 0;
+    }
+    .toggle-pw:hover { color: var(--text); }
+
+    .lock-btn {
+      width: 100%;
+      background: var(--accent);
+      border: none; border-radius: 10px;
+      padding: 13px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px; font-weight: 800; color: #111;
+      cursor: pointer;
+      transition: background 0.15s, box-shadow 0.15s;
+    }
+    .lock-btn:hover { background: #b8ef00; box-shadow: 0 4px 14px rgba(197,254,0,0.4); }
+
+    .lock-error {
+      font-size: 12px;
+      color: #e74c3c;
+      font-weight: 600;
+      text-align: center;
+      opacity: 0;
+      transition: opacity 0.2s;
+      height: 16px;
+      margin-top: -10px;
+    }
+    .lock-error.show { opacity: 1; }
+
+    /* ── Main content (hidden until unlocked) ── */
+    #main-content { display: none; }
+
     /* ── Header ── */
     .header { text-align: center; margin-bottom: 36px; }
     .badge {
@@ -33,18 +159,13 @@
       border-radius: 20px;
       padding: 4px 16px;
       margin-bottom: 16px;
-      font-size: 10px;
-      font-weight: 800;
-      color: #111;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
+      font-size: 10px; font-weight: 800; color: #111;
+      letter-spacing: 0.14em; text-transform: uppercase;
     }
     h1 {
       font-size: clamp(24px, 4vw, 40px);
-      font-weight: 800;
-      color: var(--text);
-      letter-spacing: -0.04em;
-      line-height: 1.05;
+      font-weight: 800; color: var(--text);
+      letter-spacing: -0.04em; line-height: 1.05;
     }
     .subtitle { margin-top: 10px; color: var(--muted); font-size: 14px; }
 
@@ -60,181 +181,209 @@
     }
 
     .card-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      display: flex; align-items: center; gap: 10px;
       margin-bottom: 20px;
     }
     .card-icon {
       width: 30px; height: 30px;
-      border-radius: 50%;
-      background: var(--accent);
+      border-radius: 50%; background: var(--accent);
       display: flex; align-items: center; justify-content: center;
-      font-size: 14px;
-      flex-shrink: 0;
+      font-size: 14px; flex-shrink: 0;
     }
-    .card-title {
-      font-size: 14px; font-weight: 700;
-      letter-spacing: 0.06em; text-transform: uppercase;
-    }
+    .card-title { font-size: 14px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
 
-    /* ── Section label ── */
     .section-label {
-      font-size: 10px;
-      font-weight: 800;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
+      font-size: 10px; font-weight: 800;
+      letter-spacing: 0.14em; text-transform: uppercase;
       color: var(--muted);
-      margin-bottom: 10px;
-      margin-top: 20px;
+      margin-bottom: 10px; margin-top: 20px;
     }
     .section-label:first-of-type { margin-top: 0; }
 
-    .divider {
-      border: none;
-      border-top: 1px solid var(--border);
-      margin: 16px 0;
-    }
+    .divider { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 
-    /* ── Link item ── */
     .link-item { margin-bottom: 4px; }
-
-    .link-row {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 8px 0;
-    }
-
+    .link-row { display: flex; align-items: center; gap: 6px; padding: 8px 0; }
     .link-row a {
       font-family: 'DM Sans', sans-serif;
-      font-weight: 600;
-      font-size: 14px;
-      color: var(--text);
-      text-decoration: none;
-      line-height: 1.2;
-      flex: 1;
+      font-weight: 600; font-size: 14px; color: var(--text);
+      text-decoration: none; line-height: 1.2; flex: 1;
       transition: color 0.15s;
     }
     .link-row a:hover { color: #555; text-decoration: underline; }
 
-    /* Arrow toggle */
     .toggle-desc {
-      background: #f0f0f0;
-      border: none;
-      border-radius: 6px;
+      background: #f0f0f0; border: none; border-radius: 6px;
       width: 22px; height: 22px;
       display: flex; align-items: center; justify-content: center;
-      cursor: pointer;
-      font-size: 9px;
-      color: #999;
-      flex-shrink: 0;
+      cursor: pointer; font-size: 9px; color: #999; flex-shrink: 0;
       transition: background 0.15s, color 0.15s, transform 0.25s ease;
     }
     .toggle-desc:hover { background: var(--accent); color: #111; }
-    .toggle-desc.open {
-      transform: rotate(180deg);
-      background: var(--accent);
-      color: #111;
-    }
+    .toggle-desc.open { transform: rotate(180deg); background: var(--accent); color: #111; }
 
-    /* Description */
     .link-desc {
-      display: none;
-      font-size: 12px;
-      font-weight: 400;
-      color: var(--muted);
-      line-height: 1.5;
-      padding: 6px 0 10px 0;
-      border-bottom: 1px solid #f5f5f5;
+      display: none; font-size: 12px; font-weight: 400;
+      color: var(--muted); line-height: 1.5;
+      padding: 6px 0 10px 0; border-bottom: 1px solid #f5f5f5;
     }
     .link-desc.visible { display: block; }
 
-    /* ── Footer ── */
-    footer {
-      text-align: center;
-      margin-top: 40px;
-      font-size: 12px;
-      color: #bbb;
-    }
+    footer { text-align: center; margin-top: 40px; font-size: 12px; color: #bbb; }
     footer strong { color: #888; }
   </style>
 </head>
 <body>
 
-  <div class="header">
-    <div class="badge">🛠 Builts</div>
-    <h1>Builts by Emilio (Milo) Miranda</h1>
-    <p class="subtitle">A collection of apps and tools I've built.</p>
+  <!-- ── Lock screen ── -->
+  <div id="lock-screen">
+    <div class="lock-card" id="lock-card">
+      <div class="lock-icon">🔒</div>
+      <div>
+        <div class="lock-title">Builts by Milo</div>
+      </div>
+      <p class="lock-subtitle">Enter password to continue</p>
+
+      <div class="lock-input-wrap" id="lock-input-wrap">
+        <input type="password" id="pw-input" placeholder="Password" autocomplete="current-password"
+          onkeydown="if(event.key==='Enter') checkPassword()" />
+        <button class="toggle-pw" onclick="toggleVisibility()" id="toggle-pw-btn" title="Show/hide">👁</button>
+      </div>
+
+      <div class="lock-error" id="lock-error">Incorrect password — try again</div>
+
+      <button class="lock-btn" onclick="checkPassword()">Enter →</button>
+    </div>
   </div>
 
-  <div class="card">
-    <div class="card-header">
-      <div class="card-icon">⚡</div>
-      <div class="card-title">Apps</div>
+  <!-- ── Main content ── -->
+  <div id="main-content">
+
+    <div class="header">
+      <div class="badge">🛠 Builts</div>
+      <h1>Builts by Emilio (Milo) Miranda</h1>
+      <p class="subtitle">A collection of apps and tools I've built.</p>
     </div>
 
-    <!-- Personal -->
-    <div class="section-label">Personal</div>
-
-    <div class="link-item">
-      <div class="link-row">
-        <a href="apps/budgettracker.html">Budget Tracker (Monthly)</a>
-        <button class="toggle-desc" aria-label="Show description">▼</button>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">⚡</div>
+        <div class="card-title">Apps</div>
       </div>
-      <p class="link-desc">A flexible expense tracker that lets you log items in any currency and see the total converted in real time. Set a fixed budget and watch your remaining balance update automatically.</p>
-    </div>
 
-    <div class="link-item">
-      <div class="link-row">
-        <a href="apps/movebudget.html">Move Abroad Budget</a>
-        <button class="toggle-desc" aria-label="Show description">▼</button>
+      <!-- Personal -->
+      <div class="section-label">Personal</div>
+
+      <div class="link-item">
+        <div class="link-row">
+          <a href="apps/budgettracker.html">Budget Tracker (Monthly)</a>
+          <button class="toggle-desc" aria-label="Show description">▼</button>
+        </div>
+        <p class="link-desc">A flexible expense tracker that lets you log items in any currency and see the total converted in real time. Set a fixed budget and watch your remaining balance update automatically.</p>
       </div>
-      <p class="link-desc">A grouped expense planner for your move to the Netherlands. Create custom categories, add costs in EUR, USD, or MXN, check off what you've already bought, and track how much of your budget is left</p>
-    </div>
 
-    <div class="link-item">
-      <div class="link-row">
-        <a href="#">Personal App Example 3</a>
-        <button class="toggle-desc" aria-label="Show description">▼</button>
+      <div class="link-item">
+        <div class="link-row">
+          <a href="apps/movebudget.html">Move Abroad Budget</a>
+          <button class="toggle-desc" aria-label="Show description">▼</button>
+        </div>
+        <p class="link-desc">A grouped expense planner for your move to the Netherlands. Create custom categories, add costs in EUR, USD, or MXN, check off what you've already bought, and track how much of your budget is left.</p>
       </div>
-      <p class="link-desc">A short description of what this personal app does and why it exists.</p>
-    </div>
 
-    <div class="divider"></div>
-
-    <!-- Work -->
-    <div class="section-label">Work</div>
-
-    <div class="link-item">
-      <div class="link-row">
-        <a href="apps/ticketcalculator.html">Service Fee and Booking Calculator</a>
-        <button class="toggle-desc" aria-label="Show description">▼</button>
+      <div class="link-item">
+        <div class="link-row">
+          <a href="#">Personal App Example 3</a>
+          <button class="toggle-desc" aria-label="Show description">▼</button>
+        </div>
+        <p class="link-desc">A short description of what this personal app does and why it exists.</p>
       </div>
-      <p class="link-desc">A side-by-side calculator to compare ticket purchase options. Input ticket price, service fees, and payment method for two scenarios and instantly see which deal costs less.</p>
+
+      <div class="divider"></div>
+
+      <!-- Work -->
+      <div class="section-label">Work</div>
+
+      <div class="link-item">
+        <div class="link-row">
+          <a href="apps/ticketcalculator.html">Service Fee and Booking Calculator</a>
+          <button class="toggle-desc" aria-label="Show description">▼</button>
+        </div>
+        <p class="link-desc">A side-by-side calculator to compare ticket purchase options. Input ticket price, service fees, and payment method for two scenarios and instantly see which deal costs less.</p>
+      </div>
+
+      <div class="link-item">
+        <div class="link-row">
+          <a href="apps/system-aesthetic-prompt.html">System Aesthetic Prompt</a>
+          <button class="toggle-desc" aria-label="Show description">▼</button>
+        </div>
+        <p class="link-desc">A simple reference page that stores the design system used across all of Milo's built apps. Contains a copyable prompt to replicate the same visual language in any new Claude conversation.</p>
+      </div>
+
+      <div class="link-item">
+        <div class="link-row">
+          <a href="#">Work App Example 3</a>
+          <button class="toggle-desc" aria-label="Show description">▼</button>
+        </div>
+        <p class="link-desc">A short description of what this work app does and why it exists.</p>
+      </div>
+
     </div>
 
-    <div class="link-item">
-      <div class="link-row">
-        <a href="#">Work App Example 2</a>
-        <button class="toggle-desc" aria-label="Show description">▼</button>
-      </div>
-      <p class="link-desc">A short description of what this work app does and why it exists.</p>
-    </div>
-
-    <div class="link-item">
-      <div class="link-row">
-        <a href="#">Work App Example 3</a>
-        <button class="toggle-desc" aria-label="Show description">▼</button>
-      </div>
-      <p class="link-desc">A short description of what this work app does and why it exists.</p>
-    </div>
+    <footer>built by <strong>Emilio Miranda Escamilla</strong></footer>
 
   </div>
-
-  <footer>built by <strong>Emilio Miranda Escamilla</strong></footer>
 
   <script>
+    const CORRECT = '1Ikhouvancynthia';
+    const SESSION_KEY = 'milo_unlocked';
+
+    // If already unlocked this session, skip lock screen
+    if (localStorage.getItem(SESSION_KEY) === 'true') unlock(false);
+
+    function checkPassword() {
+      const val = document.getElementById('pw-input').value;
+      if (val === CORRECT) {
+        localStorage.setItem(SESSION_KEY, 'true');
+        unlock(true);
+      } else {
+        // Shake
+        const card = document.getElementById('lock-card');
+        const wrap = document.getElementById('lock-input-wrap');
+        const err  = document.getElementById('lock-error');
+        card.classList.remove('shake');
+        void card.offsetWidth; // reflow to restart animation
+        card.classList.add('shake');
+        wrap.classList.add('error');
+        err.classList.add('show');
+        document.getElementById('pw-input').value = '';
+        setTimeout(() => {
+          wrap.classList.remove('error');
+          card.classList.remove('shake');
+        }, 600);
+      }
+    }
+
+    function unlock(animate) {
+      const lock = document.getElementById('lock-screen');
+      const main = document.getElementById('main-content');
+      if (animate) {
+        lock.style.transition = 'opacity 0.3s ease';
+        lock.style.opacity = '0';
+        setTimeout(() => { lock.style.display = 'none'; main.style.display = 'block'; }, 300);
+      } else {
+        lock.style.display = 'none';
+        main.style.display = 'block';
+      }
+    }
+
+    function toggleVisibility() {
+      const input = document.getElementById('pw-input');
+      const btn   = document.getElementById('toggle-pw-btn');
+      if (input.type === 'password') { input.type = 'text'; btn.textContent = '🙈'; }
+      else                           { input.type = 'password'; btn.textContent = '👁'; }
+    }
+
+    // Descriptions toggle
     document.querySelectorAll('.toggle-desc').forEach(btn => {
       btn.addEventListener('click', () => {
         const desc = btn.closest('.link-item').querySelector('.link-desc');
