@@ -24,373 +24,491 @@
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
-      padding: 44px 24px 64px;
+      padding: 44px 24px 120px;
     }
 
     /* ── Lock screen ── */
     #lock-screen {
-      position: fixed;
-      inset: 0;
+      position: fixed; inset: 0;
       background: var(--bg);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      padding: 24px;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 1000; padding: 24px;
     }
-
     .lock-card {
-      background: var(--card);
-      border: 2px solid var(--border);
-      border-radius: 20px;
-      padding: 40px 36px;
-      max-width: 380px;
-      width: 100%;
+      background: var(--card); border: 2px solid var(--border);
+      border-radius: 20px; padding: 40px 36px;
+      max-width: 380px; width: 100%;
       box-shadow: 0 2px 16px rgba(0,0,0,0.05);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
+      display: flex; flex-direction: column; align-items: center; gap: 20px;
       animation: fadeUp 0.35s ease both;
     }
-
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(14px); }
       to   { opacity: 1; transform: translateY(0); }
     }
-
     @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      15%       { transform: translateX(-8px); }
-      30%       { transform: translateX(8px); }
-      45%       { transform: translateX(-6px); }
-      60%       { transform: translateX(6px); }
-      75%       { transform: translateX(-3px); }
-      90%       { transform: translateX(3px); }
+      0%,100% { transform: translateX(0); }
+      15% { transform: translateX(-8px); } 30% { transform: translateX(8px); }
+      45% { transform: translateX(-6px); } 60% { transform: translateX(6px); }
+      75% { transform: translateX(-3px); } 90% { transform: translateX(3px); }
     }
-
     .lock-card.shake { animation: shake 0.5s ease; }
-
     .lock-icon {
-      width: 56px; height: 56px;
-      background: var(--accent);
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 24px;
+      width: 56px; height: 56px; background: var(--accent);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px;
     }
-
-    .lock-title {
-      font-size: 20px;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      text-align: center;
-    }
-
-    .lock-subtitle {
-      font-size: 13px;
-      color: var(--muted);
-      text-align: center;
-      margin-top: -12px;
-    }
-
+    .lock-title { font-size: 20px; font-weight: 800; letter-spacing: -0.03em; text-align: center; }
+    .lock-subtitle { font-size: 13px; color: var(--muted); text-align: center; margin-top: -12px; }
     .lock-input-wrap {
-      width: 100%;
-      display: flex;
-      align-items: center;
-      background: #fafafa;
-      border: 1.5px solid #ebebeb;
-      border-radius: 10px;
-      overflow: hidden;
-      transition: border-color 0.2s;
+      width: 100%; display: flex; align-items: center;
+      background: #fafafa; border: 1.5px solid #ebebeb; border-radius: 10px;
+      overflow: hidden; transition: border-color 0.2s;
     }
     .lock-input-wrap:focus-within { border-color: #bbb; }
     .lock-input-wrap.error { border-color: #ffaaaa; }
-
     .lock-input-wrap input {
-      flex: 1;
-      background: transparent; border: none; outline: none;
-      color: var(--text); font-size: 15px;
-      font-family: 'DM Sans', sans-serif;
-      padding: 12px 16px;
+      flex: 1; background: transparent; border: none; outline: none;
+      color: var(--text); font-size: 15px; font-family: 'DM Sans', sans-serif; padding: 12px 16px;
     }
-
     .toggle-pw {
-      background: none; border: none;
-      padding: 0 14px;
-      font-size: 16px; cursor: pointer;
-      color: var(--muted);
-      transition: color 0.15s;
-      flex-shrink: 0;
+      background: none; border: none; padding: 0 14px; font-size: 16px;
+      cursor: pointer; color: var(--muted); transition: color 0.15s; flex-shrink: 0;
     }
     .toggle-pw:hover { color: var(--text); }
-
     .lock-btn {
-      width: 100%;
-      background: var(--accent);
-      border: none; border-radius: 10px;
-      padding: 13px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 14px; font-weight: 800; color: #111;
-      cursor: pointer;
-      transition: background 0.15s, box-shadow 0.15s;
+      width: 100%; background: var(--accent); border: none; border-radius: 10px;
+      padding: 13px; font-family: 'DM Sans', sans-serif; font-size: 14px;
+      font-weight: 800; color: #111; cursor: pointer; transition: background 0.15s, box-shadow 0.15s;
     }
     .lock-btn:hover { background: #b8ef00; box-shadow: 0 4px 14px rgba(197,254,0,0.4); }
-
     .lock-error {
-      font-size: 12px;
-      color: #e74c3c;
-      font-weight: 600;
-      text-align: center;
-      opacity: 0;
-      transition: opacity 0.2s;
-      height: 16px;
-      margin-top: -10px;
+      font-size: 12px; color: #e74c3c; font-weight: 600; text-align: center;
+      opacity: 0; transition: opacity 0.2s; height: 16px; margin-top: -10px;
     }
     .lock-error.show { opacity: 1; }
 
-    /* ── Main content (hidden until unlocked) ── */
-    #main-content { display: none; }
+    /* ── Main ── */
+    #main-content { display: none; max-width: 720px; margin: 0 auto; }
 
-    /* ── Header ── */
-    .header { text-align: center; margin-bottom: 36px; }
+    .header { text-align: center; margin-bottom: 48px; }
     .badge {
-      display: inline-block;
-      background: var(--accent);
-      border-radius: 20px;
-      padding: 4px 16px;
-      margin-bottom: 16px;
-      font-size: 10px; font-weight: 800; color: #111;
-      letter-spacing: 0.14em; text-transform: uppercase;
+      display: inline-block; background: var(--accent); border-radius: 20px;
+      padding: 4px 16px; margin-bottom: 16px;
+      font-size: 10px; font-weight: 800; color: #111; letter-spacing: 0.14em; text-transform: uppercase;
     }
-    h1 {
-      font-size: clamp(24px, 4vw, 40px);
-      font-weight: 800; color: var(--text);
-      letter-spacing: -0.04em; line-height: 1.05;
-    }
+    h1 { font-size: clamp(24px, 4vw, 40px); font-weight: 800; letter-spacing: -0.04em; line-height: 1.05; }
     .subtitle { margin-top: 10px; color: var(--muted); font-size: 14px; }
 
-    /* ── Card ── */
-    .card {
-      background: var(--card);
-      border: 2px solid var(--border);
-      border-radius: 20px;
-      padding: 28px;
-      max-width: 680px;
-      margin: 0 auto 20px;
-      box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+    .guest-banner {
+      display: none;
+      background: #fff8e1; border: 1.5px solid #ffe082;
+      border-radius: 12px; padding: 10px 16px;
+      font-size: 12px; font-weight: 600; color: #7a5f00;
+      margin-bottom: 32px; text-align: center;
     }
-
-    .card-header {
-      display: flex; align-items: center; gap: 10px;
-      margin-bottom: 20px;
-    }
-    .card-icon {
-      width: 30px; height: 30px;
-      border-radius: 50%; background: var(--accent);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 14px; flex-shrink: 0;
-    }
-    .card-title { font-size: 14px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
 
     .section-label {
-      font-size: 10px; font-weight: 800;
-      letter-spacing: 0.14em; text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 10px; margin-top: 20px;
+      font-size: 10px; font-weight: 800; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--muted);
+      margin-bottom: 16px; margin-top: 36px;
     }
     .section-label:first-of-type { margin-top: 0; }
 
-    .divider { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+    /* ── App Grid ── */
+    .app-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 16px; }
 
-    .link-item { margin-bottom: 4px; }
-    .link-row { display: flex; align-items: center; gap: 6px; padding: 8px 0; }
-    .link-row a {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 600; font-size: 14px; color: var(--text);
-      text-decoration: none; line-height: 1.2; flex: 1;
-      transition: color 0.15s;
+    .app-item {
+      position: relative; display: flex; flex-direction: column; align-items: center;
+      gap: 10px; cursor: pointer; text-decoration: none;
+      animation: fadeUp 0.4s ease both;
     }
-    .link-row a:hover { color: #555; text-decoration: underline; }
 
-    .toggle-desc {
-      background: #f0f0f0; border: none; border-radius: 6px;
-      width: 22px; height: 22px;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; font-size: 9px; color: #999; flex-shrink: 0;
-      transition: background 0.15s, color 0.15s, transform 0.25s ease;
+    /* Admin dim preview for hidden-guest apps */
+    .app-item.hidden-preview .app-icon {
+      opacity: 0.4; filter: grayscale(1);
+      border-style: dashed;
     }
-    .toggle-desc:hover { background: var(--accent); color: #111; }
-    .toggle-desc.open { transform: rotate(180deg); background: var(--accent); color: #111; }
+    .app-item.hidden-preview .app-name { opacity: 0.4; }
 
-    .link-desc {
-      display: none; font-size: 12px; font-weight: 400;
-      color: var(--muted); line-height: 1.5;
-      padding: 6px 0 10px 0; border-bottom: 1px solid #f5f5f5;
+    .app-icon {
+      width: 100%; aspect-ratio: 1;
+      background: var(--card); border: 2px solid var(--border);
+      border-radius: 22px; display: flex; align-items: center; justify-content: center;
+      font-size: 36px; box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+      transition: transform 0.2s cubic-bezier(.34,1.56,.64,1), box-shadow 0.2s, border-color 0.2s, opacity 0.2s, filter 0.2s;
     }
-    .link-desc.visible { display: block; }
+    .app-item:not(.hidden-preview):hover .app-icon {
+      transform: translateY(-6px) scale(1.04);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.10);
+      border-color: var(--accent);
+    }
+    .app-name { font-size: 11px; font-weight: 700; color: var(--text); text-align: center; line-height: 1.3; max-width: 100px; }
 
-    footer { text-align: center; margin-top: 40px; font-size: 12px; color: #bbb; }
+    .app-tooltip {
+      position: absolute; bottom: calc(100% + 14px); left: 50%;
+      transform: translateX(-50%) translateY(6px);
+      background: var(--text); color: #fff;
+      font-size: 12px; font-weight: 500; line-height: 1.5;
+      padding: 10px 14px; border-radius: 12px;
+      width: 200px; text-align: center;
+      pointer-events: none; opacity: 0;
+      transition: opacity 0.18s ease, transform 0.18s ease;
+      z-index: 50; white-space: normal;
+    }
+    .app-tooltip::after {
+      content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+      border: 6px solid transparent; border-top-color: var(--text);
+    }
+    .app-item:not(.hidden-preview):hover .app-tooltip { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    .app-item:nth-child(1) { animation-delay:.04s; } .app-item:nth-child(2) { animation-delay:.08s; }
+    .app-item:nth-child(3) { animation-delay:.12s; } .app-item:nth-child(4) { animation-delay:.16s; }
+    .app-item:nth-child(5) { animation-delay:.20s; } .app-item:nth-child(6) { animation-delay:.24s; }
+
+    /* ── ADMIN FLOATING TOOLBAR ── */
+    #admin-toolbar {
+      display: none;
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+      z-index: 200;
+      background: #111; color: #fff;
+      border-radius: 20px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.22);
+      min-width: 300px; max-width: 92vw;
+      animation: slideUp 0.4s cubic-bezier(.34,1.56,.64,1) both;
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateX(-50%) translateY(40px); }
+      to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+
+    .toolbar-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 18px 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      cursor: pointer; user-select: none;
+    }
+    .toolbar-header-left { display: flex; align-items: center; gap: 9px; }
+    .toolbar-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+    .toolbar-label-wrap { display: flex; flex-direction: column; gap: 1px; }
+    .toolbar-title { font-size: 12px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+    .toolbar-subtitle { font-size: 10px; color: rgba(255,255,255,0.4); font-weight: 500; }
+    .toolbar-chevron { font-size: 10px; color: rgba(255,255,255,0.35); transition: transform 0.25s ease; }
+    .toolbar-chevron.open { transform: rotate(180deg); }
+
+    .toolbar-body {
+      overflow: hidden; max-height: 0;
+      transition: max-height 0.3s ease;
+    }
+    .toolbar-body.open { max-height: 600px; }
+
+    .toolbar-section {
+      font-size: 9px; font-weight: 800; letter-spacing: 0.16em;
+      text-transform: uppercase; color: rgba(255,255,255,0.3);
+      padding: 12px 18px 5px;
+    }
+
+    .toolbar-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 7px 18px; gap: 12px;
+      border-radius: 10px; margin: 0 6px;
+      transition: background 0.15s;
+    }
+    .toolbar-row:hover { background: rgba(255,255,255,0.05); }
+    .toolbar-row-left { display: flex; align-items: center; gap: 9px; }
+    .toolbar-emoji { font-size: 17px; width: 24px; text-align: center; }
+    .toolbar-name { font-size: 13px; font-weight: 600; }
+
+    .toolbar-footer {
+      padding: 10px 18px 14px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      font-size: 10px; color: rgba(255,255,255,0.25);
+      text-align: center; font-weight: 500;
+    }
+
+    /* Toggle switch */
+    .switch { position: relative; width: 36px; height: 20px; flex-shrink: 0; }
+    .switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+    .slider {
+      position: absolute; inset: 0;
+      background: rgba(255,255,255,0.12); border-radius: 999px;
+      cursor: pointer; transition: background 0.2s;
+    }
+    .slider::before {
+      content: ''; position: absolute;
+      width: 14px; height: 14px; border-radius: 50%;
+      background: rgba(255,255,255,0.6); left: 3px; top: 3px;
+      transition: transform 0.2s cubic-bezier(.34,1.56,.64,1), background 0.2s;
+    }
+    .switch input:checked + .slider { background: var(--accent); }
+    .switch input:checked + .slider::before { transform: translateX(16px); background: #111; }
+
+    footer { text-align: center; margin-top: 56px; font-size: 12px; color: #bbb; }
     footer strong { color: #888; }
+
+    @media (max-width: 480px) {
+      .app-grid { grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 12px; }
+      .app-icon { font-size: 28px; border-radius: 18px; }
+      .app-tooltip { width: 160px; font-size: 11px; }
+    }
   </style>
 </head>
 <body>
 
-  <!-- ── Lock screen ── -->
-  <div id="lock-screen">
-    <div class="lock-card" id="lock-card">
-      <div class="lock-icon">🔒</div>
-      <div>
-        <div class="lock-title">Builts by Milo</div>
-      </div>
-      <p class="lock-subtitle">Enter password to continue</p>
-
-      <div class="lock-input-wrap" id="lock-input-wrap">
-        <input type="password" id="pw-input" placeholder="Password" autocomplete="current-password"
-          onkeydown="if(event.key==='Enter') checkPassword()" />
-        <button class="toggle-pw" onclick="toggleVisibility()" id="toggle-pw-btn" title="Show/hide">👁</button>
-      </div>
-
-      <div class="lock-error" id="lock-error">Incorrect password — try again</div>
-
-      <button class="lock-btn" onclick="checkPassword()">Enter →</button>
+<!-- Lock -->
+<div id="lock-screen">
+  <div class="lock-card" id="lock-card">
+    <div class="lock-icon">🔒</div>
+    <div class="lock-title">Builts by Milo</div>
+    <p class="lock-subtitle">Enter password to continue</p>
+    <div class="lock-input-wrap" id="lock-input-wrap">
+      <input type="password" id="pw-input" placeholder="Password" autocomplete="current-password"
+        onkeydown="if(event.key==='Enter') checkPassword()" />
+      <button class="toggle-pw" onclick="toggleVisibility()" id="toggle-pw-btn">👁</button>
     </div>
+    <div class="lock-error" id="lock-error">Incorrect password — try again</div>
+    <button class="lock-btn" onclick="checkPassword()">Enter →</button>
+  </div>
+</div>
+
+<!-- Main -->
+<div id="main-content">
+
+  <div class="header">
+    <div class="badge">🛠 Builts</div>
+    <h1>Builts by Emilio (Milo) Miranda</h1>
+    <p class="subtitle">A collection of apps and tools I've built.</p>
   </div>
 
-  <!-- ── Main content ── -->
-  <div id="main-content">
+  <div class="guest-banner" id="guest-banner">
+    👋 You're viewing as a guest — some apps may not be available.
+  </div>
 
-    <div class="header">
-      <div class="badge">🛠 Builts</div>
-      <h1>Builts by Emilio (Milo) Miranda</h1>
-      <p class="subtitle">A collection of apps and tools I've built.</p>
-    </div>
+  <div class="section-label">Personal</div>
+  <div class="app-grid">
 
-    <div class="card">
-      <div class="card-header">
-        <div class="card-icon">⚡</div>
-        <div class="card-title">Apps</div>
+    <a class="app-item" href="apps/budgettracker.html" data-id="budgettracker">
+      <div class="app-icon">💸
+        <div class="app-tooltip">A flexible expense tracker with multi-currency support and real-time budget balance.</div>
       </div>
+      <span class="app-name">Budget Tracker</span>
+    </a>
 
-      <!-- Personal -->
-      <div class="section-label">Personal</div>
-
-      <div class="link-item">
-        <div class="link-row">
-          <a href="apps/budgettracker.html">Budget Tracker (Monthly)</a>
-          <button class="toggle-desc" aria-label="Show description">▼</button>
-        </div>
-        <p class="link-desc">A flexible expense tracker that lets you log items in any currency and see the total converted in real time. Set a fixed budget and watch your remaining balance update automatically.</p>
+    <a class="app-item" href="apps/movebudget.html" data-id="movebudget">
+      <div class="app-icon">✈️
+        <div class="app-tooltip">A grouped expense planner for moving abroad — track costs in EUR, USD, or MXN.</div>
       </div>
+      <span class="app-name">Move Abroad Budget</span>
+    </a>
 
-      <div class="link-item">
-        <div class="link-row">
-          <a href="apps/movebudget.html">Move Abroad Budget</a>
-          <button class="toggle-desc" aria-label="Show description">▼</button>
-        </div>
-        <p class="link-desc">A grouped expense planner for your move to the Netherlands. Create custom categories, add costs in EUR, USD, or MXN, check off what you've already bought, and track how much of your budget is left.</p>
+    <a class="app-item" href="apps/system-aesthetic-prompt.html" data-id="systemprompt">
+      <div class="app-icon">🎨
+        <div class="app-tooltip">Design system reference with a copyable prompt to replicate Milo's visual language in any new build.</div>
       </div>
+      <span class="app-name">System Aesthetic Prompt</span>
+    </a>
 
-      <div class="link-item">
-        <div class="link-row">
-          <a href="#">Personal App Example 3</a>
-          <button class="toggle-desc" aria-label="Show description">▼</button>
-        </div>
-        <p class="link-desc">A short description of what this personal app does and why it exists.</p>
+    <a class="app-item" href="#" data-id="personal3">
+      <div class="app-icon">📦
+        <div class="app-tooltip">A short description of what this personal app does and why it exists.</div>
       </div>
-
-      <div class="divider"></div>
-
-      <!-- Work -->
-      <div class="section-label">Work</div>
-
-      <div class="link-item">
-        <div class="link-row">
-          <a href="apps/ticketcalculator.html">Service Fee and Booking Calculator</a>
-          <button class="toggle-desc" aria-label="Show description">▼</button>
-        </div>
-        <p class="link-desc">A side-by-side calculator to compare ticket purchase options. Input ticket price, service fees, and payment method for two scenarios and instantly see which deal costs less.</p>
-      </div>
-
-      <div class="link-item">
-        <div class="link-row">
-          <a href="apps/system-aesthetic-prompt.html">System Aesthetic Prompt</a>
-          <button class="toggle-desc" aria-label="Show description">▼</button>
-        </div>
-        <p class="link-desc">A simple reference page that stores the design system used across all of Milo's built apps. Contains a copyable prompt to replicate the same visual language in any new Claude conversation.</p>
-      </div>
-
-      <div class="link-item">
-        <div class="link-row">
-          <a href="#">Pipeline Tracker</a>
-          <button class="toggle-desc" aria-label="Show description">▼</button>
-        </div>
-        <p class="link-desc">Track sales leads from first contact to closed deal. Filter by status, export to Excel, no backend needed.</p>
-      </div>
-
-    </div>
-
-    <footer>built by <strong>Emilio Miranda Escamilla</strong></footer>
+      <span class="app-name">Personal App 3</span>
+    </a>
 
   </div>
 
-  <script>
-    const CORRECT = '1Ikhouvancynthia';
-    const SESSION_KEY = 'milo_unlocked';
+  <div class="section-label">Work</div>
+  <div class="app-grid">
 
-    // If already unlocked this session, skip lock screen
-    if (localStorage.getItem(SESSION_KEY) === 'true') unlock(false);
+    <a class="app-item" href="apps/ticketcalculator.html" data-id="ticketcalc">
+      <div class="app-icon">🎟️
+        <div class="app-tooltip">Compare ticket purchase options side by side — price, fees, payment method — to find the best deal.</div>
+      </div>
+      <span class="app-name">Fee & Booking Calculator</span>
+    </a>
 
-    function checkPassword() {
-      const val = document.getElementById('pw-input').value;
-      if (val === CORRECT) {
-        localStorage.setItem(SESSION_KEY, 'true');
-        unlock(true);
-      } else {
-        // Shake
-        const card = document.getElementById('lock-card');
-        const wrap = document.getElementById('lock-input-wrap');
-        const err  = document.getElementById('lock-error');
-        card.classList.remove('shake');
-        void card.offsetWidth; // reflow to restart animation
-        card.classList.add('shake');
-        wrap.classList.add('error');
-        err.classList.add('show');
-        document.getElementById('pw-input').value = '';
-        setTimeout(() => {
-          wrap.classList.remove('error');
-          card.classList.remove('shake');
-        }, 600);
-      }
+    <a class="app-item" href="apps/pipeline-tracker.html" data-id="pipeline">
+      <div class="app-icon">📊
+        <div class="app-tooltip">Track sales leads from first contact to closed deal. Filter by status, export to Excel, no backend needed.</div>
+      </div>
+      <span class="app-name">Pipeline Tracker</span>
+    </a>
+
+  </div>
+
+  <footer>built by <strong>Emilio Miranda Escamilla</strong></footer>
+</div>
+
+<!-- Admin floating toolbar -->
+<div id="admin-toolbar">
+  <div class="toolbar-header" onclick="toggleToolbar()">
+    <div class="toolbar-header-left">
+      <div class="toolbar-dot"></div>
+      <div class="toolbar-label-wrap">
+        <span class="toolbar-title">Guest Visibility</span>
+        <span class="toolbar-subtitle">Choose what guests can see</span>
+      </div>
+    </div>
+    <span class="toolbar-chevron" id="toolbar-chevron">▲</span>
+  </div>
+
+  <div class="toolbar-body" id="toolbar-body">
+
+    <div class="toolbar-section">Personal</div>
+    <div class="toolbar-row">
+      <div class="toolbar-row-left">
+        <span class="toolbar-emoji">💸</span>
+        <span class="toolbar-name">Budget Tracker</span>
+      </div>
+      <label class="switch"><input type="checkbox" data-target="budgettracker" onchange="updateVisibility(this)"><span class="slider"></span></label>
+    </div>
+    <div class="toolbar-row">
+      <div class="toolbar-row-left">
+        <span class="toolbar-emoji">✈️</span>
+        <span class="toolbar-name">Move Abroad Budget</span>
+      </div>
+      <label class="switch"><input type="checkbox" data-target="movebudget" onchange="updateVisibility(this)"><span class="slider"></span></label>
+    </div>
+    <div class="toolbar-row">
+      <div class="toolbar-row-left">
+        <span class="toolbar-emoji">🎨</span>
+        <span class="toolbar-name">System Aesthetic Prompt</span>
+      </div>
+      <label class="switch"><input type="checkbox" data-target="systemprompt" onchange="updateVisibility(this)"><span class="slider"></span></label>
+    </div>
+    <div class="toolbar-row">
+      <div class="toolbar-row-left">
+        <span class="toolbar-emoji">📦</span>
+        <span class="toolbar-name">Personal App 3</span>
+      </div>
+      <label class="switch"><input type="checkbox" data-target="personal3" onchange="updateVisibility(this)"><span class="slider"></span></label>
+    </div>
+
+    <div class="toolbar-section">Work</div>
+    <div class="toolbar-row">
+      <div class="toolbar-row-left">
+        <span class="toolbar-emoji">🎟️</span>
+        <span class="toolbar-name">Fee & Booking Calculator</span>
+      </div>
+      <label class="switch"><input type="checkbox" data-target="ticketcalc" onchange="updateVisibility(this)"><span class="slider"></span></label>
+    </div>
+    <div class="toolbar-row">
+      <div class="toolbar-row-left">
+        <span class="toolbar-emoji">📊</span>
+        <span class="toolbar-name">Pipeline Tracker</span>
+      </div>
+      <label class="switch"><input type="checkbox" data-target="pipeline" onchange="updateVisibility(this)"><span class="slider"></span></label>
+    </div>
+
+    <div class="toolbar-footer">Changes save instantly · guests see updates on next login</div>
+  </div>
+</div>
+
+<script>
+  const PW_ADMIN      = '1Ikhouvancynthia';
+  const PW_GUEST      = 'invitado';
+  const SESSION_KEY   = 'milo_session';      // 'admin' | 'guest'
+  const VISIBILITY_KEY = 'milo_guest_vis';
+
+  const ALL_IDS = ['budgettracker','movebudget','systemprompt','personal3','ticketcalc','pipeline'];
+  let currentRole = null;
+
+  // ── VISIBILITY STORE ─────────────────────────────────
+  function getVisibility() {
+    try {
+      const v = JSON.parse(localStorage.getItem(VISIBILITY_KEY));
+      if (v && typeof v === 'object') return v;
+    } catch {}
+    const def = {};
+    ALL_IDS.forEach(id => def[id] = true); // default: all visible
+    return def;
+  }
+  function saveVisibility(v) { localStorage.setItem(VISIBILITY_KEY, JSON.stringify(v)); }
+
+  // ── BOOT ─────────────────────────────────────────────
+  const stored = localStorage.getItem(SESSION_KEY);
+  if (stored === 'admin' || stored === 'guest') { currentRole = stored; unlock(false); }
+
+  // ── AUTH ─────────────────────────────────────────────
+  function checkPassword() {
+    const val = document.getElementById('pw-input').value;
+    if (val === PW_ADMIN)      { currentRole = 'admin'; localStorage.setItem(SESSION_KEY, 'admin'); unlock(true); }
+    else if (val === PW_GUEST) { currentRole = 'guest'; localStorage.setItem(SESSION_KEY, 'guest'); unlock(true); }
+    else {
+      const card = document.getElementById('lock-card');
+      const wrap = document.getElementById('lock-input-wrap');
+      const err  = document.getElementById('lock-error');
+      card.classList.remove('shake'); void card.offsetWidth; card.classList.add('shake');
+      wrap.classList.add('error'); err.classList.add('show');
+      document.getElementById('pw-input').value = '';
+      setTimeout(() => { wrap.classList.remove('error'); card.classList.remove('shake'); }, 600);
     }
+  }
 
-    function unlock(animate) {
-      const lock = document.getElementById('lock-screen');
-      const main = document.getElementById('main-content');
-      if (animate) {
-        lock.style.transition = 'opacity 0.3s ease';
-        lock.style.opacity = '0';
-        setTimeout(() => { lock.style.display = 'none'; main.style.display = 'block'; }, 300);
-      } else {
-        lock.style.display = 'none';
-        main.style.display = 'block';
-      }
-    }
+  function unlock(animate) {
+    const lock = document.getElementById('lock-screen');
+    const main = document.getElementById('main-content');
+    const go = () => { lock.style.display = 'none'; main.style.display = 'block'; applyRole(); };
+    if (animate) { lock.style.transition = 'opacity 0.3s ease'; lock.style.opacity = '0'; setTimeout(go, 300); }
+    else go();
+  }
 
-    function toggleVisibility() {
-      const input = document.getElementById('pw-input');
-      const btn   = document.getElementById('toggle-pw-btn');
-      if (input.type === 'password') { input.type = 'text'; btn.textContent = '🙈'; }
-      else                           { input.type = 'password'; btn.textContent = '👁'; }
-    }
+  // ── APPLY ROLE ────────────────────────────────────────
+  function applyRole() {
+    const vis = getVisibility();
 
-    // Descriptions toggle
-    document.querySelectorAll('.toggle-desc').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const desc = btn.closest('.link-item').querySelector('.link-desc');
-        const isOpen = desc.classList.toggle('visible');
-        btn.classList.toggle('open', isOpen);
+    if (currentRole === 'admin') {
+      // Show all, dim the ones guests can't see
+      document.querySelectorAll('.app-item').forEach(el => {
+        el.style.display = '';
+        const id = el.dataset.id;
+        el.classList.toggle('hidden-preview', vis[id] === false);
       });
-    });
-  </script>
+      // Sync toolbar switches
+      document.querySelectorAll('#admin-toolbar input[type=checkbox]').forEach(cb => {
+        cb.checked = vis[cb.dataset.target] !== false;
+      });
+      const tb = document.getElementById('admin-toolbar');
+      tb.style.display = 'block';
+      setTimeout(() => {
+        document.getElementById('toolbar-body').classList.add('open');
+        document.getElementById('toolbar-chevron').classList.add('open');
+      }, 450);
+
+    } else {
+      // Guest: hide disallowed apps entirely, show banner
+      document.getElementById('guest-banner').style.display = 'block';
+      document.querySelectorAll('.app-item').forEach(el => {
+        const id = el.dataset.id;
+        el.style.display = vis[id] === false ? 'none' : '';
+      });
+      document.getElementById('admin-toolbar').style.display = 'none';
+    }
+  }
+
+  // ── ADMIN TOGGLE ─────────────────────────────────────
+  function updateVisibility(cb) {
+    const id = cb.dataset.target;
+    const vis = getVisibility();
+    vis[id] = cb.checked;
+    saveVisibility(vis);
+    // Live preview in admin view
+    const el = document.querySelector(`.app-item[data-id="${id}"]`);
+    if (el) el.classList.toggle('hidden-preview', !cb.checked);
+  }
+
+  // ── TOOLBAR COLLAPSE ─────────────────────────────────
+  function toggleToolbar() {
+    document.getElementById('toolbar-body').classList.toggle('open');
+    document.getElementById('toolbar-chevron').classList.toggle('open');
+  }
+
+  // ── PW VISIBILITY ────────────────────────────────────
+  function toggleVisibility() {
+    const input = document.getElementById('pw-input');
+    const btn   = document.getElementById('toggle-pw-btn');
+    if (input.type === 'password') { input.type = 'text'; btn.textContent = '🙈'; }
+    else { input.type = 'password'; btn.textContent = '👁'; }
+  }
+</script>
 </body>
 </html>
