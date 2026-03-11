@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Budget Tracker — Milo Miranda</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      font-weight: 400;
+      margin: 0;
+      padding: 0;
+    }
+
+    main {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 1.5rem 1rem 4rem;
+    }
+
+    h1 {
+      font-size: 1.2rem;
+      font-weight: 300;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    h2 {
+      font-size: 1rem;
+      font-weight: 300;
+      margin-bottom: 1rem;
+      text-align: left;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid #eee;
+      margin: 1.2rem 0;
+    }
+
+    /* Input row */
+    .input-row {
+      display: flex;
+      gap: 0.6rem;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+
+    .input-row input {
+      font-family: 'Roboto', sans-serif;
+      font-weight: 400;
+      font-size: 0.8rem;
+      color: #222;
+      border: none;
+      border-bottom: 1px solid #ccc;
+      outline: none;
+      padding: 0.3rem 0;
+      background: transparent;
+      transition: border-color 0.2s;
+    }
+
+    .input-row input:focus {
+      border-bottom-color: #222;
+    }
+
+    .input-name { width: 55%; min-width: 140px; }
+    .input-amount { width: 25%; min-width: 90px; }
+
+    .input-row button {
+      font-family: 'Roboto', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 400;
+      color: #222;
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-decoration: underline;
+      padding: 0;
+    }
+    .input-row button:hover { color: #999; }
+
+    /* Items list */
+    .items-list {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 0.5rem;
+    }
+
+    .items-list li {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 0.8rem;
+      color: #222;
+      padding: 0.45rem 0;
+      border-bottom: 1px solid #f0f0f0;
+      gap: 0.5rem;
+    }
+
+    .item-name {
+      flex: 1;
+      font-weight: 400;
+    }
+
+    .item-amount {
+      font-weight: 300;
+      white-space: nowrap;
+    }
+
+    .item-delete {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 0.7rem;
+      color: #ccc;
+      padding: 0;
+      margin-left: 0.5rem;
+      transition: color 0.2s;
+      line-height: 1;
+    }
+    .item-delete:hover { color: #222; }
+
+    /* Total */
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 0.8rem;
+      font-weight: 400;
+      color: #222;
+      margin-top: 1rem;
+      padding-top: 0.6rem;
+      border-top: 1px solid #222;
+    }
+
+    .total-label { font-weight: 300; }
+    .total-amount { font-weight: 700; }
+
+    /* Empty state */
+    .empty-msg {
+      font-size: 0.75rem;
+      font-weight: 300;
+      color: #bbb;
+      margin: 0.5rem 0 1rem;
+    }
+
+    /* Clear all */
+    .clear-btn {
+      display: block;
+      font-family: 'Roboto', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 400;
+      color: #bbb;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      margin-top: 1.5rem;
+      text-decoration: underline;
+    }
+    .clear-btn:hover { color: #222; }
+
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+    }
+    footer p {
+      font-size: 0.8rem;
+      font-weight: 300;
+      color: #222;
+    }
+
+    /* Currency prefix */
+    .input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .currency-sign {
+      font-size: 0.8rem;
+      color: #999;
+      margin-right: 2px;
+      font-weight: 300;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Budget Tracker</h1>
+
+    <h2>Items</h2>
+    <hr class="divider">
+
+    <div class="input-row">
+      <input class="input-name" id="input-name" type="text" placeholder="Item name" />
+      <div class="input-wrap">
+        <span class="currency-sign">€</span>
+        <input class="input-amount" id="input-amount" type="number" placeholder="0.00" min="0" step="0.01" />
+      </div>
+      <button onclick="addItem()">Add</button>
+    </div>
+
+    <ul class="items-list" id="items-list"></ul>
+    <p class="empty-msg" id="empty-msg">No items yet.</p>
+
+    <div class="total-row" id="total-row" style="display:none;">
+      <span class="total-label">Total</span>
+      <span class="total-amount" id="total-amount">€0.00</span>
+    </div>
+
+    <button class="clear-btn" onclick="clearAll()">Clear all</button>
+
+    <footer>
+      <p>© 2025 Milo Miranda</p>
+    </footer>
+  </main>
+
+  <script>
+    const STORAGE_KEY = 'milo_budget_items';
+
+    function getItems() {
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+      catch { return []; }
+    }
+
+    function saveItems(items) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+    }
+
+    function render() {
+      const items = getItems();
+      const list = document.getElementById('items-list');
+      const emptyMsg = document.getElementById('empty-msg');
+      const totalRow = document.getElementById('total-row');
+      const totalAmount = document.getElementById('total-amount');
+
+      list.innerHTML = '';
+
+      if (items.length === 0) {
+        emptyMsg.style.display = 'block';
+        totalRow.style.display = 'none';
+        return;
+      }
+
+      emptyMsg.style.display = 'none';
+      totalRow.style.display = 'flex';
+
+      let total = 0;
+      items.forEach((item, i) => {
+        total += item.amount;
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <span class="item-name">${escHtml(item.name)}</span>
+          <span class="item-amount">€${item.amount.toFixed(2)}</span>
+          <button class="item-delete" onclick="deleteItem(${i})" title="Remove">✕</button>
+        `;
+        list.appendChild(li);
+      });
+
+      totalAmount.textContent = '€' + total.toFixed(2);
+    }
+
+    function addItem() {
+      const nameEl = document.getElementById('input-name');
+      const amountEl = document.getElementById('input-amount');
+      const name = nameEl.value.trim();
+      const amount = parseFloat(amountEl.value);
+
+      if (!name || isNaN(amount) || amount < 0) return;
+
+      const items = getItems();
+      items.push({ name, amount });
+      saveItems(items);
+      render();
+
+      nameEl.value = '';
+      amountEl.value = '';
+      nameEl.focus();
+    }
+
+    function deleteItem(index) {
+      const items = getItems();
+      items.splice(index, 1);
+      saveItems(items);
+      render();
+    }
+
+    function clearAll() {
+      if (confirm('Clear all items?')) {
+        localStorage.removeItem(STORAGE_KEY);
+        render();
+      }
+    }
+
+    function escHtml(str) {
+      return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    // Submit with Enter key
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Enter') addItem();
+    });
+
+    render();
+  </script>
+</body>
+</html>
