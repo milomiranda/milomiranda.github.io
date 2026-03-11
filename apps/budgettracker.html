@@ -237,9 +237,37 @@
 
     .spin { display: inline-block; animation: spin 0.8s linear infinite; }
     @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-  </style>
+
+/* ── Back button ── */
+    .back-btn {
+      position: fixed;
+      top: 24px; left: 24px;
+      display: flex; align-items: center; gap: 7px;
+      background: var(--card);
+      border: 2px solid var(--border);
+      border-radius: 30px;
+      padding: 8px 16px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px; font-weight: 700; color: var(--text);
+      text-decoration: none;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      transition: border-color 0.15s, box-shadow 0.15s;
+      z-index: 100;
+    }
+    .back-btn:hover {
+      border-color: var(--accent);
+      box-shadow: 0 4px 16px rgba(197,254,0,0.25);
+    }
+    </style>
 </head>
 <body>
+
+  <a class="back-btn" href="https://milomiranda.github.io/hub.html">
+    <span>←</span>
+    <span>Go back</span>
+  </a>
+    
+
 
   <div class="header">
     <div class="badge">💰 Budget Tracker</div>
