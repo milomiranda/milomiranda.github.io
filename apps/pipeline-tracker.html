@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pipeline Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f6f6f4;
+    --card: #ffffff;
+    --accent: #c5fe00;
+    --text: #111111;
+    --muted: #aaaaaa;
+    --border: #ebebeb;
+    --shadow: 0 2px 16px rgba(0,0,0,0.05);
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 0 0 60px;
+  }
+
+  /* HEADER */
+  header {
+    padding: 40px 32px 28px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .badge {
+    display: inline-block;
+    background: var(--accent);
+    color: var(--text);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 999px;
+    margin-bottom: 14px;
+  }
+  header h1 {
+    font-size: clamp(32px, 5vw, 52px);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1.05;
+    margin-bottom: 8px;
+  }
+  header p {
+    color: var(--muted);
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  /* SUMMARY BANNER */
+  .summary {
+    background: var(--accent);
+    border-radius: 20px;
+    padding: 24px 32px;
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+    align-items: center;
+    box-shadow: 0 0 0 4px rgba(197,254,0,0.15);
+    margin: 0 32px 28px;
+    max-width: calc(1200px - 64px);
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .summary-stat { display: flex; flex-direction: column; gap: 2px; }
+  .summary-stat span:first-child {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(0,0,0,0.5);
+  }
+  .summary-stat span:last-child {
+    font-family: monospace;
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--text);
+  }
+
+  /* MAIN LAYOUT */
+  .main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  /* CARD */
+  .card {
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 20px;
+    padding: 28px;
+    box-shadow: var(--shadow);
+    animation: fadeUp 0.4s ease both;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .card-icon {
+    width: 32px; height: 32px;
+    background: var(--accent);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+  .card-title {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* FILTERS */
+  .filters {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .filter-btn {
+    padding: 8px 16px;
+    border-radius: 10px;
+    border: 1.5px solid var(--border);
+    background: #fafafa;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    color: var(--text);
+  }
+  .filter-btn:hover { border-color: var(--text); }
+  .filter-btn.active {
+    background: var(--text);
+    color: #fff;
+    border-color: var(--text);
+  }
+  .filter-btn.accent.active {
+    background: var(--accent);
+    color: var(--text);
+    border-color: var(--accent);
+  }
+
+  /* SEARCH + ACTIONS */
+  .toolbar {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .search-wrap {
+    position: relative;
+    flex: 1;
+    min-width: 200px;
+  }
+  .search-wrap input {
+    width: 100%;
+    padding: 10px 14px 10px 40px;
+    background: #fafafa;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .search-wrap input:focus { border-color: var(--text); }
+  .search-icon {
+    position: absolute;
+    left: 13px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    font-size: 16px;
+    pointer-events: none;
+  }
+  .btn {
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+  }
+  .btn-primary { background: var(--accent); color: var(--text); }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(197,254,0,0.4); }
+  .btn-outline { background: #fff; color: var(--text); border: 1.5px solid var(--border); }
+  .btn-outline:hover { border-color: var(--text); }
+
+  /* TABLE */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th {
+    text-align: left;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 0 14px 12px;
+    border-bottom: 1.5px solid var(--border);
+    white-space: nowrap;
+  }
+  td {
+    padding: 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #fafafa; }
+
+  .company-name { font-weight: 700; }
+  .contact-email { color: var(--muted); font-size: 12px; }
+
+  /* STATUS PILL */
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .pill-yes { background: #edffd0; color: #3a7a00; }
+  .pill-no { background: #f5f5f5; color: #aaa; }
+  .pill-closed { background: var(--accent); color: var(--text); }
+
+  /* TOGGLE CHECK */
+  .toggle-check {
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    border: 1.5px solid var(--border);
+    background: #fafafa;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+  .toggle-check.checked {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--text);
+  }
+  .toggle-check.closed-check {
+    background: var(--text);
+    border-color: var(--text);
+    color: #fff;
+  }
+
+  /* ACTION BUTTONS */
+  .action-btns { display: flex; gap: 6px; }
+  .icon-btn {
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    border: 1.5px solid var(--border);
+    background: #fafafa;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    transition: all 0.15s;
+  }
+  .icon-btn:hover { border-color: var(--text); background: #fff; }
+  .icon-btn.del:hover { border-color: #ff4444; color: #ff4444; }
+
+  /* MODAL */
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.3);
+    backdrop-filter: blur(4px);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 20px;
+    padding: 32px;
+    width: 100%;
+    max-width: 560px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+    animation: fadeUp 0.25s ease;
+  }
+  .modal h2 { font-size: 22px; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 24px; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group.full { grid-column: 1 / -1; }
+  label {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  input[type="text"], input[type="email"], input[type="tel"], textarea {
+    padding: 10px 14px;
+    background: #fafafa;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.15s;
+    width: 100%;
+  }
+  input:focus, textarea:focus { border-color: var(--text); }
+  textarea { resize: vertical; min-height: 72px; }
+
+  .checkboxes-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+  }
+  .checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .checkbox-item input[type="checkbox"] { display: none; }
+  .checkbox-box {
+    width: 20px; height: 20px;
+    border-radius: 6px;
+    border: 1.5px solid var(--border);
+    background: #fafafa;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+  .checkbox-item input:checked + .checkbox-box {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .checkbox-label { font-size: 13px; font-weight: 600; }
+
+  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; }
+
+  /* EMPTY */
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--muted);
+  }
+  .empty-state .emoji { font-size: 48px; margin-bottom: 12px; }
+  .empty-state p { font-size: 15px; font-weight: 500; }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 40px 20px 20px;
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  @media (max-width: 600px) {
+    header, .main { padding: 24px 16px; }
+    .summary { margin: 0 16px 20px; padding: 20px; gap: 20px; }
+    .form-grid { grid-template-columns: 1fr; }
+    .form-group.full { grid-column: 1; }
+    header h1 { font-size: 28px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="badge">🚀 Sales Pipeline</div>
+  <h1>Pipeline Tracker</h1>
+  <p>Manage leads, track status, close deals — everywhere you go.</p>
+</header>
+
+<div class="summary">
+  <div class="summary-stat">
+    <span>Total Leads</span>
+    <span id="stat-total">0</span>
+  </div>
+  <div class="summary-stat">
+    <span>Contacted</span>
+    <span id="stat-contacted">0</span>
+  </div>
+  <div class="summary-stat">
+    <span>Demos</span>
+    <span id="stat-demo">0</span>
+  </div>
+  <div class="summary-stat">
+    <span>Proposals</span>
+    <span id="stat-proposal">0</span>
+  </div>
+  <div class="summary-stat">
+    <span>Closed 🎉</span>
+    <span id="stat-closed">0</span>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- Toolbar -->
+  <div class="card" style="animation-delay:0.05s">
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div class="toolbar">
+        <div class="search-wrap">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="search-input" placeholder="Search company, person, email…">
+        </div>
+        <button class="btn btn-outline" onclick="exportExcel()">📥 Export Excel</button>
+        <button class="btn btn-primary" onclick="openModal()">+ Add Lead</button>
+      </div>
+      <div class="filters" id="status-filters">
+        <span style="font-size:10px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-right:4px">Filter:</span>
+        <button class="filter-btn active" data-filter="all" onclick="setFilter('all', this)">All</button>
+        <button class="filter-btn" data-filter="not-contacted" onclick="setFilter('not-contacted', this)">Not Contacted</button>
+        <button class="filter-btn" data-filter="contacted" onclick="setFilter('contacted', this)">Contacted</button>
+        <button class="filter-btn" data-filter="demo" onclick="setFilter('demo', this)">Demo Scheduled</button>
+        <button class="filter-btn" data-filter="proposal" onclick="setFilter('proposal', this)">Proposal Sent</button>
+        <button class="filter-btn" data-filter="closed" onclick="setFilter('closed', this)">Closed ✓</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="card" style="animation-delay:0.1s;padding:20px 0;">
+    <div class="card-header" style="padding:0 28px;">
+      <div class="card-icon">📋</div>
+      <span class="card-title">Leads</span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Company / Org</th>
+            <th>Contact Person</th>
+            <th>Email / Phone</th>
+            <th>Contacted</th>
+            <th>Demo</th>
+            <th>Proposal</th>
+            <th>Closed</th>
+            <th>Notes</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="leads-tbody"></tbody>
+      </table>
+      <div id="empty-state" class="empty-state" style="display:none;">
+        <div class="emoji">🎯</div>
+        <p>No leads yet. Add your first one!</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ADD/EDIT MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h2 id="modal-title">Add New Lead</h2>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Company / Organiser</label>
+        <input type="text" id="f-company" placeholder="Acme Corp">
+      </div>
+      <div class="form-group">
+        <label>Contact Person</label>
+        <input type="text" id="f-person" placeholder="Jane Doe">
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="f-email" placeholder="jane@acme.com">
+      </div>
+      <div class="form-group">
+        <label>Phone</label>
+        <input type="tel" id="f-phone" placeholder="+31 6 000 000">
+      </div>
+      <div class="form-group full">
+        <label>Notes</label>
+        <textarea id="f-notes" placeholder="Any relevant context…"></textarea>
+      </div>
+      <div class="form-group full">
+        <label>Status</label>
+        <div class="checkboxes-row">
+          <label class="checkbox-item">
+            <input type="checkbox" id="f-contacted">
+            <span class="checkbox-box">✓</span>
+            <span class="checkbox-label">Contacted</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" id="f-demo">
+            <span class="checkbox-box">✓</span>
+            <span class="checkbox-label">Demo Scheduled</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" id="f-proposal">
+            <span class="checkbox-box">✓</span>
+            <span class="checkbox-label">Proposal Sent</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" id="f-closed">
+            <span class="checkbox-box">✓</span>
+            <span class="checkbox-label">Closed Deal 🎉</span>
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveLead()">Save Lead</button>
+    </div>
+  </div>
+</div>
+
+<footer>Built by Emilio Miranda Escamilla</footer>
+
+<!-- SheetJS for Excel export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<script>
+// ── STATE ──────────────────────────────────────────────
+const STORAGE_KEY = 'pipeline_leads_v2';
+let leads = [];
+let currentFilter = 'all';
+let searchQuery = '';
+let editingId = null;
+
+// ── PERSIST (localStorage — works cross-device via same browser profile,
+//    or use the export/import flow for true cross-device) ──────────────
+function save() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(leads));
+}
+function load() {
+  try { leads = JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+  catch { leads = []; }
+}
+
+// ── FILTER & RENDER ────────────────────────────────────
+function setFilter(f, el) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  render();
+}
+
+function filteredLeads() {
+  return leads.filter(l => {
+    const q = searchQuery.toLowerCase();
+    const matchSearch = !q ||
+      (l.company||'').toLowerCase().includes(q) ||
+      (l.person||'').toLowerCase().includes(q) ||
+      (l.email||'').toLowerCase().includes(q) ||
+      (l.phone||'').toLowerCase().includes(q);
+    if (!matchSearch) return false;
+    if (currentFilter === 'all') return true;
+    if (currentFilter === 'not-contacted') return !l.contacted;
+    if (currentFilter === 'contacted') return l.contacted;
+    if (currentFilter === 'demo') return l.demo;
+    if (currentFilter === 'proposal') return l.proposal;
+    if (currentFilter === 'closed') return l.closed;
+    return true;
+  });
+}
+
+function render() {
+  const fl = filteredLeads();
+  const tbody = document.getElementById('leads-tbody');
+  const empty = document.getElementById('empty-state');
+
+  if (fl.length === 0) {
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+  } else {
+    empty.style.display = 'none';
+    tbody.innerHTML = fl.map(l => `
+      <tr>
+        <td><div class="company-name">${esc(l.company||'—')}</div></td>
+        <td>${esc(l.person||'—')}</td>
+        <td>
+          <div>${esc(l.email||'—')}</div>
+          <div class="contact-email">${esc(l.phone||'')}</div>
+        </td>
+        <td><button class="toggle-check ${l.contacted?'checked':''}" onclick="toggle('${l.id}','contacted')">${l.contacted?'✓':''}</button></td>
+        <td><button class="toggle-check ${l.demo?'checked':''}" onclick="toggle('${l.id}','demo')">${l.demo?'✓':''}</button></td>
+        <td><button class="toggle-check ${l.proposal?'checked':''}" onclick="toggle('${l.id}','proposal')">${l.proposal?'✓':''}</button></td>
+        <td><button class="toggle-check ${l.closed?'closed-check':''}" onclick="toggle('${l.id}','closed')">${l.closed?'✓':''}</button></td>
+        <td style="max-width:180px;white-space:normal;font-size:12px;color:var(--muted)">${esc(l.notes||'')}</td>
+        <td>
+          <div class="action-btns">
+            <button class="icon-btn" onclick="editLead('${l.id}')" title="Edit">✏️</button>
+            <button class="icon-btn del" onclick="deleteLead('${l.id}')" title="Delete">🗑️</button>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  // Stats
+  document.getElementById('stat-total').textContent = leads.length;
+  document.getElementById('stat-contacted').textContent = leads.filter(l=>l.contacted).length;
+  document.getElementById('stat-demo').textContent = leads.filter(l=>l.demo).length;
+  document.getElementById('stat-proposal').textContent = leads.filter(l=>l.proposal).length;
+  document.getElementById('stat-closed').textContent = leads.filter(l=>l.closed).length;
+}
+
+function esc(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── TOGGLE ────────────────────────────────────────────
+function toggle(id, field) {
+  const lead = leads.find(l => l.id === id);
+  if (!lead) return;
+  lead[field] = !lead[field];
+  save(); render();
+}
+
+// ── MODAL ─────────────────────────────────────────────
+function openModal(prefill) {
+  editingId = null;
+  document.getElementById('modal-title').textContent = 'Add New Lead';
+  ['company','person','email','phone','notes'].forEach(f => document.getElementById('f-'+f).value = '');
+  ['contacted','demo','proposal','closed'].forEach(f => document.getElementById('f-'+f).checked = false);
+  document.getElementById('modal').classList.add('open');
+}
+
+function editLead(id) {
+  const l = leads.find(x => x.id === id);
+  if (!l) return;
+  editingId = id;
+  document.getElementById('modal-title').textContent = 'Edit Lead';
+  document.getElementById('f-company').value = l.company||'';
+  document.getElementById('f-person').value = l.person||'';
+  document.getElementById('f-email').value = l.email||'';
+  document.getElementById('f-phone').value = l.phone||'';
+  document.getElementById('f-notes').value = l.notes||'';
+  ['contacted','demo','proposal','closed'].forEach(f => document.getElementById('f-'+f).checked = !!l[f]);
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  editingId = null;
+}
+
+function saveLead() {
+  const company = document.getElementById('f-company').value.trim();
+  if (!company) { alert('Please enter a company or organiser name.'); return; }
+
+  const data = {
+    company,
+    person: document.getElementById('f-person').value.trim(),
+    email: document.getElementById('f-email').value.trim(),
+    phone: document.getElementById('f-phone').value.trim(),
+    notes: document.getElementById('f-notes').value.trim(),
+    contacted: document.getElementById('f-contacted').checked,
+    demo: document.getElementById('f-demo').checked,
+    proposal: document.getElementById('f-proposal').checked,
+    closed: document.getElementById('f-closed').checked,
+  };
+
+  if (editingId) {
+    const idx = leads.findIndex(l => l.id === editingId);
+    if (idx > -1) leads[idx] = { ...leads[idx], ...data };
+  } else {
+    leads.unshift({ id: crypto.randomUUID(), createdAt: Date.now(), ...data });
+  }
+
+  save(); render(); closeModal();
+}
+
+function deleteLead(id) {
+  if (!confirm('Delete this lead?')) return;
+  leads = leads.filter(l => l.id !== id);
+  save(); render();
+}
+
+// ── EXPORT EXCEL ──────────────────────────────────────
+function exportExcel() {
+  const rows = leads.map(l => ({
+    'Company / Org': l.company||'',
+    'Contact Person': l.person||'',
+    'Email': l.email||'',
+    'Phone': l.phone||'',
+    'Contacted': l.contacted ? 'Yes' : 'No',
+    'Demo Scheduled': l.demo ? 'Yes' : 'No',
+    'Proposal Sent': l.proposal ? 'Yes' : 'No',
+    'Closed Deal': l.closed ? 'Yes' : 'No',
+    'Notes': l.notes||'',
+    'Created At': l.createdAt ? new Date(l.createdAt).toLocaleDateString() : '',
+  }));
+
+  const ws = XLSX.utils.json_to_sheet(rows);
+  ws['!cols'] = [20,20,28,18,14,16,16,14,36,16].map(w => ({ wch: w }));
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Pipeline');
+  XLSX.writeFile(wb, `pipeline-${new Date().toISOString().slice(0,10)}.xlsx`);
+}
+
+// ── SEARCH ────────────────────────────────────────────
+document.getElementById('search-input').addEventListener('input', e => {
+  searchQuery = e.target.value;
+  render();
+});
+
+// Close modal on overlay click
+document.getElementById('modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('modal')) closeModal();
+});
+
+// ── INIT ──────────────────────────────────────────────
+load();
+render();
+</script>
+</body>
+</html>
