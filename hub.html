@@ -13,7 +13,6 @@
       box-sizing: border-box;
       text-align: center;
     }
-
     #name-header {
       text-align: center;
       font-family: 'Roboto', sans-serif;
@@ -22,71 +21,112 @@
       margin: 0.5rem auto;
       display: block;
     }
-
     body {
       font-family: 'Roboto', sans-serif;
       font-weight: 400;
     }
-
     h1, h2, h3, h4, h5, h6, p, a, strong {
       font-family: 'Roboto', sans-serif;
     }
-
     main {
       max-width: 800px;
       margin: 0 auto;
       padding: 0 1rem;
     }
-
     h1 {
       font-size: 1.2rem;
       font-weight: 300;
       margin-bottom: 2rem;
       text-align: center;
     }
-
     h2 {
       font-size: 1rem;
       font-weight: 300;
       margin-bottom: 1rem;
       text-align: left;
     }
-
     h3 {
-      font-size: 0.8rem;
+      font-size: 0.95rem;
       font-weight: 400;
       margin-bottom: 0.5rem;
       margin-top: 1.2rem;
       text-align: left;
       color: #222;
     }
-
     .links-section {
       margin-top: 0.8rem;
       text-align: left;
     }
+    .divider {
+      border: none;
+      border-top: 1px solid #eee;
+      margin: 1.2rem 0;
+    }
 
-    .links-section a {
-      display: block;
+    /* Link row wrapper */
+    .link-item {
+      margin-bottom: 0.6rem;
+    }
+
+    .link-row {
+      display: flex;
+      align-items: baseline;
+      gap: 0.4rem;
+    }
+
+    .link-row a {
       font-family: 'Roboto', sans-serif;
       font-weight: 400;
       font-size: 0.8rem;
       color: #222;
       text-decoration: none;
-      margin-bottom: 0.6rem;
       line-height: 1.2;
     }
-
-    .links-section a:hover {
+    .link-row a:hover {
       text-decoration: underline;
+    }
+
+    /* Arrow toggle button */
+    .toggle-desc {
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      font-size: 0.65rem;
+      color: #999;
+      line-height: 1;
+      transition: transform 0.25s ease, color 0.2s ease;
+      transform-origin: center;
+      display: inline-block;
+      margin-left: 0.1rem;
+      vertical-align: middle;
+    }
+    .toggle-desc:hover {
       color: #222;
+    }
+    .toggle-desc.open {
+      transform: rotate(180deg);
+      color: #222;
+    }
+
+    /* Description text */
+    .link-desc {
+      display: none;
+      font-size: 0.75rem;
+      font-weight: 300;
+      color: #888;
+      line-height: 1.4;
+      margin-top: 0.25rem;
+      padding-left: 0;
+    }
+    .link-desc.visible {
+      display: block;
     }
 
     footer {
       text-align: center;
       margin-top: 3rem;
     }
-
     footer p, footer h3 {
       font-size: 0.8rem;
       font-family: 'Roboto', sans-serif;
@@ -95,45 +135,87 @@
       margin: 0.5rem auto;
       text-align: center;
     }
-
-    .divider {
-      border: none;
-      border-top: 1px solid #eee;
-      margin: 1.2rem 0;
-    }
   </style>
 </head>
 <body>
-
   <main>
-
     <header id="main-header">
       <h1 id="name-header">Builts by Emilio (Milo) Miranda</h1>
     </header>
 
     <section class="links-section">
       <h2>Apps</h2>
-
       <hr class="divider">
 
       <h3>Personal</h3>
-      <a href="#">Personal App Example 1</a>
-      <a href="#">Personal App Example 2</a>
-      <a href="#">Personal App Example 3</a>
+
+      <div class="link-item">
+        <div class="link-row">
+          <a href="#">Personal App Example 1</a>
+          <button class="toggle-desc" aria-label="Show description">▼</button>
+        </div>
+        <p class="link-desc">A short description of what this personal app does and why it exists.</p>
+      </div>
+
+      <div class="link-item">
+        <div class="link-row">
+          <a href="#">Personal App Example 2</a>
+          <button class="toggle-desc" aria-label="Show description">▼</button>
+        </div>
+        <p class="link-desc">A short description of what this personal app does and why it exists.</p>
+      </div>
+
+      <div class="link-item">
+        <div class="link-row">
+          <a href="#">Personal App Example 3</a>
+          <button class="toggle-desc" aria-label="Show description">▼</button>
+        </div>
+        <p class="link-desc">A short description of what this personal app does and why it exists.</p>
+      </div>
 
       <hr class="divider">
 
       <h3>Work</h3>
-      <a href="/ticketcalculator.html">Service Fee and Booking Calculator</a>
-      <a href="#">Work App Example 2</a>
-      <a href="#">Work App Example 3</a>
+
+      <div class="link-item">
+        <div class="link-row">
+          <a href="/ticketcalculator.html">Service Fee and Booking Calculator</a>
+          <button class="toggle-desc" aria-label="Show description">▼</button>
+        </div>
+        <p class="link-desc">A calculator tool to estimate service fees and booking costs for ticketing operations.</p>
+      </div>
+
+      <div class="link-item">
+        <div class="link-row">
+          <a href="#">Work App Example 2</a>
+          <button class="toggle-desc" aria-label="Show description">▼</button>
+        </div>
+        <p class="link-desc">A short description of what this work app does and why it exists.</p>
+      </div>
+
+      <div class="link-item">
+        <div class="link-row">
+          <a href="#">Work App Example 3</a>
+          <button class="toggle-desc" aria-label="Show description">▼</button>
+        </div>
+        <p class="link-desc">A short description of what this work app does and why it exists.</p>
+      </div>
+
     </section>
 
     <footer>
       <p><h3>© 2025 Milo Miranda</h3></p>
     </footer>
-
   </main>
 
+  <script>
+    document.querySelectorAll('.toggle-desc').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const desc = btn.closest('.link-item').querySelector('.link-desc');
+        const isOpen = desc.classList.toggle('visible');
+        btn.classList.toggle('open', isOpen);
+      });
+    });
+  </script>
 </body>
 </html>
