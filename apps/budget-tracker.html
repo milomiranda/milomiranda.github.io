@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Budget Tracker</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --accent: #c5fe00;
+      --accent-dark: #8ab800;
+      --bg: #f6f6f4;
+      --card: #ffffff;
+      --border: #ebebeb;
+      --text: #111111;
+      --muted: #aaaaaa;
+      --faint: #dddddd;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 44px 24px 64px;
+    }
+
+    /* ── Header ── */
+    .header { text-align: center; margin-bottom: 36px; }
+    .badge {
+      display: inline-block;
+      background: var(--accent);
+      border-radius: 20px;
+      padding: 4px 16px;
+      margin-bottom: 16px;
+      font-size: 10px;
+      font-weight: 800;
+      color: #111;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+    h1 {
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+    }
+    .subtitle { margin-top: 10px; color: var(--muted); font-size: 14px; }
+
+    /* ── Layout ── */
+    .layout {
+      display: flex;
+      gap: 20px;
+      max-width: 900px;
+      margin: 0 auto;
+      flex-wrap: wrap;
+      align-items: flex-start;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--card);
+      border: 2px solid var(--border);
+      border-radius: 20px;
+      padding: 28px;
+      flex: 1;
+      min-width: 280px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+    }
+
+    .card-header { display: flex; align-items: center; gap: 10px; }
+    .card-icon {
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      background: var(--accent);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    .card-title { font-size: 14px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+
+    /* ── Field ── */
+    .field { display: flex; flex-direction: column; gap: 7px; }
+    .field-label {
+      font-size: 11px; color: #aaa;
+      letter-spacing: 0.08em; text-transform: uppercase; font-weight: 600;
+    }
+
+    /* ── Input row ── */
+    .input-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+    }
+    .input-row .field { flex: 1; }
+
+    .input-wrap {
+      display: flex; align-items: center;
+      background: #fafafa;
+      border: 1.5px solid #ebebeb;
+      border-radius: 10px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .input-wrap:focus-within {
+      border-color: #ccc;
+    }
+    .prefix {
+      padding: 10px 12px;
+      font-size: 13px; color: #ccc;
+      border-right: 1.5px solid #ebebeb;
+      background: #f5f5f5;
+      user-select: none;
+      white-space: nowrap;
+    }
+    input[type="text"], input[type="number"] {
+      background: transparent; border: none; outline: none;
+      color: #222; font-size: 15px;
+      font-family: 'DM Sans', sans-serif;
+      padding: 10px 14px; width: 100%;
+      -moz-appearance: textfield;
+    }
+    input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+    /* ── Add button ── */
+    .add-btn {
+      background: var(--accent);
+      border: none;
+      border-radius: 10px;
+      padding: 11px 20px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 800;
+      color: #111;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s, box-shadow 0.15s;
+      flex-shrink: 0;
+      align-self: flex-end;
+    }
+    .add-btn:hover {
+      background: #b8ef00;
+      box-shadow: 0 4px 16px rgba(197,254,0,0.4);
+    }
+
+    /* ── Currency selector ── */
+    .currency-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .currency-label {
+      font-size: 11px; color: #aaa;
+      letter-spacing: 0.08em; text-transform: uppercase; font-weight: 600;
+    }
+    .currency-btns { display: flex; gap: 6px; }
+    .currency-btn {
+      padding: 4px 12px;
+      border-radius: 8px;
+      border: 2px solid #e5e5e5;
+      background: #fff;
+      color: #777;
+      font-size: 12px; font-weight: 600;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .currency-btn:hover { border-color: var(--accent); }
+    .currency-btn.active {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #111;
+      font-weight: 800;
+    }
+
+    /* ── Items list ── */
+    .items-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .item-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #f0f0f0;
+      gap: 8px;
+      animation: fadeIn 0.2s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .item-name {
+      flex: 1;
+      font-size: 14px;
+      font-weight: 500;
+      color: #222;
+    }
+    .item-amount {
+      font-size: 14px;
+      font-weight: 600;
+      font-family: monospace;
+      color: #444;
+      white-space: nowrap;
+    }
+    .item-delete {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 12px;
+      color: #ddd;
+      padding: 0 0 0 8px;
+      transition: color 0.15s;
+      line-height: 1;
+    }
+    .item-delete:hover { color: #111; }
+
+    .empty-msg {
+      font-size: 13px;
+      color: #ccc;
+      text-align: center;
+      padding: 16px 0;
+    }
+
+    /* ── Total ── */
+    .total-block {
+      border-top: 2px solid #111;
+      padding-top: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+    .total-label {
+      font-size: 12px; color: #999; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+    }
+    .total-value {
+      font-size: 32px; font-weight: 800;
+      font-family: monospace; letter-spacing: -0.02em;
+      color: #111;
+    }
+
+    /* ── Summary card ── */
+    .summary-card {
+      background: var(--accent);
+      border: 2px solid transparent;
+      border-radius: 20px;
+      padding: 28px;
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+      display: none;
+      flex-direction: column;
+      gap: 14px;
+      box-shadow: 0 8px 40px rgba(197,254,0,0.45);
+      animation: fadeUp 0.35s ease;
+    }
+    .summary-card.visible { display: flex; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .summary-header {
+      font-size: 10px; font-weight: 800;
+      text-transform: uppercase; letter-spacing: 0.14em;
+      color: rgba(0,0,0,0.4);
+    }
+    .summary-title {
+      font-size: clamp(22px, 3vw, 32px);
+      font-weight: 800;
+      color: #111;
+      letter-spacing: -0.03em;
+    }
+    .summary-rows {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 28px;
+      margin-top: 4px;
+    }
+    .summary-stat { display: flex; flex-direction: column; gap: 2px; }
+    .summary-stat-label {
+      font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      color: rgba(0,0,0,0.4);
+    }
+    .summary-stat-value {
+      font-size: 18px; font-weight: 800;
+      font-family: monospace;
+      color: #111;
+    }
+
+    /* ── Clear btn ── */
+    .clear-btn {
+      background: none;
+      border: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      color: #ccc;
+      cursor: pointer;
+      text-decoration: underline;
+      padding: 0;
+      align-self: flex-start;
+      transition: color 0.15s;
+    }
+    .clear-btn:hover { color: #666; }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      margin-top: 48px;
+      font-size: 12px;
+      color: #bbb;
+    }
+    footer strong { color: #888; }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="badge">💰 Budget Tracker</div>
+    <h1>Track your expenses</h1>
+    <p class="subtitle">Add items and amounts — everything is saved automatically.</p>
+  </div>
+
+  <div class="layout">
+
+    <!-- Input card -->
+    <div class="card" style="max-width: 420px;">
+      <div class="card-header">
+        <div class="card-icon">＋</div>
+        <div class="card-title">Add Item</div>
+      </div>
+
+      <!-- Currency -->
+      <div class="currency-row">
+        <span class="currency-label">Currency</span>
+        <div class="currency-btns" id="currency-btns">
+          <button class="currency-btn active" data-symbol="€" onclick="setCurrency(this)">EUR €</button>
+          <button class="currency-btn" data-symbol="$" onclick="setCurrency(this)">USD $</button>
+          <button class="currency-btn" data-symbol="MX$" onclick="setCurrency(this)">MXN</button>
+        </div>
+      </div>
+
+      <!-- Name + Amount -->
+      <div class="input-row">
+        <div class="field">
+          <label class="field-label">Item name</label>
+          <div class="input-wrap">
+            <input type="text" id="input-name" placeholder="e.g. Studio rent" />
+          </div>
+        </div>
+        <div class="field" style="max-width: 140px;">
+          <label class="field-label">Amount</label>
+          <div class="input-wrap">
+            <div class="prefix" id="currency-prefix">€</div>
+            <input type="number" id="input-amount" placeholder="0.00" min="0" step="0.01" />
+          </div>
+        </div>
+      </div>
+
+      <button class="add-btn" onclick="addItem()">Add →</button>
+    </div>
+
+    <!-- List card -->
+    <div class="card" style="flex: 2; min-width: 280px;">
+      <div class="card-header">
+        <div class="card-icon">📋</div>
+        <div class="card-title">Items</div>
+      </div>
+
+      <div class="items-list" id="items-list">
+        <p class="empty-msg" id="empty-msg">No items yet. Add your first one →</p>
+      </div>
+
+      <div class="total-block" id="total-block" style="display:none;">
+        <span class="total-label">Total</span>
+        <span class="total-value" id="total-value">€0.00</span>
+      </div>
+
+      <button class="clear-btn" onclick="clearAll()" id="clear-btn" style="display:none;">Clear all items</button>
+    </div>
+
+  </div>
+
+  <!-- Summary banner -->
+  <div class="summary-card" id="summary-card" style="margin-top: 20px;">
+    <div class="summary-header">Summary</div>
+    <div class="summary-title" id="summary-title">Total: €0.00</div>
+    <div class="summary-rows">
+      <div class="summary-stat">
+        <span class="summary-stat-label">Items</span>
+        <span class="summary-stat-value" id="summary-count">0</span>
+      </div>
+      <div class="summary-stat">
+        <span class="summary-stat-label">Average</span>
+        <span class="summary-stat-value" id="summary-avg">€0.00</span>
+      </div>
+      <div class="summary-stat">
+        <span class="summary-stat-label">Highest</span>
+        <span class="summary-stat-value" id="summary-max">€0.00</span>
+      </div>
+      <div class="summary-stat">
+        <span class="summary-stat-label">Lowest</span>
+        <span class="summary-stat-value" id="summary-min">€0.00</span>
+      </div>
+    </div>
+  </div>
+
+  <footer>built by <strong>Emilio Miranda Escamilla</strong></footer>
+
+  <script>
+    const STORAGE_KEY = 'milo_budget_v2';
+    const CURRENCY_KEY = 'milo_budget_currency';
+
+    let currency = localStorage.getItem(CURRENCY_KEY) || '€';
+
+    // Restore currency button state
+    document.querySelectorAll('.currency-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.symbol === currency);
+    });
+    document.getElementById('currency-prefix').textContent = currency;
+
+    function setCurrency(btn) {
+      currency = btn.dataset.symbol;
+      localStorage.setItem(CURRENCY_KEY, currency);
+      document.querySelectorAll('.currency-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('currency-prefix').textContent = currency;
+      render();
+    }
+
+    function getItems() {
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+      catch { return []; }
+    }
+
+    function saveItems(items) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+    }
+
+    function fmt(n) {
+      return currency + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function render() {
+      const items = getItems();
+      const list = document.getElementById('items-list');
+      const emptyMsg = document.getElementById('empty-msg');
+      const totalBlock = document.getElementById('total-block');
+      const totalValue = document.getElementById('total-value');
+      const clearBtn = document.getElementById('clear-btn');
+      const summaryCard = document.getElementById('summary-card');
+
+      // Clear list (keep empty msg in DOM)
+      Array.from(list.querySelectorAll('.item-row')).forEach(el => el.remove());
+
+      if (items.length === 0) {
+        emptyMsg.style.display = 'block';
+        totalBlock.style.display = 'none';
+        clearBtn.style.display = 'none';
+        summaryCard.classList.remove('visible');
+        return;
+      }
+
+      emptyMsg.style.display = 'none';
+      totalBlock.style.display = 'flex';
+      clearBtn.style.display = 'block';
+
+      let total = 0;
+      items.forEach((item, i) => {
+        total += item.amount;
+        const row = document.createElement('div');
+        row.className = 'item-row';
+        row.innerHTML = `
+          <span class="item-name">${escHtml(item.name)}</span>
+          <span class="item-amount">${fmt(item.amount)}</span>
+          <button class="item-delete" onclick="deleteItem(${i})" title="Remove">✕</button>
+        `;
+        list.appendChild(row);
+      });
+
+      totalValue.textContent = fmt(total);
+
+      // Summary
+      summaryCard.classList.add('visible');
+      const avg = total / items.length;
+      const amounts = items.map(i => i.amount);
+      const max = Math.max(...amounts);
+      const min = Math.min(...amounts);
+
+      document.getElementById('summary-title').textContent = 'Total: ' + fmt(total);
+      document.getElementById('summary-count').textContent = items.length;
+      document.getElementById('summary-avg').textContent = fmt(avg);
+      document.getElementById('summary-max').textContent = fmt(max);
+      document.getElementById('summary-min').textContent = fmt(min);
+    }
+
+    function addItem() {
+      const nameEl = document.getElementById('input-name');
+      const amountEl = document.getElementById('input-amount');
+      const name = nameEl.value.trim();
+      const amount = parseFloat(amountEl.value);
+
+      if (!name || isNaN(amount) || amount < 0) {
+        // Shake hint
+        if (!name) nameEl.closest('.input-wrap').style.borderColor = '#ffaaaa';
+        if (isNaN(amount)) amountEl.closest('.input-wrap').style.borderColor = '#ffaaaa';
+        setTimeout(() => {
+          document.querySelectorAll('.input-wrap').forEach(el => el.style.borderColor = '');
+        }, 800);
+        return;
+      }
+
+      const items = getItems();
+      items.push({ name, amount });
+      saveItems(items);
+      render();
+
+      nameEl.value = '';
+      amountEl.value = '';
+      nameEl.focus();
+    }
+
+    function deleteItem(index) {
+      const items = getItems();
+      items.splice(index, 1);
+      saveItems(items);
+      render();
+    }
+
+    function clearAll() {
+      if (confirm('Clear all items?')) {
+        localStorage.removeItem(STORAGE_KEY);
+        render();
+      }
+    }
+
+    function escHtml(str) {
+      return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Enter') addItem();
+    });
+
+    render();
+  </script>
+</body>
+</html>
