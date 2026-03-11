@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ticket Cost Calculator</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --accent: #c5fe00;
+      --accent-dark: #8ab800;
+      --bg: #f6f6f4;
+      --card: #ffffff;
+      --border: #ebebeb;
+      --text: #111111;
+      --muted: #aaaaaa;
+      --faint: #dddddd;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 44px 24px 64px;
+    }
+
+    /* ── Header ── */
+    .header { text-align: center; margin-bottom: 36px; }
+    .badge {
+      display: inline-block;
+      background: var(--accent);
+      border-radius: 20px;
+      padding: 4px 16px;
+      margin-bottom: 16px;
+      font-size: 10px;
+      font-weight: 800;
+      color: #111;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+    h1 {
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+    }
+    .subtitle { margin-top: 10px; color: var(--muted); font-size: 14px; }
+
+    /* ── Grid ── */
+    .grid {
+      display: flex;
+      gap: 20px;
+      max-width: 900px;
+      margin: 0 auto;
+      flex-wrap: wrap;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--card);
+      border: 2px solid var(--border);
+      border-radius: 20px;
+      padding: 28px;
+      flex: 1;
+      min-width: 280px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+      transition: box-shadow 0.3s, border-color 0.3s;
+    }
+    .card.best {
+      border-color: var(--accent);
+      box-shadow: 0 8px 32px rgba(197,254,0,0.35);
+    }
+
+    .best-badge {
+      display: none;
+      position: absolute;
+      top: 14px; right: 14px;
+      background: var(--accent);
+      color: #111;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 20px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .card.best .best-badge { display: block; }
+
+    /* ── Card header ── */
+    .card-header { display: flex; align-items: center; gap: 10px; }
+    .card-num {
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      background: #f0f0f0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 800; color: #999;
+      flex-shrink: 0;
+      transition: background 0.3s, color 0.3s;
+    }
+    .card.best .card-num { background: var(--accent); color: #111; }
+    .card-title { font-size: 14px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+
+    /* ── Fields ── */
+    .field { display: flex; flex-direction: column; gap: 7px; }
+    .field-label {
+      font-size: 11px; color: #aaa;
+      letter-spacing: 0.08em; text-transform: uppercase; font-weight: 600;
+    }
+    .field-label span { color: #ccc; font-weight: 400; }
+
+    .input-wrap {
+      display: flex; align-items: center;
+      background: #fafafa;
+      border: 1.5px solid #ebebeb;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .prefix {
+      padding: 10px 12px;
+      font-size: 13px; color: #ccc;
+      border-right: 1.5px solid #ebebeb;
+      background: #f5f5f5;
+      user-select: none;
+    }
+    input[type="number"], select {
+      background: transparent; border: none; outline: none;
+      color: #222; font-size: 15px;
+      font-family: 'DM Sans', monospace;
+      padding: 10px 14px; width: 100%;
+      -moz-appearance: textfield;
+    }
+    input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+    select { cursor: pointer; appearance: none; }
+
+    /* ── Qty buttons ── */
+    .qty-wrap { display: flex; flex-wrap: wrap; gap: 6px; }
+    .qty-btn {
+      padding: 5px 13px;
+      border-radius: 8px;
+      border: 2px solid #e5e5e5;
+      background: #fff;
+      color: #777;
+      font-size: 13px; font-weight: 500;
+      font-family: monospace;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .qty-btn:hover { border-color: var(--accent); }
+    .qty-btn.active {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #111;
+      font-weight: 800;
+      box-shadow: 0 2px 10px rgba(197,254,0,0.4);
+    }
+
+    /* ── Breakdown ── */
+    .breakdown {
+      border-top: 1px solid #f0f0f0;
+      padding-top: 16px;
+      display: flex; flex-direction: column; gap: 7px;
+    }
+    .breakdown-row {
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .breakdown-label { font-size: 12px; color: #bbb; }
+    .breakdown-label.faint { color: #ddd; }
+    .breakdown-value { font-size: 13px; color: #666; font-family: monospace; }
+    .breakdown-value.faint { color: #ddd; }
+
+    .total-row {
+      display: flex; justify-content: space-between; align-items: baseline;
+      border-top: 1px solid #eee;
+      padding-top: 12px; margin-top: 4px;
+    }
+    .total-label { font-size: 12px; color: #999; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+    .total-value {
+      font-size: 28px; font-weight: 800;
+      font-family: monospace; letter-spacing: -0.02em;
+      color: #111;
+      transition: color 0.3s;
+    }
+    .card.best .total-value { color: var(--accent-dark); }
+
+    /* ── Banner ── */
+    .banner {
+      max-width: 900px;
+      margin: 20px auto 0;
+      border-radius: 18px;
+      padding: 22px 28px;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      animation: fadeUp 0.4s ease;
+    }
+    .banner.visible { display: flex; }
+    .banner.tie {
+      background: #fff;
+      border: 2px solid #ebebeb;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+    }
+    .banner.winner {
+      background: var(--accent);
+      box-shadow: 0 8px 40px rgba(197,254,0,0.55);
+    }
+
+    .banner-label {
+      font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.12em;
+      margin-bottom: 4px;
+    }
+    .banner.tie .banner-label { color: #bbb; }
+    .banner.winner .banner-label { color: rgba(0,0,0,0.4); }
+
+    .banner-title { font-size: 22px; font-weight: 800; color: #111; }
+    .banner-sub { font-size: 13px; color: rgba(0,0,0,0.5); margin-top: 3px; }
+
+    .banner-totals { display: flex; gap: 28px; }
+    .banner-opt { text-align: center; }
+    .banner-opt-label {
+      font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      margin-bottom: 3px;
+    }
+    .banner.tie .banner-opt-label { color: #bbb; }
+    .banner.winner .banner-opt-label { color: rgba(0,0,0,0.4); }
+
+    .banner-opt-value {
+      font-size: 24px; font-weight: 800;
+      font-family: monospace; color: #111;
+    }
+    .banner-opt-value.loser {
+      color: rgba(0,0,0,0.3);
+      text-decoration: line-through;
+    }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      margin-top: 52px;
+      font-size: 10px;
+      color: #ccc;
+      letter-spacing: 0.06em;
+    }
+    footer strong { color: #bbb; font-weight: 700; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="badge">Price Comparison Tool</div>
+    <h1>Ticket Cost Calculator</h1>
+    <p class="subtitle">Compare two options — tickets, service fees &amp; payment costs</p>
+  </div>
+
+  <!-- Cards -->
+  <div class="grid">
+
+    <!-- Option A -->
+    <div class="card" id="cardA">
+      <div class="best-badge">✦ Best Deal</div>
+      <div class="card-header">
+        <div class="card-num">A</div>
+        <div class="card-title">Option A</div>
+      </div>
+
+      <div class="field">
+        <div class="field-label">Number of Tickets</div>
+        <div class="qty-wrap" id="qtyA"></div>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Ticket Price <span>(per ticket)</span></label>
+        <div class="input-wrap">
+          <div class="prefix">$</div>
+          <input type="number" id="ticketA" min="0" placeholder="0.00" oninput="update()" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Service Cost <span>(per ticket)</span></label>
+        <div class="input-wrap">
+          <div class="prefix">$</div>
+          <input type="number" id="serviceA" min="0" placeholder="0.00" oninput="update()" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Payment Method</label>
+        <div class="input-wrap">
+          <select id="methodA" onchange="onMethodChange('A')"></select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Payment Fee % <span>(editable)</span></label>
+        <div class="input-wrap">
+          <div class="prefix">%</div>
+          <input type="number" id="feeA" min="0" max="100" step="0.1" oninput="update()" />
+        </div>
+      </div>
+
+      <div class="breakdown" id="breakdownA">
+        <div class="breakdown-row" id="perRowA" style="display:none">
+          <span class="breakdown-label faint" id="perLabelA"></span>
+          <span class="breakdown-value faint" id="perValA"></span>
+        </div>
+        <div class="breakdown-row">
+          <span class="breakdown-label">Subtotal</span>
+          <span class="breakdown-value" id="subtotalA">$0.00</span>
+        </div>
+        <div class="breakdown-row">
+          <span class="breakdown-label" id="feeRowLabelA">Payment fee (0%)</span>
+          <span class="breakdown-value" id="feeValA">$0.00</span>
+        </div>
+        <div class="total-row">
+          <span class="total-label">Total</span>
+          <span class="total-value" id="totalA">$0.00</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Option B -->
+    <div class="card" id="cardB">
+      <div class="best-badge">✦ Best Deal</div>
+      <div class="card-header">
+        <div class="card-num">B</div>
+        <div class="card-title">Option B</div>
+      </div>
+
+      <div class="field">
+        <div class="field-label">Number of Tickets</div>
+        <div class="qty-wrap" id="qtyB"></div>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Ticket Price <span>(per ticket)</span></label>
+        <div class="input-wrap">
+          <div class="prefix">$</div>
+          <input type="number" id="ticketB" min="0" placeholder="0.00" oninput="update()" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Service Cost <span>(per ticket)</span></label>
+        <div class="input-wrap">
+          <div class="prefix">$</div>
+          <input type="number" id="serviceB" min="0" placeholder="0.00" oninput="update()" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Payment Method</label>
+        <div class="input-wrap">
+          <select id="methodB" onchange="onMethodChange('B')"></select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Payment Fee % <span>(editable)</span></label>
+        <div class="input-wrap">
+          <div class="prefix">%</div>
+          <input type="number" id="feeB" min="0" max="100" step="0.1" oninput="update()" />
+        </div>
+      </div>
+
+      <div class="breakdown" id="breakdownB">
+        <div class="breakdown-row" id="perRowB" style="display:none">
+          <span class="breakdown-label faint" id="perLabelB"></span>
+          <span class="breakdown-value faint" id="perValB"></span>
+        </div>
+        <div class="breakdown-row">
+          <span class="breakdown-label">Subtotal</span>
+          <span class="breakdown-value" id="subtotalB">$0.00</span>
+        </div>
+        <div class="breakdown-row">
+          <span class="breakdown-label" id="feeRowLabelB">Payment fee (0%)</span>
+          <span class="breakdown-value" id="feeValB">$0.00</span>
+        </div>
+        <div class="total-row">
+          <span class="total-label">Total</span>
+          <span class="total-value" id="totalB">$0.00</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Comparison Banner -->
+  <div class="banner" id="banner">
+    <div>
+      <div class="banner-label" id="bannerLabel">Best Deal</div>
+      <div class="banner-title" id="bannerTitle"></div>
+      <div class="banner-sub" id="bannerSub"></div>
+    </div>
+    <div class="banner-totals">
+      <div class="banner-opt">
+        <div class="banner-opt-label">Option A</div>
+        <div class="banner-opt-value" id="bannerA">$0.00</div>
+      </div>
+      <div class="banner-opt">
+        <div class="banner-opt-label">Option B</div>
+        <div class="banner-opt-value" id="bannerB">$0.00</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>built by <strong>Emilio Miranda Escamilla</strong></footer>
+
+  <script>
+    const PAYMENT_METHODS = [
+      { label: "Credit Card", fee: 3.5 },
+      { label: "Debit Card", fee: 1.5 },
+      { label: "PayPal",      fee: 4.0 },
+      { label: "Bank Transfer", fee: 0 },
+    ];
+    const QTY_OPTIONS = [1, 2, 3, 4, 5, 10, 15, 20];
+    const state = { A: { qty: 1 }, B: { qty: 1 } };
+
+    // Build qty buttons
+    ["A","B"].forEach(opt => {
+      const wrap = document.getElementById("qty" + opt);
+      QTY_OPTIONS.forEach(q => {
+        const btn = document.createElement("button");
+        btn.className = "qty-btn" + (q === 1 ? " active" : "");
+        btn.textContent = q;
+        btn.onclick = () => { state[opt].qty = q; renderQty(opt); update(); };
+        wrap.appendChild(btn);
+      });
+    });
+
+    // Build selects
+    ["A","B"].forEach(opt => {
+      const sel = document.getElementById("method" + opt);
+      PAYMENT_METHODS.forEach(m => {
+        const o = document.createElement("option");
+        o.value = m.fee;
+        o.textContent = `${m.label} (${m.fee}%)`;
+        sel.appendChild(o);
+      });
+      document.getElementById("fee" + opt).value = PAYMENT_METHODS[0].fee;
+    });
+
+    function renderQty(opt) {
+      document.querySelectorAll(`#qty${opt} .qty-btn`).forEach((btn, i) => {
+        btn.classList.toggle("active", QTY_OPTIONS[i] === state[opt].qty);
+      });
+    }
+
+    function onMethodChange(opt) {
+      const sel = document.getElementById("method" + opt);
+      document.getElementById("fee" + opt).value = sel.value;
+      update();
+    }
+
+    function fmt(n) { return "$" + n.toFixed(2); }
+
+    function calc(opt) {
+      const ticket  = parseFloat(document.getElementById("ticket"  + opt).value) || 0;
+      const service = parseFloat(document.getElementById("service" + opt).value) || 0;
+      const fee     = parseFloat(document.getElementById("fee"     + opt).value) || 0;
+      const qty     = state[opt].qty;
+      const perBase = ticket + service;
+      const subtotal = perBase * qty;
+      const payFee   = subtotal * (fee / 100);
+      return { ticket, service, fee, qty, perBase, subtotal, payFee, total: subtotal + payFee };
+    }
+
+    function update() {
+      const a = calc("A"), b = calc("B");
+
+      // Update each card
+      [["A", a], ["B", b]].forEach(([opt, r]) => {
+        // per-ticket row
+        const perRow = document.getElementById("perRow" + opt);
+        if (r.qty > 1) {
+          perRow.style.display = "flex";
+          document.getElementById("perLabel" + opt).textContent = `Per ticket (base) × ${r.qty}`;
+          document.getElementById("perVal"   + opt).textContent = fmt(r.perBase);
+        } else {
+          perRow.style.display = "none";
+        }
+        document.getElementById("subtotal"     + opt).textContent = fmt(r.subtotal);
+        document.getElementById("feeRowLabel"  + opt).textContent = `Payment fee (${r.fee}%)`;
+        document.getElementById("feeVal"       + opt).textContent = fmt(r.payFee);
+        document.getElementById("total"        + opt).textContent = fmt(r.total);
+      });
+
+      const hasValues = a.total > 0 || b.total > 0;
+      const banner = document.getElementById("banner");
+
+      if (!hasValues) { banner.classList.remove("visible", "tie", "winner"); return; }
+
+      banner.classList.add("visible");
+      document.getElementById("bannerA").textContent = fmt(a.total);
+      document.getElementById("bannerB").textContent = fmt(b.total);
+
+      const cardA = document.getElementById("cardA");
+      const cardB = document.getElementById("cardB");
+
+      if (a.total === b.total || (a.total === 0 && b.total === 0)) {
+        // Tie
+        banner.classList.remove("winner"); banner.classList.add("tie");
+        cardA.classList.remove("best"); cardB.classList.remove("best");
+        document.getElementById("bannerLabel").textContent = "Result";
+        document.getElementById("bannerTitle").textContent = "Both options are equal 🤝";
+        document.getElementById("bannerSub").textContent = "";
+        document.getElementById("bannerA").className = "banner-opt-value";
+        document.getElementById("bannerB").className = "banner-opt-value";
+      } else {
+        const winner = a.total < b.total ? "A" : "B";
+        const loser  = winner === "A" ? "B" : "A";
+        const diff   = Math.abs(a.total - b.total).toFixed(2);
+        banner.classList.remove("tie"); banner.classList.add("winner");
+        cardA.classList.toggle("best", winner === "A");
+        cardB.classList.toggle("best", winner === "B");
+        document.getElementById("bannerLabel").textContent = "Best Deal";
+        document.getElementById("bannerTitle").textContent = `Option ${winner} is cheaper 🎉`;
+        document.getElementById("bannerSub").innerHTML = `You save <strong>$${diff}</strong> vs Option ${loser}`;
+        document.getElementById("banner" + winner).className = "banner-opt-value";
+        document.getElementById("banner" + loser).className  = "banner-opt-value loser";
+      }
+    }
+
+    update();
+  </script>
+</body>
+</html>
