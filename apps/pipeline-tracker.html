@@ -50,7 +50,11 @@
 
   .table-wrap { overflow-x: auto; }
   table { width: 100%; border-collapse: collapse; font-size: 14px; }
-  th { text-align: left; font-size: 10px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); padding: 10px 14px 12px; border-bottom: 1.5px solid var(--border); white-space: nowrap; position: sticky; top: 0; background: var(--card); z-index: 10; }
+  th { text-align: left; font-size: 10px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); padding: 10px 14px 12px; border-bottom: 1.5px solid var(--border); white-space: nowrap; position: sticky; top: 0; background: var(--card); z-index: 10; box-shadow: 0 1px 0 var(--border); }
+  th.sortable { cursor: pointer; user-select: none; }
+  th.sortable:hover { color: var(--text); }
+  th .sort-arrow { display: inline-block; margin-left: 4px; opacity: 0.3; font-style: normal; }
+  th.sort-asc .sort-arrow, th.sort-desc .sort-arrow { opacity: 1; color: var(--text); }
   td { padding: 12px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
   tr:last-child td { border-bottom: none; }
   tr:hover td { background: #fafafa; }
@@ -140,7 +144,6 @@
           <input type="text" id="search-input" placeholder="Search company, person, city, country…">
         </div>
         <button class="btn btn-outline" onclick="openImportModal()">📂 Import CSV</button>
-        <button class="btn btn-outline" onclick="toggleSort(this)">🕐 Latest First</button>
         <button class="btn btn-outline" onclick="exportExcel()">📥 Export Excel</button>
         <button class="btn btn-primary" onclick="openModal()">+ Add Lead</button>
       </div>
@@ -158,8 +161,15 @@
 
   <div class="card" style="animation-delay:0.1s;padding:20px 0;">
     <div class="card-header" style="padding:0 28px;">
-      <div class="card-icon">📋</div>
-      <span class="card-title">Leads</span>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div class="card-icon">📋</div>
+        <span class="card-title">Leads</span>
+      </div>
+    </div>
+    <div style="padding:0 28px 14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+      <span style="font-size:10px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);">Sort by date:</span>
+      <button class="filter-btn active" id="sort-latest-btn" onclick="setSortDate('latest',this)">🕐 Latest First</button>
+      <button class="filter-btn" id="sort-oldest-btn" onclick="setSortDate('oldest',this)">🕐 Oldest First</button>
     </div>
     <div class="table-wrap">
       <table>
@@ -169,8 +179,8 @@
             <th>Contact Person</th>
             <th>Email / Phone</th>
             <th>Website</th>
-            <th>City</th>
-            <th>Country</th>
+            <th class="sortable" id="th-city" onclick="setSortField('city')">City <em class="sort-arrow">↕</em></th>
+            <th class="sortable" id="th-country" onclick="setSortField('country')">Country <em class="sort-arrow">↕</em></th>
             <th>Contacted</th>
             <th>Demo</th>
             <th>Proposal</th>
@@ -301,11 +311,42 @@ let editingId = null;
 let pendingImport = [];
 
 let currentSort = 'latest'; // 'latest' | 'oldest'
+let sortField = null; // null | 'city' | 'country'
+let sortDir = 'asc';
 
-function toggleSort(btn) {
-  currentSort = currentSort === 'latest' ? 'oldest' : 'latest';
-  btn.textContent = currentSort === 'latest' ? '🕐 Latest First' : '🕐 Oldest First';
+function setSortDate(dir, btn) {
+  currentSort = dir;
+  sortField = null; // reset alpha sort
+  document.querySelectorAll('#sort-latest-btn,#sort-oldest-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  updateSortHeaders();
   render();
+}
+
+function setSortField(field) {
+  if (sortField === field) {
+    sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+  } else {
+    sortField = field;
+    sortDir = 'asc';
+    // Deactivate date sort buttons visually but keep currentSort for fallback
+    document.querySelectorAll('#sort-latest-btn,#sort-oldest-btn').forEach(b => b.classList.remove('active'));
+  }
+  updateSortHeaders();
+  render();
+}
+
+function updateSortHeaders() {
+  ['city','country'].forEach(f => {
+    const th = document.getElementById('th-'+f);
+    if (!th) return;
+    th.classList.remove('sort-asc','sort-desc');
+    th.querySelector('.sort-arrow').textContent = '↕';
+    if (sortField === f) {
+      th.classList.add(sortDir === 'asc' ? 'sort-asc' : 'sort-desc');
+      th.querySelector('.sort-arrow').textContent = sortDir === 'asc' ? '↑' : '↓';
+    }
+  });
 }
 function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(leads)); }
 function load() { try { leads = JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch { leads = []; } }
@@ -313,7 +354,7 @@ function load() { try { leads = JSON.parse(localStorage.getItem(STORAGE_KEY)) ||
 // ── FILTER & RENDER ───────────────────────────────────
 function setFilter(f, el) {
   currentFilter = f;
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.filters .filter-btn').forEach(b => b.classList.remove('active'));
   el.classList.add('active');
   render();
 }
@@ -337,8 +378,13 @@ function filteredLeads() {
     return true;
   });
   return filtered.sort((a, b) => {
+    if (sortField) {
+      const va = (a[sortField]||'').toLowerCase();
+      const vb = (b[sortField]||'').toLowerCase();
+      return sortDir === 'asc' ? va.localeCompare(vb) : vb.localeCompare(va);
+    }
     const ta = a.createdAt || 0, tb = b.createdAt || 0;
-    return currentSort === 'latest' ? tb - ta : ta - tb;
+    return (currentSort === 'oldest') ? ta - tb : tb - ta;
   });
 }
 
