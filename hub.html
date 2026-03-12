@@ -335,7 +335,10 @@
 
   </div>
 
-  <footer>built by <strong>Emilio Miranda Escamilla</strong></footer>
+  <footer>
+    built by <strong>Emilio Miranda Escamilla</strong><br><br>
+    <button onclick="logout()" style="background:none;border:1.5px solid #e0e0e0;border-radius:8px;padding:6px 14px;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;color:#aaa;cursor:pointer;letter-spacing:0.04em;transition:all 0.15s;" onmouseover="this.style.borderColor='#111';this.style.color='#111'" onmouseout="this.style.borderColor='#e0e0e0';this.style.color='#aaa'">← Log out</button>
+  </footer>
 </div>
 
 <!-- Admin floating toolbar -->
@@ -497,6 +500,20 @@
   function toggleToolbar() {
     document.getElementById('toolbar-body').classList.toggle('open');
     document.getElementById('toolbar-chevron').classList.toggle('open');
+  }
+
+  // ── LOGOUT ───────────────────────────────────────────
+  function logout() {
+    localStorage.removeItem(SESSION_KEY);
+    currentRole = null;
+    // Reset UI
+    document.getElementById('main-content').style.display = 'none';
+    document.getElementById('admin-toolbar').style.display = 'none';
+    document.getElementById('guest-banner').style.display = 'none';
+    document.getElementById('pw-input').value = '';
+    document.getElementById('lock-screen').style.opacity = '1';
+    document.getElementById('lock-screen').style.transition = 'none';
+    document.getElementById('lock-screen').style.display = 'flex';
   }
 
   // ── PW VISIBILITY ────────────────────────────────────
