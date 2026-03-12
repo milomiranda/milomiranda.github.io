@@ -307,6 +307,7 @@ function toggleSort(btn) {
   btn.textContent = currentSort === 'latest' ? '🕐 Latest First' : '🕐 Oldest First';
   render();
 }
+function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(leads)); }
 function load() { try { leads = JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch { leads = []; } }
 
 // ── FILTER & RENDER ───────────────────────────────────
