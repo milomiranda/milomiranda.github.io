@@ -50,7 +50,7 @@
 
   .table-wrap { overflow-x: auto; }
   table { width: 100%; border-collapse: collapse; font-size: 14px; }
-  th { text-align: left; font-size: 10px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); padding: 0 14px 12px; border-bottom: 1.5px solid var(--border); white-space: nowrap; }
+  th { text-align: left; font-size: 10px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); padding: 10px 14px 12px; border-bottom: 1.5px solid var(--border); white-space: nowrap; position: sticky; top: 0; background: var(--card); z-index: 10; }
   td { padding: 12px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
   tr:last-child td { border-bottom: none; }
   tr:hover td { background: #fafafa; }
@@ -140,6 +140,7 @@
           <input type="text" id="search-input" placeholder="Search company, person, city, country…">
         </div>
         <button class="btn btn-outline" onclick="openImportModal()">📂 Import CSV</button>
+        <button class="btn btn-outline" onclick="toggleSort(this)">🕐 Latest First</button>
         <button class="btn btn-outline" onclick="exportExcel()">📥 Export Excel</button>
         <button class="btn btn-primary" onclick="openModal()">+ Add Lead</button>
       </div>
@@ -196,35 +197,35 @@
     <div class="form-grid">
       <div class="form-group">
         <label>Company / Organiser</label>
-        <input type="text" id="f-company" placeholder="Acme Corp">
+        <input type="text" id="f-company">
       </div>
       <div class="form-group">
         <label>Contact Person</label>
-        <input type="text" id="f-person" placeholder="Jane Doe">
+        <input type="text" id="f-person">
       </div>
       <div class="form-group">
         <label>Email</label>
-        <input type="email" id="f-email" placeholder="jane@acme.com">
+        <input type="email" id="f-email">
       </div>
       <div class="form-group">
         <label>Phone</label>
-        <input type="tel" id="f-phone" placeholder="+31 6 000 000">
+        <input type="tel" id="f-phone">
       </div>
       <div class="form-group full">
         <label>Website</label>
-        <input type="url" id="f-website" placeholder="https://acme.com">
+        <input type="url" id="f-website">
       </div>
       <div class="form-group">
         <label>City</label>
-        <input type="text" id="f-city" placeholder="Amsterdam">
+        <input type="text" id="f-city">
       </div>
       <div class="form-group">
         <label>Country</label>
-        <input type="text" id="f-country" placeholder="Netherlands">
+        <input type="text" id="f-country">
       </div>
       <div class="form-group full">
         <label>Notes</label>
-        <textarea id="f-notes" placeholder="Any relevant context…"></textarea>
+        <textarea id="f-notes"></textarea>
       </div>
       <div class="form-group full">
         <label>Status</label>
@@ -299,7 +300,13 @@ let searchQuery = '';
 let editingId = null;
 let pendingImport = [];
 
-function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(leads)); }
+let currentSort = 'latest'; // 'latest' | 'oldest'
+
+function toggleSort(btn) {
+  currentSort = currentSort === 'latest' ? 'oldest' : 'latest';
+  btn.textContent = currentSort === 'latest' ? '🕐 Latest First' : '🕐 Oldest First';
+  render();
+}
 function load() { try { leads = JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch { leads = []; } }
 
 // ── FILTER & RENDER ───────────────────────────────────
@@ -311,7 +318,7 @@ function setFilter(f, el) {
 }
 
 function filteredLeads() {
-  return leads.filter(l => {
+  const filtered = leads.filter(l => {
     const q = searchQuery.toLowerCase();
     const matchSearch = !q ||
       (l.company||'').toLowerCase().includes(q) ||
@@ -327,6 +334,10 @@ function filteredLeads() {
     if (currentFilter === 'proposal')      return l.proposal;
     if (currentFilter === 'closed')        return l.closed;
     return true;
+  });
+  return filtered.sort((a, b) => {
+    const ta = a.createdAt || 0, tb = b.createdAt || 0;
+    return currentSort === 'latest' ? tb - ta : ta - tb;
   });
 }
 
