@@ -457,13 +457,12 @@
     const vis = getVisibility();
 
     if (currentRole === 'admin') {
-      // Show all, dim the ones guests can't see
+      // Admin ALWAYS sees everything — no dimming, no hiding
       document.querySelectorAll('.app-item').forEach(el => {
         el.style.display = '';
-        const id = el.dataset.id;
-        el.classList.toggle('hidden-preview', vis[id] === false);
+        el.classList.remove('hidden-preview');
       });
-      // Sync toolbar switches
+      // Sync toolbar switches to reflect guest visibility state
       document.querySelectorAll('#admin-toolbar input[type=checkbox]').forEach(cb => {
         cb.checked = vis[cb.dataset.target] !== false;
       });
@@ -491,9 +490,7 @@
     const vis = getVisibility();
     vis[id] = cb.checked;
     saveVisibility(vis);
-    // Live preview in admin view
-    const el = document.querySelector(`.app-item[data-id="${id}"]`);
-    if (el) el.classList.toggle('hidden-preview', !cb.checked);
+    // Admin view is NEVER affected — only saves the preference for guests
   }
 
   // ── TOOLBAR COLLAPSE ─────────────────────────────────
