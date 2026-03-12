@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Move Budget — Milo</title>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -330,37 +331,9 @@
       border-radius: 6px; transition: background 0.1s;
     }
     .emoji-opt:hover { background: #f0f0f0; }
-
-/* ── Back button ── */
-    .back-btn {
-      position: fixed;
-      top: 24px; left: 24px;
-      display: flex; align-items: center; gap: 7px;
-      background: var(--card);
-      border: 2px solid var(--border);
-      border-radius: 30px;
-      padding: 8px 16px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 12px; font-weight: 700; color: var(--text);
-      text-decoration: none;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
-      transition: border-color 0.15s, box-shadow 0.15s;
-      z-index: 100;
-    }
-    .back-btn:hover {
-      border-color: var(--accent);
-      box-shadow: 0 4px 16px rgba(197,254,0,0.25);
-    }
-    </style>
+  </style>
 </head>
 <body>
-
-  <a class="back-btn" href="https://milomiranda.github.io/hub.html">
-    <span>←</span>
-    <span>Go back</span>
-  </a>
-    
-
 
 <div class="header">
   <div class="badge">🇳🇱 Move Budget</div>
@@ -482,6 +455,7 @@
   </div>
 
   <button class="btn-ghost" id="clear-all-btn" style="display:none; margin: 0 auto;" onclick="clearAll()">Borrar todo</button>
+  <button class="btn-accent" id="export-btn" style="display:none; margin: 0 auto;" onclick="exportExcel()">📥 Exportar Excel</button>
 
 </div>
 
@@ -654,6 +628,7 @@
     if (data.length === 0) {
       document.getElementById('totals-card').style.display = 'none';
       document.getElementById('clear-all-btn').style.display = 'none';
+      document.getElementById('export-btn').style.display = 'none';
       document.getElementById('summary-banner').classList.remove('visible');
       lastTotal = null; lastCheckedTotal = null;
       return;
@@ -661,6 +636,7 @@
 
     document.getElementById('totals-card').style.display = 'block';
     document.getElementById('clear-all-btn').style.display = 'block';
+    document.getElementById('export-btn').style.display = 'block';
 
     data.forEach(group => {
       const el = document.createElement('div');
@@ -836,6 +812,52 @@
   // ── Helpers ───────────────────────────────────────────────
   function escHtml(s) {
     return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ── Export Excel ──────────────────────────────────────────
+  function exportExcel() {
+    const data = getData();
+    const wb = XLSX.utils.book_new();
+
+    // Sheet 1: All items flat
+    const rows = [];
+    data.forEach(group => {
+      group.items.forEach(item => {
+        rows.push({
+          'Grupo': group.name,
+          'Item': item.name,
+          'Monto': item.amount,
+          'Moneda': item.currency,
+          'Ya comprado': item.checked ? 'Sí' : 'No',
+        });
+      });
+      // blank row between groups
+      rows.push({ 'Grupo': '', 'Item': '', 'Monto': '', 'Moneda': '', 'Ya comprado': '' });
+    });
+
+    const ws1 = XLSX.utils.json_to_sheet(rows);
+    ws1['!cols'] = [{ wch: 22 }, { wch: 28 }, { wch: 12 }, { wch: 10 }, { wch: 14 }];
+    XLSX.utils.book_append_sheet(wb, ws1, 'Presupuesto');
+
+    // Sheet 2: Summary per group
+    const summary = data.map(group => {
+      const total = group.items.reduce((s, i) => s + i.amount, 0);
+      const bought = group.items.filter(i => i.checked).reduce((s, i) => s + i.amount, 0);
+      const currencies = [...new Set(group.items.map(i => i.currency))].join(', ');
+      return {
+        'Grupo': group.name,
+        'Items': group.items.length,
+        'Total (moneda original)': total,
+        'Monedas': currencies,
+        'Ya comprado': group.items.filter(i => i.checked).length,
+        'Total comprado': bought,
+      };
+    });
+    const ws2 = XLSX.utils.json_to_sheet(summary);
+    ws2['!cols'] = [{ wch: 22 }, { wch: 8 }, { wch: 22 }, { wch: 14 }, { wch: 14 }, { wch: 16 }];
+    XLSX.utils.book_append_sheet(wb, ws2, 'Resumen por grupo');
+
+    XLSX.writeFile(wb, `presupuesto-mudanza-${new Date().toISOString().slice(0,10)}.xlsx`);
   }
 
   // ── Init ──────────────────────────────────────────────────
