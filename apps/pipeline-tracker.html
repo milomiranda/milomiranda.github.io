@@ -7,390 +7,103 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
-    --bg: #f6f6f4;
-    --card: #ffffff;
-    --accent: #c5fe00;
-    --text: #111111;
-    --muted: #aaaaaa;
-    --border: #ebebeb;
+    --bg: #f6f6f4; --card: #ffffff; --accent: #c5fe00;
+    --text: #111111; --muted: #aaaaaa; --border: #ebebeb;
     --shadow: 0 2px 16px rgba(0,0,0,0.05);
   }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 0 0 60px; }
 
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    padding: 0 0 60px;
-  }
+  header { padding: 40px 32px 28px; max-width: 1400px; margin: 0 auto; }
+  .badge { display: inline-block; background: var(--accent); color: var(--text); font-size: 11px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; padding: 5px 14px; border-radius: 999px; margin-bottom: 14px; }
+  header h1 { font-size: clamp(32px, 5vw, 52px); font-weight: 800; letter-spacing: -0.04em; line-height: 1.05; margin-bottom: 8px; }
+  header p { color: var(--muted); font-size: 15px; font-weight: 500; }
 
-  /* HEADER */
-  header {
-    padding: 40px 32px 28px;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-  .badge {
-    display: inline-block;
-    background: var(--accent);
-    color: var(--text);
-    font-size: 11px;
-    font-weight: 800;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    padding: 5px 14px;
-    border-radius: 999px;
-    margin-bottom: 14px;
-  }
-  header h1 {
-    font-size: clamp(32px, 5vw, 52px);
-    font-weight: 800;
-    letter-spacing: -0.04em;
-    line-height: 1.05;
-    margin-bottom: 8px;
-  }
-  header p {
-    color: var(--muted);
-    font-size: 15px;
-    font-weight: 500;
-  }
-
-  /* SUMMARY BANNER */
-  .summary {
-    background: var(--accent);
-    border-radius: 20px;
-    padding: 24px 32px;
-    display: flex;
-    gap: 40px;
-    flex-wrap: wrap;
-    align-items: center;
-    box-shadow: 0 0 0 4px rgba(197,254,0,0.15);
-    margin: 0 32px 28px;
-    max-width: calc(1200px - 64px);
-    margin-left: auto;
-    margin-right: auto;
-  }
+  .summary { background: var(--accent); border-radius: 20px; padding: 24px 32px; display: flex; gap: 40px; flex-wrap: wrap; align-items: center; box-shadow: 0 0 0 4px rgba(197,254,0,0.15); max-width: calc(1400px - 64px); margin: 0 auto 28px; }
   .summary-stat { display: flex; flex-direction: column; gap: 2px; }
-  .summary-stat span:first-child {
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: rgba(0,0,0,0.5);
-  }
-  .summary-stat span:last-child {
-    font-family: monospace;
-    font-size: 32px;
-    font-weight: 800;
-    color: var(--text);
-  }
+  .summary-stat span:first-child { font-size: 10px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(0,0,0,0.5); }
+  .summary-stat span:last-child { font-family: monospace; font-size: 32px; font-weight: 800; color: var(--text); }
 
-  /* MAIN LAYOUT */
-  .main {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 32px;
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-  }
+  .main { max-width: 1400px; margin: 0 auto; padding: 0 32px; display: flex; flex-direction: column; gap: 24px; }
 
-  /* CARD */
-  .card {
-    background: var(--card);
-    border: 2px solid var(--border);
-    border-radius: 20px;
-    padding: 28px;
-    box-shadow: var(--shadow);
-    animation: fadeUp 0.4s ease both;
-  }
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(16px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  .card-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 20px;
-  }
-  .card-icon {
-    width: 32px; height: 32px;
-    background: var(--accent);
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 15px;
-    flex-shrink: 0;
-  }
-  .card-title {
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-  }
+  .card { background: var(--card); border: 2px solid var(--border); border-radius: 20px; padding: 28px; box-shadow: var(--shadow); animation: fadeUp 0.4s ease both; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  .card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+  .card-icon { width: 32px; height: 32px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; }
+  .card-title { font-size: 14px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
 
-  /* FILTERS */
-  .filters {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    align-items: center;
-  }
-  .filter-btn {
-    padding: 8px 16px;
-    border-radius: 10px;
-    border: 1.5px solid var(--border);
-    background: #fafafa;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.15s;
-    color: var(--text);
-  }
+  .filters { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .filter-btn { padding: 8px 16px; border-radius: 10px; border: 1.5px solid var(--border); background: #fafafa; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.15s; color: var(--text); }
   .filter-btn:hover { border-color: var(--text); }
-  .filter-btn.active {
-    background: var(--text);
-    color: #fff;
-    border-color: var(--text);
-  }
-  .filter-btn.accent.active {
-    background: var(--accent);
-    color: var(--text);
-    border-color: var(--accent);
-  }
+  .filter-btn.active { background: var(--text); color: #fff; border-color: var(--text); }
 
-  /* SEARCH + ACTIONS */
-  .toolbar {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-    align-items: center;
-  }
-  .search-wrap {
-    position: relative;
-    flex: 1;
-    min-width: 200px;
-  }
-  .search-wrap input {
-    width: 100%;
-    padding: 10px 14px 10px 40px;
-    background: #fafafa;
-    border: 1.5px solid var(--border);
-    border-radius: 10px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    color: var(--text);
-    outline: none;
-    transition: border-color 0.15s;
-  }
+  .toolbar { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+  .search-wrap { position: relative; flex: 1; min-width: 200px; }
+  .search-wrap input { width: 100%; padding: 10px 14px 10px 40px; background: #fafafa; border: 1.5px solid var(--border); border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text); outline: none; transition: border-color 0.15s; }
   .search-wrap input:focus { border-color: var(--text); }
-  .search-icon {
-    position: absolute;
-    left: 13px; top: 50%;
-    transform: translateY(-50%);
-    color: var(--muted);
-    font-size: 16px;
-    pointer-events: none;
-  }
-  .btn {
-    padding: 10px 20px;
-    border-radius: 10px;
-    border: none;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    font-weight: 800;
-    cursor: pointer;
-    transition: all 0.15s;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    white-space: nowrap;
-  }
+  .search-icon { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 16px; pointer-events: none; }
+  .btn { padding: 10px 20px; border-radius: 10px; border: none; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 800; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 6px; white-space: nowrap; }
   .btn-primary { background: var(--accent); color: var(--text); }
   .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(197,254,0,0.4); }
   .btn-outline { background: #fff; color: var(--text); border: 1.5px solid var(--border); }
   .btn-outline:hover { border-color: var(--text); }
 
-  /* TABLE */
   .table-wrap { overflow-x: auto; }
   table { width: 100%; border-collapse: collapse; font-size: 14px; }
-  th {
-    text-align: left;
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--muted);
-    padding: 0 14px 12px;
-    border-bottom: 1.5px solid var(--border);
-    white-space: nowrap;
-  }
-  td {
-    padding: 14px;
-    border-bottom: 1px solid var(--border);
-    vertical-align: middle;
-  }
+  th { text-align: left; font-size: 10px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); padding: 0 14px 12px; border-bottom: 1.5px solid var(--border); white-space: nowrap; }
+  td { padding: 12px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
   tr:last-child td { border-bottom: none; }
   tr:hover td { background: #fafafa; }
-
   .company-name { font-weight: 700; }
-  .contact-email { color: var(--muted); font-size: 12px; }
+  .sub-text { color: var(--muted); font-size: 12px; }
+  .website-link { color: var(--text); font-size: 12px; text-decoration: none; font-weight: 600; }
+  .website-link:hover { text-decoration: underline; }
 
-  /* STATUS PILL */
-  .pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 4px 10px;
-    border-radius: 999px;
-    font-size: 11px;
-    font-weight: 700;
-    white-space: nowrap;
-  }
-  .pill-yes { background: #edffd0; color: #3a7a00; }
-  .pill-no { background: #f5f5f5; color: #aaa; }
-  .pill-closed { background: var(--accent); color: var(--text); }
+  .toggle-check { width: 28px; height: 28px; border-radius: 8px; border: 1.5px solid var(--border); background: #fafafa; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: all 0.15s; flex-shrink: 0; }
+  .toggle-check.checked { background: var(--accent); border-color: var(--accent); color: var(--text); }
+  .toggle-check.closed-check { background: var(--text); border-color: var(--text); color: #fff; }
 
-  /* TOGGLE CHECK */
-  .toggle-check {
-    width: 28px; height: 28px;
-    border-radius: 8px;
-    border: 1.5px solid var(--border);
-    background: #fafafa;
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 14px;
-    transition: all 0.15s;
-    flex-shrink: 0;
-  }
-  .toggle-check.checked {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: var(--text);
-  }
-  .toggle-check.closed-check {
-    background: var(--text);
-    border-color: var(--text);
-    color: #fff;
-  }
-
-  /* ACTION BUTTONS */
   .action-btns { display: flex; gap: 6px; }
-  .icon-btn {
-    width: 30px; height: 30px;
-    border-radius: 8px;
-    border: 1.5px solid var(--border);
-    background: #fafafa;
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 13px;
-    transition: all 0.15s;
-  }
+  .icon-btn { width: 30px; height: 30px; border-radius: 8px; border: 1.5px solid var(--border); background: #fafafa; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 13px; transition: all 0.15s; }
   .icon-btn:hover { border-color: var(--text); background: #fff; }
   .icon-btn.del:hover { border-color: #ff4444; color: #ff4444; }
 
-  /* MODAL */
-  .modal-overlay {
-    display: none;
-    position: fixed; inset: 0;
-    background: rgba(0,0,0,0.3);
-    backdrop-filter: blur(4px);
-    z-index: 100;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-  }
+  /* MODALS */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.3); backdrop-filter: blur(4px); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
   .modal-overlay.open { display: flex; }
-  .modal {
-    background: var(--card);
-    border: 2px solid var(--border);
-    border-radius: 20px;
-    padding: 32px;
-    width: 100%;
-    max-width: 560px;
-    max-height: 90vh;
-    overflow-y: auto;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.12);
-    animation: fadeUp 0.25s ease;
-  }
+  .modal { background: var(--card); border: 2px solid var(--border); border-radius: 20px; padding: 32px; width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.12); animation: fadeUp 0.25s ease; }
   .modal h2 { font-size: 22px; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 24px; }
   .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
   .form-group { display: flex; flex-direction: column; gap: 6px; }
   .form-group.full { grid-column: 1 / -1; }
-  label {
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-  input[type="text"], input[type="email"], input[type="tel"], textarea {
-    padding: 10px 14px;
-    background: #fafafa;
-    border: 1.5px solid var(--border);
-    border-radius: 10px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    color: var(--text);
-    outline: none;
-    transition: border-color 0.15s;
-    width: 100%;
-  }
+  label { font-size: 10px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+  input[type="text"], input[type="email"], input[type="tel"], input[type="url"], textarea { padding: 10px 14px; background: #fafafa; border: 1.5px solid var(--border); border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text); outline: none; transition: border-color 0.15s; width: 100%; }
   input:focus, textarea:focus { border-color: var(--text); }
   textarea { resize: vertical; min-height: 72px; }
-
-  .checkboxes-row {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-    margin-top: 4px;
-  }
-  .checkbox-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    user-select: none;
-  }
+  .checkboxes-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 4px; }
+  .checkbox-item { display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; }
   .checkbox-item input[type="checkbox"] { display: none; }
-  .checkbox-box {
-    width: 20px; height: 20px;
-    border-radius: 6px;
-    border: 1.5px solid var(--border);
-    background: #fafafa;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 11px;
-    transition: all 0.15s;
-    flex-shrink: 0;
-  }
-  .checkbox-item input:checked + .checkbox-box {
-    background: var(--accent);
-    border-color: var(--accent);
-  }
+  .checkbox-box { width: 20px; height: 20px; border-radius: 6px; border: 1.5px solid var(--border); background: #fafafa; display: flex; align-items: center; justify-content: center; font-size: 11px; transition: all 0.15s; flex-shrink: 0; }
+  .checkbox-item input:checked + .checkbox-box { background: var(--accent); border-color: var(--accent); }
   .checkbox-label { font-size: 13px; font-weight: 600; }
-
   .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; }
 
-  /* EMPTY */
-  .empty-state {
-    text-align: center;
-    padding: 60px 20px;
-    color: var(--muted);
-  }
+  /* IMPORT */
+  .import-drop { border: 2px dashed var(--border); border-radius: 14px; padding: 36px 24px; text-align: center; cursor: pointer; transition: border-color 0.15s, background 0.15s; background: #fafafa; }
+  .import-drop:hover, .import-drop.dragover { border-color: var(--text); background: #f0f0ee; }
+  .import-drop .drop-icon { font-size: 36px; margin-bottom: 10px; }
+  .import-drop p { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .import-drop span { font-size: 12px; color: var(--muted); }
+  #import-file { display: none; }
+  .import-preview { margin-top: 14px; font-size: 13px; background: #f5f5f5; border-radius: 10px; padding: 12px 16px; display: none; line-height: 1.7; }
+  .import-note { margin-top: 16px; padding: 14px 16px; background: #fafafa; border: 1.5px solid var(--border); border-radius: 10px; font-size: 11px; color: #999; line-height: 1.8; }
+  .import-note strong { color: #666; display: block; margin-bottom: 4px; }
+
+  .empty-state { text-align: center; padding: 60px 20px; color: var(--muted); }
   .empty-state .emoji { font-size: 48px; margin-bottom: 12px; }
   .empty-state p { font-size: 15px; font-weight: 500; }
 
-  /* FOOTER */
-  footer {
-    text-align: center;
-    padding: 40px 20px 20px;
-    font-size: 12px;
-    color: var(--muted);
-    font-weight: 500;
-  }
+  footer { text-align: center; padding: 40px 20px 20px; font-size: 12px; color: var(--muted); font-weight: 500; }
 
   @media (max-width: 600px) {
     header, .main { padding: 24px 16px; }
@@ -410,54 +123,38 @@
 </header>
 
 <div class="summary">
-  <div class="summary-stat">
-    <span>Total Leads</span>
-    <span id="stat-total">0</span>
-  </div>
-  <div class="summary-stat">
-    <span>Contacted</span>
-    <span id="stat-contacted">0</span>
-  </div>
-  <div class="summary-stat">
-    <span>Demos</span>
-    <span id="stat-demo">0</span>
-  </div>
-  <div class="summary-stat">
-    <span>Proposals</span>
-    <span id="stat-proposal">0</span>
-  </div>
-  <div class="summary-stat">
-    <span>Closed 🎉</span>
-    <span id="stat-closed">0</span>
-  </div>
+  <div class="summary-stat"><span>Total Leads</span><span id="stat-total">0</span></div>
+  <div class="summary-stat"><span>Contacted</span><span id="stat-contacted">0</span></div>
+  <div class="summary-stat"><span>Demos</span><span id="stat-demo">0</span></div>
+  <div class="summary-stat"><span>Proposals</span><span id="stat-proposal">0</span></div>
+  <div class="summary-stat"><span>Closed 🎉</span><span id="stat-closed">0</span></div>
 </div>
 
 <div class="main">
 
-  <!-- Toolbar -->
   <div class="card" style="animation-delay:0.05s">
     <div style="display:flex;flex-direction:column;gap:14px;">
       <div class="toolbar">
         <div class="search-wrap">
           <span class="search-icon">🔍</span>
-          <input type="text" id="search-input" placeholder="Search company, person, email…">
+          <input type="text" id="search-input" placeholder="Search company, person, city, country…">
         </div>
+        <button class="btn btn-outline" onclick="openImportModal()">📂 Import CSV</button>
         <button class="btn btn-outline" onclick="exportExcel()">📥 Export Excel</button>
         <button class="btn btn-primary" onclick="openModal()">+ Add Lead</button>
       </div>
-      <div class="filters" id="status-filters">
+      <div class="filters">
         <span style="font-size:10px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-right:4px">Filter:</span>
-        <button class="filter-btn active" data-filter="all" onclick="setFilter('all', this)">All</button>
-        <button class="filter-btn" data-filter="not-contacted" onclick="setFilter('not-contacted', this)">Not Contacted</button>
-        <button class="filter-btn" data-filter="contacted" onclick="setFilter('contacted', this)">Contacted</button>
-        <button class="filter-btn" data-filter="demo" onclick="setFilter('demo', this)">Demo Scheduled</button>
-        <button class="filter-btn" data-filter="proposal" onclick="setFilter('proposal', this)">Proposal Sent</button>
-        <button class="filter-btn" data-filter="closed" onclick="setFilter('closed', this)">Closed ✓</button>
+        <button class="filter-btn active" data-filter="all" onclick="setFilter('all',this)">All</button>
+        <button class="filter-btn" data-filter="not-contacted" onclick="setFilter('not-contacted',this)">Not Contacted</button>
+        <button class="filter-btn" data-filter="contacted" onclick="setFilter('contacted',this)">Contacted</button>
+        <button class="filter-btn" data-filter="demo" onclick="setFilter('demo',this)">Demo Scheduled</button>
+        <button class="filter-btn" data-filter="proposal" onclick="setFilter('proposal',this)">Proposal Sent</button>
+        <button class="filter-btn" data-filter="closed" onclick="setFilter('closed',this)">Closed ✓</button>
       </div>
     </div>
   </div>
 
-  <!-- Table -->
   <div class="card" style="animation-delay:0.1s;padding:20px 0;">
     <div class="card-header" style="padding:0 28px;">
       <div class="card-icon">📋</div>
@@ -470,6 +167,9 @@
             <th>Company / Org</th>
             <th>Contact Person</th>
             <th>Email / Phone</th>
+            <th>Website</th>
+            <th>City</th>
+            <th>Country</th>
             <th>Contacted</th>
             <th>Demo</th>
             <th>Proposal</th>
@@ -489,7 +189,7 @@
 
 </div>
 
-<!-- ADD/EDIT MODAL -->
+<!-- ADD / EDIT MODAL -->
 <div class="modal-overlay" id="modal">
   <div class="modal">
     <h2 id="modal-title">Add New Lead</h2>
@@ -509,6 +209,18 @@
       <div class="form-group">
         <label>Phone</label>
         <input type="tel" id="f-phone" placeholder="+31 6 000 000">
+      </div>
+      <div class="form-group full">
+        <label>Website</label>
+        <input type="url" id="f-website" placeholder="https://acme.com">
+      </div>
+      <div class="form-group">
+        <label>City</label>
+        <input type="text" id="f-city" placeholder="Amsterdam">
+      </div>
+      <div class="form-group">
+        <label>Country</label>
+        <input type="text" id="f-country" placeholder="Netherlands">
       </div>
       <div class="form-group full">
         <label>Notes</label>
@@ -547,30 +259,50 @@
   </div>
 </div>
 
-<footer>Built by Emilio Miranda Escamilla</footer>
+<!-- IMPORT CSV MODAL -->
+<div class="modal-overlay" id="import-modal">
+  <div class="modal" style="max-width:520px">
+    <h2>Import CSV</h2>
+    <div class="import-drop" id="import-drop" onclick="document.getElementById('import-file').click()">
+      <div class="drop-icon">📂</div>
+      <p>Click to select a CSV file</p>
+      <span>or drag and drop it here</span>
+    </div>
+    <input type="file" id="import-file" accept=".csv,.txt">
+    <div class="import-preview" id="import-preview"></div>
+    <div class="import-note">
+      <strong>Expected columns (header row required):</strong>
+      Company · Person · Email · Phone · Website · City · Country · Notes · Contacted · Demo · Proposal · Closed<br>
+      • Column order doesn't matter — matched by name<br>
+      • For status columns use <em>yes</em>, <em>1</em>, or <em>true</em> to mark as done<br>
+      • Existing leads are kept — imports are added on top
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeImportModal()">Cancel</button>
+      <button class="btn btn-primary" id="import-confirm-btn" onclick="confirmImport()" disabled style="opacity:0.4;cursor:not-allowed">Import</button>
+    </div>
+  </div>
+</div>
 
-<!-- SheetJS for Excel export -->
+<footer>
+  Built by Emilio Miranda Escamilla
+  <br><br>
+  <button onclick="history.back()" style="background:none;border:1.5px solid #e0e0e0;border-radius:8px;padding:6px 14px;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;color:#aaa;cursor:pointer;letter-spacing:0.04em;transition:all 0.15s;" onmouseover="this.style.borderColor='#111';this.style.color='#111'" onmouseout="this.style.borderColor='#e0e0e0';this.style.color='#aaa'">← Back</button>
+</footer>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-
 <script>
-// ── STATE ──────────────────────────────────────────────
-const STORAGE_KEY = 'pipeline_leads_v2';
+const STORAGE_KEY = 'pipeline_leads_v3';
 let leads = [];
 let currentFilter = 'all';
 let searchQuery = '';
 let editingId = null;
+let pendingImport = [];
 
-// ── PERSIST (localStorage — works cross-device via same browser profile,
-//    or use the export/import flow for true cross-device) ──────────────
-function save() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(leads));
-}
-function load() {
-  try { leads = JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
-  catch { leads = []; }
-}
+function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(leads)); }
+function load() { try { leads = JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch { leads = []; } }
 
-// ── FILTER & RENDER ────────────────────────────────────
+// ── FILTER & RENDER ───────────────────────────────────
 function setFilter(f, el) {
   currentFilter = f;
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -585,14 +317,15 @@ function filteredLeads() {
       (l.company||'').toLowerCase().includes(q) ||
       (l.person||'').toLowerCase().includes(q) ||
       (l.email||'').toLowerCase().includes(q) ||
-      (l.phone||'').toLowerCase().includes(q);
+      (l.city||'').toLowerCase().includes(q) ||
+      (l.country||'').toLowerCase().includes(q);
     if (!matchSearch) return false;
     if (currentFilter === 'all') return true;
     if (currentFilter === 'not-contacted') return !l.contacted;
-    if (currentFilter === 'contacted') return l.contacted;
-    if (currentFilter === 'demo') return l.demo;
-    if (currentFilter === 'proposal') return l.proposal;
-    if (currentFilter === 'closed') return l.closed;
+    if (currentFilter === 'contacted')     return l.contacted;
+    if (currentFilter === 'demo')          return l.demo;
+    if (currentFilter === 'proposal')      return l.proposal;
+    if (currentFilter === 'closed')        return l.closed;
     return true;
   });
 }
@@ -613,13 +346,16 @@ function render() {
         <td>${esc(l.person||'—')}</td>
         <td>
           <div>${esc(l.email||'—')}</div>
-          <div class="contact-email">${esc(l.phone||'')}</div>
+          <div class="sub-text">${esc(l.phone||'')}</div>
         </td>
+        <td>${l.website ? `<a class="website-link" href="${esc(l.website)}" target="_blank" rel="noopener">🔗 ${esc(cleanUrl(l.website))}</a>` : '<span style="color:#ddd">—</span>'}</td>
+        <td>${esc(l.city||'—')}</td>
+        <td>${esc(l.country||'—')}</td>
         <td><button class="toggle-check ${l.contacted?'checked':''}" onclick="toggle('${l.id}','contacted')">${l.contacted?'✓':''}</button></td>
         <td><button class="toggle-check ${l.demo?'checked':''}" onclick="toggle('${l.id}','demo')">${l.demo?'✓':''}</button></td>
         <td><button class="toggle-check ${l.proposal?'checked':''}" onclick="toggle('${l.id}','proposal')">${l.proposal?'✓':''}</button></td>
         <td><button class="toggle-check ${l.closed?'closed-check':''}" onclick="toggle('${l.id}','closed')">${l.closed?'✓':''}</button></td>
-        <td style="max-width:180px;white-space:normal;font-size:12px;color:var(--muted)">${esc(l.notes||'')}</td>
+        <td style="max-width:160px;white-space:normal;font-size:12px;color:var(--muted)">${esc(l.notes||'')}</td>
         <td>
           <div class="action-btns">
             <button class="icon-btn" onclick="editLead('${l.id}')" title="Edit">✏️</button>
@@ -630,19 +366,21 @@ function render() {
     `).join('');
   }
 
-  // Stats
-  document.getElementById('stat-total').textContent = leads.length;
-  document.getElementById('stat-contacted').textContent = leads.filter(l=>l.contacted).length;
-  document.getElementById('stat-demo').textContent = leads.filter(l=>l.demo).length;
-  document.getElementById('stat-proposal').textContent = leads.filter(l=>l.proposal).length;
-  document.getElementById('stat-closed').textContent = leads.filter(l=>l.closed).length;
+  document.getElementById('stat-total').textContent     = leads.length;
+  document.getElementById('stat-contacted').textContent  = leads.filter(l=>l.contacted).length;
+  document.getElementById('stat-demo').textContent       = leads.filter(l=>l.demo).length;
+  document.getElementById('stat-proposal').textContent   = leads.filter(l=>l.proposal).length;
+  document.getElementById('stat-closed').textContent     = leads.filter(l=>l.closed).length;
 }
 
+function cleanUrl(url) {
+  return url.replace(/^https?:\/\/(www\.)?/,'').replace(/\/$/,'');
+}
 function esc(str) {
   return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-// ── TOGGLE ────────────────────────────────────────────
+// ── TOGGLE ───────────────────────────────────────────
 function toggle(id, field) {
   const lead = leads.find(l => l.id === id);
   if (!lead) return;
@@ -650,12 +388,15 @@ function toggle(id, field) {
   save(); render();
 }
 
-// ── MODAL ─────────────────────────────────────────────
-function openModal(prefill) {
+// ── MODAL ────────────────────────────────────────────
+const TEXT_FIELDS = ['company','person','email','phone','website','city','country','notes'];
+const BOOL_FIELDS = ['contacted','demo','proposal','closed'];
+
+function openModal() {
   editingId = null;
   document.getElementById('modal-title').textContent = 'Add New Lead';
-  ['company','person','email','phone','notes'].forEach(f => document.getElementById('f-'+f).value = '');
-  ['contacted','demo','proposal','closed'].forEach(f => document.getElementById('f-'+f).checked = false);
+  TEXT_FIELDS.forEach(f => document.getElementById('f-'+f).value = '');
+  BOOL_FIELDS.forEach(f => document.getElementById('f-'+f).checked = false);
   document.getElementById('modal').classList.add('open');
 }
 
@@ -664,12 +405,8 @@ function editLead(id) {
   if (!l) return;
   editingId = id;
   document.getElementById('modal-title').textContent = 'Edit Lead';
-  document.getElementById('f-company').value = l.company||'';
-  document.getElementById('f-person').value = l.person||'';
-  document.getElementById('f-email').value = l.email||'';
-  document.getElementById('f-phone').value = l.phone||'';
-  document.getElementById('f-notes').value = l.notes||'';
-  ['contacted','demo','proposal','closed'].forEach(f => document.getElementById('f-'+f).checked = !!l[f]);
+  TEXT_FIELDS.forEach(f => document.getElementById('f-'+f).value = l[f]||'');
+  BOOL_FIELDS.forEach(f => document.getElementById('f-'+f).checked = !!l[f]);
   document.getElementById('modal').classList.add('open');
 }
 
@@ -681,18 +418,9 @@ function closeModal() {
 function saveLead() {
   const company = document.getElementById('f-company').value.trim();
   if (!company) { alert('Please enter a company or organiser name.'); return; }
-
-  const data = {
-    company,
-    person: document.getElementById('f-person').value.trim(),
-    email: document.getElementById('f-email').value.trim(),
-    phone: document.getElementById('f-phone').value.trim(),
-    notes: document.getElementById('f-notes').value.trim(),
-    contacted: document.getElementById('f-contacted').checked,
-    demo: document.getElementById('f-demo').checked,
-    proposal: document.getElementById('f-proposal').checked,
-    closed: document.getElementById('f-closed').checked,
-  };
+  const data = { company };
+  TEXT_FIELDS.filter(f => f !== 'company').forEach(f => data[f] = document.getElementById('f-'+f).value.trim());
+  BOOL_FIELDS.forEach(f => data[f] = document.getElementById('f-'+f).checked);
 
   if (editingId) {
     const idx = leads.findIndex(l => l.id === editingId);
@@ -700,7 +428,6 @@ function saveLead() {
   } else {
     leads.unshift({ id: crypto.randomUUID(), createdAt: Date.now(), ...data });
   }
-
   save(); render(); closeModal();
 }
 
@@ -710,40 +437,163 @@ function deleteLead(id) {
   save(); render();
 }
 
-// ── EXPORT EXCEL ──────────────────────────────────────
+// ── EXPORT EXCEL ─────────────────────────────────────
 function exportExcel() {
   const rows = leads.map(l => ({
-    'Company / Org': l.company||'',
+    'Company / Org':  l.company||'',
     'Contact Person': l.person||'',
-    'Email': l.email||'',
-    'Phone': l.phone||'',
-    'Contacted': l.contacted ? 'Yes' : 'No',
-    'Demo Scheduled': l.demo ? 'Yes' : 'No',
-    'Proposal Sent': l.proposal ? 'Yes' : 'No',
-    'Closed Deal': l.closed ? 'Yes' : 'No',
-    'Notes': l.notes||'',
-    'Created At': l.createdAt ? new Date(l.createdAt).toLocaleDateString() : '',
+    'Email':          l.email||'',
+    'Phone':          l.phone||'',
+    'Website':        l.website||'',
+    'City':           l.city||'',
+    'Country':        l.country||'',
+    'Contacted':      l.contacted ? 'Yes' : 'No',
+    'Demo Scheduled': l.demo      ? 'Yes' : 'No',
+    'Proposal Sent':  l.proposal  ? 'Yes' : 'No',
+    'Closed Deal':    l.closed    ? 'Yes' : 'No',
+    'Notes':          l.notes||'',
+    'Created At':     l.createdAt ? new Date(l.createdAt).toLocaleDateString() : '',
   }));
-
   const ws = XLSX.utils.json_to_sheet(rows);
-  ws['!cols'] = [20,20,28,18,14,16,16,14,36,16].map(w => ({ wch: w }));
+  ws['!cols'] = [20,20,28,18,24,16,16,14,16,16,14,36,16].map(w => ({ wch: w }));
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, 'Pipeline');
   XLSX.writeFile(wb, `pipeline-${new Date().toISOString().slice(0,10)}.xlsx`);
 }
 
+// ── CSV IMPORT ────────────────────────────────────────
+function openImportModal() {
+  pendingImport = [];
+  document.getElementById('import-preview').style.display = 'none';
+  document.getElementById('import-preview').innerHTML = '';
+  document.getElementById('import-file').value = '';
+  const btn = document.getElementById('import-confirm-btn');
+  btn.disabled = true; btn.style.opacity = '0.4'; btn.style.cursor = 'not-allowed';
+  document.getElementById('import-modal').classList.add('open');
+}
+function closeImportModal() {
+  document.getElementById('import-modal').classList.remove('open');
+  pendingImport = [];
+}
+
+// Drag & drop
+const dropZone = document.getElementById('import-drop');
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.remove('dragover'); const f = e.dataTransfer.files[0]; if (f) processCSVFile(f); });
+document.getElementById('import-file').addEventListener('change', e => { const f = e.target.files[0]; if (f) processCSVFile(f); });
+
+function processCSVFile(file) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    const parsed = parseCSV(e.target.result);
+    pendingImport = parsed;
+    const preview = document.getElementById('import-preview');
+    const btn = document.getElementById('import-confirm-btn');
+    preview.style.display = 'block';
+    if (parsed.length === 0) {
+      preview.innerHTML = '⚠️ No valid rows found. Make sure your CSV has a header row with a <strong>Company</strong> column.';
+      btn.disabled = true; btn.style.opacity = '0.4'; btn.style.cursor = 'not-allowed';
+    } else {
+      preview.innerHTML = `✅ <strong>${parsed.length} lead${parsed.length>1?'s':''} ready to import</strong><br>
+        Preview: ${parsed.slice(0,3).map(l=>`<em>${esc(l.company)}</em>`).join(', ')}${parsed.length>3?' …':''}`;
+      btn.disabled = false; btn.style.opacity = '1'; btn.style.cursor = 'pointer';
+    }
+  };
+  reader.readAsText(file);
+}
+
+function parseCSV(text) {
+  const lines = text.trim().split(/\r?\n/);
+  if (lines.length < 2) return [];
+
+  const headers = parseCSVRow(lines[0]).map(h => h.trim().toLowerCase());
+
+  // Flexible column aliases
+  const aliases = {
+    company:   ['company','company / org','organization','org','organiser','organizer','nombre empresa'],
+    person:    ['person','contact person','contact','name','full name','nombre'],
+    email:     ['email','e-mail','email address','correo'],
+    phone:     ['phone','phone number','tel','telephone','telefono'],
+    website:   ['website','web','url','site','sitio'],
+    city:      ['city','ciudad','town'],
+    country:   ['country','pais','país','nation'],
+    notes:     ['notes','note','comments','comment','notas'],
+    contacted: ['contacted','contactado'],
+    demo:      ['demo','demo scheduled','demo agendado'],
+    proposal:  ['proposal','proposal sent','propuesta'],
+    closed:    ['closed','closed deal','cerrado','won'],
+  };
+
+  const colIdx = {};
+  for (const [field, aliasList] of Object.entries(aliases)) {
+    colIdx[field] = -1;
+    for (const a of aliasList) {
+      const idx = headers.indexOf(a);
+      if (idx !== -1) { colIdx[field] = idx; break; }
+    }
+  }
+
+  const toBool = v => ['yes','1','true','x','✓','si','sí'].includes((v||'').trim().toLowerCase());
+  const results = [];
+
+  for (let i = 1; i < lines.length; i++) {
+    const row = parseCSVRow(lines[i]);
+    if (row.every(c => !c.trim())) continue;
+    const get = f => colIdx[f] !== -1 ? (row[colIdx[f]]||'').trim() : '';
+    const company = get('company');
+    if (!company) continue;
+    results.push({
+      id: crypto.randomUUID(),
+      createdAt: Date.now(),
+      company,
+      person:    get('person'),
+      email:     get('email'),
+      phone:     get('phone'),
+      website:   get('website'),
+      city:      get('city'),
+      country:   get('country'),
+      notes:     get('notes'),
+      contacted: toBool(get('contacted')),
+      demo:      toBool(get('demo')),
+      proposal:  toBool(get('proposal')),
+      closed:    toBool(get('closed')),
+    });
+  }
+  return results;
+}
+
+function parseCSVRow(line) {
+  const result = []; let cur = ''; let inQuote = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (ch === '"') {
+      if (inQuote && line[i+1] === '"') { cur += '"'; i++; }
+      else inQuote = !inQuote;
+    } else if (ch === ',' && !inQuote) { result.push(cur); cur = ''; }
+    else cur += ch;
+  }
+  result.push(cur);
+  return result;
+}
+
+function confirmImport() {
+  if (!pendingImport.length) return;
+  leads = [...pendingImport, ...leads];
+  save(); render();
+  closeImportModal();
+}
+
 // ── SEARCH ────────────────────────────────────────────
-document.getElementById('search-input').addEventListener('input', e => {
-  searchQuery = e.target.value;
-  render();
+document.getElementById('search-input').addEventListener('input', e => { searchQuery = e.target.value; render(); });
+
+// Close modals on overlay click
+['modal','import-modal'].forEach(id => {
+  document.getElementById(id).addEventListener('click', e => {
+    if (e.target.id === id) { id === 'modal' ? closeModal() : closeImportModal(); }
+  });
 });
 
-// Close modal on overlay click
-document.getElementById('modal').addEventListener('click', e => {
-  if (e.target === document.getElementById('modal')) closeModal();
-});
-
-// ── INIT ──────────────────────────────────────────────
 load();
 render();
 </script>
