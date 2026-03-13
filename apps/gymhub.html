@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gym Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #f6f6f4; --card: #fff; --border: #ebebeb;
+  --text: #111; --muted: #aaa; --accent: #c5fe00;
+  --green: #16a34a; --green-bg: #f0fdf4; --green-border: #86efac;
+  --orange: #ea580c; --orange-bg: #fff7ed; --orange-border: #fb923c;
+  --shadow: 0 2px 16px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 24px rgba(0,0,0,0.09);
+}
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: 80px; }
+
+.back-btn { position: fixed; top: 20px; left: 20px; z-index: 200; display: flex; align-items: center; gap: 6px; background: var(--card); border: 2px solid var(--border); border-radius: 30px; padding: 7px 14px; font-size: 12px; font-weight: 700; color: var(--text); text-decoration: none; box-shadow: var(--shadow); transition: border-color 0.15s; }
+.back-btn:hover { border-color: var(--accent); }
+
+header { max-width: 760px; margin: 0 auto; padding: 52px 24px 20px; text-align: center; }
+.badge { display: inline-block; background: var(--accent); border-radius: 999px; padding: 5px 16px; margin-bottom: 12px; font-size: 11px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; }
+header h1 { font-size: clamp(28px, 5vw, 44px); font-weight: 900; letter-spacing: -0.05em; margin-bottom: 6px; }
+header p { color: var(--muted); font-size: 14px; font-weight: 500; }
+
+.wrap { max-width: 760px; margin: 0 auto; padding: 0 24px; display: flex; flex-direction: column; gap: 14px; }
+
+/* CHIPS */
+.chips-wrap { display: flex; flex-direction: column; gap: 9px; }
+.chips-label { font-size: 10px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+.chips-row { display: flex; gap: 7px; flex-wrap: wrap; }
+.chip { padding: 8px 16px; border-radius: 999px; border: 2px solid var(--border); background: var(--card); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700; color: var(--text); cursor: pointer; transition: all 0.15s; box-shadow: var(--shadow); line-height: 1; }
+.chip:hover { border-color: var(--text); transform: translateY(-1px); }
+.chip.active { background: var(--text); color: #fff; border-color: var(--text); }
+.chip-sub { font-size: 10px; font-weight: 500; opacity: 0.5; display: block; margin-top: 1px; }
+
+
+
+/* LEGEND */
+.legend { display: flex; gap: 14px; flex-wrap: wrap; }
+.leg-item { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; color: var(--muted); }
+.leg-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.leg-dot.green { background: var(--green); }
+.leg-dot.orange { background: var(--orange); }
+
+/* SECTION DIVIDER */
+.sec-divider { display: flex; align-items: center; gap: 10px; }
+.sec-divider span { font-size: 10px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+.sec-divider::before, .sec-divider::after { content:''; flex:1; height:1px; background: var(--border); }
+
+/* EX LIST */
+.ex-list { display: flex; flex-direction: column; gap: 6px; animation: fadeUp 0.22s ease both; }
+@keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+/* EX CARD */
+.ex-card { background: var(--card); border: 2px solid var(--border); border-radius: 14px; overflow: hidden; box-shadow: var(--shadow); }
+.ex-card.green { border-color: var(--green-border); }
+.ex-card.orange { border-color: var(--orange-border); }
+
+.ex-main-row { display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px; position: relative; }
+.ex-card.green .ex-main-row { background: var(--green-bg); }
+.ex-card.orange .ex-main-row { background: var(--orange-bg); }
+
+.ex-stripe { width: 3px; height: 100%; position: absolute; left: 0; top: 0; bottom: 0; border-radius: 3px 0 0 3px; }
+.ex-card.green .ex-stripe { background: var(--green); }
+.ex-card.orange .ex-stripe { background: var(--orange); }
+
+.ex-dot { width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800; margin-top: 1px; }
+.ex-dot.green { background: var(--green); color: #fff; }
+.ex-dot.orange { background: var(--orange); color: #fff; }
+
+.ex-body { flex: 1; min-width: 0; }
+.ex-name { font-size: 14px; font-weight: 800; line-height: 1.2; }
+.ex-meta { display: flex; gap: 7px; align-items: center; margin-top: 4px; flex-wrap: wrap; }
+.ex-sets { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); font-weight: 500; }
+.ex-badge { font-size: 9px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 7px; border-radius: 99px; white-space: nowrap; }
+.ex-badge.machine { background: #f0f0f0; color: #777; }
+.ex-badge.free { background: #dbeafe; color: #1d4ed8; }
+.ex-badge.body { background: #ede9fe; color: #6d28d9; }
+.ex-tip { font-size: 11px; color: var(--muted); font-style: italic; margin-top: 4px; line-height: 1.4; }
+.ex-swapped-tag { font-size: 10px; font-weight: 600; color: var(--muted); font-style: italic; margin-left: 5px; }
+
+.ex-actions { display: flex; flex-direction: column; gap: 5px; align-items: flex-end; flex-shrink: 0; }
+.swap-btn { background: none; border: 1.5px solid var(--border); border-radius: 7px; padding: 4px 9px; font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 700; color: var(--muted); cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+.swap-btn:hover { border-color: var(--text); color: var(--text); }
+.swap-btn.open { background: var(--text); color: #fff; border-color: var(--text); }
+
+
+
+/* SWAP PANEL */
+.swap-panel { background: #111; padding: 14px; display: none; flex-direction: column; gap: 7px; border-top: 2px solid #222; }
+.swap-panel.open { display: flex; animation: fadeUp 0.18s ease; }
+.swap-title { font-size: 10px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.3); margin-bottom: 2px; }
+.swap-opt { background: rgba(255,255,255,0.07); border: 1.5px solid rgba(255,255,255,0.1); border-radius: 9px; padding: 9px 12px; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 10px; }
+.swap-opt:hover { background: rgba(197,254,0,0.1); border-color: rgba(197,254,0,0.35); }
+.swap-opt.selected { border-color: var(--accent); background: rgba(197,254,0,0.15); }
+.swap-opt-name { font-size: 13px; font-weight: 700; color: #fff; flex: 1; }
+.swap-opt-sets { font-family: 'DM Mono', monospace; font-size: 11px; color: rgba(255,255,255,0.35); white-space: nowrap; }
+.swap-opt-badge { font-size: 9px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 6px; border-radius: 99px; background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.4); white-space: nowrap; }
+.swap-close-btn { background: none; border: 1.5px solid rgba(255,255,255,0.12); border-radius: 7px; padding: 5px 10px; font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.35); cursor: pointer; align-self: flex-start; transition: all 0.15s; margin-top: 2px; }
+.swap-close-btn:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+
+/* HIIT CARD */
+.hiit-card { background: #111; border-radius: 16px; padding: 18px 20px; box-shadow: var(--shadow-md); }
+.hiit-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; flex-wrap: wrap; gap: 8px; }
+.hiit-title { font-size: 13px; font-weight: 800; color: var(--accent); letter-spacing: 0.06em; text-transform: uppercase; }
+.hiit-sub { font-size: 11px; color: rgba(255,255,255,0.35); font-weight: 500; margin-top: 2px; }
+.hiit-counter { font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.07); border-radius: 99px; padding: 3px 10px; }
+.hiit-counter.full { color: var(--accent); background: rgba(197,254,0,0.15); }
+.hiit-exercises { display: flex; flex-direction: column; gap: 7px; }
+.hiit-ex { background: rgba(255,255,255,0.07); border: 1.5px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 14px; display: flex; align-items: center; gap: 10px; cursor: pointer; transition: all 0.15s; user-select: none; }
+.hiit-ex:hover { background: rgba(255,255,255,0.11); border-color: rgba(255,255,255,0.2); }
+.hiit-ex.selected { background: rgba(197,254,0,0.12); border-color: rgba(197,254,0,0.5); }
+.hiit-ex-check { width: 20px; height: 20px; border-radius: 6px; border: 1.5px solid rgba(255,255,255,0.2); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; transition: all 0.15s; }
+.hiit-ex.selected .hiit-ex-check { background: var(--accent); border-color: var(--accent); color: #111; font-weight: 900; }
+.hiit-ex-icon { font-size: 16px; flex-shrink: 0; }
+.hiit-ex-body { flex: 1; }
+.hiit-ex-name { font-size: 13px; font-weight: 700; color: #fff; }
+.hiit-ex.selected .hiit-ex-name { color: var(--accent); }
+.hiit-ex-detail { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 1px; font-family: 'DM Mono', monospace; }
+.hiit-badge { font-size: 9px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 7px; border-radius: 99px; white-space: nowrap; flex-shrink: 0; }
+.hiit-badge.high { background: rgba(239,68,68,0.2); color: #f87171; }
+.hiit-badge.med { background: rgba(234,179,8,0.2); color: #fbbf24; }
+
+/* PHASE PILL */
+.phase-pill { display: flex; align-items: center; gap: 8px; background: var(--card); border: 2px solid var(--border); border-radius: 12px; padding: 10px 16px; font-size: 13px; color: var(--muted); font-weight: 500; box-shadow: var(--shadow); }
+.phase-pill strong { color: var(--text); font-weight: 800; }
+
+/* PLACEHOLDER */
+.placeholder { text-align: center; padding: 44px 20px; color: var(--muted); }
+.placeholder .big { font-size: 38px; margin-bottom: 10px; }
+.placeholder p { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+.placeholder small { font-size: 12px; }
+
+footer { text-align: center; padding: 48px 20px 0; font-size: 12px; color: var(--muted); font-weight: 500; }
+
+@media (max-width: 600px) {
+  header, .wrap { padding-left: 16px; padding-right: 16px; }
+  header { padding-top: 64px; }
+  .guide-imgs { flex-direction: column; align-items: center; }
+}
+</style>
+</head>
+<body>
+
+<a class="back-btn" href="../index.html">← Back</a>
+
+<header>
+  <div class="badge">💪 Gym Hub</div>
+  <h1>Your Workout</h1>
+  <p>Pick a muscle group — exercises, swaps & guides included.</p>
+</header>
+
+<div class="wrap">
+
+  <div class="chips-wrap">
+    <div class="chips-label">Training split — coach-recommended combos</div>
+    <div class="chips-row" id="chips-container"></div>
+  </div>
+
+  <div class="legend">
+    <div class="leg-item"><div class="leg-dot green"></div>Your main routine</div>
+    <div class="leg-item"><div class="leg-dot orange"></div>Optional / swap only</div>
+  </div>
+
+  <div id="ex-area">
+    <div class="placeholder">
+      <div class="big">🏋️</div>
+      <p>Select a muscle group above</p>
+      <small>Exercises + image guides will appear here</small>
+    </div>
+  </div>
+
+</div>
+
+<footer>Built by Emilio Miranda Escamilla</footer>
+
+<script>
+const TL = { machine:'Machine', free:'Free Weights', body:'Bodyweight' };
+
+// ─── TRAINING SPLITS (coach-grouped) ───────────────────────────────────────
+// Logic: Push / Pull / Legs + Core — the classic hypertrophy split
+// Chest+Shoulders+Triceps synergize (all push), Back+Biceps synergize (all pull)
+// Quads+Hams+Glutes+Calves together, Core can attach to any day
+
+const SPLITS = [
+  { id:'push', label:'🔴 Push', sub:'Chest · Shoulders · Triceps', groups:['chest','shoulders','triceps'] },
+  { id:'pull', label:'🔵 Pull', sub:'Back · Biceps', groups:['back','biceps'] },
+  { id:'legs', label:'🟢 Legs', sub:'Quads · Hamstrings · Glutes · Calves', groups:['quads','hamstrings','calves'] },
+  { id:'core', label:'🟡 Core', sub:'Abs · Stability', groups:['core'] },
+];
+
+// ─── ALL MUSCLE GROUPS ──────────────────────────────────────────────────────
+const GROUPS = {
+
+  chest: {
+    label:'Chest', warmup:'5–8 min elliptical + arm circles, chest opener stretch',
+    exercises:[
+      { id:'c1', name:'Barbell Bench Press', sets:'4×8-10', type:'free', color:'green',
+        tip:'Retract scapula, bar to lower chest, controlled negative. King of chest.',
+        guide:'https://www.simplyfitness.com/pages/barbell-bench-press',
+        imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/barbell-bench-press-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/barbell-bench-press-2.gif'],
+        alts:['c1a','c1b','c1c'] },
+      { id:'c2', name:'Incline Dumbbell Press', sets:'3×10-12', type:'free', color:'green',
+        tip:'30–45° incline max. Feel the upper chest — slow on the way down.',
+        guide:'https://www.simplyfitness.com/pages/incline-dumbbell-bench-press',
+        imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/incline-dumbbell-bench-press-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/incline-dumbbell-bench-press-2.gif'],
+        alts:['c2a','c2b'] },
+      { id:'c3', name:'Pec Deck Flyes', sets:'3×12-15', type:'machine', color:'green',
+        tip:'Don\'t go heavy — squeeze at peak. Feel the stretch at full open.',
+        guide:'https://www.simplyfitness.com/pages/peck-deck',
+        imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/pec-deck-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/pec-deck-2.gif'],
+        alts:['c3a','c3b','c3c'] },
+    ],
+    alts:{
+      c1a:{name:'Dumbbell Bench Press',sets:'4×10-12',type:'free',tip:'More ROM and great pec stretch',guide:'https://www.simplyfitness.com/pages/dumbbell-bench-press',imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/dumbbell-bench-press-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/dumbbell-bench-press-2.gif']},
+      c1b:{name:'Smith Machine Bench Press',sets:'4×8-10',type:'machine',tip:'Good if training alone'},
+      c1c:{name:'Push-Ups (weighted)',sets:'4×12-15',type:'body',tip:'Elevate feet for upper chest',guide:'https://www.simplyfitness.com/pages/push-ups',imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/push-ups-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/push-ups-2.gif']},
+      c2a:{name:'Incline Barbell Press',sets:'3×8-10',type:'free',tip:'Heavier load possible',guide:'https://www.simplyfitness.com/pages/incline-barbell-bench-press',imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/incline-barbell-bench-press-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/incline-barbell-bench-press-2.gif']},
+      c2b:{name:'Cable Crossover',sets:'3×12-15',type:'machine',tip:'Constant tension throughout',guide:'https://www.simplyfitness.com/pages/cable-crossover',imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/cable-crossover-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/cable-crossover-2.gif']},
+      c3a:{name:'Cable Crossover',sets:'3×12-15',type:'machine',tip:'High to low for lower chest',guide:'https://www.simplyfitness.com/pages/cable-crossover',imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/cable-crossover-1.gif']},
+      c3b:{name:'Dumbbell Fly (flat)',sets:'3×12-15',type:'free',tip:'Light — deep stretch at bottom',guide:'https://www.simplyfitness.com/pages/dumbbell-fly',imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/dumbbell-fly-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/dumbbell-fly-2.gif']},
+      c3c:{name:'Chest Press Machine',sets:'3×12-15',type:'machine',tip:'Great for drop sets',guide:'https://www.simplyfitness.com/pages/chest-press-machine',imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/chest-press-machine-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/chest-press-machine-2.gif']},
+    },
+    hiit:[
+      {icon:'🪢',name:'Battle Ropes',detail:'30 sec on / 15 sec off — 5 rounds',intensity:'high'},
+      {icon:'📦',name:'Box Jumps',detail:'10 reps × 4 rounds, soft landing',intensity:'high'},
+      {icon:'💨',name:'Mountain Climbers',detail:'30 sec fast / 10 sec rest — 4 rounds',intensity:'high'},
+      {icon:'🔄',name:'Burpees',detail:'10 reps × 3 rounds — no rest between reps',intensity:'high'},
+      {icon:'🚴',name:'Assault Bike Sprints',detail:'20 sec all out / 40 sec easy — 8 rounds',intensity:'high'},
+      {icon:'🏃',name:'Sprint Intervals',detail:'30 sec sprint / 30 sec walk — 6 rounds',intensity:'high'},
+      {icon:'🪜',name:'Jump Rope',detail:'45 sec on / 15 sec rest — 5 rounds',intensity:'med'},
+    ]
+  },
+
+  shoulders: {
+    label:'Shoulders', warmup:'10 min elliptical + shoulder rotations, band pull-aparts × 20',
+    exercises:[
+      { id:'s1', name:'Dumbbell Shoulder Press', sets:'3×8-10', type:'free', color:'green',
+        tip:'Full ROM — don\'t stop short at the top. Seated for more stability.',
+        guide:'https://www.simplyfitness.com/pages/dumbbell-shoulder-press',
+        imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/dumbbell-shoulder-press-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/dumbbell-shoulder-press-2.gif'],
+        alts:['s1a','s1b','s1c'] },
+      { id:'s2', name:'Lateral Raises', sets:'3×12-15', type:'free', color:'green',
+        tip:'Thumbs slightly down at the top. LIGHT weight — no swinging.',
+        guide:'https://www.simplyfitness.com/pages/dumbbell-lateral-raise',
+        imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/dumbbell-lateral-raise-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/dumbbell-lateral-raise-2.gif'],
+        alts:['s2a','s2b'] },
+    ],
+    alts:{
+      s1a:{name:'Barbell Overhead Press',sets:'3×8-10',type:'free',tip:'Standing — best for overall shoulder strength',guide:'https://www.simplyfitness.com/pages/standing-barbell-shoulder-press',imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/standing-barbell-shoulder-press-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/standing-barbell-shoulder-press-2.gif']},
+      s1b:{name:'Smith Machine Shoulder Press',sets:'3×10-12',type:'machine',tip:'Safer — good for drop sets',guide:'https://www.simplyfitness.com/pages/smith-machine-shoulder-press',imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/smith-machine-shoulder-press-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/smith-machine-shoulder-press-2.gif']},
+      s1c:{name:'Dumbbell Push Press',sets:'3×10',type:'free',tip:'Explosive — builds power',guide:'https://www.simplyfitness.com/pages/dumbbell-push-press',imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/dumbbell-push-press-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/dumbbell-push-press-2.gif']},
+      s2a:{name:'Cable One-Arm Lateral Raise',sets:'3×15 each',type:'machine',tip:'Constant tension — better than dumbbells at bottom',guide:'https://www.simplyfitness.com/pages/cable-one-arm-lateral-raise',imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/cable-one-arm-lateral-raise-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/cable-one-arm-lateral-raise-2.gif']},
+      s2b:{name:'Barbell Upright Row',sets:'3×12',type:'free',tip:'Hits lateral + rear delts too',guide:'https://www.simplyfitness.com/pages/barbell-upright-row',imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/barbell-upright-row-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/barbell-upright-row-2.gif']},
+    },
+    hiit:[
+      {icon:'🪢',name:'Battle Ropes (alternating)',detail:'20 sec on / 10 sec off — 6 rounds',intensity:'high'},
+      {icon:'🏃',name:'Sprint Intervals',detail:'30 sec sprint / 30 sec walk — 6 rounds',intensity:'high'},
+      {icon:'🔄',name:'Burpee to Press',detail:'8 reps × 4 rounds',intensity:'high'},
+      {icon:'🧲',name:'Sled Push',detail:'20m × 5 rounds, 45 sec rest',intensity:'med'},
+      {icon:'📦',name:'Box Jumps',detail:'10 reps × 4 rounds',intensity:'high'},
+      {icon:'💨',name:'Mountain Climbers',detail:'30 sec / 10 sec rest — 5 rounds',intensity:'high'},
+      {icon:'🚴',name:'Assault Bike',detail:'20 sec max / 40 sec easy — 8 rounds',intensity:'high'},
+    ]
+  },
+
+  triceps: {
+    label:'Triceps', warmup:'10 min + light cable pushdowns × 20 to warm up elbows',
+    exercises:[
+      { id:'t1', name:'Parallel Bar Dips', sets:'3×8-12', type:'body', color:'green',
+        tip:'Lean slightly forward to target triceps. Elbows close to body.',
+        guide:'https://www.simplyfitness.com/pages/parallel-dip-bar',
+        imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/parallel-dip-bar-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/parallel-dip-bar-2.gif'],
+        alts:['t1a','t1b','t1c'] },
+      { id:'t2', name:'Cable Rope Pushdown', sets:'3×12-15', type:'machine', color:'green',
+        tip:'Elbows pinned to ribs. Flare rope outward at the bottom for full contraction.',
+        guide:'https://www.simplyfitness.com/pages/cable-rope-puschdown',
+        imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/cable-rope-pushdown-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/cable-rope-pushdown-2.gif'],
+        alts:['t2a','t2b','t2c'] },
+    ],
+    alts:{
+      t1a:{name:'Close Grip Bench Press',sets:'3×10-12',type:'free',tip:'Heavy compound — best tricep mass builder',guide:'https://www.simplyfitness.com/pages/close-grip-bench-press',imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/close-grip-bench-press-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/close-grip-bench-press-2.gif']},
+      t1b:{name:'Skull Crushers (Lying Triceps Extension)',sets:'3×10-12',type:'free',tip:'Hits long head — slow and controlled',guide:'https://www.simplyfitness.com/pages/lying-triceps-extension',imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/lying-triceps-extension-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/lying-triceps-extension-2.gif']},
+      t1c:{name:'Bench Dips',sets:'3×12',type:'body',tip:'Easier than parallel bar — good finisher',guide:'https://www.simplyfitness.com/pages/bench-dips',imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/bench-dips-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/bench-dips-2.gif']},
+      t2a:{name:'Triceps Pressdown',sets:'3×12-15',type:'machine',tip:'Straight bar — more lateral head',guide:'https://www.simplyfitness.com/pages/triceps-pressdown',imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/triceps-pressdown-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/triceps-pressdown-2.gif']},
+      t2b:{name:'Overhead Dumbbell Triceps Extension',sets:'3×12-15',type:'free',tip:'Long head stretch — incredible for size',guide:'https://www.simplyfitness.com/pages/dumbbell-overhead-triceps-extension',imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/dumbbell-overhead-triceps-extension-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/dumbbell-overhead-triceps-extension-2.gif']},
+      t2c:{name:'Single-Arm Cable Extension',sets:'3×12-15',type:'machine',tip:'Fixes arm imbalances',guide:'https://www.simplyfitness.com/pages/single-arm-cable-triceps-extension',imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/single-arm-cable-triceps-extension-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/single-arm-cable-triceps-extension-2.gif']},
+    },
+    hiit:[
+      {icon:'🪢',name:'Battle Ropes',detail:'30 sec on / 15 sec off — 5 rounds',intensity:'high'},
+      {icon:'🚣',name:'Rowing Machine Sprints',detail:'250m × 5 rounds, 1 min rest',intensity:'high'},
+      {icon:'🪜',name:'Jump Rope — Double Unders',detail:'30 sec / 15 sec rest — 6 rounds',intensity:'high'},
+      {icon:'📦',name:'Box Jumps',detail:'10 reps × 4 rounds',intensity:'high'},
+      {icon:'🔄',name:'Burpees',detail:'10 reps × 4 rounds',intensity:'high'},
+      {icon:'🚴',name:'Assault Bike',detail:'20 sec max / 40 sec easy — 8 rounds',intensity:'high'},
+      {icon:'🏃',name:'High Knees',detail:'30 sec fast / 10 sec rest — 5 rounds',intensity:'med'},
+    ]
+  },
+
+  back: {
+    label:'Back', warmup:'10 min elliptical + shoulder/spine mobility, band pull-aparts × 20',
+    exercises:[
+      { id:'b1', name:'Pull-Up / Wide-Grip Pulldown', sets:'4×8-10', type:'body', color:'green',
+        tip:'Full dead hang at bottom, pull chest to bar. Use pulldown machine if needed.',
+        guide:'https://www.simplyfitness.com/pages/pull-up',
+        imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/pull-up-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/pull-up-2.gif'],
+        alts:['b1a','b1b'] },
+      { id:'b2', name:'Barbell Row', sets:'4×8-10', type:'free', color:'green',
+        tip:'Hinge to ~45°, pull bar to lower chest. Squeeze at the top. Brace your core.',
+        guide:'https://www.simplyfitness.com/pages/barbell-row',
+        imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/barbell-row-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/barbell-row-2.gif'],
+        alts:['b2a','b2b','b2c'] },
+      { id:'b3', name:'Seated Cable Row (Neutral Grip)', sets:'3×10-12', type:'machine', color:'green',
+        tip:'Chest up, full stretch forward, full contraction back. Don\'t rush.',
+        guide:'https://www.simplyfitness.com/pages/seated-cable-row',
+        imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/seated-cable-row-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/seated-cable-row-2.gif'],
+        alts:['b3a','b3b'] },
+      { id:'b4', name:'Straight Arm Lat Pulldown', sets:'3×12-15', type:'machine', color:'green',
+        tip:'Arms almost straight — pull from lats, not arms. Great lat finisher.',
+        guide:'https://www.simplyfitness.com/pages/straight-arm-lat-pulldown',
+        imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/straight-arm-lat-pulldown-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/straight-arm-lat-pulldown-2.gif'],
+        alts:['b4a'] },
+      { id:'b5', name:'Hyperextensions', sets:'3×12-15', type:'body', color:'green',
+        tip:'Stop at parallel — don\'t hyperextend. Controlled on the way down.',
+        guide:null, imgs:[], alts:['b5a'] },
+    ],
+    alts:{
+      b1a:{name:'Wide-Grip Pulldown',sets:'4×10-12',type:'machine',tip:'Great lat isolation',guide:'https://www.simplyfitness.com/pages/wide-grip-pulldown',imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/wide-grip-pulldown-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/wide-grip-pulldown-2.gif']},
+      b1b:{name:'Close-Grip Pulldown',sets:'4×10-12',type:'machine',tip:'More bicep — great for mind-muscle connection',guide:'https://www.simplyfitness.com/pages/close-grip-pulldown',imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/close-grip-pulldown-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/close-grip-pulldown-2.gif']},
+      b2a:{name:'Dumbbell Bent-Over Row (Single Arm)',sets:'4×10-12',type:'free',tip:'More ROM, fixes side imbalances',guide:'https://www.simplyfitness.com/pages/dumbbell-bent-over-row-single-arm',imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/dumbbell-bent-over-row-single-arm-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/dumbbell-bent-over-row-single-arm-2.gif']},
+      b2b:{name:'T-Bar Rows',sets:'4×10-12',type:'free',tip:'Easier on lower back than barbell row',guide:'https://www.simplyfitness.com/pages/t-bar-rows',imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/t-bar-rows-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/t-bar-rows-2.gif']},
+      b2c:{name:'Dumbbell Bent Over Rows',sets:'4×10-12',type:'free',tip:'Both arms — great ROM',guide:'https://www.simplyfitness.com/pages/dumbbell-bent-over-rows',imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/dumbbell-bent-over-rows-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/dumbbell-bent-over-rows-2.gif']},
+      b3a:{name:'Rope Pulldown',sets:'3×12-15',type:'machine',tip:'Hits lower lats',guide:'https://www.simplyfitness.com/pages/rope-pulldown',imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/rope-pulldown-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/rope-pulldown-2.gif']},
+      b3b:{name:'Reverse-Grip Pulldown',sets:'3×12',type:'machine',tip:'More bicep involvement',guide:'https://www.simplyfitness.com/pages/reverse-grip-pulldown',imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/reverse-grip-pulldown-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/reverse-grip-pulldown-2.gif']},
+      b4a:{name:'Dumbbell Pullover',sets:'3×12-15',type:'free',tip:'Classic lat stretch exercise',guide:'https://www.simplyfitness.com/pages/dumbbell-pullover',imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/dumbbell-pullover-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/dumbbell-pullover-2.gif']},
+      b5a:{name:'Barbell Deadlift',sets:'3×6-8',type:'free',tip:'If energy allows — incredible posterior chain',guide:'https://www.simplyfitness.com/pages/barbell-deadlift',imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/barbell-deadlift-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/barbell-deadlift-2.gif']},
+    },
+    hiit:[
+      {icon:'🚣',name:'Rowing Machine Sprints',detail:'500m × 4 rounds, 2 min rest between',intensity:'high'},
+      {icon:'🪢',name:'Battle Ropes (slams)',detail:'30 sec max / 15 sec rest — 5 rounds',intensity:'high'},
+      {icon:'🏃',name:'Sprint + Farmer\'s Carry',detail:'Sprint 20m, carry 20m × 5 rounds',intensity:'high'},
+      {icon:'🔄',name:'Burpee Pull-Ups',detail:'8 reps × 3 rounds',intensity:'high'},
+      {icon:'🚴',name:'Assault Bike',detail:'20 sec all out / 40 sec easy — 8 rounds',intensity:'high'},
+      {icon:'🧲',name:'Sled Pull (backwards)',detail:'20m × 5 rounds — hits back and hamstrings',intensity:'med'},
+      {icon:'🪜',name:'Jump Rope',detail:'45 sec on / 15 sec rest — 5 rounds',intensity:'med'},
+    ]
+  },
+
+  biceps: {
+    label:'Biceps', warmup:'10 min + light cable curls × 20 to warm up elbows',
+    exercises:[
+      { id:'bi1', name:'Barbell Curl', sets:'3×8-10', type:'free', color:'green',
+        tip:'Elbows fixed to ribs, no body English. Full supination at the top.',
+        guide:'https://www.simplyfitness.com/pages/barbell-curl',
+        imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/barbell-curl-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/barbell-curl-2.gif'],
+        alts:['bi1a','bi1b'] },
+      { id:'bi2', name:'Hammer Curl', sets:'3×10-12', type:'free', color:'green',
+        tip:'Neutral grip — hits brachialis and brachioradialis. Alternate arms or both.',
+        guide:'https://www.simplyfitness.com/pages/hammer-curl',
+        imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/hammer-curl-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/hammer-curl-2.gif'],
+        alts:['bi2a','bi2b'] },
+      { id:'bi3', name:'Dumbbell Concentration Curl', sets:'2×12-15', type:'free', color:'green',
+        tip:'Elbow on inner thigh. Peak squeeze at top. Slow negative.',
+        guide:'https://www.simplyfitness.com/pages/dumbbell-concentration-curl',
+        imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/dumbbell-concentration-curl-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/dumbbell-concentration-curl-2.gif'],
+        alts:['bi3a','bi3b'] },
+    ],
+    alts:{
+      bi1a:{name:'EZ Barbell Curl',sets:'3×10-12',type:'free',tip:'Easier on wrists — great for volume',guide:'https://www.simplyfitness.com/pages/ez-barbell-curl',imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/ez-barbell-curl-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/ez-barbell-curl-2.gif']},
+      bi1b:{name:'Rope Cable Curl',sets:'3×12-15',type:'machine',tip:'Constant tension — great for peak',guide:'https://www.simplyfitness.com/pages/rope-cable-curl',imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/rope-cable-curl-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/rope-cable-curl-2.gif']},
+      bi2a:{name:'Alternating Dumbbell Curl',sets:'3×12',type:'free',tip:'Supinate at the top each rep',guide:'https://www.simplyfitness.com/pages/alternating-dumbbell-curl',imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/alternating-dumbbell-curl-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/alternating-dumbbell-curl-2.gif']},
+      bi2b:{name:'Reverse Barbell Curl',sets:'3×12',type:'free',tip:'Overhand grip — hits brachioradialis hard',guide:'https://www.simplyfitness.com/pages/reverse-barbell-curl',imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/reverse-barbell-curl-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/reverse-barbell-curl-2.gif']},
+      bi3a:{name:'Incline Dumbbell Curl',sets:'2×12-15',type:'free',tip:'Long head stretch — incredible peak development',guide:'https://www.simplyfitness.com/pages/incline-dumbbell-curl',imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/incline-dumbbell-curl-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/incline-dumbbell-curl-2.gif']},
+      bi3b:{name:'EZ Barbell Preacher Curl',sets:'2×12-15',type:'machine',tip:'Strict — no cheating possible',guide:'https://www.simplyfitness.com/pages/ez-barbell-preacher-curl',imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/ez-barbell-preacher-curl-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/ez-barbell-preacher-curl-2.gif']},
+    },
+    hiit:[
+      {icon:'🪢',name:'Battle Ropes (alternating waves)',detail:'30 sec on / 15 sec rest — 6 rounds',intensity:'high'},
+      {icon:'🏃',name:'Sprint Intervals',detail:'30 sec sprint / 30 sec walk — 6 rounds',intensity:'high'},
+      {icon:'🚴',name:'Assault Bike',detail:'20 sec max / 40 sec easy — 8 rounds',intensity:'high'},
+      {icon:'🪜',name:'Jump Rope',detail:'45 sec on / 15 sec rest — 5 rounds',intensity:'med'},
+      {icon:'🚣',name:'Rowing Machine',detail:'500m × 3 rounds, 90 sec rest',intensity:'high'},
+      {icon:'🔄',name:'Burpees',detail:'10 reps × 4 rounds',intensity:'high'},
+      {icon:'💨',name:'Mountain Climbers',detail:'30 sec / 10 sec rest — 5 rounds',intensity:'med'},
+    ]
+  },
+
+  quads: {
+    label:'Quads', warmup:'10 min bike + leg swings, hip circles, bodyweight squats × 15',
+    exercises:[
+      { id:'q1', name:'Barbell Squat', sets:'4×8-10', type:'free', color:'green',
+        tip:'Break at hips first, chest up, knees out. Deep as mobility allows.',
+        guide:'https://www.simplyfitness.com/pages/squat',
+        imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/squat-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/squat-2.gif'],
+        alts:['q1a','q1b','q1c'] },
+      { id:'q2', name:'Leg Press', sets:'3×12-15', type:'machine', color:'green',
+        tip:'Feet shoulder-width, mid-plate. Never lock out knees. Full ROM.',
+        guide:'https://www.simplyfitness.com/pages/leg-press',
+        imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/leg-press-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/leg-press-2.gif'],
+        alts:['q2a','q2b'] },
+      { id:'q3', name:'Leg Extension', sets:'3×12-15', type:'machine', color:'green',
+        tip:'Pause 1 sec at full extension. Slow 3-sec negative. Great finisher.',
+        guide:'https://www.simplyfitness.com/pages/leg-extension',
+        imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/leg-extension-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/leg-extension-2.gif'],
+        alts:['q3a','q3b'] },
+    ],
+    alts:{
+      q1a:{name:'Hack Squat',sets:'4×10-12',type:'machine',tip:'Feet forward — heavy quad focus',guide:'https://www.simplyfitness.com/pages/hack-squat',imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/hack-squat-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/hack-squat-2.gif']},
+      q1b:{name:'Dumbbell Goblet Squat',sets:'4×12',type:'free',tip:'Great for technique work or warmup',guide:'https://www.simplyfitness.com/pages/dumbbell-goblet-squat',imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/dumbbell-goblet-squat-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/dumbbell-goblet-squat-2.gif']},
+      q1c:{name:'Barbell Bulgarian Split Squat',sets:'3×10 each',type:'free',tip:'Brutal unilateral — fixes imbalances',guide:'https://www.simplyfitness.com/pages/barbell-bulgarian-split-squat',imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/barbell-bulgarian-split-squat-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/barbell-bulgarian-split-squat-2.gif']},
+      q2a:{name:'Lunge',sets:'3×12 each',type:'free',tip:'Forward or walking — great quad and glute',guide:'https://www.simplyfitness.com/pages/lunge',imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/lunge-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/lunge-2.gif']},
+      q2b:{name:'Single Leg Extension',sets:'3×12 each',type:'machine',tip:'Fixes imbalances between legs',guide:'https://www.simplyfitness.com/pages/single-leg-extension',imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/single-leg-extension-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/single-leg-extension-2.gif']},
+      q3a:{name:'Jump Squat',sets:'3×12',type:'body',tip:'Explosive — great for power and HIIT mix',guide:'https://www.simplyfitness.com/pages/jump-squat',imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/jump-squat-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/jump-squat-2.gif']},
+      q3b:{name:'Wall Sit',sets:'3×45 sec',type:'body',tip:'Isometric burn — great finishing move',guide:'https://www.simplyfitness.com/pages/wall-sit',imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/wall-sit-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/wall-sit-2.gif']},
+    },
+    hiit:[
+      {icon:'🚴',name:'Assault Bike Sprints',detail:'20 sec all out / 40 sec easy — 8 rounds',intensity:'high'},
+      {icon:'🧲',name:'Sled Push',detail:'20m × 6 rounds, 45 sec rest',intensity:'high'},
+      {icon:'🦵',name:'Jump Squats',detail:'15 reps × 4 rounds — land soft',intensity:'high'},
+      {icon:'🪜',name:'Step-Ups (fast)',detail:'20 reps each leg × 3 rounds',intensity:'med'},
+      {icon:'🏃',name:'Sprint Intervals',detail:'40m sprint × 8 rounds, walk back = rest',intensity:'high'},
+      {icon:'🔄',name:'Burpees',detail:'10 reps × 4 rounds',intensity:'high'},
+      {icon:'🏋️',name:'Kettlebell Swings',detail:'20 reps × 5 rounds — explosive',intensity:'high'},
+    ]
+  },
+
+  hamstrings: {
+    label:'Hamstrings & Glutes', warmup:'10 min + hip flexor stretches, glute bridges × 15',
+    exercises:[
+      { id:'h1', name:'Romanian Deadlift', sets:'4×8-10', type:'free', color:'green',
+        tip:'Soft knees, hinge at hips. Feel the stretch in hamstrings at bottom. Don\'t round your back.',
+        guide:'https://www.simplyfitness.com/pages/barbell-stiff-leg-deadlift',
+        imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/barbell-stiff-leg-deadlift-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/barbell-stiff-leg-deadlift-2.gif'],
+        alts:['h1a','h1b'] },
+      { id:'h2', name:'Lying Leg Curl', sets:'3×12-15', type:'machine', color:'green',
+        tip:'Full extension at bottom. 3-sec negative for maximum contraction.',
+        guide:'https://www.simplyfitness.com/pages/lying-leg-curl',
+        imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/lying-leg-curl-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/lying-leg-curl-2.gif'],
+        alts:['h2a','h2b'] },
+      { id:'h3', name:'Barbell Hip Thrust', sets:'3×12-15', type:'free', color:'green',
+        tip:'Drive through heels. Full glute squeeze — hold 1 sec at top.',
+        guide:'https://www.simplyfitness.com/pages/barbell-hip-thrust',
+        imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/barbell-hip-thrust-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/barbell-hip-thrust-2.gif'],
+        alts:['h3a','h3b','h3c'] },
+    ],
+    alts:{
+      h1a:{name:'Good Morning',sets:'4×10-12',type:'free',tip:'Light weight — incredible posterior chain',guide:'https://www.simplyfitness.com/pages/good-morning',imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/good-morning-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/good-morning-2.gif']},
+      h1b:{name:'Dumbbell Stiff-Leg Deadlift',sets:'4×10',type:'free',tip:'Similar pattern — easier to learn',guide:'https://www.simplyfitness.com/pages/dumbbell-stiff-leg-deadlift',imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/dumbbell-stiff-leg-deadlift-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/dumbbell-stiff-leg-deadlift-2.gif']},
+      h2a:{name:'Seated Leg Curl',sets:'3×12-15',type:'machine',tip:'Different angle — hits hamstrings differently',guide:'https://www.simplyfitness.com/pages/seated-leg-curl',imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/seated-leg-curl-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/seated-leg-curl-2.gif']},
+      h2b:{name:'Glute Ham Raise',sets:'3×8-10',type:'body',tip:'Advanced — very effective',guide:'https://www.simplyfitness.com/pages/glute-ham-raise',imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/glute-ham-raise-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/glute-ham-raise-2.gif']},
+      h3a:{name:'Smith Machine Hip Thrust',sets:'3×12',type:'machine',tip:'Easier to load and set up',guide:'https://www.simplyfitness.com/pages/smith-machine-hip-thrust',imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/smith-machine-hip-thrust-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/smith-machine-hip-thrust-2.gif']},
+      h3b:{name:'Bodyweight Glute Bridge',sets:'3×20',type:'body',tip:'Great activation if no equipment',guide:'https://www.simplyfitness.com/pages/bodyweight-glute-bridge',imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/bodyweight-glute-bridge-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/bodyweight-glute-bridge-2.gif']},
+      h3c:{name:'Standing Cable Kickback',sets:'3×15 each',type:'machine',tip:'Great glute isolation per side',guide:'https://www.simplyfitness.com/pages/standing-cable-kickback',imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/standing-cable-kickback-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/standing-cable-kickback-2.gif']},
+    },
+    hiit:[
+      {icon:'🏃',name:'Sprint Intervals',detail:'40m sprint × 8 rounds, walk back = rest',intensity:'high'},
+      {icon:'🚴',name:'Assault Bike',detail:'30 sec max effort / 1 min rest — 6 rounds',intensity:'high'},
+      {icon:'🏋️',name:'Kettlebell Swings',detail:'20 reps × 5 rounds — explosive hip drive',intensity:'high'},
+      {icon:'🧲',name:'Sled Pull (backwards)',detail:'20m × 4 rounds — hits hamstrings + glutes',intensity:'med'},
+      {icon:'🚣',name:'Rowing Machine',detail:'500m × 3 rounds, 90 sec rest',intensity:'high'},
+      {icon:'🦵',name:'Jump Squats',detail:'15 reps × 4 rounds',intensity:'high'},
+      {icon:'🧲',name:'Sled Push',detail:'20m × 5 rounds, 45 sec rest',intensity:'med'},
+    ]
+  },
+
+  calves: {
+    label:'Calves', warmup:'5 min light cardio + ankle rotations × 20 each direction',
+    exercises:[
+      { id:'ca1', name:'Standing Calf Raise', sets:'4×15-20', type:'machine', color:'green',
+        tip:'Full stretch at bottom — 2 sec pause. 2 sec pause at top. Go slow.',
+        guide:'https://www.simplyfitness.com/pages/standing-calf-raise',
+        imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/standing-calf-raise-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/standing-calf-raise-2.gif'],
+        alts:['ca1a','ca1b'] },
+      { id:'ca2', name:'Seated Calf Raise', sets:'3×15-20', type:'machine', color:'green',
+        tip:'Hits the soleus (deep calf). Most people neglect this — don\'t.',
+        guide:'https://www.simplyfitness.com/pages/seated-calf-raise',
+        imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/seated-calf-raise-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/seated-calf-raise-2.gif'],
+        alts:['ca2a'] },
+    ],
+    alts:{
+      ca1a:{name:'Leg Press Calf Raises',sets:'4×20',type:'machine',tip:'Easy to load — great ROM'},
+      ca1b:{name:'Single-Leg Calf Raise (bodyweight)',sets:'4×20 each',type:'body',tip:'No machine needed — very effective'},
+      ca2a:{name:'Dumbbell Step Up',sets:'3×15 each',type:'free',tip:'Functional — hits calves and quads',guide:'https://www.simplyfitness.com/pages/dumbbell-step-up',imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/dumbbell-step-up-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/dumbbell-step-up-2.gif']},
+    },
+    hiit:[
+      {icon:'🪜',name:'Jump Rope',detail:'45 sec on / 15 sec rest — 6 rounds',intensity:'high'},
+      {icon:'🏃',name:'High Knees',detail:'30 sec fast / 10 sec rest — 5 rounds',intensity:'high'},
+      {icon:'🪜',name:'Stair Sprints',detail:'Up and down × 10 rounds',intensity:'high'},
+      {icon:'📦',name:'Box Step-Overs (fast)',detail:'30 sec × 4 rounds',intensity:'med'},
+      {icon:'🦵',name:'Jump Squats',detail:'12 reps × 4 rounds',intensity:'high'},
+      {icon:'🚴',name:'Assault Bike',detail:'20 sec max / 40 sec easy — 8 rounds',intensity:'high'},
+      {icon:'💨',name:'Mountain Climbers',detail:'30 sec / 10 sec rest — 5 rounds',intensity:'med'},
+    ]
+  },
+
+  core: {
+    label:'Core', warmup:'5 min walk + cat-cow × 10, spinal rotations',
+    exercises:[
+      { id:'ab1', name:'Plank', sets:'3×60 sec', type:'body', color:'green',
+        tip:'Posterior pelvic tilt — don\'t let hips sag. Squeeze glutes and abs.',
+        guide:'https://www.simplyfitness.com/pages/plank',
+        imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/plank-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/plank-2.gif'],
+        alts:['ab1a','ab1b'] },
+      { id:'ab2', name:'Hanging Leg Raise', sets:'3×12-15', type:'body', color:'green',
+        tip:'Slow and controlled — don\'t swing. Tuck pelvis under at the top.',
+        guide:'https://www.simplyfitness.com/pages/hanging-leg-raise',
+        imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/hanging-leg-raise-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/hanging-leg-raise-2.gif'],
+        alts:['ab2a','ab2b'] },
+      { id:'ab3', name:'Rope Ab Pulldown', sets:'3×12-15', type:'machine', color:'green',
+        tip:'Pull from abs — not neck or arms. Round the spine at the bottom.',
+        guide:'https://www.simplyfitness.com/pages/rope-ab-pulldown',
+        imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/rope-ab-pulldown-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/rope-ab-pulldown-2.gif'],
+        alts:['ab3a','ab3b'] },
+    ],
+    alts:{
+      ab1a:{name:'Plank Get Ups',sets:'3×10 each',type:'body',tip:'Plank + elbow extension — dynamic core',guide:'https://www.simplyfitness.com/pages/plank-get-ups',imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/plank-get-ups-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/plank-get-ups-2.gif']},
+      ab1b:{name:'Bird Dog',sets:'3×12 each',type:'body',tip:'Anti-extension + balance — great for lower back',guide:'https://www.simplyfitness.com/pages/bird-dog',imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/bird-dog-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/bird-dog-2.gif']},
+      ab2a:{name:'Bent Knee Reverse Crunch',sets:'3×15',type:'body',tip:'Lower ab focus — great for beginners',guide:'https://www.simplyfitness.com/pages/bent-knee-reverse-crunch',imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/bent-knee-reverse-crunch-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/bent-knee-reverse-crunch-2.gif']},
+      ab2b:{name:'Oblique Crunch',sets:'3×15 each',type:'body',tip:'Side abs — twist and squeeze',guide:'https://www.simplyfitness.com/pages/oblique-crunch',imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/oblique-crunch-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/oblique-crunch-2.gif']},
+      ab3a:{name:'Crunch Machine',sets:'3×15',type:'machine',tip:'Easy to load — great for beginners',guide:'https://www.simplyfitness.com/pages/crunch-machine',imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/crunch-machine-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/crunch-machine-2.gif']},
+      ab3b:{name:'Long Arm Crunch',sets:'3×15',type:'body',tip:'Arms overhead — increases lever arm difficulty',guide:'https://www.simplyfitness.com/pages/long-arm-crunch',imgs:['https://cdn.shopify.com/s/files/1/0269/5551/3900/files/long-arm-crunch-1.gif','https://cdn.shopify.com/s/files/1/0269/5551/3900/files/long-arm-crunch-2.gif']},
+    },
+    hiit:[
+      {icon:'🧗',name:'Battle Ropes (slams)',detail:'20 slams × 5 rounds — core drives every rep',intensity:'high'},
+      {icon:'💨',name:'Mountain Climbers',detail:'30 sec fast / 10 sec rest — 5 rounds',intensity:'high'},
+      {icon:'🔄',name:'Burpees',detail:'10 reps × 4 rounds',intensity:'high'},
+      {icon:'🪜',name:'Jump Rope — intervals',detail:'40 sec on / 20 sec rest — 5 rounds',intensity:'med'},
+      {icon:'🏃',name:'Sprint Intervals',detail:'30 sec sprint / 30 sec walk — 5 rounds',intensity:'high'},
+      {icon:'🚴',name:'Assault Bike',detail:'20 sec max / 40 sec easy — 6 rounds',intensity:'high'},
+      {icon:'🦵',name:'Jump Squats',detail:'12 reps × 4 rounds — core stays tight',intensity:'med'},
+    ]
+  }
+};
+
+// ─── STATE ──────────────────────────────────────────────────────────────────
+let activeGroup = null, swaps = {}, openSwap = null, hiitSelected = {};
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
+function init() {
+  const container = document.getElementById('chips-container');
+  SPLITS.forEach(split => {
+    const chip = document.createElement('button');
+    chip.className = 'chip';
+    chip.id = 'chip-' + split.id;
+    chip.innerHTML = `${split.label}<span class="chip-sub">${split.sub}</span>`;
+    chip.onclick = () => selectSplit(split);
+    container.appendChild(chip);
+  });
+}
+
+function selectSplit(split) {
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  document.getElementById('chip-' + split.id).classList.add('active');
+
+  activeGroup = split.groups[0];
+  swaps = {}; openSwap = null; hiitSelected = {};
+
+  let html = '';
+  if (split.groups.length > 1) {
+    html += `<div style="display:flex;gap:7px;flex-wrap:wrap;">`;
+    split.groups.forEach(gid => {
+      const g = GROUPS[gid];
+      html += `<button class="chip${gid===activeGroup?' active':''}" id="subchip-${gid}" onclick="selectGroup('${gid}')" style="font-size:12px;padding:6px 13px;">${g.label}</button>`;
+    });
+    html += `</div>`;
+  }
+
+  html += `<div id="group-exercises"></div>`;
+  document.getElementById('ex-area').innerHTML = html;
+  renderGroupExercises();
+}
+
+function selectGroup(gid) {
+  activeGroup = gid; swaps = {}; openSwap = null; hiitSelected = {};
+  document.querySelectorAll('[id^="subchip-"]').forEach(c => {
+    c.classList.toggle('active', c.id === 'subchip-' + gid);
+  });
+  renderGroupExercises();
+}
+
+function renderGroupExercises() {
+  const g = GROUPS[activeGroup];
+  if (!g) return;
+  let html = '<div class="ex-list">';
+  html += `<div class="phase-pill">🔥 <strong>Warmup:</strong>&nbsp;${g.warmup}</div>`;
+  html += `<div class="sec-divider"><span>Exercises</span></div>`;
+
+  g.exercises.forEach(ex => {
+    html += renderExCard(ex, g);
+  });
+
+  // HIIT
+  const MAX_HIIT = 3;
+  const selCount = Object.values(hiitSelected).filter(Boolean).length;
+  html += `<div class="sec-divider"><span>HIIT — 8 to 10 min</span></div>`;
+  html += `<div class="hiit-card">
+    <div class="hiit-header">
+      <div><div class="hiit-title">⚡ HIIT Circuit</div><div class="hiit-sub">Pick up to 3 exercises for today.</div></div>
+      <div class="hiit-counter${selCount===MAX_HIIT?' full':''}">${selCount}/${MAX_HIIT} selected</div>
+    </div>
+    <div class="hiit-exercises">`;
+  g.hiit.forEach((h, i) => {
+    const sel = !!hiitSelected[i];
+    const disabled = !sel && selCount >= MAX_HIIT;
+    html += `<div class="hiit-ex${sel?' selected':''}" onclick="toggleHiit(${i})">
+      <div class="hiit-ex-check">${sel?'✓':''}</div>
+      <div class="hiit-ex-icon">${h.icon}</div>
+      <div class="hiit-ex-body">
+        <div class="hiit-ex-name">${h.name}</div>
+        <div class="hiit-ex-detail">${h.detail}</div>
+      </div>
+      <div class="hiit-badge ${h.intensity}">${h.intensity==='high'?'🔴 High':'🟡 Med'}</div>
+    </div>`;
+  });
+  html += `</div></div>`;
+  html += `<div class="phase-pill">🧘 <strong>Stretching:</strong>&nbsp;8–10 min — focus on muscles worked today</div>`;
+  html += '</div>';
+
+  document.getElementById('group-exercises').innerHTML = html;
+}
+
+function renderExCard(ex, g) {
+  const sid = swaps[ex.id];
+  const altData = sid ? (g.alts[sid] || null) : null;
+  const cur = altData ? {...altData, color:ex.color} : ex;
+  const isSwapOpen = openSwap === ex.id;
+  const hasAlts = ex.alts && ex.alts.length > 0;
+
+  let html = `<div id="wrap-${ex.id}"><div class="ex-card ${cur.color}">`;
+  html += `<div class="ex-stripe"></div>`;
+  html += `<div class="ex-main-row">`;
+  html += `<div class="ex-dot ${cur.color}">${cur.color==='green'?'✓':'!'}</div>`;
+  html += `<div class="ex-body">
+    <div class="ex-name">${cur.name}${sid?'<span class="ex-swapped-tag">swapped</span>':''}</div>
+    <div class="ex-meta">
+      <span class="ex-sets">${cur.sets}</span>
+      <span class="ex-badge ${cur.type||ex.type}">${TL[cur.type||ex.type]}</span>
+    </div>
+    ${(cur.tip||ex.tip) ? `<div class="ex-tip">💡 ${sid && altData && altData.tip ? altData.tip : ex.tip}</div>` : ''}
+  </div>`;
+  html += `<div class="ex-actions">`;
+  if (hasAlts) html += `<button class="swap-btn${isSwapOpen?' open':''}" onclick="toggleSwap('${ex.id}')">⇄ ${sid?'Undo':'Swap'}</button>`;
+  html += `</div></div>`;
+
+  // Swap panel
+  if (isSwapOpen && hasAlts) {
+    html += `<div class="swap-panel open"><div class="swap-title">Pick a replacement</div>`;
+    if (sid) html += `<div class="swap-opt" onclick="applySwap('${ex.id}',null)"><div class="swap-opt-name">${ex.name} <span style="font-size:10px;color:var(--accent)">↩ Original</span></div><span class="swap-opt-sets">${ex.sets}</span><span class="swap-opt-badge">${TL[ex.type]}</span></div>`;
+    ex.alts.forEach(aid => {
+      const alt = g.alts[aid];
+      if (!alt) return;
+      html += `<div class="swap-opt${sid===aid?' selected':''}" onclick="applySwap('${ex.id}','${aid}')"><div class="swap-opt-name">${alt.name}${alt.tip?`<span style="display:block;font-size:10px;color:rgba(255,255,255,0.35);font-weight:500;margin-top:2px">${alt.tip}</span>`:''}</div><span class="swap-opt-sets">${alt.sets}</span><span class="swap-opt-badge">${TL[alt.type]}</span></div>`;
+    });
+    html += `<button class="swap-close-btn" onclick="toggleSwap('${ex.id}')">✕ Close</button></div>`;
+  }
+
+  html += `</div></div>`;
+  return html;
+}
+
+function toggleSwap(exId) { openSwap = openSwap===exId?null:exId; renderGroupExercises(); }
+function applySwap(exId, altId) { if(altId===null) delete swaps[exId]; else swaps[exId]=altId; openSwap=null; renderGroupExercises(); }
+function toggleHiit(idx) {
+  const sel = !!hiitSelected[idx];
+  const selCount = Object.values(hiitSelected).filter(Boolean).length;
+  if (!sel && selCount >= 3) return; // max 3
+  hiitSelected[idx] = !sel;
+  renderGroupExercises();
+}
+
+init();
+</script>
+</body>
+</html>
