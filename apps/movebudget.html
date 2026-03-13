@@ -8,279 +8,73 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --accent: #c5fe00;
-      --accent-dark: #8ab800;
-      --bg: #f6f6f4;
-      --card: #ffffff;
-      --border: #ebebeb;
-      --text: #111111;
-      --muted: #aaaaaa;
+      --accent: #c5fe00; --accent-dark: #8ab800;
+      --bg: #f6f6f4; --card: #ffffff; --border: #ebebeb;
+      --text: #111111; --muted: #aaaaaa;
     }
-
-    body {
-      font-family: 'DM Sans', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      padding: 44px 24px 80px;
-    }
-
-    /* ── Header ── */
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 44px 24px 80px; }
     .header { text-align: center; margin-bottom: 36px; }
-    .badge {
-      display: inline-block;
-      background: var(--accent);
-      border-radius: 20px;
-      padding: 4px 16px;
-      margin-bottom: 16px;
-      font-size: 10px; font-weight: 800; color: #111;
-      letter-spacing: 0.14em; text-transform: uppercase;
-    }
-    h1 {
-      font-size: clamp(28px, 4vw, 44px);
-      font-weight: 800; color: var(--text);
-      letter-spacing: -0.04em; line-height: 1.05;
-    }
+    .badge { display: inline-block; background: var(--accent); border-radius: 20px; padding: 4px 16px; margin-bottom: 16px; font-size: 10px; font-weight: 800; color: #111; letter-spacing: 0.14em; text-transform: uppercase; }
+    h1 { font-size: clamp(28px, 4vw, 44px); font-weight: 800; color: var(--text); letter-spacing: -0.04em; line-height: 1.05; }
     .subtitle { margin-top: 10px; color: var(--muted); font-size: 14px; }
-
-    /* ── Max width wrapper ── */
     .wrap { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
-
-    /* ── Card ── */
-    .card {
-      background: var(--card);
-      border: 2px solid var(--border);
-      border-radius: 20px;
-      padding: 24px 28px;
-      box-shadow: 0 2px 16px rgba(0,0,0,0.05);
-    }
-
-    /* ── Add group bar ── */
-    .add-group-row {
-      display: flex; gap: 10px; align-items: center;
-    }
-    .input-wrap {
-      display: flex; align-items: center;
-      background: #fafafa;
-      border: 1.5px solid #ebebeb;
-      border-radius: 10px;
-      overflow: hidden;
-      transition: border-color 0.2s;
-      flex: 1;
-    }
+    .card { background: var(--card); border: 2px solid var(--border); border-radius: 20px; padding: 24px 28px; box-shadow: 0 2px 16px rgba(0,0,0,0.05); }
+    .add-group-row { display: flex; gap: 10px; align-items: center; }
+    .input-wrap { display: flex; align-items: center; background: #fafafa; border: 1.5px solid #ebebeb; border-radius: 10px; overflow: hidden; transition: border-color 0.2s; flex: 1; }
     .input-wrap:focus-within { border-color: #bbb; }
-    .prefix {
-      padding: 10px 12px;
-      font-size: 13px; color: #ccc;
-      border-right: 1.5px solid #ebebeb;
-      background: #f5f5f5;
-      user-select: none; white-space: nowrap; flex-shrink: 0;
-    }
-    input, select {
-      background: transparent; border: none; outline: none;
-      color: var(--text); font-size: 14px;
-      font-family: 'DM Sans', sans-serif;
-      padding: 10px 14px; width: 100%;
-      -moz-appearance: textfield;
-    }
+    input, select { background: transparent; border: none; outline: none; color: var(--text); font-size: 14px; font-family: 'DM Sans', sans-serif; padding: 10px 14px; width: 100%; -moz-appearance: textfield; }
     input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
     select { cursor: pointer; appearance: none; }
     input::placeholder { color: #bbb; }
-
-    .btn-accent {
-      background: var(--accent);
-      border: none; border-radius: 10px;
-      padding: 10px 18px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 13px; font-weight: 800; color: #111;
-      cursor: pointer; white-space: nowrap;
-      transition: background 0.15s, box-shadow 0.15s;
-      flex-shrink: 0;
-    }
+    .btn-accent { background: var(--accent); border: none; border-radius: 10px; padding: 10px 18px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 800; color: #111; cursor: pointer; white-space: nowrap; transition: background 0.15s, box-shadow 0.15s; flex-shrink: 0; }
     .btn-accent:hover { background: #b8ef00; box-shadow: 0 4px 14px rgba(197,254,0,0.35); }
-
-    .btn-ghost {
-      background: none; border: none;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 12px; color: #ccc;
-      cursor: pointer; text-decoration: underline;
-      padding: 0; transition: color 0.15s;
-    }
+    .btn-ghost { background: none; border: none; font-family: 'DM Sans', sans-serif; font-size: 12px; color: #ccc; cursor: pointer; text-decoration: underline; padding: 0; transition: color 0.15s; }
     .btn-ghost:hover { color: #666; }
-
-    /* ── Group ── */
-    .group {
-      background: var(--card);
-      border: 2px solid var(--border);
-      border-radius: 20px;
-      overflow: hidden;
-      box-shadow: 0 2px 16px rgba(0,0,0,0.05);
-      animation: fadeUp 0.25s ease both;
-    }
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(10px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    .group-header {
-      display: flex; align-items: center;
-      gap: 10px;
-      padding: 16px 24px;
-      border-bottom: 2px solid var(--border);
-      background: #fafafa;
-    }
+    .group { background: var(--card); border: 2px solid var(--border); border-radius: 20px; overflow: hidden; box-shadow: 0 2px 16px rgba(0,0,0,0.05); animation: fadeUp 0.25s ease both; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .group-header { display: flex; align-items: center; gap: 10px; padding: 16px 24px; border-bottom: 2px solid var(--border); background: #fafafa; }
     .group-emoji { font-size: 18px; cursor: pointer; }
-    .group-name {
-      flex: 1;
-      font-size: 15px; font-weight: 800;
-      letter-spacing: -0.01em;
-    }
-    .group-name input {
-      font-size: 15px; font-weight: 800;
-      padding: 0; background: transparent; border: none; outline: none;
-      color: var(--text); width: 100%;
-      letter-spacing: -0.01em;
-    }
-    .group-total {
-      font-size: 13px; font-weight: 700;
-      font-family: monospace;
-      color: var(--muted);
-      white-space: nowrap;
-    }
-    .group-delete {
-      background: none; border: none;
-      font-size: 14px; color: #ddd;
-      cursor: pointer; padding: 0 0 0 4px;
-      transition: color 0.15s; line-height: 1;
-    }
+    .group-name { flex: 1; font-size: 15px; font-weight: 800; letter-spacing: -0.01em; }
+    .group-name input { font-size: 15px; font-weight: 800; padding: 0; background: transparent; border: none; outline: none; color: var(--text); width: 100%; letter-spacing: -0.01em; }
+    .group-total { font-size: 13px; font-weight: 700; font-family: monospace; color: var(--muted); white-space: nowrap; }
+    .group-delete { background: none; border: none; font-size: 14px; color: #ddd; cursor: pointer; padding: 0 0 0 4px; transition: color 0.15s; line-height: 1; }
     .group-delete:hover { color: #999; }
-
-    /* ── Items inside group ── */
     .group-items { padding: 0 24px; }
-
-    .item-row {
-      display: flex; align-items: center;
-      gap: 10px;
-      padding: 11px 0;
-      border-bottom: 1px solid #f3f3f3;
-      animation: fadeIn 0.2s ease;
-    }
+    .item-row { display: flex; align-items: center; gap: 10px; padding: 11px 0; border-bottom: 1px solid #f3f3f3; animation: fadeIn 0.2s ease; }
     .item-row:last-of-type { border-bottom: none; }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-4px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Checkbox */
-    .item-check {
-      width: 20px; height: 20px; flex-shrink: 0;
-      border: 2px solid #ddd; border-radius: 6px;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; font-size: 11px;
-      transition: all 0.15s; background: #fff;
-      color: transparent;
-    }
-    .item-check.checked {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: #111;
-    }
-
-    .item-name {
-      flex: 1; font-size: 14px; font-weight: 500;
-      color: var(--text); transition: color 0.15s;
-    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+    .item-check { width: 20px; height: 20px; flex-shrink: 0; border: 2px solid #ddd; border-radius: 6px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 11px; transition: all 0.15s; background: #fff; color: transparent; }
+    .item-check.checked { background: var(--accent); border-color: var(--accent); color: #111; }
+    .item-name { flex: 1; font-size: 14px; font-weight: 500; color: var(--text); transition: color 0.15s; }
     .item-name.done { color: #bbb; text-decoration: line-through; }
-
-    .item-tag {
-      font-size: 10px; font-weight: 800;
-      letter-spacing: 0.06em; text-transform: uppercase;
-      background: #f0f0f0; color: #bbb;
-      padding: 2px 8px; border-radius: 20px;
-      white-space: nowrap; flex-shrink: 0;
-    }
-
-    .item-amount {
-      font-size: 14px; font-weight: 700;
-      font-family: monospace; color: #444;
-      white-space: nowrap; flex-shrink: 0;
-    }
+    .item-tag { font-size: 10px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; background: #f0f0f0; color: #bbb; padding: 2px 8px; border-radius: 20px; white-space: nowrap; flex-shrink: 0; }
+    .item-amount { font-size: 14px; font-weight: 700; font-family: monospace; color: #444; white-space: nowrap; flex-shrink: 0; }
     .item-amount.done { color: #ccc; }
-
-    .item-del {
-      background: none; border: none;
-      font-size: 11px; color: #ddd;
-      cursor: pointer; padding: 0;
-      transition: color 0.15s; line-height: 1; flex-shrink: 0;
-    }
+    .item-del { background: none; border: none; font-size: 11px; color: #ddd; cursor: pointer; padding: 0; transition: color 0.15s; line-height: 1; flex-shrink: 0; }
     .item-del:hover { color: #999; }
-
-    /* ── Add item row inside group ── */
-    .add-item-row {
-      display: flex; gap: 8px; align-items: center;
-      padding: 14px 0 16px;
-      border-top: 1px solid #f3f3f3;
-    }
+    .add-item-row { display: flex; gap: 8px; align-items: center; padding: 14px 0 16px; border-top: 1px solid #f3f3f3; }
     .add-item-row .input-wrap { flex: 2; min-width: 0; }
     .add-item-row .input-wrap.amount { flex: 1; max-width: 120px; }
-    .add-item-row .input-wrap.curr   { flex: 0 0 80px; }
-
-    .btn-add-item {
-      background: #f0f0f0; border: none; border-radius: 8px;
-      padding: 10px 14px; font-family: 'DM Sans', sans-serif;
-      font-size: 13px; font-weight: 700; color: #555;
-      cursor: pointer; white-space: nowrap;
-      transition: background 0.15s;
-    }
+    .add-item-row .input-wrap.curr { flex: 0 0 80px; }
+    .btn-add-item { background: #f0f0f0; border: none; border-radius: 8px; padding: 10px 14px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700; color: #555; cursor: pointer; white-space: nowrap; transition: background 0.15s; }
     .btn-add-item:hover { background: var(--accent); color: #111; }
-
-    /* ── Display currency row ── */
-    .display-row {
-      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
-    }
+    .display-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
     .display-label { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
     .cur-btns { display: flex; gap: 6px; }
-    .cur-btn {
-      padding: 5px 14px; border-radius: 8px;
-      border: 2px solid #e5e5e5; background: #fff;
-      color: #777; font-size: 12px; font-weight: 700;
-      font-family: 'DM Sans', sans-serif; cursor: pointer;
-      transition: all 0.15s;
-    }
+    .cur-btn { padding: 5px 14px; border-radius: 8px; border: 2px solid #e5e5e5; background: #fff; color: #777; font-size: 12px; font-weight: 700; font-family: 'DM Sans', sans-serif; cursor: pointer; transition: all 0.15s; }
     .cur-btn:hover { border-color: var(--accent); }
     .cur-btn.active { border-color: var(--accent); background: var(--accent); color: #111; }
-
-    /* ── Grand total ── */
-    .grand-total-block {
-      border-top: 2px solid #111; padding-top: 16px;
-      display: flex; flex-direction: column; gap: 5px;
-    }
-    .grand-top {
-      display: flex; justify-content: space-between; align-items: baseline;
-    }
+    .grand-total-block { border-top: 2px solid #111; padding-top: 16px; display: flex; flex-direction: column; gap: 5px; }
+    .grand-top { display: flex; justify-content: space-between; align-items: baseline; }
     .grand-label { font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #999; }
-    .grand-value {
-      font-size: 36px; font-weight: 800;
-      font-family: monospace; letter-spacing: -0.02em; color: #111;
-    }
+    .grand-value { font-size: 36px; font-weight: 800; font-family: monospace; letter-spacing: -0.02em; color: #111; }
     .grand-note { font-size: 11px; color: #ccc; text-align: right; }
     .grand-loading { font-size: 14px; color: #bbb; font-style: italic; }
-
-    /* ── Checked summary ── */
-    .checked-bar {
-      display: flex; justify-content: space-between; align-items: center;
-      font-size: 12px; color: #bbb; margin-top: 2px;
-    }
+    .checked-bar { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #bbb; margin-top: 2px; }
     .checked-bar span:last-child { font-family: monospace; font-weight: 700; color: var(--accent-dark); }
-
-    /* ── Budget card ── */
     .budget-section { margin-top: 4px; }
-    .balance-block {
-      display: flex; justify-content: space-between; align-items: baseline;
-      padding-top: 14px; border-top: 2px solid #111; margin-top: 14px;
-    }
+    .balance-block { display: flex; justify-content: space-between; align-items: baseline; padding-top: 14px; border-top: 2px solid #111; margin-top: 14px; }
     .balance-label { font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #999; }
     .balance-value { font-size: 32px; font-weight: 800; font-family: monospace; letter-spacing: -0.02em; }
     .balance-value.pos { color: #111; }
@@ -290,18 +84,8 @@
     .budget-mini-row { display: flex; justify-content: space-between; align-items: center; }
     .budget-mini-label { font-size: 12px; color: #bbb; }
     .budget-mini-value { font-size: 13px; font-family: monospace; color: #666; font-weight: 600; }
-
-    /* ── Empty state ── */
     .empty { font-size: 13px; color: #ccc; text-align: center; padding: 20px 0 8px; }
-
-    /* ── Summary card ── */
-    .summary-banner {
-      background: var(--accent);
-      border-radius: 20px; padding: 24px 28px;
-      display: none; flex-direction: column; gap: 12px;
-      box-shadow: 0 8px 40px rgba(197,254,0,0.4);
-      animation: fadeUp 0.3s ease;
-    }
+    .summary-banner { background: var(--accent); border-radius: 20px; padding: 24px 28px; display: none; flex-direction: column; gap: 12px; box-shadow: 0 8px 40px rgba(197,254,0,0.4); animation: fadeUp 0.3s ease; }
     .summary-banner.visible { display: flex; }
     .summary-hdr { font-size: 10px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(0,0,0,0.35); }
     .summary-title { font-size: clamp(22px, 3vw, 30px); font-weight: 800; color: #111; letter-spacing: -0.03em; }
@@ -309,73 +93,33 @@
     .summary-stat { display: flex; flex-direction: column; gap: 2px; }
     .summary-stat-label { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(0,0,0,0.35); }
     .summary-stat-value { font-size: 17px; font-weight: 800; font-family: monospace; color: #111; }
-
-    /* ── Footer ── */
     footer { text-align: center; margin-top: 48px; font-size: 12px; color: #bbb; }
     footer strong { color: #888; }
-
     .spin { display: inline-block; animation: spin 0.8s linear infinite; }
     @keyframes spin { from{transform:rotate(0)} to{transform:rotate(360deg)} }
-
-    /* Emoji picker */
-    .emoji-picker {
-      position: absolute; z-index: 100;
-      background: #fff; border: 2px solid var(--border);
-      border-radius: 14px; padding: 10px;
-      display: flex; flex-wrap: wrap; gap: 4px;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.12);
-      max-width: 220px;
-    }
-    .emoji-opt {
-      font-size: 18px; cursor: pointer; padding: 4px;
-      border-radius: 6px; transition: background 0.1s;
-    }
+    .emoji-picker { position: absolute; z-index: 100; background: #fff; border: 2px solid var(--border); border-radius: 14px; padding: 10px; display: flex; flex-wrap: wrap; gap: 4px; box-shadow: 0 8px 30px rgba(0,0,0,0.12); max-width: 220px; }
+    .emoji-opt { font-size: 18px; cursor: pointer; padding: 4px; border-radius: 6px; transition: background 0.1s; }
     .emoji-opt:hover { background: #f0f0f0; }
-
-/* ── Back button ── */
-    .back-btn {
-      position: fixed;
-      top: 24px; left: 24px;
-      display: flex; align-items: center; gap: 7px;
-      background: var(--card);
-      border: 2px solid var(--border);
-      border-radius: 30px;
-      padding: 8px 16px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 12px; font-weight: 700; color: var(--text);
-      text-decoration: none;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
-      transition: border-color 0.15s, box-shadow 0.15s;
-      z-index: 100;
-    }
-    .back-btn:hover {
-      border-color: var(--accent);
-      box-shadow: 0 4px 16px rgba(197,254,0,0.25);
-    }
-    </style>
+    .back-btn { position: fixed; top: 24px; left: 24px; display: flex; align-items: center; gap: 7px; background: var(--card); border: 2px solid var(--border); border-radius: 30px; padding: 8px 16px; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 700; color: var(--text); text-decoration: none; box-shadow: 0 2px 10px rgba(0,0,0,0.06); transition: border-color 0.15s, box-shadow 0.15s; z-index: 100; }
+    .back-btn:hover { border-color: var(--accent); box-shadow: 0 4px 16px rgba(197,254,0,0.25); }
+  </style>
 </head>
 <body>
 
-  <a class="back-btn" href="https://milomiranda.github.io/hub.html">
-    <span>←</span>
-    <span>Go back</span>
-  </a>
-    
-
+<a class="back-btn" href="https://milomiranda.github.io/hub.html">← Go back</a>
 
 <div class="header">
   <div class="badge">🇳🇱 Move Budget</div>
-  <h1>Presupuesto de Mudanza</h1>
-  <p class="subtitle">Agrupa tus gastos, checkea lo que ya compraste, visualiza el total.</p>
+  <h1>Moving Budget</h1>
+  <p class="subtitle">Group your expenses, check off what you've already bought, track the total.</p>
 </div>
 
 <div class="wrap">
 
-  <!-- Add group -->
   <div class="card">
     <div style="display:flex; flex-direction:column; gap:12px;">
       <div class="display-row">
-        <span class="display-label">Mostrar total en</span>
+        <span class="display-label">Show total in</span>
         <div class="cur-btns">
           <button class="cur-btn active" data-code="EUR" onclick="setDisplay(this)">EUR €</button>
           <button class="cur-btn" data-code="USD" onclick="setDisplay(this)">USD $</button>
@@ -384,31 +128,29 @@
       </div>
       <div class="add-group-row">
         <div class="input-wrap">
-          <input type="text" id="new-group-name" placeholder="✦ Nombre del grupo (ej. Viaje, Perro, Personal...)" />
+          <input type="text" id="new-group-name" placeholder="✦ Group name (e.g. Travel, Pet, Personal...)" />
         </div>
-        <button class="btn-accent" onclick="addGroup()">+ Grupo</button>
+        <button class="btn-accent" onclick="addGroup()">+ Group</button>
       </div>
     </div>
   </div>
 
-  <!-- Groups container -->
   <div id="groups-container"></div>
 
-  <!-- Summary banner -->
   <div class="summary-banner" id="summary-banner">
-    <div class="summary-hdr">Resumen</div>
+    <div class="summary-hdr">Summary</div>
     <div class="summary-title" id="summary-title">Total: €0.00</div>
     <div class="summary-stats">
       <div class="summary-stat">
-        <span class="summary-stat-label">Grupos</span>
+        <span class="summary-stat-label">Groups</span>
         <span class="summary-stat-value" id="stat-groups">0</span>
       </div>
       <div class="summary-stat">
-        <span class="summary-stat-label">Items totales</span>
+        <span class="summary-stat-label">Total items</span>
         <span class="summary-stat-value" id="stat-items">0</span>
       </div>
       <div class="summary-stat">
-        <span class="summary-stat-label">Ya comprado</span>
+        <span class="summary-stat-label">Already bought</span>
         <span class="summary-stat-value" id="stat-checked">0</span>
       </div>
       <div class="summary-stat">
@@ -418,13 +160,10 @@
     </div>
   </div>
 
-  <!-- Grand total + budget -->
   <div class="card" id="totals-card" style="display:none;">
-
-    <!-- Grand total -->
     <div class="grand-total-block">
       <div class="display-row" style="margin-bottom:12px;">
-        <span class="display-label">Total general</span>
+        <span class="display-label">Grand total</span>
         <div class="cur-btns">
           <button class="cur-btn active" data-code="EUR" onclick="setDisplay(this)">EUR €</button>
           <button class="cur-btn" data-code="USD" onclick="setDisplay(this)">USD $</button>
@@ -437,22 +176,21 @@
       </div>
       <div class="grand-note" id="grand-note"></div>
       <div class="checked-bar" id="checked-bar" style="display:none;">
-        <span>✓ Ya comprado</span>
+        <span>✓ Already bought</span>
         <span id="checked-total">—</span>
       </div>
     </div>
 
-    <!-- Budget -->
     <div class="budget-section">
       <div style="display:flex; gap:10px; align-items:flex-end; flex-wrap:wrap; margin-top:18px;">
         <div style="flex:1; min-width:140px; display:flex; flex-direction:column; gap:6px;">
-          <label style="font-size:10px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted);">🎯 Presupuesto base</label>
+          <label style="font-size:10px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted);">🎯 Base budget</label>
           <div class="input-wrap">
             <input type="number" id="budget-input" placeholder="0.00" min="0" step="0.01" oninput="saveBudget()" />
           </div>
         </div>
         <div style="flex:0 0 90px; display:flex; flex-direction:column; gap:6px;">
-          <label style="font-size:10px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted);">Moneda</label>
+          <label style="font-size:10px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted);">Currency</label>
           <div class="input-wrap">
             <select id="budget-currency" onchange="saveBudget()">
               <option value="EUR">EUR €</option>
@@ -462,54 +200,48 @@
           </div>
         </div>
       </div>
-
       <div class="budget-mini" id="budget-mini" style="display:none;">
         <div class="budget-mini-row">
-          <span class="budget-mini-label">Presupuesto</span>
+          <span class="budget-mini-label">Budget</span>
           <span class="budget-mini-value" id="bm-budget">—</span>
         </div>
         <div class="budget-mini-row">
-          <span class="budget-mini-label">Total estimado</span>
+          <span class="budget-mini-label">Estimated total</span>
           <span class="budget-mini-value" id="bm-total">—</span>
         </div>
       </div>
-
       <div class="balance-block" id="balance-block" style="display:none;">
-        <span class="balance-label" id="balance-label">Restante</span>
+        <span class="balance-label" id="balance-label">Remaining</span>
         <span class="balance-value" id="balance-value">—</span>
       </div>
     </div>
-
   </div>
 
-  <button class="btn-ghost" id="clear-all-btn" style="display:none; margin: 0 auto;" onclick="clearAll()">Borrar todo</button>
-  <button class="btn-accent" id="export-btn" style="display:none; margin: 0 auto;" onclick="exportExcel()">📥 Exportar Excel</button>
+  <button class="btn-ghost" id="clear-all-btn" style="display:none; margin:0 auto;" onclick="clearAll()">Clear everything</button>
+  <button class="btn-accent" id="export-btn" style="display:none; margin:0 auto;" onclick="exportExcel()">📥 Export Excel</button>
 
 </div>
 
 <footer>built by <strong>Emilio Miranda Escamilla</strong> 🇲🇽→🇳🇱</footer>
 
 <script>
-  // ── Constants ─────────────────────────────────────────────
-  const SK          = 'mnl_groups_v1';
-  const DISPLAY_SK  = 'mnl_display_v1';
-  const BUDGET_SK   = 'mnl_budget_v1';
-  const RATES_SK    = 'mnl_rates_v1';
-  const SYMS        = { EUR: '€', USD: '$', MXN: 'MX$' };
-  const EMOJIS      = ['✈️','🐶','🏠','💼','🧳','💊','📦','🎒','🛋️','🖥️','👔','🍽️','📱','🔑','🌷','🚲','💈','🛁','📚','🎵','🌍','💰'];
+  const SK         = 'mnl_groups_v1';
+  const DISPLAY_SK = 'mnl_display_v1';
+  const BUDGET_SK  = 'mnl_budget_v1';
+  const RATES_SK   = 'mnl_rates_v1';
+  const SYMS       = { EUR: '€', USD: '$', MXN: 'MX$' };
+  const EMOJIS     = ['✈️','🐶','🏠','💼','🧳','💊','📦','🎒','🛋️','🖥️','👔','🍽️','📱','🔑','🌷','🚲','💈','🛁','📚','🎵','🌍','💰'];
 
   let displayCurrency = localStorage.getItem(DISPLAY_SK) || 'EUR';
   let ratesCache = null;
-  let lastTotal = null;   // converted total in displayCurrency
+  let lastTotal = null;
   let lastCheckedTotal = null;
 
-  // ── Storage ───────────────────────────────────────────────
-  function getData()      { try { return JSON.parse(localStorage.getItem(SK)) || []; } catch { return []; } }
-  function saveData(d)    { localStorage.setItem(SK, JSON.stringify(d)); }
-  function getBudget()    { try { return JSON.parse(localStorage.getItem(BUDGET_SK)) || {}; } catch { return {}; } }
+  function getData()        { try { return JSON.parse(localStorage.getItem(SK)) || []; } catch { return []; } }
+  function saveData(d)      { localStorage.setItem(SK, JSON.stringify(d)); }
+  function getBudget()      { try { return JSON.parse(localStorage.getItem(BUDGET_SK)) || {}; } catch { return {}; } }
   function saveBudgetVal(v) { localStorage.setItem(BUDGET_SK, JSON.stringify(v)); }
 
-  // ── Rates ─────────────────────────────────────────────────
   async function getRates() {
     if (ratesCache) return ratesCache;
     try {
@@ -533,123 +265,87 @@
     return (SYMS[code || displayCurrency] || '') + n.toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 });
   }
 
-  // ── Display currency ──────────────────────────────────────
   function setDisplay(btn) {
     displayCurrency = btn.dataset.code;
     localStorage.setItem(DISPLAY_SK, displayCurrency);
-    // sync all cur-btn sets
-    document.querySelectorAll('.cur-btn').forEach(b => {
-      b.classList.toggle('active', b.dataset.code === displayCurrency);
-    });
+    document.querySelectorAll('.cur-btn').forEach(b => b.classList.toggle('active', b.dataset.code === displayCurrency));
     recomputeTotal();
   }
+  document.querySelectorAll('.cur-btn').forEach(b => b.classList.toggle('active', b.dataset.code === displayCurrency));
 
-  // Restore display buttons on load
-  document.querySelectorAll('.cur-btn').forEach(b => {
-    b.classList.toggle('active', b.dataset.code === displayCurrency);
-  });
-
-  // ── Groups ────────────────────────────────────────────────
   function addGroup() {
     const input = document.getElementById('new-group-name');
     const name  = input.value.trim();
     if (!name) return;
     const data = getData();
     data.push({ id: 'g' + Date.now(), name, emoji: '📦', items: [] });
-    saveData(data);
-    input.value = '';
-    renderAll();
+    saveData(data); input.value = ''; renderAll();
   }
 
   function deleteGroup(gid) {
-    if (!confirm('¿Borrar este grupo?')) return;
-    const data = getData().filter(g => g.id !== gid);
-    saveData(data);
-    renderAll();
+    if (!confirm('Delete this group?')) return;
+    saveData(getData().filter(g => g.id !== gid)); renderAll();
   }
 
   function renameGroup(gid, val) {
-    const data = getData();
-    const g = data.find(g => g.id === gid);
-    if (g) g.name = val;
-    saveData(data);
+    const data = getData(); const g = data.find(g => g.id === gid);
+    if (g) g.name = val; saveData(data);
   }
 
   function setGroupEmoji(gid, emoji) {
-    const data = getData();
-    const g = data.find(g => g.id === gid);
-    if (g) g.emoji = emoji;
-    saveData(data);
-    renderAll();
+    const data = getData(); const g = data.find(g => g.id === gid);
+    if (g) g.emoji = emoji; saveData(data); renderAll();
   }
 
-  // ── Items ─────────────────────────────────────────────────
   function addItem(gid) {
-    const nameEl   = document.getElementById('ni-name-' + gid);
-    const amtEl    = document.getElementById('ni-amt-'  + gid);
-    const curEl    = document.getElementById('ni-cur-'  + gid);
-    const name     = nameEl.value.trim();
-    const amount   = parseFloat(amtEl.value);
-    const currency = curEl.value;
+    const nameEl = document.getElementById('ni-name-' + gid);
+    const amtEl  = document.getElementById('ni-amt-'  + gid);
+    const curEl  = document.getElementById('ni-cur-'  + gid);
+    const name   = nameEl.value.trim();
+    const amount = parseFloat(amtEl.value);
     if (!name || isNaN(amount) || amount < 0) {
-      if (!name)         nameEl.style.outline = '2px solid #ffaaaa';
+      if (!name) nameEl.style.outline = '2px solid #ffaaaa';
       if (isNaN(amount)) amtEl.closest('.input-wrap').style.borderColor = '#ffaaaa';
       setTimeout(() => { nameEl.style.outline=''; amtEl.closest('.input-wrap').style.borderColor=''; }, 700);
       return;
     }
-    const data = getData();
-    const g = data.find(g => g.id === gid);
-    if (g) g.items.push({ id: 'i' + Date.now(), name, amount, currency, checked: false });
-    saveData(data);
-    nameEl.value = ''; amtEl.value = '';
-    renderAll();
+    const data = getData(); const g = data.find(g => g.id === gid);
+    if (g) g.items.push({ id: 'i' + Date.now(), name, amount, currency: curEl.value, checked: false });
+    saveData(data); nameEl.value = ''; amtEl.value = ''; renderAll();
   }
 
   function deleteItem(gid, iid) {
-    const data = getData();
-    const g = data.find(g => g.id === gid);
-    if (g) g.items = g.items.filter(i => i.id !== iid);
-    saveData(data);
-    renderAll();
+    const data = getData(); const g = data.find(g => g.id === gid);
+    if (g) g.items = g.items.filter(i => i.id !== iid); saveData(data); renderAll();
   }
 
   function toggleCheck(gid, iid) {
-    const data = getData();
-    const g = data.find(g => g.id === gid);
+    const data = getData(); const g = data.find(g => g.id === gid);
     if (g) { const item = g.items.find(i => i.id === iid); if (item) item.checked = !item.checked; }
-    saveData(data);
-    renderAll();
+    saveData(data); renderAll();
   }
 
-  // ── Emoji picker ──────────────────────────────────────────
   let openPicker = null;
-
   function toggleEmojiPicker(gid, anchorEl) {
-    // close existing
     if (openPicker) { openPicker.remove(); openPicker = null; if (openPicker?.dataset?.gid === gid) return; }
     const picker = document.createElement('div');
-    picker.className = 'emoji-picker';
-    picker.dataset.gid = gid;
+    picker.className = 'emoji-picker'; picker.dataset.gid = gid;
     EMOJIS.forEach(e => {
       const span = document.createElement('span');
       span.className = 'emoji-opt'; span.textContent = e;
       span.onclick = (ev) => { ev.stopPropagation(); setGroupEmoji(gid, e); picker.remove(); openPicker = null; };
       picker.appendChild(span);
     });
-    // position near anchor
     const rect = anchorEl.getBoundingClientRect();
     picker.style.position = 'fixed';
     picker.style.top  = (rect.bottom + 6) + 'px';
     picker.style.left = rect.left + 'px';
-    document.body.appendChild(picker);
-    openPicker = picker;
+    document.body.appendChild(picker); openPicker = picker;
   }
-
   document.addEventListener('click', () => { if (openPicker) { openPicker.remove(); openPicker = null; } });
 
-  // ── Render ────────────────────────────────────────────────
   function renderAll() {
-    const data      = getData();
+    const data = getData();
     const container = document.getElementById('groups-container');
     container.innerHTML = '';
 
@@ -658,8 +354,7 @@
       document.getElementById('clear-all-btn').style.display = 'none';
       document.getElementById('export-btn').style.display = 'none';
       document.getElementById('summary-banner').classList.remove('visible');
-      lastTotal = null; lastCheckedTotal = null;
-      return;
+      lastTotal = null; lastCheckedTotal = null; return;
     }
 
     document.getElementById('totals-card').style.display = 'block';
@@ -669,9 +364,6 @@
     data.forEach(group => {
       const el = document.createElement('div');
       el.className = 'group';
-
-      // Group subtotal (raw, same currency)
-      const subtotalLines = group.items.map(i => `${fmt(i.amount, i.currency)}`);
       const mixedCurrencies = [...new Set(group.items.map(i => i.currency))];
       const groupTotalStr = group.items.length === 0 ? '' :
         mixedCurrencies.length === 1
@@ -683,30 +375,27 @@
 
       el.innerHTML = `
         <div class="group-header">
-          <span class="group-emoji" title="Cambiar emoji" onclick="event.stopPropagation(); toggleEmojiPicker('${group.id}', this)">${group.emoji}</span>
+          <span class="group-emoji" title="Change emoji" onclick="event.stopPropagation(); toggleEmojiPicker('${group.id}', this)">${group.emoji}</span>
           <div class="group-name">
-            <input type="text" value="${escHtml(group.name)}"
-              onchange="renameGroup('${group.id}', this.value)"
-              onblur="renameGroup('${group.id}', this.value)" />
+            <input type="text" value="${escHtml(group.name)}" onchange="renameGroup('${group.id}', this.value)" onblur="renameGroup('${group.id}', this.value)" />
           </div>
           <span class="group-total">${groupTotalStr}</span>
-          <button class="group-delete" onclick="deleteGroup('${group.id}')" title="Eliminar grupo">✕</button>
+          <button class="group-delete" onclick="deleteGroup('${group.id}')" title="Delete group">✕</button>
         </div>
         <div class="group-items" id="gi-${group.id}">
-          ${group.items.length === 0 ? '<p class="empty">Sin items aún</p>' : ''}
+          ${group.items.length === 0 ? '<p class="empty">No items yet</p>' : ''}
           ${group.items.map(item => `
             <div class="item-row">
-              <div class="item-check ${item.checked ? 'checked' : ''}"
-                   onclick="toggleCheck('${group.id}', '${item.id}')">${item.checked ? '✓' : ''}</div>
-              <span class="item-name ${item.checked ? 'done' : ''}">${escHtml(item.name)}</span>
+              <div class="item-check ${item.checked?'checked':''}" onclick="toggleCheck('${group.id}','${item.id}')">${item.checked?'✓':''}</div>
+              <span class="item-name ${item.checked?'done':''}">${escHtml(item.name)}</span>
               <span class="item-tag">${item.currency}</span>
-              <span class="item-amount ${item.checked ? 'done' : ''}">${fmt(item.amount, item.currency)}</span>
+              <span class="item-amount ${item.checked?'done':''}">${fmt(item.amount, item.currency)}</span>
               <button class="item-del" onclick="deleteItem('${group.id}','${item.id}')">✕</button>
             </div>
           `).join('')}
           <div class="add-item-row">
             <div class="input-wrap">
-              <input type="text" id="ni-name-${group.id}" placeholder="Nuevo item..." onkeydown="if(event.key==='Enter') addItem('${group.id}')" />
+              <input type="text" id="ni-name-${group.id}" placeholder="New item..." onkeydown="if(event.key==='Enter') addItem('${group.id}')" />
             </div>
             <div class="input-wrap amount">
               <input type="number" id="ni-amt-${group.id}" placeholder="0.00" min="0" step="0.01" onkeydown="if(event.key==='Enter') addItem('${group.id}')" />
@@ -720,29 +409,23 @@
             </div>
             <button class="btn-add-item" onclick="addItem('${group.id}')">+</button>
           </div>
-        </div>
-      `;
+        </div>`;
       container.appendChild(el);
     });
-
     recomputeTotal();
   }
 
-  // ── Total computation ─────────────────────────────────────
   async function recomputeTotal() {
     const data = getData();
     if (!data.length) return;
-
-    const grandEl  = document.getElementById('grand-value');
-    const noteEl   = document.getElementById('grand-note');
+    const grandEl   = document.getElementById('grand-value');
+    const noteEl    = document.getElementById('grand-note');
     const sumBanner = document.getElementById('summary-banner');
-
-    // Flatten all items
-    const allItems = data.flatMap(g => g.items);
+    const allItems  = data.flatMap(g => g.items);
     const checkedItems = allItems.filter(i => i.checked);
-    const allSame = allItems.every(i => i.currency === displayCurrency);
+    const allSame   = allItems.every(i => i.currency === displayCurrency);
 
-    grandEl.innerHTML = '<span class="grand-loading"><span class="spin">⏳</span> Convirtiendo…</span>';
+    grandEl.innerHTML = '<span class="grand-loading"><span class="spin">⏳</span> Converting…</span>';
     noteEl.textContent = '';
 
     try {
@@ -750,31 +433,20 @@
       if (!allSame) rates = await getRates();
 
       let total = 0;
-      allItems.forEach(i => {
-        total += allSame ? i.amount : convert(i.amount, i.currency, displayCurrency, rates);
-      });
-
+      allItems.forEach(i => { total += allSame ? i.amount : convert(i.amount, i.currency, displayCurrency, rates); });
       let checkedTotal = 0;
-      checkedItems.forEach(i => {
-        checkedTotal += allSame ? i.amount : convert(i.amount, i.currency, displayCurrency, rates);
-      });
+      checkedItems.forEach(i => { checkedTotal += allSame ? i.amount : convert(i.amount, i.currency, displayCurrency, rates); });
 
-      lastTotal = total;
-      lastCheckedTotal = checkedTotal;
-
+      lastTotal = total; lastCheckedTotal = checkedTotal;
       grandEl.textContent = fmt(total);
-      noteEl.textContent  = allSame ? '' : `Tipos de cambio en vivo · ${rates.date}`;
+      noteEl.textContent  = allSame ? '' : `Live exchange rates · ${rates.date}`;
 
-      // Checked bar
       const checkedBar = document.getElementById('checked-bar');
       if (checkedItems.length > 0) {
         checkedBar.style.display = 'flex';
         document.getElementById('checked-total').textContent = fmt(checkedTotal);
-      } else {
-        checkedBar.style.display = 'none';
-      }
+      } else { checkedBar.style.display = 'none'; }
 
-      // Summary banner
       sumBanner.classList.add('visible');
       document.getElementById('summary-title').textContent = 'Total: ' + fmt(total);
       document.getElementById('stat-groups').textContent   = data.length;
@@ -783,18 +455,14 @@
       if (rates) document.getElementById('stat-date').textContent = rates.date;
 
       renderBudget();
-
     } catch {
       grandEl.textContent = '—';
-      noteEl.textContent  = '⚠️ No se pudieron obtener tipos de cambio.';
+      noteEl.textContent  = '⚠️ Could not fetch exchange rates.';
     }
   }
 
-  // ── Budget ────────────────────────────────────────────────
   function saveBudget() {
-    const val = document.getElementById('budget-input').value;
-    const cur = document.getElementById('budget-currency').value;
-    saveBudgetVal({ amount: val, currency: cur });
+    saveBudgetVal({ amount: document.getElementById('budget-input').value, currency: document.getElementById('budget-currency').value });
     renderBudget();
   }
 
@@ -802,14 +470,10 @@
     const b = getBudget();
     const budgetVal = parseFloat(b.amount) || 0;
     const budgetCur = b.currency || 'EUR';
-    const mini      = document.getElementById('budget-mini');
-    const block     = document.getElementById('balance-block');
+    const mini  = document.getElementById('budget-mini');
+    const block = document.getElementById('balance-block');
 
-    if (!budgetVal || lastTotal === null) {
-      mini.style.display  = 'none';
-      block.style.display = 'none';
-      return;
-    }
+    if (!budgetVal || lastTotal === null) { mini.style.display='none'; block.style.display='none'; return; }
 
     let budgetConverted = budgetVal;
     if (budgetCur !== displayCurrency) {
@@ -817,8 +481,7 @@
       catch { mini.style.display='none'; block.style.display='none'; return; }
     }
 
-    mini.style.display  = 'flex';
-    block.style.display = 'flex';
+    mini.style.display  = 'flex'; block.style.display = 'flex';
     document.getElementById('bm-budget').textContent = fmt(budgetConverted);
     document.getElementById('bm-total').textContent  = fmt(lastTotal);
 
@@ -827,78 +490,51 @@
     const labEl = document.getElementById('balance-label');
     balEl.textContent = fmt(Math.abs(remaining));
     balEl.className   = 'balance-value ' + (remaining > 0.005 ? 'pos' : remaining < -0.005 ? 'neg' : 'zero');
-    labEl.textContent = remaining < -0.005 ? 'Te pasas por' : 'Restante';
+    labEl.textContent = remaining < -0.005 ? 'Over budget by' : 'Remaining';
   }
 
-  // ── Clear all ─────────────────────────────────────────────
   function clearAll() {
-    if (!confirm('¿Borrar todos los grupos e items?')) return;
-    localStorage.removeItem(SK);
-    renderAll();
+    if (!confirm('Delete all groups and items?')) return;
+    localStorage.removeItem(SK); renderAll();
   }
 
-  // ── Helpers ───────────────────────────────────────────────
   function escHtml(s) {
     return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
-  // ── Export Excel ──────────────────────────────────────────
   function exportExcel() {
     const data = getData();
     const wb = XLSX.utils.book_new();
-
-    // Sheet 1: All items flat
     const rows = [];
     data.forEach(group => {
       group.items.forEach(item => {
-        rows.push({
-          'Grupo': group.name,
-          'Item': item.name,
-          'Monto': item.amount,
-          'Moneda': item.currency,
-          'Ya comprado': item.checked ? 'Sí' : 'No',
-        });
+        rows.push({ 'Group': group.name, 'Item': item.name, 'Amount': item.amount, 'Currency': item.currency, 'Already bought': item.checked ? 'Yes' : 'No' });
       });
-      // blank row between groups
-      rows.push({ 'Grupo': '', 'Item': '', 'Monto': '', 'Moneda': '', 'Ya comprado': '' });
+      rows.push({ 'Group': '', 'Item': '', 'Amount': '', 'Currency': '', 'Already bought': '' });
     });
-
     const ws1 = XLSX.utils.json_to_sheet(rows);
     ws1['!cols'] = [{ wch: 22 }, { wch: 28 }, { wch: 12 }, { wch: 10 }, { wch: 14 }];
-    XLSX.utils.book_append_sheet(wb, ws1, 'Presupuesto');
+    XLSX.utils.book_append_sheet(wb, ws1, 'Budget');
 
-    // Sheet 2: Summary per group
-    const summary = data.map(group => {
-      const total = group.items.reduce((s, i) => s + i.amount, 0);
-      const bought = group.items.filter(i => i.checked).reduce((s, i) => s + i.amount, 0);
-      const currencies = [...new Set(group.items.map(i => i.currency))].join(', ');
-      return {
-        'Grupo': group.name,
-        'Items': group.items.length,
-        'Total (moneda original)': total,
-        'Monedas': currencies,
-        'Ya comprado': group.items.filter(i => i.checked).length,
-        'Total comprado': bought,
-      };
-    });
+    const summary = data.map(group => ({
+      'Group': group.name,
+      'Items': group.items.length,
+      'Total (original currency)': group.items.reduce((s, i) => s + i.amount, 0),
+      'Currencies': [...new Set(group.items.map(i => i.currency))].join(', '),
+      'Already bought': group.items.filter(i => i.checked).length,
+      'Total bought': group.items.filter(i => i.checked).reduce((s, i) => s + i.amount, 0),
+    }));
     const ws2 = XLSX.utils.json_to_sheet(summary);
-    ws2['!cols'] = [{ wch: 22 }, { wch: 8 }, { wch: 22 }, { wch: 14 }, { wch: 14 }, { wch: 16 }];
-    XLSX.utils.book_append_sheet(wb, ws2, 'Resumen por grupo');
+    ws2['!cols'] = [{ wch: 22 }, { wch: 8 }, { wch: 26 }, { wch: 14 }, { wch: 16 }, { wch: 14 }];
+    XLSX.utils.book_append_sheet(wb, ws2, 'Summary by group');
 
-    XLSX.writeFile(wb, `presupuesto-mudanza-${new Date().toISOString().slice(0,10)}.xlsx`);
+    XLSX.writeFile(wb, `move-budget-${new Date().toISOString().slice(0,10)}.xlsx`);
   }
 
-  // ── Init ──────────────────────────────────────────────────
-  document.getElementById('new-group-name').addEventListener('keydown', e => {
-    if (e.key === 'Enter') addGroup();
-  });
+  document.getElementById('new-group-name').addEventListener('keydown', e => { if (e.key === 'Enter') addGroup(); });
 
-  // Restore budget
   const sb = getBudget();
-  if (sb.amount) {
-    document.getElementById('budget-input').value    = sb.amount;
-    document.getElementById('budget-currency').value = sb.currency || 'EUR';
-  }
+  if (sb.amount) { document.getElementById('budget-input').value = sb.amount; document.getElementById('budget-currency').value = sb.currency || 'EUR'; }
 
   renderAll();
 </script>
