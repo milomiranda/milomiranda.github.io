@@ -9,184 +9,58 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --accent: #c5fe00;
-      --bg: #f6f6f4;
-      --card: #ffffff;
-      --border: #ebebeb;
-      --text: #111111;
-      --muted: #aaaaaa;
+      --accent: #c5fe00; --bg: #f6f6f4; --card: #ffffff;
+      --border: #ebebeb; --text: #111111; --muted: #aaaaaa;
     }
-
-    body {
-      font-family: 'DM Sans', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      padding: 44px 24px 120px;
-    }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 44px 24px 120px; }
 
     /* ── Lock screen ── */
-    #lock-screen {
-      position: fixed; inset: 0;
-      background: var(--bg);
-      display: flex; align-items: center; justify-content: center;
-      z-index: 1000; padding: 24px;
-    }
-    .lock-card {
-      background: var(--card); border: 2px solid var(--border);
-      border-radius: 20px; padding: 40px 36px;
-      max-width: 380px; width: 100%;
-      box-shadow: 0 2px 16px rgba(0,0,0,0.05);
-      display: flex; flex-direction: column; align-items: center; gap: 20px;
-      animation: fadeUp 0.35s ease both;
-    }
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(14px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes shake {
-      0%,100% { transform: translateX(0); }
-      15% { transform: translateX(-8px); } 30% { transform: translateX(8px); }
-      45% { transform: translateX(-6px); } 60% { transform: translateX(6px); }
-      75% { transform: translateX(-3px); } 90% { transform: translateX(3px); }
-    }
+    #lock-screen { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 24px; }
+    .lock-card { background: var(--card); border: 2px solid var(--border); border-radius: 20px; padding: 40px 36px; max-width: 380px; width: 100%; box-shadow: 0 2px 16px rgba(0,0,0,0.05); display: flex; flex-direction: column; align-items: center; gap: 20px; animation: fadeUp 0.35s ease both; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes shake { 0%,100%{transform:translateX(0)} 15%{transform:translateX(-8px)} 30%{transform:translateX(8px)} 45%{transform:translateX(-6px)} 60%{transform:translateX(6px)} 75%{transform:translateX(-3px)} 90%{transform:translateX(3px)} }
     .lock-card.shake { animation: shake 0.5s ease; }
-    .lock-icon {
-      width: 56px; height: 56px; background: var(--accent);
-      border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px;
-    }
+    .lock-icon { width: 56px; height: 56px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; }
     .lock-title { font-size: 20px; font-weight: 800; letter-spacing: -0.03em; text-align: center; }
     .lock-subtitle { font-size: 13px; color: var(--muted); text-align: center; margin-top: -12px; }
-    .lock-input-wrap {
-      width: 100%; display: flex; align-items: center;
-      background: #fafafa; border: 1.5px solid #ebebeb; border-radius: 10px;
-      overflow: hidden; transition: border-color 0.2s;
-    }
+    .lock-input-wrap { width: 100%; display: flex; align-items: center; background: #fafafa; border: 1.5px solid #ebebeb; border-radius: 10px; overflow: hidden; transition: border-color 0.2s; }
     .lock-input-wrap:focus-within { border-color: #bbb; }
     .lock-input-wrap.error { border-color: #ffaaaa; }
-    .lock-input-wrap input {
-      flex: 1; background: transparent; border: none; outline: none;
-      color: var(--text); font-size: 15px; font-family: 'DM Sans', sans-serif; padding: 12px 16px;
-    }
-    .toggle-pw {
-      background: none; border: none; padding: 0 14px; font-size: 16px;
-      cursor: pointer; color: var(--muted); transition: color 0.15s; flex-shrink: 0;
-    }
+    .lock-input-wrap input { flex: 1; background: transparent; border: none; outline: none; color: var(--text); font-size: 15px; font-family: 'DM Sans', sans-serif; padding: 12px 16px; }
+    .toggle-pw { background: none; border: none; padding: 0 14px; font-size: 16px; cursor: pointer; color: var(--muted); transition: color 0.15s; flex-shrink: 0; }
     .toggle-pw:hover { color: var(--text); }
-    .lock-btn {
-      width: 100%; background: var(--accent); border: none; border-radius: 10px;
-      padding: 13px; font-family: 'DM Sans', sans-serif; font-size: 14px;
-      font-weight: 800; color: #111; cursor: pointer; transition: background 0.15s, box-shadow 0.15s;
-    }
+    .lock-btn { width: 100%; background: var(--accent); border: none; border-radius: 10px; padding: 13px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 800; color: #111; cursor: pointer; transition: background 0.15s, box-shadow 0.15s; }
     .lock-btn:hover { background: #b8ef00; box-shadow: 0 4px 14px rgba(197,254,0,0.4); }
-    .lock-error {
-      font-size: 12px; color: #e74c3c; font-weight: 600; text-align: center;
-      opacity: 0; transition: opacity 0.2s; height: 16px; margin-top: -10px;
-    }
+    .lock-error { font-size: 12px; color: #e74c3c; font-weight: 600; text-align: center; opacity: 0; transition: opacity 0.2s; height: 16px; margin-top: -10px; }
     .lock-error.show { opacity: 1; }
 
     /* ── Main ── */
     #main-content { display: none; max-width: 720px; margin: 0 auto; }
-
     .header { text-align: center; margin-bottom: 48px; }
-    .badge {
-      display: inline-block; background: var(--accent); border-radius: 20px;
-      padding: 4px 16px; margin-bottom: 16px;
-      font-size: 10px; font-weight: 800; color: #111; letter-spacing: 0.14em; text-transform: uppercase;
-    }
+    .badge { display: inline-block; background: var(--accent); border-radius: 20px; padding: 4px 16px; margin-bottom: 16px; font-size: 10px; font-weight: 800; color: #111; letter-spacing: 0.14em; text-transform: uppercase; }
     h1 { font-size: clamp(24px, 4vw, 40px); font-weight: 800; letter-spacing: -0.04em; line-height: 1.05; }
     .subtitle { margin-top: 10px; color: var(--muted); font-size: 14px; }
-
-    .guest-banner {
-      display: none;
-      background: #fff8e1; border: 1.5px solid #ffe082;
-      border-radius: 12px; padding: 10px 16px;
-      font-size: 12px; font-weight: 600; color: #7a5f00;
-      margin-bottom: 32px; text-align: center;
-    }
-
-    .section-label {
-      font-size: 10px; font-weight: 800; letter-spacing: 0.14em;
-      text-transform: uppercase; color: var(--muted);
-      margin-bottom: 16px; margin-top: 36px;
-    }
+    .guest-banner { display: none; background: #fff8e1; border: 1.5px solid #ffe082; border-radius: 12px; padding: 10px 16px; font-size: 12px; font-weight: 600; color: #7a5f00; margin-bottom: 32px; text-align: center; }
+    .section-label { font-size: 10px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; margin-top: 36px; }
     .section-label:first-of-type { margin-top: 0; }
 
     /* ── App Grid ── */
     .app-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 16px; }
-
-    .app-item {
-      position: relative; display: flex; flex-direction: column; align-items: center;
-      gap: 10px; cursor: pointer; text-decoration: none;
-      animation: fadeUp 0.4s ease both;
-    }
-
-    /* Admin dim preview for hidden-guest apps */
-    .app-item.hidden-preview .app-icon {
-      opacity: 0.4; filter: grayscale(1);
-      border-style: dashed;
-    }
+    .app-item { position: relative; display: flex; flex-direction: column; align-items: center; gap: 10px; cursor: pointer; text-decoration: none; animation: fadeUp 0.4s ease both; }
+    .app-item.hidden-preview .app-icon { opacity: 0.4; filter: grayscale(1); border-style: dashed; }
     .app-item.hidden-preview .app-name { opacity: 0.4; }
-
-    .app-icon {
-      width: 100%; aspect-ratio: 1;
-      background: var(--card); border: 2px solid var(--border);
-      border-radius: 22px; display: flex; align-items: center; justify-content: center;
-      font-size: 36px; box-shadow: 0 2px 16px rgba(0,0,0,0.05);
-      transition: transform 0.2s cubic-bezier(.34,1.56,.64,1), box-shadow 0.2s, border-color 0.2s, opacity 0.2s, filter 0.2s;
-    }
-    .app-item:not(.hidden-preview):hover .app-icon {
-      transform: translateY(-6px) scale(1.04);
-      box-shadow: 0 12px 32px rgba(0,0,0,0.10);
-      border-color: var(--accent);
-    }
+    .app-icon { width: 100%; aspect-ratio: 1; background: var(--card); border: 2px solid var(--border); border-radius: 22px; display: flex; align-items: center; justify-content: center; font-size: 36px; box-shadow: 0 2px 16px rgba(0,0,0,0.05); transition: transform 0.2s cubic-bezier(.34,1.56,.64,1), box-shadow 0.2s, border-color 0.2s, opacity 0.2s, filter 0.2s; }
+    .app-item:not(.hidden-preview):hover .app-icon { transform: translateY(-6px) scale(1.04); box-shadow: 0 12px 32px rgba(0,0,0,0.10); border-color: var(--accent); }
     .app-name { font-size: 11px; font-weight: 700; color: var(--text); text-align: center; line-height: 1.3; max-width: 100px; }
-
-    .app-tooltip {
-      position: absolute; bottom: calc(100% + 14px); left: 50%;
-      transform: translateX(-50%) translateY(6px);
-      background: var(--text); color: #fff;
-      font-size: 12px; font-weight: 500; line-height: 1.5;
-      padding: 10px 14px; border-radius: 12px;
-      width: 200px; text-align: center;
-      pointer-events: none; opacity: 0;
-      transition: opacity 0.18s ease, transform 0.18s ease;
-      z-index: 50; white-space: normal;
-    }
-    .app-tooltip::after {
-      content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
-      border: 6px solid transparent; border-top-color: var(--text);
-    }
+    .app-tooltip { position: absolute; bottom: calc(100% + 14px); left: 50%; transform: translateX(-50%) translateY(6px); background: var(--text); color: #fff; font-size: 12px; font-weight: 500; line-height: 1.5; padding: 10px 14px; border-radius: 12px; width: 200px; text-align: center; pointer-events: none; opacity: 0; transition: opacity 0.18s ease, transform 0.18s ease; z-index: 50; white-space: normal; }
+    .app-tooltip::after { content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 6px solid transparent; border-top-color: var(--text); }
     .app-item:not(.hidden-preview):hover .app-tooltip { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-    .app-item:nth-child(1) { animation-delay:.04s; } .app-item:nth-child(2) { animation-delay:.08s; }
-    .app-item:nth-child(3) { animation-delay:.12s; } .app-item:nth-child(4) { animation-delay:.16s; }
-    .app-item:nth-child(5) { animation-delay:.20s; } .app-item:nth-child(6) { animation-delay:.24s; }
-
-    /* ── ADMIN FLOATING TOOLBAR ── */
-    #admin-toolbar {
-      display: none;
-      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
-      z-index: 200;
-      background: #111; color: #fff;
-      border-radius: 20px;
-      box-shadow: 0 8px 40px rgba(0,0,0,0.22);
-      min-width: 300px; max-width: 92vw;
-      animation: slideUp 0.4s cubic-bezier(.34,1.56,.64,1) both;
-    }
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateX(-50%) translateY(40px); }
-      to   { opacity: 1; transform: translateX(-50%) translateY(0); }
-    }
-
-    .toolbar-header {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 14px 18px 12px;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-      cursor: pointer; user-select: none;
-    }
+    /* ── Admin toolbar ── */
+    #admin-toolbar { display: none; position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 200; background: #111; color: #fff; border-radius: 20px; box-shadow: 0 8px 40px rgba(0,0,0,0.22); min-width: 300px; max-width: 92vw; animation: slideUp 0.4s cubic-bezier(.34,1.56,.64,1) both; }
+    @keyframes slideUp { from { opacity: 0; transform: translateX(-50%) translateY(40px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+    .toolbar-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px 12px; border-bottom: 1px solid rgba(255,255,255,0.08); cursor: pointer; user-select: none; }
     .toolbar-header-left { display: flex; align-items: center; gap: 9px; }
     .toolbar-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
     .toolbar-label-wrap { display: flex; flex-direction: column; gap: 1px; }
@@ -194,75 +68,36 @@
     .toolbar-subtitle { font-size: 10px; color: rgba(255,255,255,0.4); font-weight: 500; }
     .toolbar-chevron { font-size: 10px; color: rgba(255,255,255,0.35); transition: transform 0.25s ease; }
     .toolbar-chevron.open { transform: rotate(180deg); }
-
-    .toolbar-body {
-      overflow: hidden; max-height: 0;
-      transition: max-height 0.3s ease;
-    }
+    .toolbar-body { overflow: hidden; max-height: 0; transition: max-height 0.3s ease; }
     .toolbar-body.open { max-height: 600px; }
-
-    .toolbar-section {
-      font-size: 9px; font-weight: 800; letter-spacing: 0.16em;
-      text-transform: uppercase; color: rgba(255,255,255,0.3);
-      padding: 12px 18px 5px;
-    }
-
-    .toolbar-row {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 7px 18px; gap: 12px;
-      border-radius: 10px; margin: 0 6px;
-      transition: background 0.15s;
-    }
+    .toolbar-section { font-size: 9px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,255,255,0.3); padding: 12px 18px 5px; }
+    .toolbar-row { display: flex; align-items: center; justify-content: space-between; padding: 7px 18px; gap: 12px; border-radius: 10px; margin: 0 6px; transition: background 0.15s; }
     .toolbar-row:hover { background: rgba(255,255,255,0.05); }
     .toolbar-row-left { display: flex; align-items: center; gap: 9px; }
     .toolbar-emoji { font-size: 17px; width: 24px; text-align: center; }
     .toolbar-name { font-size: 13px; font-weight: 600; }
-
-    .toolbar-footer {
-      padding: 10px 18px 14px;
-      border-top: 1px solid rgba(255,255,255,0.06);
-      font-size: 10px; color: rgba(255,255,255,0.25);
-      text-align: center; font-weight: 500;
-    }
-
-    /* Toggle switch */
+    .toolbar-footer { padding: 10px 18px 14px; border-top: 1px solid rgba(255,255,255,0.06); font-size: 10px; color: rgba(255,255,255,0.25); text-align: center; font-weight: 500; }
     .switch { position: relative; width: 36px; height: 20px; flex-shrink: 0; }
     .switch input { opacity: 0; width: 0; height: 0; position: absolute; }
-    .slider {
-      position: absolute; inset: 0;
-      background: rgba(255,255,255,0.12); border-radius: 999px;
-      cursor: pointer; transition: background 0.2s;
-    }
-    .slider::before {
-      content: ''; position: absolute;
-      width: 14px; height: 14px; border-radius: 50%;
-      background: rgba(255,255,255,0.6); left: 3px; top: 3px;
-      transition: transform 0.2s cubic-bezier(.34,1.56,.64,1), background 0.2s;
-    }
+    .slider { position: absolute; inset: 0; background: rgba(255,255,255,0.12); border-radius: 999px; cursor: pointer; transition: background 0.2s; }
+    .slider::before { content: ''; position: absolute; width: 14px; height: 14px; border-radius: 50%; background: rgba(255,255,255,0.6); left: 3px; top: 3px; transition: transform 0.2s cubic-bezier(.34,1.56,.64,1), background 0.2s; }
     .switch input:checked + .slider { background: var(--accent); }
     .switch input:checked + .slider::before { transform: translateX(16px); background: #111; }
 
     footer { text-align: center; margin-top: 56px; font-size: 12px; color: #bbb; }
     footer strong { color: #888; }
-
-    @media (max-width: 480px) {
-      .app-grid { grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 12px; }
-      .app-icon { font-size: 28px; border-radius: 18px; }
-      .app-tooltip { width: 160px; font-size: 11px; }
-    }
+    @media (max-width: 480px) { .app-grid { grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 12px; } .app-icon { font-size: 28px; border-radius: 18px; } .app-tooltip { width: 160px; font-size: 11px; } }
   </style>
 </head>
 <body>
 
-<!-- Lock -->
 <div id="lock-screen">
   <div class="lock-card" id="lock-card">
     <div class="lock-icon">🔒</div>
     <div class="lock-title">Builts by Milo</div>
     <p class="lock-subtitle">Enter password to continue</p>
     <div class="lock-input-wrap" id="lock-input-wrap">
-      <input type="password" id="pw-input" placeholder="Password" autocomplete="current-password"
-        onkeydown="if(event.key==='Enter') checkPassword()" />
+      <input type="password" id="pw-input" placeholder="Password" autocomplete="current-password" onkeydown="if(event.key==='Enter') checkPassword()" />
       <button class="toggle-pw" onclick="toggleVisibility()" id="toggle-pw-btn">👁</button>
     </div>
     <div class="lock-error" id="lock-error">Incorrect password — try again</div>
@@ -270,78 +105,20 @@
   </div>
 </div>
 
-<!-- Main -->
 <div id="main-content">
-
   <div class="header">
     <div class="badge">🛠 Builts</div>
     <h1>Builts by Emilio (Milo) Miranda</h1>
     <p class="subtitle">A collection of apps and tools I've built.</p>
   </div>
-
-  <div class="guest-banner" id="guest-banner">
-    👋 You're viewing as a guest — some apps may not be available.
-  </div>
-
-  <div class="section-label">Personal</div>
-  <div class="app-grid">
-
-    <a class="app-item" href="apps/budgettracker.html" data-id="budgettracker">
-      <div class="app-icon">💸
-        <div class="app-tooltip">A flexible expense tracker with multi-currency support and real-time budget balance.</div>
-      </div>
-      <span class="app-name">Budget Tracker</span>
-    </a>
-
-    <a class="app-item" href="apps/movebudget.html" data-id="movebudget">
-      <div class="app-icon">✈️
-        <div class="app-tooltip">A grouped expense planner for moving abroad — track costs in EUR, USD, or MXN.</div>
-      </div>
-      <span class="app-name">Move Abroad Budget</span>
-    </a>
-
-    <a class="app-item" href="apps/system-aesthetic-prompt.html" data-id="systemprompt">
-      <div class="app-icon">🎨
-        <div class="app-tooltip">Design system reference with a copyable prompt to replicate Milo's visual language in any new build.</div>
-      </div>
-      <span class="app-name">System Aesthetic Prompt</span>
-    </a>
-
-    <a class="app-item" href="apps/gymhub.html" data-id="personal3">
-      <div class="app-icon">🏋️
-        <div class="app-tooltip">Your personal training hub Select a muscle group from coach-recommended splits, load your exercises with form tips and swap options, then pick your HIIT circuit for the day.</div>
-      </div>
-      <span class="app-name">Gym Hub</span>
-    </a>
-
-  </div>
-
-  <div class="section-label">Work</div>
-  <div class="app-grid">
-
-    <a class="app-item" href="apps/ticketcalculator.html" data-id="ticketcalc">
-      <div class="app-icon">🎟️
-        <div class="app-tooltip">Compare ticket purchase options side by side — price, fees, payment method — to find the best deal.</div>
-      </div>
-      <span class="app-name">Fee & Booking Calculator</span>
-    </a>
-
-    <a class="app-item" href="apps/pipeline-tracker.html" data-id="pipeline">
-      <div class="app-icon">📊
-        <div class="app-tooltip">Track sales leads from first contact to closed deal. Filter by status, export to Excel, no backend needed.</div>
-      </div>
-      <span class="app-name">Pipeline Tracker</span>
-    </a>
-
-  </div>
-
+  <div class="guest-banner" id="guest-banner">👋 You're viewing as a guest — some apps may not be available.</div>
+  <div id="app-sections"></div>
   <footer>
     built by <strong>Emilio Miranda Escamilla</strong><br><br>
     <button onclick="logout()" style="background:none;border:1.5px solid #e0e0e0;border-radius:8px;padding:6px 14px;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;color:#aaa;cursor:pointer;letter-spacing:0.04em;transition:all 0.15s;" onmouseover="this.style.borderColor='#111';this.style.color='#111'" onmouseout="this.style.borderColor='#e0e0e0';this.style.color='#aaa'">← Log out</button>
   </footer>
 </div>
 
-<!-- Admin floating toolbar -->
 <div id="admin-toolbar">
   <div class="toolbar-header" onclick="toggleToolbar()">
     <div class="toolbar-header-left">
@@ -353,81 +130,150 @@
     </div>
     <span class="toolbar-chevron" id="toolbar-chevron">▲</span>
   </div>
-
   <div class="toolbar-body" id="toolbar-body">
-
-    <div class="toolbar-section">Personal</div>
-    <div class="toolbar-row">
-      <div class="toolbar-row-left">
-        <span class="toolbar-emoji">💸</span>
-        <span class="toolbar-name">Budget Tracker</span>
-      </div>
-      <label class="switch"><input type="checkbox" data-target="budgettracker" onchange="updateVisibility(this)"><span class="slider"></span></label>
-    </div>
-    <div class="toolbar-row">
-      <div class="toolbar-row-left">
-        <span class="toolbar-emoji">✈️</span>
-        <span class="toolbar-name">Move Abroad Budget</span>
-      </div>
-      <label class="switch"><input type="checkbox" data-target="movebudget" onchange="updateVisibility(this)"><span class="slider"></span></label>
-    </div>
-    <div class="toolbar-row">
-      <div class="toolbar-row-left">
-        <span class="toolbar-emoji">🎨</span>
-        <span class="toolbar-name">System Aesthetic Prompt</span>
-      </div>
-      <label class="switch"><input type="checkbox" data-target="systemprompt" onchange="updateVisibility(this)"><span class="slider"></span></label>
-    </div>
-    <div class="toolbar-row">
-      <div class="toolbar-row-left">
-        <span class="toolbar-emoji">📦</span>
-        <span class="toolbar-name">Personal App 3</span>
-      </div>
-      <label class="switch"><input type="checkbox" data-target="personal3" onchange="updateVisibility(this)"><span class="slider"></span></label>
-    </div>
-
-    <div class="toolbar-section">Work</div>
-    <div class="toolbar-row">
-      <div class="toolbar-row-left">
-        <span class="toolbar-emoji">🎟️</span>
-        <span class="toolbar-name">Fee & Booking Calculator</span>
-      </div>
-      <label class="switch"><input type="checkbox" data-target="ticketcalc" onchange="updateVisibility(this)"><span class="slider"></span></label>
-    </div>
-    <div class="toolbar-row">
-      <div class="toolbar-row-left">
-        <span class="toolbar-emoji">📊</span>
-        <span class="toolbar-name">Pipeline Tracker</span>
-      </div>
-      <label class="switch"><input type="checkbox" data-target="pipeline" onchange="updateVisibility(this)"><span class="slider"></span></label>
-    </div>
-
+    <div id="toolbar-rows"></div>
     <div class="toolbar-footer">Changes save instantly · guests see updates on next login</div>
   </div>
 </div>
 
 <script>
-  const PW_ADMIN      = '1Ikhouvancynthia';
-  const PW_GUEST      = 'invitado';
-  const SESSION_KEY   = 'milo_session';      // 'admin' | 'guest'
+  const PW_ADMIN       = '1Ikhouvancynthia';
+  const PW_GUEST       = 'invitado';
+  const SESSION_KEY    = 'milo_session';
   const VISIBILITY_KEY = 'milo_guest_vis';
 
-  const ALL_IDS = ['budgettracker','movebudget','systemprompt','personal3','ticketcalc','pipeline'];
+  // ── APP REGISTRY ─────────────────────────────────────
+  // To add a new app: just add an entry here. Everything else updates automatically.
+  const APPS = [
+    {
+      section: 'Personal',
+      id: 'budgettracker',
+      emoji: '💸',
+      name: 'Budget Tracker',
+      href: 'apps/budgettracker.html',
+      tooltip: 'A flexible expense tracker with multi-currency support and real-time budget balance.',
+    },
+    {
+      section: 'Personal',
+      id: 'movebudget',
+      emoji: '✈️',
+      name: 'Move Abroad Budget',
+      href: 'apps/movebudget.html',
+      tooltip: 'A grouped expense planner for moving abroad — track costs in EUR, USD, or MXN.',
+    },
+    {
+      section: 'Personal',
+      id: 'systemprompt',
+      emoji: '🎨',
+      name: 'System Aesthetic Prompt',
+      href: 'apps/system-aesthetic-prompt.html',
+      tooltip: 'Design system reference with a copyable prompt to replicate Milo\'s visual language in any new build.',
+    },
+    {
+      section: 'Personal',
+      id: 'gymhub',
+      emoji: '🏋️',
+      name: 'Gym Hub',
+      href: 'apps/gymhub.html',
+      tooltip: 'Your personal training hub. Select a muscle group, load exercises with form tips and swap options, then pick your HIIT circuit.',
+    },
+    {
+      section: 'Work',
+      id: 'ticketcalc',
+      emoji: '🎟️',
+      name: 'Fee & Booking Calculator',
+      href: 'apps/ticketcalculator.html',
+      tooltip: 'Compare ticket purchase options side by side — price, fees, payment method — to find the best deal.',
+    },
+    {
+      section: 'Work',
+      id: 'pipeline',
+      emoji: '📊',
+      name: 'Pipeline Tracker',
+      href: 'apps/pipeline-tracker.html',
+      tooltip: 'Track sales leads from first contact to closed deal. Filter by status, export to Excel, no backend needed.',
+    },
+  ];
+
   let currentRole = null;
 
   // ── VISIBILITY STORE ─────────────────────────────────
   function getVisibility() {
-    try {
-      const v = JSON.parse(localStorage.getItem(VISIBILITY_KEY));
-      if (v && typeof v === 'object') return v;
-    } catch {}
-    const def = {};
-    ALL_IDS.forEach(id => def[id] = true); // default: all visible
-    return def;
+    let vis = {};
+    try { vis = JSON.parse(localStorage.getItem(VISIBILITY_KEY)) || {}; } catch {}
+    // Any app not yet in stored visibility defaults to true (visible)
+    APPS.forEach(app => { if (!(app.id in vis)) vis[app.id] = true; });
+    return vis;
   }
   function saveVisibility(v) { localStorage.setItem(VISIBILITY_KEY, JSON.stringify(v)); }
 
+  // ── BUILD UI FROM APPS ARRAY ─────────────────────────
+  function buildAppGrid() {
+    const container = document.getElementById('app-sections');
+    container.innerHTML = '';
+
+    // Group by section
+    const sections = [...new Set(APPS.map(a => a.section))];
+    sections.forEach((section, si) => {
+      const label = document.createElement('div');
+      label.className = 'section-label';
+      label.textContent = section;
+      container.appendChild(label);
+
+      const grid = document.createElement('div');
+      grid.className = 'app-grid';
+      grid.id = `grid-${section.toLowerCase()}`;
+
+      APPS.filter(a => a.section === section).forEach((app, i) => {
+        const a = document.createElement('a');
+        a.className = 'app-item';
+        a.href = app.href;
+        a.dataset.id = app.id;
+        a.style.animationDelay = `${(si * 6 + i) * 0.04}s`;
+        a.innerHTML = `
+          <div class="app-icon">${app.emoji}
+            <div class="app-tooltip">${app.tooltip}</div>
+          </div>
+          <span class="app-name">${app.name}</span>`;
+        grid.appendChild(a);
+      });
+
+      container.appendChild(grid);
+    });
+  }
+
+  function buildToolbar() {
+    const container = document.getElementById('toolbar-rows');
+    container.innerHTML = '';
+
+    const sections = [...new Set(APPS.map(a => a.section))];
+    sections.forEach(section => {
+      const sec = document.createElement('div');
+      sec.className = 'toolbar-section';
+      sec.textContent = section;
+      container.appendChild(sec);
+
+      APPS.filter(a => a.section === section).forEach(app => {
+        const row = document.createElement('div');
+        row.className = 'toolbar-row';
+        row.innerHTML = `
+          <div class="toolbar-row-left">
+            <span class="toolbar-emoji">${app.emoji}</span>
+            <span class="toolbar-name">${app.name}</span>
+          </div>
+          <label class="switch">
+            <input type="checkbox" data-target="${app.id}" onchange="updateVisibility(this)">
+            <span class="slider"></span>
+          </label>`;
+        container.appendChild(row);
+      });
+    });
+  }
+
   // ── BOOT ─────────────────────────────────────────────
+  buildAppGrid();
+  buildToolbar();
+
   const stored = localStorage.getItem(SESSION_KEY);
   if (stored === 'admin' || stored === 'guest') { currentRole = stored; unlock(false); }
 
@@ -460,36 +306,29 @@
     const vis = getVisibility();
 
     if (currentRole === 'admin') {
-      // Admin ALWAYS sees everything — no dimming, no hiding
       document.querySelectorAll('.app-item').forEach(el => {
         el.style.display = '';
         el.classList.remove('hidden-preview');
       });
-      // Sync toolbar switches to reflect guest visibility state
+      // Sync toolbar switches
       document.querySelectorAll('#admin-toolbar input[type=checkbox]').forEach(cb => {
         cb.checked = vis[cb.dataset.target] !== false;
       });
-      const tb = document.getElementById('admin-toolbar');
-      tb.style.display = 'block';
-
+      document.getElementById('admin-toolbar').style.display = 'block';
     } else {
-      // Guest: hide disallowed apps entirely, show banner
       document.getElementById('guest-banner').style.display = 'block';
       document.querySelectorAll('.app-item').forEach(el => {
-        const id = el.dataset.id;
-        el.style.display = vis[id] === false ? 'none' : '';
+        el.style.display = vis[el.dataset.id] === false ? 'none' : '';
       });
       document.getElementById('admin-toolbar').style.display = 'none';
     }
   }
 
-  // ── ADMIN TOGGLE ─────────────────────────────────────
+  // ── ADMIN VISIBILITY TOGGLE ───────────────────────────
   function updateVisibility(cb) {
-    const id = cb.dataset.target;
     const vis = getVisibility();
-    vis[id] = cb.checked;
+    vis[cb.dataset.target] = cb.checked;
     saveVisibility(vis);
-    // Admin view is NEVER affected — only saves the preference for guests
   }
 
   // ── TOOLBAR COLLAPSE ─────────────────────────────────
@@ -502,7 +341,6 @@
   function logout() {
     localStorage.removeItem(SESSION_KEY);
     currentRole = null;
-    // Reset UI
     document.getElementById('main-content').style.display = 'none';
     document.getElementById('admin-toolbar').style.display = 'none';
     document.getElementById('guest-banner').style.display = 'none';
