@@ -28,9 +28,9 @@ header p { color: var(--muted); font-size: 14px; font-weight: 500; }
 .wrap { max-width: 760px; margin: 0 auto; padding: 0 24px; display: flex; flex-direction: column; gap: 14px; }
 
 /* CHIPS */
-.chips-wrap { display: flex; flex-direction: column; gap: 9px; }
+.chips-wrap { display: flex; flex-direction: column; gap: 9px; align-items: center; text-align: center; }
 .chips-label { font-size: 10px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
-.chips-row { display: flex; gap: 7px; flex-wrap: wrap; }
+.chips-row { display: flex; gap: 7px; flex-wrap: wrap; justify-content: center; }
 .chip { padding: 8px 16px; border-radius: 999px; border: 2px solid var(--border); background: var(--card); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700; color: var(--text); cursor: pointer; transition: all 0.15s; box-shadow: var(--shadow); line-height: 1; }
 .chip:hover { border-color: var(--text); transform: translateY(-1px); }
 .chip.active { background: var(--text); color: #fff; border-color: var(--text); }
@@ -134,6 +134,42 @@ header p { color: var(--muted); font-size: 14px; font-weight: 500; }
 .placeholder p { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
 .placeholder small { font-size: 12px; }
 
+/* POOL */
+.pool-section { display: flex; flex-direction: column; gap: 8px; animation: fadeUp 0.22s ease both; }
+.pool-phase { background: var(--card); border: 2px solid var(--border); border-radius: 14px; overflow: hidden; box-shadow: var(--shadow); }
+.pool-phase-header { display: flex; align-items: center; gap: 10px; padding: 12px 16px; cursor: pointer; user-select: none; transition: background 0.15s; }
+.pool-phase-header:hover { background: #fafafa; }
+.pool-phase-icon { font-size: 18px; flex-shrink: 0; }
+.pool-phase-title { flex: 1; font-size: 14px; font-weight: 800; letter-spacing: -0.01em; }
+.pool-phase-meta { font-size: 11px; color: var(--muted); font-weight: 500; font-family: 'DM Mono', monospace; }
+.pool-phase-arrow { font-size: 10px; color: var(--muted); transition: transform 0.2s; flex-shrink: 0; }
+.pool-phase.open .pool-phase-arrow { transform: rotate(180deg); }
+.pool-phase-body { display: none; padding: 0 16px 16px; border-top: 1.5px solid var(--border); }
+.pool-phase.open .pool-phase-body { display: block; }
+.pool-ex { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid #f3f3f3; }
+.pool-ex:last-child { border-bottom: none; }
+.pool-ex-num { width: 22px; height: 22px; border-radius: 50%; background: var(--accent); color: #111; font-size: 10px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+.pool-ex-body { flex: 1; }
+.pool-ex-name { font-size: 13px; font-weight: 800; }
+.pool-ex-timing { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); margin-top: 2px; }
+.pool-ex-tip { font-size: 11px; color: var(--muted); font-style: italic; margin-top: 3px; line-height: 1.4; }
+.pool-ex-badge { font-size: 9px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 7px; border-radius: 99px; white-space: nowrap; flex-shrink: 0; margin-top: 2px; }
+.pool-ex-badge.swim { background: #dbeafe; color: #1d4ed8; }
+.pool-ex-badge.edge { background: #ede9fe; color: #6d28d9; }
+.pool-ex-badge.water { background: #d1fae5; color: #065f46; }
+.pool-ex-badge.core { background: #fce7f3; color: #9d174d; }
+.pool-pause { background: #f0f9ff; border: 1.5px solid #bae6fd; border-radius: 10px; padding: 8px 14px; font-size: 12px; font-weight: 700; color: #0369a1; margin: 8px 0; display: flex; align-items: center; gap: 7px; }
+.tabata-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+.tabata-round { background: #fafafa; border: 1.5px solid var(--border); border-radius: 10px; padding: 10px 12px; }
+.tabata-round-title { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 6px; }
+.tabata-round-name { font-size: 13px; font-weight: 800; color: var(--text); }
+.tabata-round-detail { font-size: 11px; color: var(--muted); margin-top: 2px; line-height: 1.4; }
+.tabata-badge { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; background: #111; color: var(--accent); padding: 2px 7px; border-radius: 99px; display: inline-block; margin-top: 4px; }
+.pool-stat-bar { background: var(--accent); border-radius: 14px; padding: 14px 18px; display: flex; flex-wrap: wrap; gap: 10px 24px; }
+.pool-stat { display: flex; flex-direction: column; gap: 1px; }
+.pool-stat-label { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.12em; color: rgba(0,0,0,0.4); }
+.pool-stat-value { font-size: 16px; font-weight: 800; font-family: 'DM Mono', monospace; color: #111; }
+
 footer { text-align: center; padding: 48px 20px 0; font-size: 12px; color: var(--muted); font-weight: 500; }
 
 @media (max-width: 600px) {
@@ -145,7 +181,7 @@ footer { text-align: center; padding: 48px 20px 0; font-size: 12px; color: var(-
 </head>
 <body>
 
-<a class="back-btn" href="../index.html">← Back</a>
+<a class="back-btn" href="../hub.html">← Back</a>
 
 <header>
   <div class="badge">💪 Gym Hub</div>
@@ -186,10 +222,11 @@ const TL = { machine:'Machine', free:'Free Weights', body:'Bodyweight' };
 // Quads+Hams+Glutes+Calves together, Core can attach to any day
 
 const SPLITS = [
-  { id:'push', label:'🔴 Push', sub:'Chest · Shoulders · Triceps', groups:['chest','shoulders','triceps'] },
-  { id:'pull', label:'🔵 Pull', sub:'Back · Biceps', groups:['back','biceps'] },
-  { id:'legs', label:'🟢 Legs', sub:'Quads · Hamstrings · Glutes · Calves', groups:['quads','hamstrings','calves'] },
-  { id:'core', label:'🟡 Core', sub:'Abs · Stability', groups:['core'] },
+  { id:'push',  label:'🔴 Push',  sub:'Chest · Shoulders · Triceps',          groups:['chest','shoulders','triceps'] },
+  { id:'pull',  label:'🔵 Pull',  sub:'Back · Biceps',                         groups:['back','biceps'] },
+  { id:'legs',  label:'🟢 Legs',  sub:'Quads · Hamstrings · Glutes · Calves', groups:['quads','hamstrings','calves'] },
+  { id:'core',  label:'🟡 Core',  sub:'Abs · Stability',                       groups:['core'] },
+  { id:'pool',  label:'🌊 Pool',  sub:'Aquatic HIIT',                          groups:[], pool:true },
 ];
 
 // ─── ALL MUSCLE GROUPS ──────────────────────────────────────────────────────
@@ -554,12 +591,28 @@ function selectSplit(split) {
   document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
   document.getElementById('chip-' + split.id).classList.add('active');
 
-  activeGroup = split.groups[0];
   swaps = {}; openSwap = null; hiitSelected = {};
 
+  // Pool is a special case — its own full render
+  if (split.pool) {
+    activeGroup = null;
+    renderPool();
+    return;
+  }
+
+  activeGroup = split.groups[0];
+
+  // Use first group's warmup/HIIT since split shares them
+  const splitGroup = GROUPS[activeGroup];
+
   let html = '';
+
+  // Warmup — fixed for the split
+  html += `<div class="phase-pill">🔥 <strong>Warmup:</strong>&nbsp;${splitGroup.warmup}</div>`;
+
+  // Sub-chips — centered
   if (split.groups.length > 1) {
-    html += `<div style="display:flex;gap:7px;flex-wrap:wrap;">`;
+    html += `<div style="display:flex;gap:7px;flex-wrap:wrap;justify-content:center;">`;
     split.groups.forEach(gid => {
       const g = GROUPS[gid];
       html += `<button class="chip${gid===activeGroup?' active':''}" id="subchip-${gid}" onclick="selectGroup('${gid}')" style="font-size:12px;padding:6px 13px;">${g.label}</button>`;
@@ -567,7 +620,34 @@ function selectSplit(split) {
     html += `</div>`;
   }
 
+  // Exercises slot — updated by selectGroup
   html += `<div id="group-exercises"></div>`;
+
+  // HIIT — fixed for the split, selections persist
+  const MAX_HIIT = 3;
+  const selCount = Object.values(hiitSelected).filter(Boolean).length;
+  html += `<div class="sec-divider"><span>HIIT — 8 to 10 min</span></div>`;
+  html += `<div class="hiit-card" id="hiit-card">
+    <div class="hiit-header">
+      <div><div class="hiit-title">⚡ HIIT Circuit</div><div class="hiit-sub">Pick up to 3 exercises for today.</div></div>
+      <div class="hiit-counter${selCount===MAX_HIIT?' full':''}" id="hiit-counter">${selCount}/${MAX_HIIT} selected</div>
+    </div>
+    <div class="hiit-exercises" id="hiit-exercises">`;
+  splitGroup.hiit.forEach((h, i) => {
+    const sel = !!hiitSelected[i];
+    html += `<div class="hiit-ex${sel?' selected':''}" onclick="toggleHiit(${i})">
+      <div class="hiit-ex-check">${sel?'✓':''}</div>
+      <div class="hiit-ex-icon">${h.icon}</div>
+      <div class="hiit-ex-body">
+        <div class="hiit-ex-name">${h.name}</div>
+        <div class="hiit-ex-detail">${h.detail}</div>
+      </div>
+      <div class="hiit-badge ${h.intensity}">${h.intensity==='high'?'🔴 High':'🟡 Med'}</div>
+    </div>`;
+  });
+  html += `</div></div>`;
+  html += `<div class="phase-pill">🧘 <strong>Stretching:</strong>&nbsp;8–10 min — focus on muscles worked today</div>`;
+
   document.getElementById('ex-area').innerHTML = html;
   renderGroupExercises();
 }
@@ -583,41 +663,9 @@ function selectGroup(gid) {
 function renderGroupExercises() {
   const g = GROUPS[activeGroup];
   if (!g) return;
-  let html = '<div class="ex-list">';
-  html += `<div class="phase-pill">🔥 <strong>Warmup:</strong>&nbsp;${g.warmup}</div>`;
-  html += `<div class="sec-divider"><span>Exercises</span></div>`;
-
-  g.exercises.forEach(ex => {
-    html += renderExCard(ex, g);
-  });
-
-  // HIIT
-  const MAX_HIIT = 3;
-  const selCount = Object.values(hiitSelected).filter(Boolean).length;
-  html += `<div class="sec-divider"><span>HIIT — 8 to 10 min</span></div>`;
-  html += `<div class="hiit-card">
-    <div class="hiit-header">
-      <div><div class="hiit-title">⚡ HIIT Circuit</div><div class="hiit-sub">Pick up to 3 exercises for today.</div></div>
-      <div class="hiit-counter${selCount===MAX_HIIT?' full':''}">${selCount}/${MAX_HIIT} selected</div>
-    </div>
-    <div class="hiit-exercises">`;
-  g.hiit.forEach((h, i) => {
-    const sel = !!hiitSelected[i];
-    const disabled = !sel && selCount >= MAX_HIIT;
-    html += `<div class="hiit-ex${sel?' selected':''}" onclick="toggleHiit(${i})">
-      <div class="hiit-ex-check">${sel?'✓':''}</div>
-      <div class="hiit-ex-icon">${h.icon}</div>
-      <div class="hiit-ex-body">
-        <div class="hiit-ex-name">${h.name}</div>
-        <div class="hiit-ex-detail">${h.detail}</div>
-      </div>
-      <div class="hiit-badge ${h.intensity}">${h.intensity==='high'?'🔴 High':'🟡 Med'}</div>
-    </div>`;
-  });
-  html += `</div></div>`;
-  html += `<div class="phase-pill">🧘 <strong>Stretching:</strong>&nbsp;8–10 min — focus on muscles worked today</div>`;
+  let html = `<div class="ex-list"><div class="sec-divider"><span>Exercises</span></div>`;
+  g.exercises.forEach(ex => { html += renderExCard(ex, g); });
   html += '</div>';
-
   document.getElementById('group-exercises').innerHTML = html;
 }
 
@@ -665,9 +713,170 @@ function applySwap(exId, altId) { if(altId===null) delete swaps[exId]; else swap
 function toggleHiit(idx) {
   const sel = !!hiitSelected[idx];
   const selCount = Object.values(hiitSelected).filter(Boolean).length;
-  if (!sel && selCount >= 3) return; // max 3
+  if (!sel && selCount >= 3) return;
   hiitSelected[idx] = !sel;
-  renderGroupExercises();
+
+  // Update only the HIIT section in place
+  const g = GROUPS[activeGroup];
+  const MAX_HIIT = 3;
+  const newCount = Object.values(hiitSelected).filter(Boolean).length;
+
+  const counterEl = document.getElementById('hiit-counter');
+  if (counterEl) {
+    counterEl.textContent = `${newCount}/${MAX_HIIT} selected`;
+    counterEl.className = `hiit-counter${newCount === MAX_HIIT ? ' full' : ''}`;
+  }
+
+  const exEl = document.getElementById('hiit-exercises');
+  if (exEl) {
+    let html = '';
+    g.hiit.forEach((h, i) => {
+      const s = !!hiitSelected[i];
+      html += `<div class="hiit-ex${s?' selected':''}" onclick="toggleHiit(${i})">
+        <div class="hiit-ex-check">${s?'✓':''}</div>
+        <div class="hiit-ex-icon">${h.icon}</div>
+        <div class="hiit-ex-body">
+          <div class="hiit-ex-name">${h.name}</div>
+          <div class="hiit-ex-detail">${h.detail}</div>
+        </div>
+        <div class="hiit-badge ${h.intensity}">${h.intensity==='high'?'🔴 High':'🟡 Med'}</div>
+      </div>`;
+    });
+    exEl.innerHTML = html;
+  }
+}
+
+// ─── POOL DATA ───────────────────────────────────────────────────────────────
+const POOL = {
+  stats: [
+    { label:'Total time', value:'~45 min' },
+    { label:'Circuits', value:'3' },
+    { label:'Laps (swim)', value:'~18–19' },
+    { label:'Distance', value:'~270–285m' },
+  ],
+  phases: [
+    {
+      id:'warmup', icon:'🌊', title:'Warmup', meta:'5 min',
+      content: [
+        { num:1, name:'Easy swim', timing:'4 laps (60m)', tip:'Relaxed pace — just get the body moving', badge:'swim' },
+        { num:2, name:'Kickboard kicks', timing:'2 laps (30m)', tip:'Legs only, board in hands, consistent rhythm', badge:'swim' },
+        { num:3, name:'Mobility circuit', timing:'1 min', tip:'Knees to chest, rotations, jumping jacks in water', badge:'water' },
+      ]
+    },
+    {
+      id:'circuitA', icon:'🔥', title:'Circuit A', meta:'6 min · 40" on / 20" off',
+      pause: '60 sec rest — walk and breathe',
+      content: [
+        { num:1, name:'Mountain climbers (edge)', timing:'40" on / 20" off', tip:'Hands on pool edge, plank position, alternate knees to chest fast', badge:'edge' },
+        { num:2, name:'High knees in water', timing:'40" on / 20" off', tip:'Run in place, drive knees to hip height, pump your arms', badge:'water' },
+        { num:3, name:'Floating plank (kickboard)', timing:'40" on / 20" off', tip:'Arms extended on board, body straight, small flutter kicks', badge:'water' },
+        { num:4, name:'Explosive tuck jumps', timing:'40" on / 20" off', tip:'Jump and bring both knees up, hug them at the top', badge:'water' },
+        { num:5, name:'Twist jumps', timing:'40" on / 20" off', tip:'Jump and rotate torso — right, left, alternating', badge:'water' },
+        { num:6, name:'Sprint swim', timing:'40" on / 20" off', tip:'Max speed — approx 1.5 laps (22m)', badge:'swim' },
+      ]
+    },
+    {
+      id:'circuitB', icon:'⚡', title:'Circuit B', meta:'6 min · 30" on / 15" off',
+      pause: '60 sec rest — walk and breathe',
+      content: [
+        { num:1, name:'Explosive squat jumps', timing:'30" on / 15" off', tip:'Squat down then explode up, arms overhead', badge:'water' },
+        { num:2, name:'Butterfly kicks (kickboard)', timing:'30" on / 15" off', tip:'Legs together, undulating wave motion, explosive', badge:'swim' },
+        { num:3, name:'Aquatic burpees', timing:'30" on / 15" off', tip:'Squat to submerge, explode upward, jump', badge:'water' },
+        { num:4, name:'Standing bicycle crunches', timing:'30" on / 15" off', tip:'Right knee + left elbow, alternate sides, keep upright', badge:'water' },
+        { num:5, name:'Lateral sprint', timing:'30" on / 15" off', tip:'15 sec right + 15 sec left — as fast as possible', badge:'water' },
+        { num:6, name:'Sprint swim', timing:'30" on / 15" off', tip:'Max speed — approx 1 lap (15m)', badge:'swim' },
+      ]
+    },
+    {
+      id:'circuitC', icon:'💥', title:'Circuit C — Metabolic Finisher', meta:'~8 min · Tabata 20"/10"',
+      tabata: [
+        { round:'Round 1', name:'Flutter kicks (kickboard)', detail:'Board in extended arms · Alternate legs fast · 8 rounds × 20 sec on / 10 sec off', badge:'swim' },
+        { round:'Round 2', name:'180° Spin jumps', detail:'Chest-depth water · Jump and rotate in the air · 8 rounds × 20 sec on / 10 sec off', badge:'water' },
+        { round:'Round 3A', name:'Sprint swim', detail:'Option A: ~0.75 laps per interval × 8 rounds ≈ 6 laps (90m) total', badge:'swim' },
+        { round:'Round 3B', name:'Running man (if tired)', detail:'Option B: Run in place at MAX speed · 8 rounds × 20 sec on / 10 sec off', badge:'water' },
+      ]
+    },
+    {
+      id:'cooldown', icon:'🧊', title:'Cooldown + Isometric Core', meta:'5–8 min',
+      content: [
+        { num:1, name:'Easy swim', timing:'4 laps (60m)', tip:'Very relaxed — just flush out the lactic acid', badge:'swim' },
+        { num:2, name:'Walk with deep breathing', timing:'1 min', tip:'Slow walk across the pool, full inhale/exhale each step', badge:'water' },
+        { num:3, name:'Front plank (kickboard)', timing:'45 sec', tip:'Arms on board, body straight, hold position', badge:'core' },
+        { num:4, name:'Hollow hold (kickboard)', timing:'30 sec', tip:'Face up, board overhead, legs extended out of water, brace hard', badge:'core' },
+        { num:5, name:'Side plank (kickboard)', timing:'30 sec each side', tip:'Board under one arm — lean on pool edge with the other if needed', badge:'core' },
+        { num:6, name:'Stretching in water', timing:'2 min', tip:'Lower back (knees to chest) · Obliques · Hip flexors (lunge) · Quads · Deep breaths', badge:'water' },
+      ]
+    },
+  ]
+};
+
+function renderPool() {
+  let html = '<div class="pool-section">';
+
+  // Stats bar
+  html += '<div class="pool-stat-bar">';
+  POOL.stats.forEach(s => {
+    html += `<div class="pool-stat"><span class="pool-stat-label">${s.label}</span><span class="pool-stat-value">${s.value}</span></div>`;
+  });
+  html += '</div>';
+
+  // Phases
+  POOL.phases.forEach(phase => {
+    html += `<div class="pool-phase" id="phase-${phase.id}">
+      <div class="pool-phase-header" onclick="togglePhase('${phase.id}')">
+        <span class="pool-phase-icon">${phase.icon}</span>
+        <span class="pool-phase-title">${phase.title}</span>
+        <span class="pool-phase-meta">${phase.meta}</span>
+        <span class="pool-phase-arrow">▼</span>
+      </div>
+      <div class="pool-phase-body">`;
+
+    if (phase.tabata) {
+      html += `<div class="tabata-grid">`;
+      phase.tabata.forEach(r => {
+        html += `<div class="tabata-round">
+          <div class="tabata-round-title">${r.round}</div>
+          <div class="tabata-round-name">${r.name}</div>
+          <div class="tabata-round-detail">${r.detail}</div>
+          <span class="tabata-badge">${r.badge === 'swim' ? '🏊 Swim' : '💧 Water'}</span>
+        </div>`;
+      });
+      html += `</div>`;
+    } else if (phase.content) {
+      phase.content.forEach(ex => {
+        html += `<div class="pool-ex">
+          <div class="pool-ex-num">${ex.num}</div>
+          <div class="pool-ex-body">
+            <div class="pool-ex-name">${ex.name}</div>
+            <div class="pool-ex-timing">${ex.timing}</div>
+            ${ex.tip ? `<div class="pool-ex-tip">💡 ${ex.tip}</div>` : ''}
+          </div>
+          <span class="pool-ex-badge ${ex.badge}">${
+            ex.badge==='swim'?'🏊 Swim':
+            ex.badge==='edge'?'🤸 Edge':
+            ex.badge==='core'?'🔥 Core':'💧 Water'
+          }</span>
+        </div>`;
+      });
+    }
+
+    if (phase.pause) {
+      html += `<div class="pool-pause">💧 ${phase.pause}</div>`;
+    }
+
+    html += `</div></div>`;
+  });
+
+  html += '</div>';
+  document.getElementById('ex-area').innerHTML = html;
+
+  // Auto-open first phase
+  togglePhase('warmup');
+}
+
+function togglePhase(id) {
+  const el = document.getElementById('phase-' + id);
+  if (el) el.classList.toggle('open');
 }
 
 init();
