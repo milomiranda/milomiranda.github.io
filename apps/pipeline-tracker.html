@@ -48,7 +48,7 @@
   .btn-outline { background: #fff; color: var(--text); border: 1.5px solid var(--border); }
   .btn-outline:hover { border-color: var(--text); }
 
-  .table-wrap { overflow-x: auto; }
+  .table-wrap { overflow-x: visible; }
   table { width: 100%; border-collapse: collapse; font-size: 14px; }
   th { text-align: left; font-size: 10px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); padding: 10px 14px 12px; border-bottom: 1.5px solid var(--border); white-space: nowrap; position: sticky; top: 0; background: var(--card); z-index: 10; box-shadow: 0 1px 0 var(--border); }
   th.sortable { cursor: pointer; user-select: none; }
@@ -63,6 +63,15 @@
   .website-link { color: var(--text); font-size: 12px; text-decoration: none; font-weight: 600; }
   .website-link:hover { text-decoration: underline; }
 
+  /* CONTACTS CELL */
+  .contacts-cell { display: flex; flex-direction: column; gap: 6px; min-width: 180px; }
+  .contact-chip { display: flex; flex-direction: column; gap: 1px; }
+  .contact-chip-name { font-size: 13px; font-weight: 600; color: var(--text); }
+  .contact-chip-role { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); background: #111; padding: 1px 6px; border-radius: 4px; display: inline-block; }
+  .contact-chip-detail { font-size: 11px; color: var(--muted); }
+  .contacts-more { font-size: 11px; font-weight: 700; color: var(--muted); cursor: pointer; }
+  .contacts-more:hover { color: var(--text); }
+
   .toggle-check { width: 28px; height: 28px; border-radius: 8px; border: 1.5px solid var(--border); background: #fafafa; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: all 0.15s; flex-shrink: 0; }
   .toggle-check.checked { background: var(--accent); border-color: var(--accent); color: var(--text); }
   .toggle-check.closed-check { background: var(--text); border-color: var(--text); color: #fff; }
@@ -75,7 +84,7 @@
   /* MODALS */
   .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.3); backdrop-filter: blur(4px); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
   .modal-overlay.open { display: flex; }
-  .modal { background: var(--card); border: 2px solid var(--border); border-radius: 20px; padding: 32px; width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.12); animation: fadeUp 0.25s ease; }
+  .modal { background: var(--card); border: 2px solid var(--border); border-radius: 20px; padding: 32px; width: 100%; max-width: 640px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.12); animation: fadeUp 0.25s ease; }
   .modal h2 { font-size: 22px; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 24px; }
   .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
   .form-group { display: flex; flex-direction: column; gap: 6px; }
@@ -91,6 +100,22 @@
   .checkbox-item input:checked + .checkbox-box { background: var(--accent); border-color: var(--accent); }
   .checkbox-label { font-size: 13px; font-weight: 600; }
   .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; }
+
+  /* CONTACTS IN MODAL */
+  .contacts-section { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 10px; }
+  .contacts-section-header { display: flex; align-items: center; justify-content: space-between; }
+  .contacts-section-label { font-size: 10px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+  .btn-add-contact { display: flex; align-items: center; gap: 5px; background: var(--accent); border: none; border-radius: 8px; padding: 5px 12px; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 800; color: #111; cursor: pointer; transition: all 0.15s; }
+  .btn-add-contact:hover { box-shadow: 0 2px 8px rgba(197,254,0,0.4); }
+  .contact-row { background: #fafafa; border: 1.5px solid var(--border); border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 10px; position: relative; animation: fadeUp 0.2s ease; }
+  .contact-row-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .contact-row-grid-full { grid-column: 1 / -1; }
+  .contact-remove { position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 13px; color: #ccc; cursor: pointer; padding: 0; line-height: 1; transition: color 0.15s; }
+  .contact-remove:hover { color: #ff4444; }
+  .contact-row-num { font-size: 10px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 2px; }
+  .contact-input { padding: 8px 12px; background: #fff; border: 1.5px solid var(--border); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--text); outline: none; width: 100%; transition: border-color 0.15s; }
+  .contact-input:focus { border-color: var(--text); }
+  .contact-input::placeholder { color: #ccc; }
 
   /* IMPORT */
   .import-drop { border: 2px dashed var(--border); border-radius: 14px; padding: 36px 24px; text-align: center; cursor: pointer; transition: border-color 0.15s, background 0.15s; background: #fafafa; }
@@ -114,6 +139,8 @@
     .summary { margin: 0 16px 20px; padding: 20px; gap: 20px; }
     .form-grid { grid-template-columns: 1fr; }
     .form-group.full { grid-column: 1; }
+    .contacts-section { grid-column: 1; }
+    .contact-row-grid { grid-template-columns: 1fr; }
     header h1 { font-size: 28px; }
   }
 </style>
@@ -159,8 +186,8 @@
     </div>
   </div>
 
-  <div class="card" style="animation-delay:0.1s;padding:20px 0;">
-    <div class="card-header" style="padding:0 28px;">
+  <div class="card" style="animation-delay:0.1s;padding:20px 0;overflow-x:auto;">
+    <div class="card-header" style="padding:0 28px;justify-content:space-between;">
       <div style="display:flex;align-items:center;gap:10px;">
         <div class="card-icon">📋</div>
         <span class="card-title">Leads</span>
@@ -176,8 +203,7 @@
         <thead>
           <tr>
             <th>Company / Org</th>
-            <th>Contact Person</th>
-            <th>Email / Phone</th>
+            <th>Contacts</th>
             <th>Website</th>
             <th class="sortable" id="th-city" onclick="setSortField('city')">City <em class="sort-arrow">↕</em></th>
             <th class="sortable" id="th-country" onclick="setSortField('country')">Country <em class="sort-arrow">↕</em></th>
@@ -209,18 +235,6 @@
         <label>Company / Organiser</label>
         <input type="text" id="f-company">
       </div>
-      <div class="form-group">
-        <label>Contact Person</label>
-        <input type="text" id="f-person">
-      </div>
-      <div class="form-group">
-        <label>Email</label>
-        <input type="email" id="f-email">
-      </div>
-      <div class="form-group">
-        <label>Phone</label>
-        <input type="tel" id="f-phone">
-      </div>
       <div class="form-group full">
         <label>Website</label>
         <input type="url" id="f-website">
@@ -233,6 +247,16 @@
         <label>Country</label>
         <input type="text" id="f-country">
       </div>
+
+      <!-- CONTACTS SECTION -->
+      <div class="contacts-section">
+        <div class="contacts-section-header">
+          <span class="contacts-section-label">Contacts</span>
+          <button class="btn-add-contact" onclick="addContactRow()">+ Add Contact</button>
+        </div>
+        <div id="contacts-list"></div>
+      </div>
+
       <div class="form-group full">
         <label>Notes</label>
         <textarea id="f-notes"></textarea>
@@ -285,7 +309,7 @@
       <strong>Expected columns (header row required):</strong>
       Company · Person · Email · Phone · Website · City · Country · Notes · Contacted · Demo · Proposal · Closed<br>
       • Column order doesn't matter — matched by name<br>
-      • For status columns use <em>yes</em>, <em>1</em>, or <em>true</em> to mark as done<br>
+      • For status columns use <em>yes</em>, <em>1</em>, or <em>true</em><br>
       • Existing leads are kept — imports are added on top
     </div>
     <div class="modal-actions">
@@ -303,37 +327,29 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
-const STORAGE_KEY = 'pipeline_leads_v3';
+const STORAGE_KEY = 'pipeline_leads_v4';
 let leads = [];
 let currentFilter = 'all';
 let searchQuery = '';
 let editingId = null;
 let pendingImport = [];
 
-let currentSort = 'latest'; // 'latest' | 'oldest'
-let sortField = null; // null | 'city' | 'country'
+let currentSort = 'latest';
+let sortField = null;
 let sortDir = 'asc';
 
+// ── SORT ─────────────────────────────────────────────
 function setSortDate(dir, btn) {
-  currentSort = dir;
-  sortField = null; // reset alpha sort
+  currentSort = dir; sortField = null;
   document.querySelectorAll('#sort-latest-btn,#sort-oldest-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  updateSortHeaders();
-  render();
+  updateSortHeaders(); render();
 }
 
 function setSortField(field) {
-  if (sortField === field) {
-    sortDir = sortDir === 'asc' ? 'desc' : 'asc';
-  } else {
-    sortField = field;
-    sortDir = 'asc';
-    // Deactivate date sort buttons visually but keep currentSort for fallback
-    document.querySelectorAll('#sort-latest-btn,#sort-oldest-btn').forEach(b => b.classList.remove('active'));
-  }
-  updateSortHeaders();
-  render();
+  if (sortField === field) { sortDir = sortDir === 'asc' ? 'desc' : 'asc'; }
+  else { sortField = field; sortDir = 'asc'; document.querySelectorAll('#sort-latest-btn,#sort-oldest-btn').forEach(b => b.classList.remove('active')); }
+  updateSortHeaders(); render();
 }
 
 function updateSortHeaders() {
@@ -348,6 +364,7 @@ function updateSortHeaders() {
     }
   });
 }
+
 function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(leads)); }
 function load() { try { leads = JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch { leads = []; } }
 
@@ -355,19 +372,23 @@ function load() { try { leads = JSON.parse(localStorage.getItem(STORAGE_KEY)) ||
 function setFilter(f, el) {
   currentFilter = f;
   document.querySelectorAll('.filters .filter-btn').forEach(b => b.classList.remove('active'));
-  el.classList.add('active');
-  render();
+  el.classList.add('active'); render();
 }
 
 function filteredLeads() {
   const filtered = leads.filter(l => {
     const q = searchQuery.toLowerCase();
+    // Search across all contacts too
+    const contactMatch = (l.contacts||[]).some(c =>
+      (c.name||'').toLowerCase().includes(q) ||
+      (c.email||'').toLowerCase().includes(q) ||
+      (c.phone||'').toLowerCase().includes(q)
+    );
     const matchSearch = !q ||
       (l.company||'').toLowerCase().includes(q) ||
-      (l.person||'').toLowerCase().includes(q) ||
-      (l.email||'').toLowerCase().includes(q) ||
       (l.city||'').toLowerCase().includes(q) ||
-      (l.country||'').toLowerCase().includes(q);
+      (l.country||'').toLowerCase().includes(q) ||
+      contactMatch;
     if (!matchSearch) return false;
     if (currentFilter === 'all') return true;
     if (currentFilter === 'not-contacted') return !l.contacted;
@@ -384,8 +405,26 @@ function filteredLeads() {
       return sortDir === 'asc' ? va.localeCompare(vb) : vb.localeCompare(va);
     }
     const ta = a.createdAt || 0, tb = b.createdAt || 0;
-    return (currentSort === 'oldest') ? ta - tb : tb - ta;
+    return currentSort === 'oldest' ? ta - tb : tb - ta;
   });
+}
+
+function renderContactsCell(contacts) {
+  if (!contacts || contacts.length === 0) return '<span style="color:#ddd;font-size:13px">—</span>';
+  const show = contacts.slice(0, 2);
+  const rest = contacts.length - 2;
+  let html = '<div class="contacts-cell">';
+  show.forEach(c => {
+    html += `<div class="contact-chip">`;
+    if (c.name) html += `<span class="contact-chip-name">${esc(c.name)}</span>`;
+    if (c.role) html += `<span class="contact-chip-role">${esc(c.role)}</span>`;
+    if (c.email) html += `<span class="contact-chip-detail">✉️ ${esc(c.email)}</span>`;
+    if (c.phone) html += `<span class="contact-chip-detail">📞 ${esc(c.phone)}</span>`;
+    html += `</div>`;
+  });
+  if (rest > 0) html += `<span class="contacts-more">+${rest} more</span>`;
+  html += '</div>';
+  return html;
 }
 
 function render() {
@@ -401,11 +440,7 @@ function render() {
     tbody.innerHTML = fl.map(l => `
       <tr>
         <td><div class="company-name">${esc(l.company||'—')}</div></td>
-        <td>${esc(l.person||'—')}</td>
-        <td>
-          <div>${esc(l.email||'—')}</div>
-          <div class="sub-text">${esc(l.phone||'')}</div>
-        </td>
+        <td>${renderContactsCell(l.contacts)}</td>
         <td>${l.website ? `<a class="website-link" href="${esc(l.website)}" target="_blank" rel="noopener">🔗 ${esc(cleanUrl(l.website))}</a>` : '<span style="color:#ddd">—</span>'}</td>
         <td>${esc(l.city||'—')}</td>
         <td>${esc(l.country||'—')}</td>
@@ -431,12 +466,8 @@ function render() {
   document.getElementById('stat-closed').textContent     = leads.filter(l=>l.closed).length;
 }
 
-function cleanUrl(url) {
-  return url.replace(/^https?:\/\/(www\.)?/,'').replace(/\/$/,'');
-}
-function esc(str) {
-  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
+function cleanUrl(url) { return url.replace(/^https?:\/\/(www\.)?/,'').replace(/\/$/,''); }
+function esc(str) { return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
 // ── TOGGLE ───────────────────────────────────────────
 function toggle(id, field) {
@@ -446,15 +477,82 @@ function toggle(id, field) {
   save(); render();
 }
 
-// ── MODAL ────────────────────────────────────────────
-const TEXT_FIELDS = ['company','person','email','phone','website','city','country','notes'];
-const BOOL_FIELDS = ['contacted','demo','proposal','closed'];
+// ── CONTACTS IN MODAL ────────────────────────────────
+let contactCount = 0;
 
+function addContactRow(data = {}) {
+  contactCount++;
+  const idx = contactCount;
+  const div = document.createElement('div');
+  div.className = 'contact-row';
+  div.id = `contact-row-${idx}`;
+  div.innerHTML = `
+    <div class="contact-row-num">Contact ${idx}</div>
+    <button class="contact-remove" onclick="removeContactRow(${idx})" title="Remove">✕</button>
+    <div class="contact-row-grid">
+      <div class="form-group">
+        <label>Name</label>
+        <input class="contact-input" type="text" id="c-name-${idx}" placeholder="Full name" value="${esc(data.name||'')}">
+      </div>
+      <div class="form-group">
+        <label>Role / Title</label>
+        <input class="contact-input" type="text" id="c-role-${idx}" placeholder="e.g. CEO, Booker…" value="${esc(data.role||'')}">
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input class="contact-input" type="email" id="c-email-${idx}" placeholder="email@example.com" value="${esc(data.email||'')}">
+      </div>
+      <div class="form-group">
+        <label>Phone</label>
+        <input class="contact-input" type="tel" id="c-phone-${idx}" placeholder="+31 6 00 00 00 00" value="${esc(data.phone||'')}">
+      </div>
+    </div>`;
+  document.getElementById('contacts-list').appendChild(div);
+}
+
+function removeContactRow(idx) {
+  const el = document.getElementById(`contact-row-${idx}`);
+  if (el) el.remove();
+  renumberContacts();
+}
+
+function renumberContacts() {
+  document.querySelectorAll('.contact-row').forEach((row, i) => {
+    const numEl = row.querySelector('.contact-row-num');
+    if (numEl) numEl.textContent = `Contact ${i + 1}`;
+  });
+}
+
+function getContactsFromForm() {
+  const contacts = [];
+  document.querySelectorAll('.contact-row').forEach(row => {
+    const id = row.id.replace('contact-row-','');
+    const name  = (document.getElementById(`c-name-${id}`)?.value  || '').trim();
+    const role  = (document.getElementById(`c-role-${id}`)?.value  || '').trim();
+    const email = (document.getElementById(`c-email-${id}`)?.value || '').trim();
+    const phone = (document.getElementById(`c-phone-${id}`)?.value || '').trim();
+    if (name || email || phone) contacts.push({ name, role, email, phone });
+  });
+  return contacts;
+}
+
+function clearContactsForm() {
+  document.getElementById('contacts-list').innerHTML = '';
+  contactCount = 0;
+}
+
+// ── MODAL ────────────────────────────────────────────
 function openModal() {
   editingId = null;
   document.getElementById('modal-title').textContent = 'Add New Lead';
-  TEXT_FIELDS.forEach(f => document.getElementById('f-'+f).value = '');
-  BOOL_FIELDS.forEach(f => document.getElementById('f-'+f).checked = false);
+  document.getElementById('f-company').value = '';
+  document.getElementById('f-website').value = '';
+  document.getElementById('f-city').value = '';
+  document.getElementById('f-country').value = '';
+  document.getElementById('f-notes').value = '';
+  ['contacted','demo','proposal','closed'].forEach(f => document.getElementById('f-'+f).checked = false);
+  clearContactsForm();
+  addContactRow(); // start with one empty contact
   document.getElementById('modal').classList.add('open');
 }
 
@@ -463,8 +561,15 @@ function editLead(id) {
   if (!l) return;
   editingId = id;
   document.getElementById('modal-title').textContent = 'Edit Lead';
-  TEXT_FIELDS.forEach(f => document.getElementById('f-'+f).value = l[f]||'');
-  BOOL_FIELDS.forEach(f => document.getElementById('f-'+f).checked = !!l[f]);
+  document.getElementById('f-company').value = l.company||'';
+  document.getElementById('f-website').value = l.website||'';
+  document.getElementById('f-city').value    = l.city||'';
+  document.getElementById('f-country').value = l.country||'';
+  document.getElementById('f-notes').value   = l.notes||'';
+  ['contacted','demo','proposal','closed'].forEach(f => document.getElementById('f-'+f).checked = !!l[f]);
+  clearContactsForm();
+  const contacts = l.contacts && l.contacts.length ? l.contacts : [{}];
+  contacts.forEach(c => addContactRow(c));
   document.getElementById('modal').classList.add('open');
 }
 
@@ -476,9 +581,19 @@ function closeModal() {
 function saveLead() {
   const company = document.getElementById('f-company').value.trim();
   if (!company) { alert('Please enter a company or organiser name.'); return; }
-  const data = { company };
-  TEXT_FIELDS.filter(f => f !== 'company').forEach(f => data[f] = document.getElementById('f-'+f).value.trim());
-  BOOL_FIELDS.forEach(f => data[f] = document.getElementById('f-'+f).checked);
+  const contacts = getContactsFromForm();
+  const data = {
+    company,
+    website:   document.getElementById('f-website').value.trim(),
+    city:      document.getElementById('f-city').value.trim(),
+    country:   document.getElementById('f-country').value.trim(),
+    notes:     document.getElementById('f-notes').value.trim(),
+    contacts,
+    contacted: document.getElementById('f-contacted').checked,
+    demo:      document.getElementById('f-demo').checked,
+    proposal:  document.getElementById('f-proposal').checked,
+    closed:    document.getElementById('f-closed').checked,
+  };
 
   if (editingId) {
     const idx = leads.findIndex(l => l.id === editingId);
@@ -497,23 +612,30 @@ function deleteLead(id) {
 
 // ── EXPORT EXCEL ─────────────────────────────────────
 function exportExcel() {
-  const rows = leads.map(l => ({
-    'Company / Org':  l.company||'',
-    'Contact Person': l.person||'',
-    'Email':          l.email||'',
-    'Phone':          l.phone||'',
-    'Website':        l.website||'',
-    'City':           l.city||'',
-    'Country':        l.country||'',
-    'Contacted':      l.contacted ? 'Yes' : 'No',
-    'Demo Scheduled': l.demo      ? 'Yes' : 'No',
-    'Proposal Sent':  l.proposal  ? 'Yes' : 'No',
-    'Closed Deal':    l.closed    ? 'Yes' : 'No',
-    'Notes':          l.notes||'',
-    'Created At':     l.createdAt ? new Date(l.createdAt).toLocaleDateString() : '',
-  }));
+  const rows = [];
+  leads.forEach(l => {
+    const contacts = l.contacts && l.contacts.length ? l.contacts : [{}];
+    contacts.forEach((c, i) => {
+      rows.push({
+        'Company / Org':    i === 0 ? (l.company||'') : '',
+        'Contact Name':     c.name||'',
+        'Role / Title':     c.role||'',
+        'Email':            c.email||'',
+        'Phone':            c.phone||'',
+        'Website':          i === 0 ? (l.website||'') : '',
+        'City':             i === 0 ? (l.city||'') : '',
+        'Country':          i === 0 ? (l.country||'') : '',
+        'Contacted':        i === 0 ? (l.contacted ? 'Yes' : 'No') : '',
+        'Demo Scheduled':   i === 0 ? (l.demo      ? 'Yes' : 'No') : '',
+        'Proposal Sent':    i === 0 ? (l.proposal  ? 'Yes' : 'No') : '',
+        'Closed Deal':      i === 0 ? (l.closed    ? 'Yes' : 'No') : '',
+        'Notes':            i === 0 ? (l.notes||'') : '',
+        'Created At':       i === 0 && l.createdAt ? new Date(l.createdAt).toLocaleDateString() : '',
+      });
+    });
+  });
   const ws = XLSX.utils.json_to_sheet(rows);
-  ws['!cols'] = [20,20,28,18,24,16,16,14,16,16,14,36,16].map(w => ({ wch: w }));
+  ws['!cols'] = [22,22,18,28,18,24,16,16,14,16,16,14,36,16].map(w => ({ wch: w }));
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, 'Pipeline');
   XLSX.writeFile(wb, `pipeline-${new Date().toISOString().slice(0,10)}.xlsx`);
@@ -529,12 +651,8 @@ function openImportModal() {
   btn.disabled = true; btn.style.opacity = '0.4'; btn.style.cursor = 'not-allowed';
   document.getElementById('import-modal').classList.add('open');
 }
-function closeImportModal() {
-  document.getElementById('import-modal').classList.remove('open');
-  pendingImport = [];
-}
+function closeImportModal() { document.getElementById('import-modal').classList.remove('open'); pendingImport = []; }
 
-// Drag & drop
 const dropZone = document.getElementById('import-drop');
 dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
 dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
@@ -550,7 +668,7 @@ function processCSVFile(file) {
     const btn = document.getElementById('import-confirm-btn');
     preview.style.display = 'block';
     if (parsed.length === 0) {
-      preview.innerHTML = '⚠️ No valid rows found. Make sure your CSV has a header row with a <strong>Company</strong> column.';
+      preview.innerHTML = '⚠️ No valid rows found.';
       btn.disabled = true; btn.style.opacity = '0.4'; btn.style.cursor = 'not-allowed';
     } else {
       preview.innerHTML = `✅ <strong>${parsed.length} lead${parsed.length>1?'s':''} ready to import</strong><br>
@@ -564,13 +682,11 @@ function processCSVFile(file) {
 function parseCSV(text) {
   const lines = text.trim().split(/\r?\n/);
   if (lines.length < 2) return [];
-
   const headers = parseCSVRow(lines[0]).map(h => h.trim().toLowerCase());
-
-  // Flexible column aliases
   const aliases = {
     company:   ['company','company / org','organization','org','organiser','organizer','nombre empresa'],
-    person:    ['person','contact person','contact','name','full name','nombre'],
+    person:    ['person','contact person','contact','name','full name','nombre','contact name'],
+    role:      ['role','title','role / title','cargo'],
     email:     ['email','e-mail','email address','correo'],
     phone:     ['phone','phone number','tel','telephone','telefono'],
     website:   ['website','web','url','site','sitio'],
@@ -582,36 +698,32 @@ function parseCSV(text) {
     proposal:  ['proposal','proposal sent','propuesta'],
     closed:    ['closed','closed deal','cerrado','won'],
   };
-
   const colIdx = {};
   for (const [field, aliasList] of Object.entries(aliases)) {
     colIdx[field] = -1;
-    for (const a of aliasList) {
-      const idx = headers.indexOf(a);
-      if (idx !== -1) { colIdx[field] = idx; break; }
-    }
+    for (const a of aliasList) { const idx = headers.indexOf(a); if (idx !== -1) { colIdx[field] = idx; break; } }
   }
-
   const toBool = v => ['yes','1','true','x','✓','si','sí'].includes((v||'').trim().toLowerCase());
   const results = [];
-
   for (let i = 1; i < lines.length; i++) {
     const row = parseCSVRow(lines[i]);
     if (row.every(c => !c.trim())) continue;
     const get = f => colIdx[f] !== -1 ? (row[colIdx[f]]||'').trim() : '';
     const company = get('company');
     if (!company) continue;
+    const contact = {};
+    if (get('person')) contact.name  = get('person');
+    if (get('role'))   contact.role  = get('role');
+    if (get('email'))  contact.email = get('email');
+    if (get('phone'))  contact.phone = get('phone');
     results.push({
-      id: crypto.randomUUID(),
-      createdAt: Date.now(),
+      id: crypto.randomUUID(), createdAt: Date.now(),
       company,
-      person:    get('person'),
-      email:     get('email'),
-      phone:     get('phone'),
       website:   get('website'),
       city:      get('city'),
       country:   get('country'),
       notes:     get('notes'),
+      contacts:  Object.keys(contact).length ? [contact] : [],
       contacted: toBool(get('contacted')),
       demo:      toBool(get('demo')),
       proposal:  toBool(get('proposal')),
@@ -625,33 +737,51 @@ function parseCSVRow(line) {
   const result = []; let cur = ''; let inQuote = false;
   for (let i = 0; i < line.length; i++) {
     const ch = line[i];
-    if (ch === '"') {
-      if (inQuote && line[i+1] === '"') { cur += '"'; i++; }
-      else inQuote = !inQuote;
-    } else if (ch === ',' && !inQuote) { result.push(cur); cur = ''; }
+    if (ch === '"') { if (inQuote && line[i+1] === '"') { cur += '"'; i++; } else inQuote = !inQuote; }
+    else if (ch === ',' && !inQuote) { result.push(cur); cur = ''; }
     else cur += ch;
   }
-  result.push(cur);
-  return result;
+  result.push(cur); return result;
 }
 
 function confirmImport() {
   if (!pendingImport.length) return;
   leads = [...pendingImport, ...leads];
-  save(); render();
-  closeImportModal();
+  save(); render(); closeImportModal();
 }
 
 // ── SEARCH ────────────────────────────────────────────
 document.getElementById('search-input').addEventListener('input', e => { searchQuery = e.target.value; render(); });
 
-// Close modals on overlay click
 ['modal','import-modal'].forEach(id => {
   document.getElementById(id).addEventListener('click', e => {
     if (e.target.id === id) { id === 'modal' ? closeModal() : closeImportModal(); }
   });
 });
 
+// ── MIGRATE OLD DATA ──────────────────────────────────
+// If old data (v3) exists without contacts array, migrate it
+function migrateOldData() {
+  const oldKey = 'pipeline_leads_v3';
+  const old = localStorage.getItem(oldKey);
+  if (old && !localStorage.getItem(STORAGE_KEY)) {
+    try {
+      const oldLeads = JSON.parse(old);
+      const migrated = oldLeads.map(l => ({
+        ...l,
+        contacts: (l.person || l.email || l.phone) ? [{
+          name:  l.person  || '',
+          role:  '',
+          email: l.email   || '',
+          phone: l.phone   || '',
+        }] : [],
+      }));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(migrated));
+    } catch {}
+  }
+}
+
+migrateOldData();
 load();
 render();
 </script>
