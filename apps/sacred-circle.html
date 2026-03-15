@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sacred Circle — Manifestation Portal</title>
+<meta name="description" content="A sacred ritual portal for manifestation and energetic consecration.">
+<link href="https://fonts.googleapis.com/css2?family=Italiana&family=Jost:ital,wght@0,200;0,300;0,400;1,200&display=swap" rel="stylesheet">
+<style>
+:root {
+  --void: #07060f;
+  --deep: #0d0a1e;
+  --indigo: #160f35;
+  --violet: #2a1760;
+  --plum: #4a2a8a;
+  --aura: #8b5cf6;
+  --lilac: #c4b5fd;
+  --gold: #f0c060;
+  --gold2: #d4943a;
+  --cream: #f0ead8;
+  --font-display: 'Italiana', serif;
+  --font-body: 'Jost', sans-serif;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html,body { height:100%; }
+body {
+  font-family: var(--font-body);
+  background: var(--void);
+  color: var(--cream);
+  overflow-x: hidden;
+  transition: background 2s;
+  min-height: 100vh;
+}
+body.light-mode {
+  background: #e4ddf5;
+  color: #1a1028;
+  --cream: #1a1028;
+  --void: #e4ddf5;
+}
+body.light-mode .step,
+body.light-mode .music-panel,
+body.light-mode .ing-card,
+body.light-mode .prayer-wrap,
+body.light-mode .manifest-wrap {
+  background: rgba(255,255,255,0.5);
+  border-color: rgba(139,92,246,0.25);
+}
+
+#bg-canvas { position:fixed; inset:0; z-index:0; pointer-events:none; }
+#smoke-wrap { position:fixed; inset:0; z-index:1; pointer-events:none; overflow:hidden; }
+
+.smoke-puff {
+  position:absolute; border-radius:50%;
+  filter: blur(45px);
+  animation: smoke-drift var(--sd,12s) ease-in-out infinite alternate;
+  opacity:0;
+}
+@keyframes smoke-drift {
+  0%   { transform:translate(0,30px) scale(0.6); opacity:0; }
+  20%  { opacity:var(--so,0.08); }
+  80%  { opacity:var(--so,0.06); }
+  100% { transform:translate(var(--sx,30px),var(--sy,-80px)) scale(1.5); opacity:0; }
+}
+
+#app {
+  position:relative; z-index:2;
+  max-width:680px; margin:0 auto;
+  padding:2rem 1.4rem 5rem;
+  display:flex; flex-direction:column; align-items:center; gap:1.8rem;
+}
+
+/* BACK BUTTON */
+.back-btn {
+  align-self: flex-start;
+  display: flex; align-items:center; gap:0.5rem;
+  font-family: var(--font-body); font-weight:300; font-size:0.72rem;
+  letter-spacing:0.15em; text-transform:uppercase;
+  color: rgba(196,181,253,0.6);
+  text-decoration:none;
+  border:1px solid rgba(139,92,246,0.2);
+  padding:0.45rem 1rem; border-radius:50px;
+  backdrop-filter:blur(10px);
+  background:rgba(13,10,30,0.5);
+  transition: all 0.3s;
+  cursor:pointer;
+}
+.back-btn:hover { color:var(--lilac); border-color:rgba(139,92,246,0.5); transform:translateX(-2px); }
+.back-btn svg { width:12px; height:12px; }
+
+/* HEADER */
+.site-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem,7vw,4rem);
+  letter-spacing:0.04em; color:var(--cream);
+  text-align:center; line-height:1;
+}
+.site-sub {
+  font-family:var(--font-body); font-weight:200; font-style:italic;
+  font-size:0.78rem; letter-spacing:0.35em; text-transform:uppercase;
+  color:var(--aura); text-align:center; margin-top:0.5rem; opacity:0.75;
+}
+
+/* CONTROLS */
+.top-controls { display:flex; gap:0.55rem; flex-wrap:wrap; justify-content:center; }
+.pill-btn {
+  font-family:var(--font-body); font-weight:300; font-size:0.7rem;
+  letter-spacing:0.16em; text-transform:uppercase;
+  padding:0.5rem 1.1rem;
+  border:1px solid rgba(139,92,246,0.3);
+  background:rgba(22,15,53,0.55);
+  color:rgba(196,181,253,0.65);
+  border-radius:50px; cursor:pointer;
+  transition:all 0.3s cubic-bezier(0.4,0,0.2,1);
+  backdrop-filter:blur(12px);
+}
+.pill-btn:hover { border-color:rgba(139,92,246,0.65); color:var(--lilac); transform:translateY(-1px); }
+.pill-btn.on { border-color:var(--gold2); color:var(--gold); background:rgba(50,30,5,0.5); }
+
+/* MUSIC PANEL */
+.music-panel {
+  display:none; flex-direction:column; gap:0.45rem;
+  width:100%; max-width:420px;
+  background:rgba(13,10,30,0.75);
+  border:1px solid rgba(139,92,246,0.2);
+  border-radius:16px; padding:1rem 1.1rem;
+  backdrop-filter:blur(18px);
+}
+.music-panel.open { display:flex; }
+.track-item {
+  display:flex; align-items:center; gap:0.85rem;
+  padding:0.55rem 0.75rem; border-radius:10px; cursor:pointer;
+  transition:background 0.25s; border:1px solid transparent;
+}
+.track-item:hover { background:rgba(139,92,246,0.1); }
+.track-item.playing { background:rgba(139,92,246,0.16); border-color:rgba(139,92,246,0.28); }
+.track-dot {
+  width:30px; height:30px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:0.95rem; flex-shrink:0;
+  border:1px solid rgba(139,92,246,0.3);
+  background:rgba(42,23,96,0.6);
+}
+.track-name { font-size:0.8rem; font-weight:300; color:var(--cream); letter-spacing:0.04em; }
+.track-desc { font-size:0.66rem; font-style:italic; color:var(--aura); opacity:0.7; margin-top:2px; }
+.track-wave { display:flex; gap:2px; align-items:flex-end; height:16px; opacity:0; margin-left:auto; }
+.track-item.playing .track-wave { opacity:1; }
+.track-wave span {
+  width:3px; background:var(--aura); border-radius:2px;
+  animation:wave-bar 0.7s ease-in-out infinite alternate;
+  animation-delay:var(--d,0s);
+}
+.track-wave span:nth-child(1){height:5px;--d:0s}
+.track-wave span:nth-child(2){height:13px;--d:0.1s}
+.track-wave span:nth-child(3){height:9px;--d:0.2s}
+.track-wave span:nth-child(4){height:15px;--d:0.05s}
+@keyframes wave-bar{from{transform:scaleY(0.35)}to{transform:scaleY(1)}}
+
+/* PORTAL */
+#portal-wrap { position:relative; width:min(340px,85vw); height:min(340px,85vw); flex-shrink:0; }
+#portal-svg { width:100%; height:100%; }
+
+/* WALK STATUS */
+#walk-status {
+  font-family:var(--font-body); font-weight:200; font-style:italic;
+  font-size:0.76rem; letter-spacing:0.2em; color:var(--aura);
+  text-align:center; min-height:1.3rem;
+}
+
+/* MANIFESTATION BOX */
+.manifest-wrap {
+  width:100%; background:rgba(10,7,22,0.65);
+  border:1px solid rgba(240,192,96,0.18);
+  border-radius:18px; padding:1.4rem 1.6rem;
+  backdrop-filter:blur(14px);
+}
+.manifest-label {
+  font-family:var(--font-body); font-weight:200; font-style:italic;
+  font-size:0.7rem; letter-spacing:0.25em; text-transform:uppercase;
+  color:var(--gold); opacity:0.8; display:block; margin-bottom:0.8rem;
+}
+.manifest-textarea {
+  width:100%; background:rgba(139,92,246,0.06);
+  border:1px solid rgba(139,92,246,0.2); border-radius:10px;
+  padding:0.9rem 1rem; resize:none; min-height:90px;
+  font-family:var(--font-body); font-weight:200; font-style:italic;
+  font-size:0.9rem; color:var(--cream); line-height:1.7;
+  outline:none; transition:border-color 0.3s;
+}
+body.light-mode .manifest-textarea { background:rgba(139,92,246,0.08); color:#1a1028; }
+.manifest-textarea:focus { border-color:rgba(139,92,246,0.5); }
+.manifest-textarea::placeholder { color:rgba(196,181,253,0.35); font-style:italic; }
+.seal-btn {
+  margin-top:0.8rem;
+  font-family:var(--font-body); font-weight:300;
+  font-size:0.7rem; letter-spacing:0.2em; text-transform:uppercase;
+  padding:0.5rem 1.4rem; border:1px solid rgba(240,192,96,0.4);
+  border-radius:50px; background:transparent; color:var(--gold);
+  cursor:pointer; transition:all 0.3s; display:block;
+}
+.seal-btn:hover { background:rgba(240,192,96,0.12); }
+.sealed-msg {
+  display:none; margin-top:0.7rem;
+  font-size:0.78rem; font-style:italic; color:var(--gold); opacity:0.75; text-align:center;
+}
+
+/* INGREDIENTS */
+.ingredients-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:0.55rem; width:100%; }
+.ing-card {
+  background:rgba(13,10,30,0.6); border:1px solid rgba(139,92,246,0.14);
+  border-radius:14px; padding:0.85rem 0.5rem;
+  text-align:center; cursor:pointer; transition:all 0.3s;
+  backdrop-filter:blur(10px); position:relative; overflow:hidden;
+}
+.ing-card::before {
+  content:''; position:absolute; inset:0; border-radius:14px;
+  background:radial-gradient(ellipse at 50% 0%,rgba(240,192,96,0.15),transparent 70%);
+  opacity:0; transition:opacity 0.4s;
+}
+.ing-card:hover { border-color:rgba(139,92,246,0.38); transform:translateY(-2px); }
+.ing-card.on { border-color:rgba(240,192,96,0.45); }
+.ing-card.on::before { opacity:1; }
+.ing-ico { font-size:1.3rem; display:block; margin-bottom:0.35rem; }
+.ing-name { font-weight:300; font-size:0.67rem; letter-spacing:0.07em; color:var(--gold); display:block; }
+.ing-prop { font-size:0.6rem; font-style:italic; color:var(--aura); opacity:0.7; display:block; margin-top:2px; }
+
+/* DIVIDER */
+.divider { width:100%; display:flex; align-items:center; gap:1rem; }
+.divider::before,.divider::after { content:''; flex:1; height:1px; background:linear-gradient(90deg,transparent,rgba(139,92,246,0.3),transparent); }
+.divider-text { font-family:var(--font-display); font-size:0.88rem; color:rgba(139,92,246,0.55); white-space:nowrap; }
+
+/* STEPS */
+.steps-wrap { width:100%; display:flex; flex-direction:column; gap:0.55rem; }
+.step {
+  background:rgba(10,7,24,0.65); border:1px solid rgba(139,92,246,0.11);
+  border-radius:16px; padding:1rem 1.2rem 1rem 1.5rem;
+  cursor:pointer; transition:all 0.35s; backdrop-filter:blur(10px);
+  position:relative; overflow:hidden;
+}
+.step::before {
+  content:''; position:absolute; left:0; top:0; bottom:0; width:3px;
+  background:var(--plum); border-radius:3px 0 0 3px; transition:background 0.4s;
+}
+.step:hover { border-color:rgba(139,92,246,0.28); }
+.step.active { border-color:rgba(139,92,246,0.32); background:rgba(22,15,53,0.75); }
+.step.active::before { background:linear-gradient(180deg,var(--gold2),var(--aura)); }
+.step.done { opacity:0.35; pointer-events:none; }
+.step.done::before { background:#3d7a45; }
+.step-label { font-weight:200; font-style:italic; font-size:0.67rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--aura); margin-bottom:0.4rem; }
+.step.active .step-label { color:var(--gold); }
+.step-body { font-weight:300; font-size:0.88rem; line-height:1.65; color:var(--cream); }
+.step-invocation {
+  margin-top:0.75rem; padding:0.65rem 0.95rem;
+  background:rgba(139,92,246,0.09); border-radius:10px;
+  border-left:2px solid rgba(139,92,246,0.45);
+  font-style:italic; font-weight:200; font-size:0.88rem; color:var(--lilac); line-height:1.6;
+}
+.dir-tag {
+  display:inline-block; font-weight:300; font-size:0.63rem; letter-spacing:0.13em;
+  text-transform:uppercase; padding:3px 9px; border-radius:20px; margin-bottom:0.55rem;
+}
+.tag-e{background:rgba(160,200,255,0.1);color:#b8d8ff;border:1px solid rgba(160,200,255,0.2);}
+.tag-s{background:rgba(255,120,80,0.1);color:#ffb09a;border:1px solid rgba(255,130,90,0.2);}
+.tag-o{background:rgba(80,180,255,0.1);color:#8ed3ff;border:1px solid rgba(90,180,255,0.2);}
+.tag-n{background:rgba(120,220,120,0.1);color:#a0e8a0;border:1px solid rgba(130,210,130,0.2);}
+.done-btn {
+  display:none; margin-top:0.75rem;
+  font-family:var(--font-body); font-weight:300; font-size:0.67rem;
+  letter-spacing:0.12em; text-transform:uppercase;
+  padding:0.38rem 1rem; border:1px solid rgba(139,92,246,0.38);
+  border-radius:20px; background:transparent; color:var(--aura); cursor:pointer; transition:all 0.3s;
+}
+.done-btn:hover { background:rgba(139,92,246,0.16); }
+.step.active .done-btn { display:inline-block; }
+
+/* PRAYER */
+.prayer-wrap {
+  width:100%; background:rgba(8,5,20,0.6);
+  border:1px solid rgba(240,192,96,0.11);
+  border-radius:20px; padding:2rem 1.8rem;
+  text-align:center; backdrop-filter:blur(12px); position:relative;
+}
+.prayer-wrap::before {
+  content:'✦'; position:absolute; top:-0.6rem; left:50%; transform:translateX(-50%);
+  color:var(--gold); font-size:0.82rem; background:var(--void); padding:0 0.6rem;
+}
+body.light-mode .prayer-wrap::before { background:#e4ddf5; }
+.prayer-text { font-weight:200; font-style:italic; font-size:0.9rem; line-height:2; color:rgba(240,234,216,0.85); }
+body.light-mode .prayer-text { color:rgba(30,20,50,0.85); }
+
+@keyframes sym-float{0%,100%{transform:translateY(0)scale(1)}50%{transform:translateY(-5px)scale(1.06)}}
+@keyframes ring-spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+<div id="smoke-wrap"></div>
+
+<div id="app">
+
+  <!-- BACK TO HUB -->
+  <a class="back-btn" href="https://milomiranda.github.io/hub.html">
+    <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M8 2L4 6l4 4"/>
+    </svg>
+    Back to Hub
+  </a>
+
+  <!-- HEADER -->
+  <header style="text-align:center">
+    <div class="site-title">Sacred Circle</div>
+    <div class="site-sub">Manifestation &amp; Ritual Portal</div>
+  </header>
+
+  <!-- CONTROLS -->
+  <div class="top-controls">
+    <button class="pill-btn" id="btn-music" onclick="toggleMusicPanel()">♪ Music</button>
+    <button class="pill-btn on" id="btn-smoke" onclick="toggleSmoke()">✦ Mist</button>
+    <button class="pill-btn" id="btn-lights" onclick="toggleLights()">◎ Light</button>
+    <button class="pill-btn" id="btn-walk" onclick="startWalk(1)">↺ Trace Circle</button>
+    <button class="pill-btn" id="btn-release" onclick="startWalk(-1)">↻ Release</button>
+  </div>
+
+  <!-- MUSIC PANEL -->
+  <div class="music-panel" id="music-panel">
+    <div class="track-item" data-track="drone" onclick="selectTrack('drone',this)">
+      <div class="track-dot">🌑</div>
+      <div>
+        <div class="track-name">Sacred Drone</div>
+        <div class="track-desc">Deep vibration — meditation</div>
+      </div>
+      <div class="track-wave"><span></span><span></span><span></span><span></span></div>
+    </div>
+    <div class="track-item" data-track="crystal" onclick="selectTrack('crystal',this)">
+      <div class="track-dot">🔮</div>
+      <div>
+        <div class="track-name">Crystal Bowls</div>
+        <div class="track-desc">Harmonics — energetic cleansing</div>
+      </div>
+      <div class="track-wave"><span></span><span></span><span></span><span></span></div>
+    </div>
+    <div class="track-item" data-track="nature" onclick="selectTrack('nature',this)">
+      <div class="track-dot">🌿</div>
+      <div>
+        <div class="track-name">Sacred Forest</div>
+        <div class="track-desc">Rain &amp; wind — living nature</div>
+      </div>
+      <div class="track-wave"><span></span><span></span><span></span><span></span></div>
+    </div>
+    <div class="track-item" data-track="chant" onclick="selectTrack('chant',this)">
+      <div class="track-dot">✨</div>
+      <div>
+        <div class="track-name">Ritual Chant</div>
+        <div class="track-desc">Om — invocation of energies</div>
+      </div>
+      <div class="track-wave"><span></span><span></span><span></span><span></span></div>
+    </div>
+  </div>
+
+  <!-- PORTAL -->
+  <div id="portal-wrap">
+    <svg id="portal-svg" viewBox="-160 -160 320 320" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="rg-base" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#2a1760" stop-opacity="0.95"/>
+          <stop offset="100%" stop-color="#07060f" stop-opacity="0.99"/>
+        </radialGradient>
+        <radialGradient id="rg-aura" cx="50%" cy="50%" r="50%">
+          <stop id="aura-inner" offset="0%" stop-color="#6444cc" stop-opacity="0.55"/>
+          <stop offset="100%" stop-color="#3a1a88" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+
+      <!-- Outer glow rings -->
+      <circle r="150" fill="none" stroke-width="22" id="outer-glow" stroke="rgba(139,92,246,0.05)"/>
+      <circle r="138" fill="none" stroke-width="3.5" id="ring-2" stroke="rgba(139,92,246,0.1)"/>
+      <circle r="132" fill="none" stroke-width="0.8" stroke-dasharray="3 7" id="ring-dash" stroke="rgba(139,92,246,0.2)"/>
+
+      <!-- Spinning rings -->
+      <g id="rot-ring-cw" style="transform-origin:center;animation:ring-spin 36s linear infinite">
+        <circle r="141" fill="none" stroke="rgba(139,92,246,0.18)" stroke-width="0.5" stroke-dasharray="9 14"/>
+      </g>
+      <g id="rot-ring-ccw" style="transform-origin:center;animation:ring-spin 22s linear infinite reverse">
+        <circle r="126" fill="none" stroke="rgba(139,92,246,0.12)" stroke-width="0.5" stroke-dasharray="5 10"/>
+      </g>
+
+      <!-- Main fill -->
+      <circle r="120" fill="url(#rg-base)"/>
+      <circle r="120" fill="none" stroke-width="4" id="main-ring-outer" stroke="rgba(139,92,246,0.28)"/>
+      <circle r="120" fill="none" stroke-width="0.8" id="main-ring" stroke="rgba(139,92,246,0.55)"/>
+
+      <!-- Inner aura -->
+      <circle r="100" fill="url(#rg-aura)" opacity="0.7" id="inner-aura"/>
+
+      <!-- Blue bubble ring -->
+      <g style="transform-origin:center;animation:ring-spin 18s linear infinite reverse">
+        <circle r="115" fill="none" stroke="rgba(80,140,255,0.35)" stroke-width="1.2" stroke-dasharray="5 9" id="bubble-ring"/>
+      </g>
+
+      <!-- Cardinal: EAST -->
+      <g id="card-e" transform="translate(126,0)">
+        <circle r="9" fill="rgba(160,200,255,0.15)" stroke="rgba(160,200,255,0.45)" stroke-width="0.8" id="ce-circle"/>
+        <text x="0" y="0" text-anchor="middle" dominant-baseline="central" font-family="Jost,sans-serif" font-size="6.5" font-weight="300" fill="#b8d8ff">E</text>
+      </g>
+      <text x="145" y="-3.5" font-family="Jost,sans-serif" font-size="5" font-weight="200" fill="rgba(160,200,255,0.45)" text-anchor="middle" letter-spacing="0.5">AIR</text>
+
+      <!-- Cardinal: SOUTH -->
+      <g id="card-s" transform="translate(0,126)">
+        <circle r="9" fill="rgba(255,130,90,0.15)" stroke="rgba(255,130,90,0.45)" stroke-width="0.8" id="cs-circle"/>
+        <text x="0" y="0" text-anchor="middle" dominant-baseline="central" font-family="Jost,sans-serif" font-size="6.5" font-weight="300" fill="#ffb09a">S</text>
+      </g>
+      <text x="0" y="149" font-family="Jost,sans-serif" font-size="5" font-weight="200" fill="rgba(255,130,90,0.45)" text-anchor="middle" letter-spacing="0.5">FIRE</text>
+
+      <!-- Cardinal: WEST -->
+      <g id="card-o" transform="translate(-126,0)">
+        <circle r="9" fill="rgba(60,170,255,0.15)" stroke="rgba(60,170,255,0.45)" stroke-width="0.8" id="co-circle"/>
+        <text x="0" y="0" text-anchor="middle" dominant-baseline="central" font-family="Jost,sans-serif" font-size="6.5" font-weight="300" fill="#8ed3ff">W</text>
+      </g>
+      <text x="-145" y="-3.5" font-family="Jost,sans-serif" font-size="5" font-weight="200" fill="rgba(60,170,255,0.45)" text-anchor="middle" letter-spacing="0.5">WATER</text>
+
+      <!-- Cardinal: NORTH -->
+      <g id="card-n" transform="translate(0,-126)">
+        <circle r="9" fill="rgba(110,220,110,0.15)" stroke="rgba(110,220,110,0.45)" stroke-width="0.8" id="cn-circle"/>
+        <text x="0" y="0" text-anchor="middle" dominant-baseline="central" font-family="Jost,sans-serif" font-size="6.5" font-weight="300" fill="#a0e8a0">N</text>
+      </g>
+      <text x="0" y="-145" font-family="Jost,sans-serif" font-size="5" font-weight="200" fill="rgba(110,220,110,0.45)" text-anchor="middle" letter-spacing="0.5">EARTH</text>
+
+      <!-- Center symbol -->
+      <text id="portal-sym" x="0" y="6" text-anchor="middle" dominant-baseline="central"
+        font-family="Italiana,serif" font-size="38" fill="rgba(196,181,253,0.6)"
+        style="animation:sym-float 5s ease-in-out infinite">☽◯☾</text>
+
+      <!-- Walking orb -->
+      <circle id="orb-dot" r="5.5" fill="white" opacity="0.92" style="display:none">
+        <animate attributeName="r" values="5.5;7.5;5.5" dur="0.9s" repeatCount="indefinite"/>
+      </circle>
+    </svg>
+  </div>
+
+  <div id="walk-status"></div>
+
+  <!-- MANIFESTATION -->
+  <div class="manifest-wrap">
+    <span class="manifest-label">✦ Set Your Intention</span>
+    <textarea class="manifest-textarea" id="manifest-text" rows="3"
+      placeholder="Write what you wish to manifest into the circle... Let your words carry your true intention."></textarea>
+    <button class="seal-btn" onclick="sealIntention()">✦ Seal Intention into the Circle</button>
+    <div class="sealed-msg" id="sealed-msg">Your intention has been sealed. The circle holds it. ✦</div>
+  </div>
+
+  <!-- INGREDIENTS -->
+  <div class="ingredients-grid">
+    <div class="ing-card" onclick="toggleIng(this)">
+      <span class="ing-ico">🟤</span>
+      <span class="ing-name">Cinnamon</span>
+      <span class="ing-prop">High vibrations</span>
+    </div>
+    <div class="ing-card" onclick="toggleIng(this)">
+      <span class="ing-ico">🍋</span>
+      <span class="ing-name">Lemon</span>
+      <span class="ing-prop">Happiness &amp; Energy</span>
+    </div>
+    <div class="ing-card" onclick="toggleIng(this)">
+      <span class="ing-ico">🌿</span>
+      <span class="ing-name">Mint</span>
+      <span class="ing-prop">Love &amp; High vibrations</span>
+    </div>
+    <div class="ing-card" onclick="toggleIng(this)">
+      <span class="ing-ico">🌸</span>
+      <span class="ing-name">Rose Petals</span>
+      <span class="ing-prop">Romance &amp; Spirituality</span>
+    </div>
+    <div class="ing-card" onclick="toggleIng(this)">
+      <span class="ing-ico">🍊</span>
+      <span class="ing-name">Mandarin</span>
+      <span class="ing-prop">Abundance</span>
+    </div>
+    <div class="ing-card" onclick="toggleIng(this)">
+      <span class="ing-ico">🌱</span>
+      <span class="ing-name">Rosemary</span>
+      <span class="ing-prop">Focus &amp; Memory</span>
+    </div>
+  </div>
+
+  <div class="divider"><span class="divider-text">The Ritual</span></div>
+
+  <!-- STEPS -->
+  <div class="steps-wrap">
+
+    <div class="step" id="s0" onclick="openStep(0)">
+      <div class="step-label">Step I — Preparation</div>
+      <div class="step-body">Gather all ingredients. Light your incense. Stand in the <em>East</em>. Take three deep breaths and set your intention.</div>
+      <button class="done-btn" onclick="doneStep(event,0)">✓ Done</button>
+    </div>
+
+    <div class="step" id="s1" onclick="openStep(1)">
+      <div class="step-label">Step II — Trace the Circle</div>
+      <div class="step-body">Starting from the East, walk clockwise. Complete <strong>three full rounds</strong>. Visualize a blue bubble of light forming a boundary between you and the outside.</div>
+      <button class="done-btn" onclick="doneStep(event,1)">✓ Done</button>
+    </div>
+
+    <div class="step" id="s2" onclick="openStep(2)" data-element="air">
+      <div class="step-label">Step III — Consecration of Air</div>
+      <span class="dir-tag tag-e">East · Air</span>
+      <div class="step-invocation">"With the perfumed air, I consecrate this circle"</div>
+      <button class="done-btn" onclick="doneStep(event,2)">✓ Done</button>
+    </div>
+
+    <div class="step" id="s3" onclick="openStep(3)" data-element="fire">
+      <div class="step-label">Step IV — Consecration of Fire</div>
+      <span class="dir-tag tag-s">South · Fire</span>
+      <div class="step-invocation">"With the sacred fire, I consecrate this circle"</div>
+      <button class="done-btn" onclick="doneStep(event,3)">✓ Done</button>
+    </div>
+
+    <div class="step" id="s4" onclick="openStep(4)" data-element="water">
+      <div class="step-label">Step V — Consecration of Water</div>
+      <span class="dir-tag tag-o">West · Water</span>
+      <div class="step-body">Take your cup of water and move to the West.</div>
+      <div class="step-invocation">"With the water of sky and rivers, I consecrate this circle"</div>
+      <button class="done-btn" onclick="doneStep(event,4)">✓ Done</button>
+    </div>
+
+    <div class="step" id="s5" onclick="openStep(5)" data-element="earth">
+      <div class="step-label">Step VI — Consecration of Earth</div>
+      <span class="dir-tag tag-n">North · Earth</span>
+      <div class="step-invocation">"With the salt of the earth, I consecrate this circle"</div>
+      <button class="done-btn" onclick="doneStep(event,5)">✓ Done</button>
+    </div>
+
+    <div class="step" id="s6" onclick="openStep(6)" data-element="void">
+      <div class="step-label">Step VII — Release</div>
+      <div class="step-body">Walk <strong>one round counter-clockwise</strong>. Give thanks to all present energies.</div>
+      <div class="step-invocation">"I thank the universe for this circle, and return the energies to their source. All is now as before."</div>
+      <button class="done-btn" onclick="doneStep(event,6)">✓ Done</button>
+    </div>
+
+  </div>
+
+  <div class="divider"><span class="divider-text">Prayer of Gratitude</span></div>
+
+  <div class="prayer-wrap">
+    <p class="prayer-text">
+      We give thanks to God for having life.<br>
+      We give thanks to God for having emotions.<br>
+      We give thanks to God for letting us live this<br>once more in our lives.<br><br>
+      Today we ask with all our heart<br>
+      that you help us heal our wounds,<br>
+      that you help us move forward<br>without carrying resentment.<br><br>
+      Let negativity dissolve into the air<br>
+      and let positivity flood our souls.<br><br>
+      Once again, we give you thanks. ✦
+    </p>
+  </div>
+
+</div><!-- /app -->
+
+<script>
+// ═══ STARFIELD ═══
+const cv = document.getElementById('bg-canvas');
+const ctx2d = cv.getContext('2d');
+let W, H, stars = [];
+function resize() { W = cv.width = innerWidth; H = cv.height = innerHeight; }
+function initStars() {
+  stars = [];
+  for (let i = 0; i < 200; i++) {
+    stars.push({
+      x: Math.random() * W, y: Math.random() * H,
+      r: Math.random() * 1.3 + 0.2,
+      a: Math.random(),
+      da: (Math.random() * 0.004 + 0.001) * (Math.random() < 0.5 ? 1 : -1),
+      hue: Math.random() < 0.7 ? 230 : 50
+    });
+  }
+}
+function drawStars() {
+  ctx2d.clearRect(0, 0, W, H);
+  stars.forEach(s => {
+    s.a = Math.max(0.04, Math.min(1, s.a + s.da));
+    if (s.a <= 0.04 || s.a >= 1) s.da *= -1;
+    ctx2d.beginPath();
+    ctx2d.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+    ctx2d.fillStyle = `hsla(${s.hue},65%,92%,${s.a * 0.75})`;
+    ctx2d.fill();
+  });
+  requestAnimationFrame(drawStars);
+}
+resize(); initStars(); drawStars();
+window.addEventListener('resize', () => { resize(); initStars(); });
+
+// ═══ SMOKE ═══
+let smokeOn = true;
+const sw = document.getElementById('smoke-wrap');
+const smCols = ['rgba(139,92,246,1)', 'rgba(100,68,204,1)', 'rgba(60,30,120,1)', 'rgba(170,140,255,1)', 'rgba(70,120,255,1)'];
+function spawnSmoke() {
+  if (!smokeOn) return;
+  const p = document.createElement('div');
+  p.className = 'smoke-puff';
+  const sz = 90 + Math.random() * 130;
+  const col = smCols[Math.floor(Math.random() * smCols.length)];
+  const dur = 9 + Math.random() * 9;
+  const so = 0.04 + Math.random() * 0.07;
+  const sx = (Math.random() - 0.5) * 70;
+  const sy = -(35 + Math.random() * 65);
+  p.style.cssText = `width:${sz}px;height:${sz}px;left:${Math.random()*100}%;bottom:${Math.random()*45}%;background:${col};--sd:${dur}s;--sx:${sx}px;--sy:${sy}px;--so:${so};animation-delay:${Math.random()*3}s;`;
+  sw.appendChild(p);
+  setTimeout(() => p.remove(), (dur + 5) * 1000);
+}
+setInterval(spawnSmoke, 1100);
+
+function toggleSmoke() {
+  smokeOn = !smokeOn;
+  document.getElementById('btn-smoke').classList.toggle('on', smokeOn);
+  if (!smokeOn) sw.innerHTML = '';
+}
+
+// ═══ LIGHTS ═══
+function toggleLights() {
+  document.body.classList.toggle('light-mode');
+  const b = document.getElementById('btn-lights');
+  b.classList.toggle('on');
+  b.textContent = document.body.classList.contains('light-mode') ? '◎ Dark' : '◎ Light';
+}
+
+// ═══ PORTAL ELEMENT THEMES ═══
+const elementThemes = {
+  air:   { mainStroke:'rgba(160,200,255,0.7)',  outerStroke:'rgba(160,200,255,0.25)', auraColor:'#3a6ecc', sym:'💨', glow:'rgba(160,200,255,0.1)',  bubbleStroke:'rgba(160,200,255,0.4)',  smokeColors:['rgba(160,200,255,1)','rgba(120,180,255,1)','rgba(200,220,255,1)'] },
+  fire:  { mainStroke:'rgba(255,100,50,0.7)',   outerStroke:'rgba(255,100,50,0.25)',  auraColor:'#cc3a1a', sym:'🔥', glow:'rgba(255,100,50,0.1)',   bubbleStroke:'rgba(255,100,50,0.4)',   smokeColors:['rgba(255,100,50,1)','rgba(220,80,30,1)','rgba(255,160,60,1)'] },
+  water: { mainStroke:'rgba(50,170,255,0.7)',   outerStroke:'rgba(50,170,255,0.25)',  auraColor:'#1a60cc', sym:'💧', glow:'rgba(50,170,255,0.1)',   bubbleStroke:'rgba(50,170,255,0.4)',   smokeColors:['rgba(50,150,255,1)','rgba(30,100,220,1)','rgba(80,200,255,1)'] },
+  earth: { mainStroke:'rgba(100,210,100,0.7)',  outerStroke:'rgba(100,210,100,0.25)', auraColor:'#3a8a3a', sym:'🌿', glow:'rgba(100,210,100,0.1)',  bubbleStroke:'rgba(100,210,100,0.4)',  smokeColors:['rgba(80,180,80,1)','rgba(50,140,50,1)','rgba(120,220,120,1)'] },
+  void:  { mainStroke:'rgba(139,92,246,0.55)',  outerStroke:'rgba(139,92,246,0.18)',  auraColor:'#6444cc', sym:'☽◯☾', glow:'rgba(139,92,246,0.08)', bubbleStroke:'rgba(80,140,255,0.35)', smokeColors:['rgba(139,92,246,1)','rgba(100,68,204,1)','rgba(60,30,120,1)','rgba(170,140,255,1)','rgba(70,120,255,1)'] }
+};
+
+function setPortalElement(el) {
+  const t = elementThemes[el] || elementThemes.void;
+  document.getElementById('main-ring').setAttribute('stroke', t.mainStroke);
+  document.getElementById('main-ring-outer').setAttribute('stroke', t.outerStroke);
+  document.getElementById('outer-glow').setAttribute('stroke', t.glow);
+  document.getElementById('ring-2').setAttribute('stroke', t.glow.replace('0.1', '0.18'));
+  document.getElementById('bubble-ring').setAttribute('stroke', t.bubbleStroke);
+  document.getElementById('aura-inner').setAttribute('stop-color', t.auraColor);
+  document.getElementById('portal-sym').textContent = t.sym;
+  smCols.splice(0, smCols.length, ...t.smokeColors);
+}
+
+// ═══ AUDIO ENGINE ═══
+let audioCtx = null, gainM = null, playing = false, trackNodes = [], currentTrack = null;
+
+function getCtx() {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    gainM = audioCtx.createGain();
+    gainM.gain.value = 0.32;
+    gainM.connect(audioCtx.destination);
+  }
+  return audioCtx;
+}
+
+function stopAll() {
+  trackNodes.forEach(n => { try { n.stop ? n.stop() : n.disconnect(); } catch(e) {} });
+  trackNodes = [];
+  playing = false;
+}
+
+function buildDrone() {
+  const c = getCtx();
+  [[110,0.07,'sine'],[165,0.025,'triangle'],[220,0.018,'triangle'],[275,0.01,'sine']].forEach(([f,v,t],i) => {
+    const o = c.createOscillator(), g = c.createGain();
+    const l = c.createOscillator(), lg = c.createGain();
+    const flt = c.createBiquadFilter();
+    flt.type = 'lowpass'; flt.frequency.value = 550;
+    o.type = t; o.frequency.value = f; g.gain.value = v;
+    l.frequency.value = 0.14 + i * 0.04; lg.gain.value = 1.1;
+    l.connect(lg); lg.connect(o.frequency);
+    o.connect(flt); flt.connect(g); g.connect(gainM);
+    l.start(); o.start();
+    trackNodes.push(o, l);
+  });
+}
+
+function buildCrystal() {
+  const c = getCtx();
+  [396, 432, 528, 639, 741].forEach((f, i) => {
+    const o = c.createOscillator(), g = c.createGain(), env = c.createGain();
+    o.type = 'sine'; o.frequency.value = f; g.gain.value = 0.038; env.gain.value = 0;
+    o.connect(g); g.connect(env); env.connect(gainM); o.start();
+    function pulse() {
+      if (!playing) return;
+      const t = c.currentTime;
+      env.gain.setValueAtTime(0, t);
+      env.gain.linearRampToValueAtTime(1, t + 0.9);
+      env.gain.linearRampToValueAtTime(0, t + 4.5 + Math.random() * 2);
+      setTimeout(pulse, (4 + Math.random() * 5) * 1000);
+    }
+    setTimeout(pulse, (i * 1.3 + Math.random()) * 1000);
+    trackNodes.push(o);
+  });
+}
+
+function buildNature() {
+  const c = getCtx();
+  const buf = c.createBuffer(1, c.sampleRate * 2, c.sampleRate);
+  const d = buf.getChannelData(0);
+  for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * 0.5;
+  const src = c.createBufferSource(); src.buffer = buf; src.loop = true;
+  const flt = c.createBiquadFilter(); flt.type = 'bandpass'; flt.frequency.value = 380; flt.Q.value = 0.28;
+  const g = c.createGain(); g.gain.value = 0.16;
+  src.connect(flt); flt.connect(g); g.connect(gainM); src.start();
+  const o = c.createOscillator(), go = c.createGain();
+  const l = c.createOscillator(), lg = c.createGain();
+  o.type = 'sawtooth'; o.frequency.value = 55; go.gain.value = 0.018;
+  l.frequency.value = 0.08; lg.gain.value = 18;
+  l.connect(lg); lg.connect(o.frequency);
+  o.connect(go); go.connect(gainM); o.start(); l.start();
+  trackNodes.push(src, o, l);
+}
+
+function buildChant() {
+  const c = getCtx();
+  [136.1, 141.27, 144, 148.2].forEach((f, i) => {
+    const o = c.createOscillator(), g = c.createGain();
+    const l = c.createOscillator(), lg = c.createGain();
+    o.type = 'sine'; o.frequency.value = f; g.gain.value = 0.055 - i * 0.008;
+    l.frequency.value = 4.8 + i * 0.4; lg.gain.value = 1.8;
+    l.connect(lg); lg.connect(o.frequency);
+    o.connect(g); g.connect(gainM); o.start(); l.start();
+    trackNodes.push(o, l);
+  });
+}
+
+const builders = { drone: buildDrone, crystal: buildCrystal, nature: buildNature, chant: buildChant };
+
+function selectTrack(id, el) {
+  stopAll();
+  document.querySelectorAll('.track-item').forEach(t => t.classList.remove('playing'));
+  if (currentTrack === id) { currentTrack = null; return; }
+  currentTrack = id;
+  playing = true;
+  el.classList.add('playing');
+  builders[id]();
+}
+
+function toggleMusicPanel() {
+  const p = document.getElementById('music-panel');
+  p.classList.toggle('open');
+  document.getElementById('btn-music').classList.toggle('on', p.classList.contains('open'));
+}
+
+// ═══ CIRCLE WALK ═══
+let walking = false;
+function startWalk(dir) {
+  if (walking) return;
+  walking = true;
+  const orb = document.getElementById('orb-dot');
+  const status = document.getElementById('walk-status');
+  orb.style.display = 'block';
+  orb.setAttribute('fill', dir === -1 ? 'rgba(240,192,96,0.95)' : 'white');
+  const rounds = dir === 1 ? 3 : 1;
+  const total = rounds * 360;
+  let step = 0;
+
+  function animate() {
+    if (step >= total) {
+      orb.style.display = 'none';
+      status.textContent = dir === 1
+        ? '✦ Three rounds complete — the circle is consecrated ✦'
+        : '✦ Energies released — the circle closes ✦';
+      setTimeout(() => status.textContent = '', 4500);
+      walking = false;
+      ['ce','cs','co','cn'].forEach(id => {
+        const c = document.getElementById(id + '-circle');
+        if (c) { c.setAttribute('r','9'); c.setAttribute('fill-opacity','0.15'); }
+      });
+      return;
+    }
+    const angle = (step * Math.PI / 180) * dir - Math.PI / 2;
+    const r = 115;
+    const x = r * Math.cos(angle), y = r * Math.sin(angle);
+    orb.setAttribute('cx', x); orb.setAttribute('cy', y);
+
+    const deg = ((step % 360) + 360) % 360;
+    let active = null;
+    if (deg < 22 || deg > 338) active = 'ce';
+    else if (deg > 88 && deg < 112) active = 'cs';
+    else if (deg > 178 && deg < 202) active = 'co';
+    else if (deg > 268 && deg < 292) active = 'cn';
+
+    ['ce','cs','co','cn'].forEach(id => {
+      const c = document.getElementById(id + '-circle');
+      if (!c) return;
+      if (id === active) { c.setAttribute('r','12'); c.setAttribute('fill-opacity','0.55'); }
+      else { c.setAttribute('r','9'); c.setAttribute('fill-opacity','0.15'); }
+    });
+
+    const round = Math.floor(step / 360) + 1;
+    status.textContent = dir === 1
+      ? `Round ${round} of 3 — tracing the sacred circle...`
+      : 'Releasing energies — counter-clockwise...';
+    step += 2;
+    requestAnimationFrame(animate);
+  }
+  animate();
+}
+
+// ═══ INGREDIENTS ═══
+function toggleIng(el) {
+  el.classList.toggle('on');
+  if (el.classList.contains('on')) {
+    el.style.transition = 'transform 0.15s';
+    el.style.transform = 'scale(1.04)';
+    setTimeout(() => { el.style.transform = ''; }, 180);
+  }
+}
+
+// ═══ SEAL INTENTION ═══
+function sealIntention() {
+  const txt = document.getElementById('manifest-text').value.trim();
+  if (!txt) return;
+  document.getElementById('manifest-text').style.borderColor = 'rgba(240,192,96,0.5)';
+  document.getElementById('manifest-text').disabled = true;
+  document.querySelector('.seal-btn').style.display = 'none';
+  document.getElementById('sealed-msg').style.display = 'block';
+  // Pulse the portal ring
+  const ring = document.getElementById('main-ring');
+  let pulse = 0;
+  const iv = setInterval(() => {
+    pulse++;
+    ring.setAttribute('stroke-width', pulse % 2 === 0 ? '0.8' : '3');
+    if (pulse > 8) { clearInterval(iv); ring.setAttribute('stroke-width','0.8'); }
+  }, 220);
+}
+
+// ═══ RITUAL STEPS ═══
+const elementMap = { 2:'air', 3:'fire', 4:'water', 5:'earth', 6:'void' };
+
+function openStep(i) {
+  const steps = document.querySelectorAll('.step');
+  steps.forEach((s, idx) => {
+    if (s.classList.contains('done')) return;
+    if (idx === i) {
+      const was = s.classList.contains('active');
+      s.classList.toggle('active', !was);
+      s.querySelector('.done-btn').style.display = was ? 'none' : 'inline-block';
+      if (!was && elementMap[i]) setPortalElement(elementMap[i]);
+      if (was) setPortalElement('void');
+    } else {
+      s.classList.remove('active');
+      s.querySelector('.done-btn').style.display = 'none';
+    }
+  });
+}
+
+function doneStep(e, i) {
+  e.stopPropagation();
+  const s = document.getElementById('s' + i);
+  s.classList.remove('active');
+  s.classList.add('done');
+  s.querySelector('.done-btn').style.display = 'none';
+  const n = document.getElementById('s' + (i + 1));
+  if (n && !n.classList.contains('done')) setTimeout(() => openStep(i + 1), 380);
+}
+</script>
+</body>
+</html>
