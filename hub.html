@@ -143,8 +143,15 @@
   const VISIBILITY_KEY = 'milo_guest_vis';
 
   // ── APP REGISTRY ─────────────────────────────────────
-  // To add a new app: just add an entry here. Everything else updates automatically.
   const APPS = [
+    {
+      section: 'Personal',
+      id: 'sacredcircle',
+      emoji: '🔮',
+      name: 'Sacred Circle',
+      href: 'sacred-circle.html',
+      tooltip: 'A manifestation and ritual portal. Consecrate your circle, set your intention, and work with the four elements.',
+    },
     {
       section: 'Personal',
       id: 'budgettracker',
@@ -201,7 +208,6 @@
   function getVisibility() {
     let vis = {};
     try { vis = JSON.parse(localStorage.getItem(VISIBILITY_KEY)) || {}; } catch {}
-    // Any app not yet in stored visibility defaults to true (visible)
     APPS.forEach(app => { if (!(app.id in vis)) vis[app.id] = true; });
     return vis;
   }
@@ -211,19 +217,15 @@
   function buildAppGrid() {
     const container = document.getElementById('app-sections');
     container.innerHTML = '';
-
-    // Group by section
     const sections = [...new Set(APPS.map(a => a.section))];
     sections.forEach((section, si) => {
       const label = document.createElement('div');
       label.className = 'section-label';
       label.textContent = section;
       container.appendChild(label);
-
       const grid = document.createElement('div');
       grid.className = 'app-grid';
       grid.id = `grid-${section.toLowerCase()}`;
-
       APPS.filter(a => a.section === section).forEach((app, i) => {
         const a = document.createElement('a');
         a.className = 'app-item';
@@ -237,7 +239,6 @@
           <span class="app-name">${app.name}</span>`;
         grid.appendChild(a);
       });
-
       container.appendChild(grid);
     });
   }
@@ -245,14 +246,12 @@
   function buildToolbar() {
     const container = document.getElementById('toolbar-rows');
     container.innerHTML = '';
-
     const sections = [...new Set(APPS.map(a => a.section))];
     sections.forEach(section => {
       const sec = document.createElement('div');
       sec.className = 'toolbar-section';
       sec.textContent = section;
       container.appendChild(sec);
-
       APPS.filter(a => a.section === section).forEach(app => {
         const row = document.createElement('div');
         row.className = 'toolbar-row';
@@ -273,7 +272,6 @@
   // ── BOOT ─────────────────────────────────────────────
   buildAppGrid();
   buildToolbar();
-
   const stored = localStorage.getItem(SESSION_KEY);
   if (stored === 'admin' || stored === 'guest') { currentRole = stored; unlock(false); }
 
@@ -304,13 +302,11 @@
   // ── APPLY ROLE ────────────────────────────────────────
   function applyRole() {
     const vis = getVisibility();
-
     if (currentRole === 'admin') {
       document.querySelectorAll('.app-item').forEach(el => {
         el.style.display = '';
         el.classList.remove('hidden-preview');
       });
-      // Sync toolbar switches
       document.querySelectorAll('#admin-toolbar input[type=checkbox]').forEach(cb => {
         cb.checked = vis[cb.dataset.target] !== false;
       });
