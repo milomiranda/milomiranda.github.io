@@ -80,6 +80,73 @@
   .icon-btn { width: 30px; height: 30px; border-radius: 8px; border: 1.5px solid var(--border); background: #fafafa; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 13px; transition: all 0.15s; }
   .icon-btn:hover { border-color: var(--text); background: #fff; }
   .icon-btn.del:hover { border-color: #ff4444; color: #ff4444; }
+  .icon-btn.comms { border-color: var(--border); }
+  .icon-btn.comms:hover { border-color: #6366f1; color: #6366f1; background: #f5f3ff; }
+
+  /* ── STALENESS DOT + BADGE ── */
+  .company-cell { display: flex; align-items: center; gap: 8px; }
+  .stale-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .stale-dot.fresh  { background: #16a34a; }
+  .stale-dot.warn   { background: #f59e0b; }
+  .stale-dot.stale  { background: #ef4444; }
+  .stale-dot.none   { background: #ddd; }
+  .last-contact-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px; white-space: nowrap; }
+  .last-contact-badge.fresh  { background: #f0fdf4; color: #16a34a; }
+  .last-contact-badge.warn   { background: #fffbeb; color: #d97706; }
+  .last-contact-badge.stale  { background: #fef2f2; color: #ef4444; }
+  .last-contact-badge.none   { background: #f5f5f5; color: #aaa; }
+
+  /* ── SLIDE-OUT PANEL ── */
+  #comms-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.25); backdrop-filter: blur(2px); z-index: 300; }
+  #comms-overlay.open { display: block; }
+  #comms-panel {
+    position: fixed; top: 0; right: 0; bottom: 0; width: 420px; max-width: 100vw;
+    background: var(--card); border-left: 2px solid var(--border);
+    box-shadow: -8px 0 40px rgba(0,0,0,0.10);
+    z-index: 301; display: flex; flex-direction: column;
+    transform: translateX(100%); transition: transform 0.3s cubic-bezier(.4,0,.2,1);
+  }
+  #comms-panel.open { transform: translateX(0); }
+
+  .cp-header { padding: 20px 24px 16px; border-bottom: 2px solid var(--border); flex-shrink: 0; }
+  .cp-close { float: right; background: none; border: 1.5px solid var(--border); border-radius: 8px; width: 30px; height: 30px; cursor: pointer; font-size: 13px; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+  .cp-close:hover { border-color: var(--text); }
+  .cp-company { font-size: 18px; font-weight: 800; letter-spacing: -0.03em; margin-top: 4px; }
+  .cp-contacts-preview { font-size: 12px; color: var(--muted); font-weight: 500; margin-top: 3px; }
+
+  /* NEW INTERACTION FORM */
+  .cp-form { padding: 16px 24px; border-bottom: 2px solid var(--border); flex-shrink: 0; display: flex; flex-direction: column; gap: 10px; }
+  .cp-form-label { font-size: 10px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+  .channel-pills { display: flex; gap: 6px; flex-wrap: wrap; }
+  .channel-pill { padding: 5px 11px; border-radius: 999px; border: 1.5px solid var(--border); background: #fafafa; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 5px; white-space: nowrap; }
+  .channel-pill:hover { border-color: var(--text); }
+  .channel-pill.active { background: var(--text); color: #fff; border-color: var(--text); }
+  .cp-contact-select { padding: 8px 12px; background: #fafafa; border: 1.5px solid var(--border); border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--text); outline: none; width: 100%; cursor: pointer; }
+  .cp-contact-select:focus { border-color: var(--text); }
+  .cp-note-input { padding: 9px 12px; background: #fafafa; border: 1.5px solid var(--border); border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--text); outline: none; width: 100%; resize: none; min-height: 60px; transition: border-color 0.15s; }
+  .cp-note-input:focus { border-color: var(--text); }
+  .cp-note-input::placeholder { color: #bbb; }
+  .cp-form-row { display: flex; gap: 8px; align-items: center; }
+  .cp-date-input { padding: 8px 12px; background: #fafafa; border: 1.5px solid var(--border); border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--text); outline: none; flex: 1; }
+  .cp-date-input:focus { border-color: var(--text); }
+  .btn-log { background: var(--accent); border: none; border-radius: 10px; padding: 9px 18px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 800; color: #111; cursor: pointer; white-space: nowrap; transition: all 0.15s; }
+  .btn-log:hover { box-shadow: 0 4px 12px rgba(197,254,0,0.4); transform: translateY(-1px); }
+
+  /* TIMELINE */
+  .cp-timeline { flex: 1; overflow-y: auto; padding: 16px 24px; display: flex; flex-direction: column; gap: 10px; }
+  .cp-empty { text-align: center; padding: 40px 20px; color: var(--muted); font-size: 13px; font-weight: 500; }
+  .cp-empty-icon { font-size: 36px; margin-bottom: 8px; }
+
+  .log-entry { display: flex; gap: 12px; align-items: flex-start; animation: fadeUp 0.2s ease both; }
+  .log-icon { width: 32px; height: 32px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+  .log-body { flex: 1; min-width: 0; }
+  .log-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+  .log-channel { font-size: 12px; font-weight: 800; color: var(--text); }
+  .log-date { font-size: 11px; color: var(--muted); font-weight: 500; }
+  .log-contact { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .log-note { font-size: 13px; color: var(--text); margin-top: 4px; line-height: 1.5; background: #fafafa; border: 1.5px solid var(--border); border-radius: 8px; padding: 8px 10px; }
+  .log-delete { background: none; border: none; font-size: 11px; color: #ddd; cursor: pointer; padding: 0; transition: color 0.15s; }
+  .log-delete:hover { color: #ff4444; }
 
   /* MODALS */
   .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.3); backdrop-filter: blur(4px); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
@@ -132,6 +199,50 @@
   .empty-state .emoji { font-size: 48px; margin-bottom: 12px; }
   .empty-state p { font-size: 15px; font-weight: 500; }
 
+  /* ── TABS ── */
+  .view-tabs { display: flex; gap: 6px; background: var(--card); border: 2px solid var(--border); border-radius: 14px; padding: 5px; box-shadow: var(--shadow); }
+  .view-tab { flex: 1; padding: 9px 12px; border: none; border-radius: 9px; background: none; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700; color: var(--muted); cursor: pointer; transition: all 0.15s; display: flex; align-items: center; justify-content: center; gap: 7px; white-space: nowrap; }
+  .view-tab:hover { color: var(--text); background: #f5f5f3; }
+  .view-tab.active { background: var(--text); color: #fff; }
+  .view-tab .tab-badge { background: rgba(255,255,255,0.2); color: #fff; font-size: 10px; font-weight: 800; padding: 1px 6px; border-radius: 99px; }
+  .view-tab:not(.active) .tab-badge { background: #f0f0f0; color: var(--muted); }
+  .view-tab.active .tab-badge.red { background: #ef4444; color: #fff; }
+
+  /* ── ACTIVITY VIEW ── */
+  .activity-header { display: flex; align-items: center; justify-content: space-between; padding: 0 28px 16px; flex-wrap: wrap; gap: 10px; }
+  .activity-pills { display: flex; gap: 6px; flex-wrap: wrap; }
+  .act-pill { padding: 5px 12px; border-radius: 99px; border: 1.5px solid var(--border); background: #fafafa; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 700; color: var(--muted); cursor: pointer; transition: all 0.15s; }
+  .act-pill:hover { border-color: var(--text); color: var(--text); }
+  .act-pill.active { background: var(--text); color: #fff; border-color: var(--text); }
+  .act-summary { font-size: 12px; color: var(--muted); font-weight: 500; }
+  .act-summary strong { color: var(--text); }
+
+  .act-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .act-table th { text-align: left; font-size: 10px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); padding: 10px 14px 12px; border-bottom: 1.5px solid var(--border); white-space: nowrap; position: sticky; top: 0; background: var(--card); z-index: 10; box-shadow: 0 1px 0 var(--border); }
+  .act-table td { padding: 11px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  .act-table tr:last-child td { border-bottom: none; }
+  .act-table tr:hover td { background: #fafafa; }
+  .act-table tr { cursor: pointer; }
+
+  .act-company { display: flex; align-items: center; gap: 8px; }
+  .act-company-name { font-weight: 700; font-size: 14px; }
+  .act-stage { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; padding: 2px 7px; border-radius: 99px; white-space: nowrap; }
+  .act-stage.none     { background: #f0f0f0; color: #aaa; }
+  .act-stage.contacted{ background: #dbeafe; color: #1d4ed8; }
+  .act-stage.demo     { background: #ede9fe; color: #6d28d9; }
+  .act-stage.proposal { background: #fef9c3; color: #854d0e; }
+  .act-stage.closed   { background: #111;    color: var(--accent); }
+
+  .act-last-channel { display: flex; align-items: center; gap: 6px; }
+  .act-channel-icon { width: 26px; height: 26px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+  .act-channel-name { font-size: 12px; font-weight: 600; color: var(--text); }
+  .act-contact-name { font-size: 11px; color: var(--muted); margin-top: 1px; }
+
+  .act-last-note { font-size: 12px; color: var(--muted); max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  .act-log-count { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; color: var(--muted); }
+  .act-log-count .count-num { background: #f0f0f0; color: #666; font-size: 11px; font-weight: 800; padding: 1px 7px; border-radius: 99px; }
+
   footer { text-align: center; padding: 40px 20px 20px; font-size: 12px; color: var(--muted); font-weight: 500; }
 
   @media (max-width: 600px) {
@@ -163,63 +274,116 @@
 
 <div class="main">
 
-  <div class="card" style="animation-delay:0.05s">
-    <div style="display:flex;flex-direction:column;gap:14px;">
-      <div class="toolbar">
-        <div class="search-wrap">
-          <span class="search-icon">🔍</span>
-          <input type="text" id="search-input" placeholder="Search company, person, city, country…">
+  <!-- TAB TOGGLE -->
+  <div class="view-tabs">
+    <button class="view-tab active" id="tab-leads" onclick="switchTab('leads')">
+      📋 Leads <span class="tab-badge" id="tab-leads-badge">0</span>
+    </button>
+    <button class="view-tab" id="tab-activity" onclick="switchTab('activity')">
+      💬 Communication Activity <span class="tab-badge red" id="tab-activity-badge">0</span>
+    </button>
+  </div>
+
+  <!-- LEADS VIEW -->
+  <div id="view-leads">
+    <div class="card" style="animation-delay:0.05s">
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <div class="toolbar">
+          <div class="search-wrap">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="search-input" placeholder="Search company, person, city, country…">
+          </div>
+          <button class="btn btn-outline" onclick="openImportModal()">📂 Import CSV</button>
+          <button class="btn btn-outline" onclick="exportExcel()">📥 Export Excel</button>
+          <button class="btn btn-primary" onclick="openModal()">+ Add Lead</button>
         </div>
-        <button class="btn btn-outline" onclick="openImportModal()">📂 Import CSV</button>
-        <button class="btn btn-outline" onclick="exportExcel()">📥 Export Excel</button>
-        <button class="btn btn-primary" onclick="openModal()">+ Add Lead</button>
+        <div class="filters">
+          <span style="font-size:10px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-right:4px">Filter:</span>
+          <button class="filter-btn active" data-filter="all" onclick="setFilter('all',this)">All</button>
+          <button class="filter-btn" data-filter="not-contacted" onclick="setFilter('not-contacted',this)">Not Contacted</button>
+          <button class="filter-btn" data-filter="contacted" onclick="setFilter('contacted',this)">Contacted</button>
+          <button class="filter-btn" data-filter="demo" onclick="setFilter('demo',this)">Demo Scheduled</button>
+          <button class="filter-btn" data-filter="proposal" onclick="setFilter('proposal',this)">Proposal Sent</button>
+          <button class="filter-btn" data-filter="closed" onclick="setFilter('closed',this)">Closed ✓</button>
+        </div>
       </div>
-      <div class="filters">
-        <span style="font-size:10px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-right:4px">Filter:</span>
-        <button class="filter-btn active" data-filter="all" onclick="setFilter('all',this)">All</button>
-        <button class="filter-btn" data-filter="not-contacted" onclick="setFilter('not-contacted',this)">Not Contacted</button>
-        <button class="filter-btn" data-filter="contacted" onclick="setFilter('contacted',this)">Contacted</button>
-        <button class="filter-btn" data-filter="demo" onclick="setFilter('demo',this)">Demo Scheduled</button>
-        <button class="filter-btn" data-filter="proposal" onclick="setFilter('proposal',this)">Proposal Sent</button>
-        <button class="filter-btn" data-filter="closed" onclick="setFilter('closed',this)">Closed ✓</button>
+    </div>
+
+    <div class="card" style="animation-delay:0.1s;padding:20px 0;overflow-x:auto;">
+      <div class="card-header" style="padding:0 28px;justify-content:space-between;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="card-icon">📋</div>
+          <span class="card-title">Leads</span>
+        </div>
+      </div>
+      <div style="padding:0 28px 14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+        <span style="font-size:10px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);">Sort by date:</span>
+        <button class="filter-btn active" id="sort-latest-btn" onclick="setSortDate('latest',this)">🕐 Latest First</button>
+        <button class="filter-btn" id="sort-oldest-btn" onclick="setSortDate('oldest',this)">🕐 Oldest First</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Company / Org</th>
+              <th>Last Contact</th>
+              <th>Contacts</th>
+              <th>Website</th>
+              <th class="sortable" id="th-city" onclick="setSortField('city')">City <em class="sort-arrow">↕</em></th>
+              <th class="sortable" id="th-country" onclick="setSortField('country')">Country <em class="sort-arrow">↕</em></th>
+              <th>Contacted</th>
+              <th>Demo</th>
+              <th>Proposal</th>
+              <th>Closed</th>
+              <th>Notes</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="leads-tbody"></tbody>
+        </table>
+        <div id="empty-state" class="empty-state" style="display:none;">
+          <div class="emoji">🎯</div>
+          <p>No leads yet. Add your first one!</p>
+        </div>
       </div>
     </div>
   </div>
 
-  <div class="card" style="animation-delay:0.1s;padding:20px 0;overflow-x:auto;">
-    <div class="card-header" style="padding:0 28px;justify-content:space-between;">
-      <div style="display:flex;align-items:center;gap:10px;">
-        <div class="card-icon">📋</div>
-        <span class="card-title">Leads</span>
+  <!-- ACTIVITY VIEW -->
+  <div id="view-activity" style="display:none;">
+    <div class="card" style="padding:20px 0;overflow-x:auto;">
+      <div class="activity-header">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="card-icon">💬</div>
+          <span class="card-title">Communication Activity</span>
+        </div>
+        <div class="activity-pills">
+          <button class="act-pill active" data-act="all"    onclick="setActFilter('all',this)">All</button>
+          <button class="act-pill"        data-act="stale"  onclick="setActFilter('stale',this)">🔴 Overdue</button>
+          <button class="act-pill"        data-act="warn"   onclick="setActFilter('warn',this)">🟡 Follow up</button>
+          <button class="act-pill"        data-act="fresh"  onclick="setActFilter('fresh',this)">🟢 Active</button>
+          <button class="act-pill"        data-act="none"   onclick="setActFilter('none',this)">⚪ Never</button>
+        </div>
+        <div class="act-summary" id="act-summary"></div>
       </div>
-    </div>
-    <div style="padding:0 28px 14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-      <span style="font-size:10px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);">Sort by date:</span>
-      <button class="filter-btn active" id="sort-latest-btn" onclick="setSortDate('latest',this)">🕐 Latest First</button>
-      <button class="filter-btn" id="sort-oldest-btn" onclick="setSortDate('oldest',this)">🕐 Oldest First</button>
-    </div>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Company / Org</th>
-            <th>Contacts</th>
-            <th>Website</th>
-            <th class="sortable" id="th-city" onclick="setSortField('city')">City <em class="sort-arrow">↕</em></th>
-            <th class="sortable" id="th-country" onclick="setSortField('country')">Country <em class="sort-arrow">↕</em></th>
-            <th>Contacted</th>
-            <th>Demo</th>
-            <th>Proposal</th>
-            <th>Closed</th>
-            <th>Notes</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody id="leads-tbody"></tbody>
-      </table>
-      <div id="empty-state" class="empty-state" style="display:none;">
-        <div class="emoji">🎯</div>
-        <p>No leads yet. Add your first one!</p>
+      <div class="table-wrap">
+        <table class="act-table">
+          <thead>
+            <tr>
+              <th>Company</th>
+              <th>Stage</th>
+              <th>Last Channel</th>
+              <th>Last Contact</th>
+              <th>Latest Note</th>
+              <th>Log</th>
+            </tr>
+          </thead>
+          <tbody id="activity-tbody"></tbody>
+        </table>
+        <div id="act-empty" class="empty-state" style="display:none;">
+          <div class="emoji">💬</div>
+          <p>No leads match this filter.</p>
+        </div>
       </div>
     </div>
   </div>
@@ -316,6 +480,43 @@
       <button class="btn btn-outline" onclick="closeImportModal()">Cancel</button>
       <button class="btn btn-primary" id="import-confirm-btn" onclick="confirmImport()" disabled style="opacity:0.4;cursor:not-allowed">Import</button>
     </div>
+  </div>
+</div>
+
+<!-- COMMS LOG PANEL -->
+<div id="comms-overlay" onclick="closeCommsPanel()"></div>
+<div id="comms-panel">
+  <div class="cp-header">
+    <button class="cp-close" onclick="closeCommsPanel()">✕</button>
+    <div style="font-size:10px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);">Communication Log</div>
+    <div class="cp-company" id="cp-company">—</div>
+    <div class="cp-contacts-preview" id="cp-contacts-preview"></div>
+  </div>
+  <div class="cp-form">
+    <div class="cp-form-label">Log a new interaction</div>
+    <div>
+      <div class="cp-form-label" style="margin-bottom:6px;">Channel</div>
+      <div class="channel-pills" id="channel-pills">
+        <button class="channel-pill" data-channel="Email" onclick="selectChannel(this)">✉️ Email</button>
+        <button class="channel-pill" data-channel="WhatsApp" onclick="selectChannel(this)">💬 WhatsApp</button>
+        <button class="channel-pill" data-channel="Call" onclick="selectChannel(this)">📞 Call</button>
+        <button class="channel-pill" data-channel="LinkedIn" onclick="selectChannel(this)">🔗 LinkedIn</button>
+        <button class="channel-pill" data-channel="Instagram" onclick="selectChannel(this)">📸 Instagram</button>
+        <button class="channel-pill" data-channel="Facebook" onclick="selectChannel(this)">👤 Facebook</button>
+        <button class="channel-pill" data-channel="In Person" onclick="selectChannel(this)">🤝 In Person</button>
+      </div>
+    </div>
+    <select class="cp-contact-select" id="cp-contact-select">
+      <option value="">— Contact person (optional) —</option>
+    </select>
+    <textarea class="cp-note-input" id="cp-note-input" placeholder="What happened? e.g. Sent intro email, no reply yet…" rows="2"></textarea>
+    <div class="cp-form-row">
+      <input type="date" class="cp-date-input" id="cp-date-input">
+      <button class="btn-log" onclick="logInteraction()">+ Log</button>
+    </div>
+  </div>
+  <div class="cp-timeline" id="cp-timeline">
+    <div class="cp-empty"><div class="cp-empty-icon">💬</div>No interactions logged yet.</div>
   </div>
 </div>
 
@@ -437,9 +638,22 @@ function render() {
     empty.style.display = 'block';
   } else {
     empty.style.display = 'none';
-    tbody.innerHTML = fl.map(l => `
+    tbody.innerHTML = fl.map(l => {
+      const si = stalenessInfo(l);
+      const logCount = (l.commLog||[]).length;
+      return `
       <tr>
-        <td><div class="company-name">${esc(l.company||'—')}</div></td>
+        <td>
+          <div class="company-cell">
+            <div class="stale-dot ${si.dot}" title="${si.label}"></div>
+            <div class="company-name">${esc(l.company||'—')}</div>
+          </div>
+        </td>
+        <td>
+          <span class="last-contact-badge ${si.level}">
+            ${si.level==='none'?'—':si.label}
+          </span>
+        </td>
         <td>${renderContactsCell(l.contacts)}</td>
         <td>${l.website ? `<a class="website-link" href="${esc(l.website)}" target="_blank" rel="noopener">🔗 ${esc(cleanUrl(l.website))}</a>` : '<span style="color:#ddd">—</span>'}</td>
         <td>${esc(l.city||'—')}</td>
@@ -451,12 +665,14 @@ function render() {
         <td style="max-width:160px;white-space:normal;font-size:12px;color:var(--muted)">${esc(l.notes||'')}</td>
         <td>
           <div class="action-btns">
+            <button class="icon-btn comms" onclick="openCommsPanel('${l.id}')" title="Communication log" style="position:relative;">
+              💬${logCount > 0 ? `<span style="position:absolute;top:-4px;right:-4px;background:#6366f1;color:#fff;font-size:9px;font-weight:800;border-radius:99px;padding:1px 4px;min-width:14px;text-align:center;">${logCount}</span>` : ''}
+            </button>
             <button class="icon-btn" onclick="editLead('${l.id}')" title="Edit">✏️</button>
             <button class="icon-btn del" onclick="deleteLead('${l.id}')" title="Delete">🗑️</button>
           </div>
         </td>
-      </tr>
-    `).join('');
+      </tr>`}).join('');
   }
 
   document.getElementById('stat-total').textContent     = leads.length;
@@ -464,10 +680,160 @@ function render() {
   document.getElementById('stat-demo').textContent       = leads.filter(l=>l.demo).length;
   document.getElementById('stat-proposal').textContent   = leads.filter(l=>l.proposal).length;
   document.getElementById('stat-closed').textContent     = leads.filter(l=>l.closed).length;
+
+  // Update tab badges
+  document.getElementById('tab-leads-badge').textContent = leads.length;
+  const overdueCount = leads.filter(l => stalenessInfo(l).level === 'stale').length;
+  const actBadge = document.getElementById('tab-activity-badge');
+  actBadge.textContent = overdueCount;
+  actBadge.style.display = overdueCount > 0 ? '' : 'none';
+
+  // Re-render activity if active
+  if (currentTab === 'activity') renderActivity();
+}
+
+// ── TABS ─────────────────────────────────────────────
+let currentTab = 'leads';
+let actFilter = 'all';
+
+function switchTab(tab) {
+  currentTab = tab;
+  document.getElementById('view-leads').style.display    = tab === 'leads'    ? '' : 'none';
+  document.getElementById('view-activity').style.display = tab === 'activity' ? '' : 'none';
+  document.getElementById('tab-leads').classList.toggle('active',    tab === 'leads');
+  document.getElementById('tab-activity').classList.toggle('active', tab === 'activity');
+  if (tab === 'activity') renderActivity();
+}
+
+function setActFilter(f, el) {
+  actFilter = f;
+  document.querySelectorAll('.act-pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  renderActivity();
+}
+
+// ── ACTIVITY VIEW RENDER ─────────────────────────────
+function getLeadStage(l) {
+  if (l.closed)   return { key:'closed',   label:'Closed 🎉' };
+  if (l.proposal) return { key:'proposal', label:'Proposal Sent' };
+  if (l.demo)     return { key:'demo',     label:'Demo Scheduled' };
+  if (l.contacted)return { key:'contacted',label:'Contacted' };
+  return { key:'none', label:'New' };
+}
+
+function renderActivity() {
+  // Sort: stale first, then warn, then fresh, then none — then by date desc within each group
+  const order = { stale:0, warn:1, fresh:2, none:3 };
+  const sorted = [...leads].sort((a, b) => {
+    const sa = stalenessInfo(a), sb = stalenessInfo(b);
+    if (order[sa.level] !== order[sb.level]) return order[sa.level] - order[sb.level];
+    const la = getLastContact(a) || '0', lb = getLastContact(b) || '0';
+    return la < lb ? 1 : -1;
+  });
+
+  const filtered = actFilter === 'all' ? sorted : sorted.filter(l => stalenessInfo(l).level === actFilter);
+
+  // Summary line
+  const staleN = leads.filter(l => stalenessInfo(l).level === 'stale').length;
+  const warnN  = leads.filter(l => stalenessInfo(l).level === 'warn').length;
+  const freshN = leads.filter(l => stalenessInfo(l).level === 'fresh').length;
+  const noneN  = leads.filter(l => stalenessInfo(l).level === 'none').length;
+  document.getElementById('act-summary').innerHTML =
+    `<strong>${staleN}</strong> overdue · <strong>${warnN}</strong> follow up · <strong>${freshN}</strong> active · <strong>${noneN}</strong> never contacted`;
+
+  const tbody = document.getElementById('activity-tbody');
+  const empty = document.getElementById('act-empty');
+
+  if (filtered.length === 0) {
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  tbody.innerHTML = filtered.map(l => {
+    const si       = stalenessInfo(l);
+    const stage    = getLeadStage(l);
+    const logs     = l.commLog || [];
+    const lastLog  = logs[0] || null;
+    const logCount = logs.length;
+
+    // Last channel display
+    let channelHtml = '<span style="color:#ddd;font-size:12px">—</span>';
+    if (lastLog) {
+      const icon = CHANNEL_ICONS[lastLog.channel] || '💬';
+      const bg   = CHANNEL_COLORS[lastLog.channel] || '#f5f5f5';
+      channelHtml = `<div class="act-last-channel">
+        <div class="act-channel-icon" style="background:${bg}">${icon}</div>
+        <div>
+          <div class="act-channel-name">${lastLog.channel}</div>
+          ${lastLog.contact ? `<div class="act-contact-name">${esc(lastLog.contact)}</div>` : ''}
+        </div>
+      </div>`;
+    }
+
+    // Last note
+    const noteHtml = lastLog && lastLog.note
+      ? `<span class="act-last-note" title="${esc(lastLog.note)}">${esc(lastLog.note)}</span>`
+      : '<span style="color:#ddd;font-size:12px">—</span>';
+
+    // Log count
+    const countHtml = `<div class="act-log-count">
+      <span class="count-num">${logCount}</span>
+      ${logCount === 1 ? 'entry' : 'entries'}
+    </div>`;
+
+    return `<tr onclick="openCommsPanel('${l.id}')" title="Open communication log">
+      <td>
+        <div class="act-company">
+          <div class="stale-dot ${si.dot}"></div>
+          <div>
+            <div class="act-company-name">${esc(l.company||'—')}</div>
+            ${(l.contacts||[]).length ? `<div style="font-size:11px;color:var(--muted);margin-top:1px">${esc((l.contacts[0].name||''))}</div>` : ''}
+          </div>
+        </div>
+      </td>
+      <td><span class="act-stage ${stage.key}">${stage.label}</span></td>
+      <td>${channelHtml}</td>
+      <td><span class="last-contact-badge ${si.level}">${si.level==='none'?'Never':si.label}</span></td>
+      <td>${noteHtml}</td>
+      <td>${countHtml}</td>
+    </tr>`;
+  }).join('');
 }
 
 function cleanUrl(url) { return url.replace(/^https?:\/\/(www\.)?/,'').replace(/\/$/,''); }
 function esc(str) { return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// ── STALENESS ────────────────────────────────────────
+const STALE_DAYS = 14;
+const WARN_DAYS  = 7;
+
+function getLastContact(lead) {
+  const logs = lead.commLog || [];
+  if (!logs.length) return null;
+  return logs.reduce((latest, e) => e.date > latest ? e.date : latest, logs[0].date);
+}
+
+function stalenessInfo(lead) {
+  const last = getLastContact(lead);
+  if (!last) return { level: 'none', label: 'No contact', dot: 'none' };
+  const days = Math.floor((Date.now() - new Date(last).getTime()) / 86400000);
+  if (days === 0) return { level: 'fresh', label: 'Today',        dot: 'fresh' };
+  if (days === 1) return { level: 'fresh', label: 'Yesterday',    dot: 'fresh' };
+  if (days < WARN_DAYS)  return { level: 'fresh', label: `${days}d ago`, dot: 'fresh' };
+  if (days < STALE_DAYS) return { level: 'warn',  label: `${days}d ago`, dot: 'warn'  };
+  return { level: 'stale', label: `${days}d ago`, dot: 'stale' };
+}
+
+const CHANNEL_ICONS = {
+  Email: '✉️', WhatsApp: '💬', Call: '📞',
+  LinkedIn: '🔗', Instagram: '📸', Facebook: '👤', 'In Person': '🤝'
+};
+const CHANNEL_COLORS = {
+  Email: '#dbeafe', WhatsApp: '#dcfce7', Call: '#f3e8ff',
+  LinkedIn: '#dbeafe', Instagram: '#fce7f3', Facebook: '#e0f2fe', 'In Person': '#fef9c3'
+};
 
 // ── TOGGLE ───────────────────────────────────────────
 function toggle(id, field) {
@@ -759,7 +1125,143 @@ document.getElementById('search-input').addEventListener('input', e => { searchQ
   });
 });
 
-// ── MIGRATE OLD DATA ──────────────────────────────────
+// ── COMMS LOG PANEL ──────────────────────────────────
+let activeCommsId = null;
+let selectedChannel = null;
+
+function openCommsPanel(leadId) {
+  const lead = leads.find(l => l.id === leadId);
+  if (!lead) return;
+  activeCommsId = leadId;
+  selectedChannel = null;
+
+  // Header
+  document.getElementById('cp-company').textContent = lead.company || '—';
+  const contacts = lead.contacts || [];
+  document.getElementById('cp-contacts-preview').textContent =
+    contacts.length ? contacts.map(c => c.name).filter(Boolean).join(' · ') : '';
+
+  // Contact select
+  const sel = document.getElementById('cp-contact-select');
+  sel.innerHTML = '<option value="">— Contact person (optional) —</option>';
+  contacts.forEach(c => {
+    if (c.name) sel.innerHTML += `<option value="${esc(c.name)}">${esc(c.name)}${c.role?' ('+esc(c.role)+')':''}</option>`;
+  });
+
+  // Reset form
+  document.querySelectorAll('.channel-pill').forEach(p => p.classList.remove('active'));
+  document.getElementById('cp-note-input').value = '';
+  document.getElementById('cp-date-input').value = new Date().toISOString().slice(0,10);
+
+  renderTimeline(lead);
+
+  document.getElementById('comms-overlay').classList.add('open');
+  document.getElementById('comms-panel').classList.add('open');
+}
+
+function closeCommsPanel() {
+  document.getElementById('comms-overlay').classList.remove('open');
+  document.getElementById('comms-panel').classList.remove('open');
+  activeCommsId = null;
+}
+
+function selectChannel(btn) {
+  document.querySelectorAll('.channel-pill').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  selectedChannel = btn.dataset.channel;
+}
+
+function logInteraction() {
+  if (!activeCommsId) return;
+  if (!selectedChannel) { alert('Please select a channel.'); return; }
+
+  const note    = document.getElementById('cp-note-input').value.trim();
+  const date    = document.getElementById('cp-date-input').value || new Date().toISOString().slice(0,10);
+  const contact = document.getElementById('cp-contact-select').value;
+
+  const lead = leads.find(l => l.id === activeCommsId);
+  if (!lead) return;
+  if (!lead.commLog) lead.commLog = [];
+
+  lead.commLog.unshift({
+    id:      crypto.randomUUID(),
+    channel: selectedChannel,
+    contact: contact || '',
+    note:    note,
+    date:    date,
+    ts:      Date.now(),
+  });
+
+  // Auto-check "Contacted" if not already set
+  if (!lead.contacted) { lead.contacted = true; }
+
+  save();
+  renderTimeline(lead);
+  render();
+
+  // Reset form but keep channel selected for quick multi-log
+  document.getElementById('cp-note-input').value = '';
+  document.getElementById('cp-date-input').value = new Date().toISOString().slice(0,10);
+}
+
+function deleteLogEntry(leadId, entryId) {
+  const lead = leads.find(l => l.id === leadId);
+  if (!lead || !lead.commLog) return;
+  lead.commLog = lead.commLog.filter(e => e.id !== entryId);
+  save();
+  renderTimeline(lead);
+  render();
+}
+
+function renderTimeline(lead) {
+  const container = document.getElementById('cp-timeline');
+  const logs = lead.commLog || [];
+
+  if (!logs.length) {
+    container.innerHTML = `<div class="cp-empty"><div class="cp-empty-icon">💬</div>No interactions logged yet.<br>Log your first one above.</div>`;
+    return;
+  }
+
+  // Group by date
+  const groups = {};
+  logs.forEach(e => {
+    if (!groups[e.date]) groups[e.date] = [];
+    groups[e.date].push(e);
+  });
+
+  let html = '';
+  Object.keys(groups).sort((a,b) => b.localeCompare(a)).forEach(date => {
+    const d = new Date(date + 'T12:00:00');
+    const label = formatDateLabel(d);
+    html += `<div style="font-size:10px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin:6px 0 4px;">${label}</div>`;
+    groups[date].forEach(e => {
+      const icon = CHANNEL_ICONS[e.channel] || '💬';
+      const bg   = CHANNEL_COLORS[e.channel] || '#f5f5f5';
+      html += `<div class="log-entry">
+        <div class="log-icon" style="background:${bg}">${icon}</div>
+        <div class="log-body">
+          <div class="log-header">
+            <span class="log-channel">${e.channel}</span>
+            <button class="log-delete" onclick="deleteLogEntry('${lead.id}','${e.id}')" title="Delete">✕</button>
+          </div>
+          ${e.contact ? `<div class="log-contact">with ${esc(e.contact)}</div>` : ''}
+          ${e.note ? `<div class="log-note">${esc(e.note)}</div>` : ''}
+        </div>
+      </div>`;
+    });
+  });
+
+  container.innerHTML = html;
+}
+
+function formatDateLabel(d) {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const yesterday = new Date(today); yesterday.setDate(today.getDate()-1);
+  const target = new Date(d); target.setHours(0,0,0,0);
+  if (target.getTime() === today.getTime()) return 'Today';
+  if (target.getTime() === yesterday.getTime()) return 'Yesterday';
+  return d.toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric', year:'numeric' });
+}
 // If old data (v3) exists without contacts array, migrate it
 function migrateOldData() {
   const oldKey = 'pipeline_leads_v3';
