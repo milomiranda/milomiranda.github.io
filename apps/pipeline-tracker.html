@@ -13,30 +13,23 @@
     --shadow: 0 2px 16px rgba(0,0,0,0.05);
   }
   body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 0 0 60px; }
-
   header { padding: 40px 32px 28px; max-width: 1400px; margin: 0 auto; }
   .badge { display: inline-block; background: var(--accent); color: var(--text); font-size: 11px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; padding: 5px 14px; border-radius: 999px; margin-bottom: 14px; }
   header h1 { font-size: clamp(32px, 5vw, 52px); font-weight: 800; letter-spacing: -0.04em; line-height: 1.05; margin-bottom: 8px; }
   header p { color: var(--muted); font-size: 15px; font-weight: 500; }
-
   .summary { background: var(--accent); border-radius: 20px; padding: 24px 32px; display: flex; gap: 40px; flex-wrap: wrap; align-items: center; box-shadow: 0 0 0 4px rgba(197,254,0,0.15); max-width: calc(1400px - 64px); margin: 0 auto 28px; }
   .summary-stat { display: flex; flex-direction: column; gap: 2px; }
   .summary-stat span:first-child { font-size: 10px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(0,0,0,0.5); }
   .summary-stat span:last-child { font-family: monospace; font-size: 32px; font-weight: 800; color: var(--text); }
-
   .main { max-width: 1400px; margin: 0 auto; padding: 0 32px; display: flex; flex-direction: column; gap: 24px; }
-
   .card { background: var(--card); border: 2px solid var(--border); border-radius: 20px; padding: 28px; box-shadow: var(--shadow); animation: fadeUp 0.4s ease both; }
   @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-  .card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
   .card-icon { width: 32px; height: 32px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; }
   .card-title { font-size: 14px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
-
   .filters { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
   .filter-btn { padding: 8px 16px; border-radius: 10px; border: 1.5px solid var(--border); background: #fafafa; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.15s; color: var(--text); }
   .filter-btn:hover { border-color: var(--text); }
   .filter-btn.active { background: var(--text); color: #fff; border-color: var(--text); }
-
   .toolbar { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
   .search-wrap { position: relative; flex: 1; min-width: 200px; }
   .search-wrap input { width: 100%; padding: 10px 14px 10px 40px; background: #fafafa; border: 1.5px solid var(--border); border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text); outline: none; transition: border-color 0.15s; }
@@ -47,8 +40,6 @@
   .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(197,254,0,0.4); }
   .btn-outline { background: #fff; color: var(--text); border: 1.5px solid var(--border); }
   .btn-outline:hover { border-color: var(--text); }
-
-  .table-wrap { overflow-x: visible; }
   table { width: 100%; border-collapse: collapse; font-size: 14px; }
   th { text-align: left; font-size: 10px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); padding: 10px 14px 12px; border-bottom: 1.5px solid var(--border); white-space: nowrap; position: sticky; top: 0; background: var(--card); z-index: 10; box-shadow: 0 1px 0 var(--border); }
   th.sortable { cursor: pointer; user-select: none; }
@@ -59,62 +50,40 @@
   tr:last-child td { border-bottom: none; }
   tr:hover td { background: #fafafa; }
   .company-name { font-weight: 700; }
-  .sub-text { color: var(--muted); font-size: 12px; }
   .website-link { color: var(--text); font-size: 12px; text-decoration: none; font-weight: 600; }
   .website-link:hover { text-decoration: underline; }
-
-  /* CONTACTS CELL */
   .contacts-cell { display: flex; flex-direction: column; gap: 6px; min-width: 180px; }
   .contact-chip { display: flex; flex-direction: column; gap: 1px; }
   .contact-chip-name { font-size: 13px; font-weight: 600; color: var(--text); }
   .contact-chip-role { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); background: #111; padding: 1px 6px; border-radius: 4px; display: inline-block; }
   .contact-chip-detail { font-size: 11px; color: var(--muted); }
   .contacts-more { font-size: 11px; font-weight: 700; color: var(--muted); cursor: pointer; }
-  .contacts-more:hover { color: var(--text); }
-
   .toggle-check { width: 28px; height: 28px; border-radius: 8px; border: 1.5px solid var(--border); background: #fafafa; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: all 0.15s; flex-shrink: 0; }
   .toggle-check.checked { background: var(--accent); border-color: var(--accent); color: var(--text); }
   .toggle-check.closed-check { background: var(--text); border-color: var(--text); color: #fff; }
-
   .action-btns { display: flex; gap: 6px; }
   .icon-btn { width: 30px; height: 30px; border-radius: 8px; border: 1.5px solid var(--border); background: #fafafa; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 13px; transition: all 0.15s; }
   .icon-btn:hover { border-color: var(--text); background: #fff; }
   .icon-btn.del:hover { border-color: #ff4444; color: #ff4444; }
-  .icon-btn.comms { border-color: var(--border); }
   .icon-btn.comms:hover { border-color: #6366f1; color: #6366f1; background: #f5f3ff; }
-
-  /* ── STALENESS DOT + BADGE ── */
   .company-cell { display: flex; align-items: center; gap: 8px; }
   .stale-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-  .stale-dot.fresh  { background: #16a34a; }
-  .stale-dot.warn   { background: #f59e0b; }
-  .stale-dot.stale  { background: #ef4444; }
-  .stale-dot.none   { background: #ddd; }
+  .stale-dot.fresh { background: #16a34a; } .stale-dot.warn { background: #f59e0b; }
+  .stale-dot.stale { background: #ef4444; } .stale-dot.none { background: #ddd; }
   .last-contact-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px; white-space: nowrap; }
-  .last-contact-badge.fresh  { background: #f0fdf4; color: #16a34a; }
-  .last-contact-badge.warn   { background: #fffbeb; color: #d97706; }
-  .last-contact-badge.stale  { background: #fef2f2; color: #ef4444; }
-  .last-contact-badge.none   { background: #f5f5f5; color: #aaa; }
-
-  /* ── SLIDE-OUT PANEL ── */
+  .last-contact-badge.fresh { background: #f0fdf4; color: #16a34a; }
+  .last-contact-badge.warn  { background: #fffbeb; color: #d97706; }
+  .last-contact-badge.stale { background: #fef2f2; color: #ef4444; }
+  .last-contact-badge.none  { background: #f5f5f5; color: #aaa; }
   #comms-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.25); backdrop-filter: blur(2px); z-index: 300; }
   #comms-overlay.open { display: block; }
-  #comms-panel {
-    position: fixed; top: 0; right: 0; bottom: 0; width: 420px; max-width: 100vw;
-    background: var(--card); border-left: 2px solid var(--border);
-    box-shadow: -8px 0 40px rgba(0,0,0,0.10);
-    z-index: 301; display: flex; flex-direction: column;
-    transform: translateX(100%); transition: transform 0.3s cubic-bezier(.4,0,.2,1);
-  }
+  #comms-panel { position: fixed; top: 0; right: 0; bottom: 0; width: 420px; max-width: 100vw; background: var(--card); border-left: 2px solid var(--border); box-shadow: -8px 0 40px rgba(0,0,0,0.10); z-index: 301; display: flex; flex-direction: column; transform: translateX(100%); transition: transform 0.3s cubic-bezier(.4,0,.2,1); }
   #comms-panel.open { transform: translateX(0); }
-
   .cp-header { padding: 20px 24px 16px; border-bottom: 2px solid var(--border); flex-shrink: 0; }
   .cp-close { float: right; background: none; border: 1.5px solid var(--border); border-radius: 8px; width: 30px; height: 30px; cursor: pointer; font-size: 13px; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
   .cp-close:hover { border-color: var(--text); }
   .cp-company { font-size: 18px; font-weight: 800; letter-spacing: -0.03em; margin-top: 4px; }
   .cp-contacts-preview { font-size: 12px; color: var(--muted); font-weight: 500; margin-top: 3px; }
-
-  /* NEW INTERACTION FORM */
   .cp-form { padding: 16px 24px; border-bottom: 2px solid var(--border); flex-shrink: 0; display: flex; flex-direction: column; gap: 10px; }
   .cp-form-label { font-size: 10px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
   .channel-pills { display: flex; gap: 6px; flex-wrap: wrap; }
@@ -122,33 +91,25 @@
   .channel-pill:hover { border-color: var(--text); }
   .channel-pill.active { background: var(--text); color: #fff; border-color: var(--text); }
   .cp-contact-select { padding: 8px 12px; background: #fafafa; border: 1.5px solid var(--border); border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--text); outline: none; width: 100%; cursor: pointer; }
-  .cp-contact-select:focus { border-color: var(--text); }
   .cp-note-input { padding: 9px 12px; background: #fafafa; border: 1.5px solid var(--border); border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--text); outline: none; width: 100%; resize: none; min-height: 60px; transition: border-color 0.15s; }
   .cp-note-input:focus { border-color: var(--text); }
   .cp-note-input::placeholder { color: #bbb; }
   .cp-form-row { display: flex; gap: 8px; align-items: center; }
   .cp-date-input { padding: 8px 12px; background: #fafafa; border: 1.5px solid var(--border); border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--text); outline: none; flex: 1; }
-  .cp-date-input:focus { border-color: var(--text); }
   .btn-log { background: var(--accent); border: none; border-radius: 10px; padding: 9px 18px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 800; color: #111; cursor: pointer; white-space: nowrap; transition: all 0.15s; }
   .btn-log:hover { box-shadow: 0 4px 12px rgba(197,254,0,0.4); transform: translateY(-1px); }
-
-  /* TIMELINE */
   .cp-timeline { flex: 1; overflow-y: auto; padding: 16px 24px; display: flex; flex-direction: column; gap: 10px; }
   .cp-empty { text-align: center; padding: 40px 20px; color: var(--muted); font-size: 13px; font-weight: 500; }
   .cp-empty-icon { font-size: 36px; margin-bottom: 8px; }
-
   .log-entry { display: flex; gap: 12px; align-items: flex-start; animation: fadeUp 0.2s ease both; }
   .log-icon { width: 32px; height: 32px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; margin-top: 1px; }
   .log-body { flex: 1; min-width: 0; }
   .log-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
   .log-channel { font-size: 12px; font-weight: 800; color: var(--text); }
-  .log-date { font-size: 11px; color: var(--muted); font-weight: 500; }
   .log-contact { font-size: 11px; color: var(--muted); margin-top: 2px; }
   .log-note { font-size: 13px; color: var(--text); margin-top: 4px; line-height: 1.5; background: #fafafa; border: 1.5px solid var(--border); border-radius: 8px; padding: 8px 10px; }
   .log-delete { background: none; border: none; font-size: 11px; color: #ddd; cursor: pointer; padding: 0; transition: color 0.15s; }
   .log-delete:hover { color: #ff4444; }
-
-  /* MODALS */
   .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.3); backdrop-filter: blur(4px); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
   .modal-overlay.open { display: flex; }
   .modal { background: var(--card); border: 2px solid var(--border); border-radius: 20px; padding: 32px; width: 100%; max-width: 640px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.12); animation: fadeUp 0.25s ease; }
@@ -167,16 +128,12 @@
   .checkbox-item input:checked + .checkbox-box { background: var(--accent); border-color: var(--accent); }
   .checkbox-label { font-size: 13px; font-weight: 600; }
   .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; }
-
-  /* CONTACTS IN MODAL */
   .contacts-section { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 10px; }
   .contacts-section-header { display: flex; align-items: center; justify-content: space-between; }
   .contacts-section-label { font-size: 10px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
   .btn-add-contact { display: flex; align-items: center; gap: 5px; background: var(--accent); border: none; border-radius: 8px; padding: 5px 12px; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 800; color: #111; cursor: pointer; transition: all 0.15s; }
-  .btn-add-contact:hover { box-shadow: 0 2px 8px rgba(197,254,0,0.4); }
   .contact-row { background: #fafafa; border: 1.5px solid var(--border); border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 10px; position: relative; animation: fadeUp 0.2s ease; }
   .contact-row-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .contact-row-grid-full { grid-column: 1 / -1; }
   .contact-remove { position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 13px; color: #ccc; cursor: pointer; padding: 0; line-height: 1; transition: color 0.15s; }
   .contact-remove:hover { color: #ff4444; }
   .contact-row-num { font-size: 10px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 2px; }
@@ -184,7 +141,11 @@
   .contact-input:focus { border-color: var(--text); }
   .contact-input::placeholder { color: #ccc; }
 
-  /* IMPORT */
+  /* ── IMPORT MODAL ── */
+  .import-type-tabs { display: flex; gap: 6px; margin-bottom: 16px; }
+  .import-type-tab { flex: 1; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 10px; background: #fafafa; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; text-align: center; transition: all 0.15s; color: var(--muted); }
+  .import-type-tab:hover { border-color: var(--text); color: var(--text); }
+  .import-type-tab.active { background: var(--text); color: #fff; border-color: var(--text); }
   .import-drop { border: 2px dashed var(--border); border-radius: 14px; padding: 36px 24px; text-align: center; cursor: pointer; transition: border-color 0.15s, background 0.15s; background: #fafafa; }
   .import-drop:hover, .import-drop.dragover { border-color: var(--text); background: #f0f0ee; }
   .import-drop .drop-icon { font-size: 36px; margin-bottom: 10px; }
@@ -195,11 +156,6 @@
   .import-note { margin-top: 16px; padding: 14px 16px; background: #fafafa; border: 1.5px solid var(--border); border-radius: 10px; font-size: 11px; color: #999; line-height: 1.8; }
   .import-note strong { color: #666; display: block; margin-bottom: 4px; }
 
-  .empty-state { text-align: center; padding: 60px 20px; color: var(--muted); }
-  .empty-state .emoji { font-size: 48px; margin-bottom: 12px; }
-  .empty-state p { font-size: 15px; font-weight: 500; }
-
-  /* ── TABS ── */
   .view-tabs { display: flex; gap: 6px; background: var(--card); border: 2px solid var(--border); border-radius: 14px; padding: 5px; box-shadow: var(--shadow); }
   .view-tab { flex: 1; padding: 9px 12px; border: none; border-radius: 9px; background: none; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700; color: var(--muted); cursor: pointer; transition: all 0.15s; display: flex; align-items: center; justify-content: center; gap: 7px; white-space: nowrap; }
   .view-tab:hover { color: var(--text); background: #f5f5f3; }
@@ -207,8 +163,6 @@
   .view-tab .tab-badge { background: rgba(255,255,255,0.2); color: #fff; font-size: 10px; font-weight: 800; padding: 1px 6px; border-radius: 99px; }
   .view-tab:not(.active) .tab-badge { background: #f0f0f0; color: var(--muted); }
   .view-tab.active .tab-badge.red { background: #ef4444; color: #fff; }
-
-  /* ── ACTIVITY VIEW ── */
   .activity-header { display: flex; align-items: center; justify-content: space-between; padding: 0 28px 16px; flex-wrap: wrap; gap: 10px; }
   .activity-pills { display: flex; gap: 6px; flex-wrap: wrap; }
   .act-pill { padding: 5px 12px; border-radius: 99px; border: 1.5px solid var(--border); background: #fafafa; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 700; color: var(--muted); cursor: pointer; transition: all 0.15s; }
@@ -216,42 +170,36 @@
   .act-pill.active { background: var(--text); color: #fff; border-color: var(--text); }
   .act-summary { font-size: 12px; color: var(--muted); font-weight: 500; }
   .act-summary strong { color: var(--text); }
-
   .act-table { width: 100%; border-collapse: collapse; font-size: 13px; }
   .act-table th { text-align: left; font-size: 10px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); padding: 10px 14px 12px; border-bottom: 1.5px solid var(--border); white-space: nowrap; position: sticky; top: 0; background: var(--card); z-index: 10; box-shadow: 0 1px 0 var(--border); }
   .act-table td { padding: 11px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
   .act-table tr:last-child td { border-bottom: none; }
   .act-table tr:hover td { background: #fafafa; }
   .act-table tr { cursor: pointer; }
-
   .act-company { display: flex; align-items: center; gap: 8px; }
   .act-company-name { font-weight: 700; font-size: 14px; }
   .act-stage { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; padding: 2px 7px; border-radius: 99px; white-space: nowrap; }
-  .act-stage.none     { background: #f0f0f0; color: #aaa; }
-  .act-stage.contacted{ background: #dbeafe; color: #1d4ed8; }
-  .act-stage.demo     { background: #ede9fe; color: #6d28d9; }
-  .act-stage.proposal { background: #fef9c3; color: #854d0e; }
-  .act-stage.closed   { background: #111;    color: var(--accent); }
-
+  .act-stage.none      { background: #f0f0f0; color: #aaa; }
+  .act-stage.contacted { background: #dbeafe; color: #1d4ed8; }
+  .act-stage.demo      { background: #ede9fe; color: #6d28d9; }
+  .act-stage.proposal  { background: #fef9c3; color: #854d0e; }
+  .act-stage.closed    { background: #111;    color: var(--accent); }
   .act-last-channel { display: flex; align-items: center; gap: 6px; }
   .act-channel-icon { width: 26px; height: 26px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
   .act-channel-name { font-size: 12px; font-weight: 600; color: var(--text); }
   .act-contact-name { font-size: 11px; color: var(--muted); margin-top: 1px; }
-
   .act-last-note { font-size: 12px; color: var(--muted); max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
   .act-log-count { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; color: var(--muted); }
   .act-log-count .count-num { background: #f0f0f0; color: #666; font-size: 11px; font-weight: 800; padding: 1px 7px; border-radius: 99px; }
-
+  .empty-state { text-align: center; padding: 60px 20px; color: var(--muted); }
+  .empty-state .emoji { font-size: 48px; margin-bottom: 12px; }
+  .empty-state p { font-size: 15px; font-weight: 500; }
   footer { text-align: center; padding: 40px 20px 20px; font-size: 12px; color: var(--muted); font-weight: 500; }
-
   @media (max-width: 600px) {
     header, .main { padding: 24px 16px; }
     .summary { margin: 0 16px 20px; padding: 20px; gap: 20px; }
-    .form-grid { grid-template-columns: 1fr; }
-    .form-group.full { grid-column: 1; }
-    .contacts-section { grid-column: 1; }
-    .contact-row-grid { grid-template-columns: 1fr; }
+    .form-grid, .contact-row-grid { grid-template-columns: 1fr; }
+    .form-group.full, .contacts-section { grid-column: 1; }
     header h1 { font-size: 28px; }
   }
 </style>
@@ -273,18 +221,11 @@
 </div>
 
 <div class="main">
-
-  <!-- TAB TOGGLE -->
   <div class="view-tabs">
-    <button class="view-tab active" id="tab-leads" onclick="switchTab('leads')">
-      📋 Leads <span class="tab-badge" id="tab-leads-badge">0</span>
-    </button>
-    <button class="view-tab" id="tab-activity" onclick="switchTab('activity')">
-      💬 Communication Activity <span class="tab-badge red" id="tab-activity-badge">0</span>
-    </button>
+    <button class="view-tab active" id="tab-leads" onclick="switchTab('leads')">📋 Leads <span class="tab-badge" id="tab-leads-badge">0</span></button>
+    <button class="view-tab" id="tab-activity" onclick="switchTab('activity')">💬 Communication Activity <span class="tab-badge red" id="tab-activity-badge">0</span></button>
   </div>
 
-  <!-- LEADS VIEW -->
   <div id="view-leads">
     <div class="card" style="animation-delay:0.05s">
       <div style="display:flex;flex-direction:column;gap:14px;">
@@ -293,126 +234,74 @@
             <span class="search-icon">🔍</span>
             <input type="text" id="search-input" placeholder="Search company, person, city, country…">
           </div>
-          <button class="btn btn-outline" onclick="openImportModal()">📂 Import CSV</button>
-          <button class="btn btn-outline" onclick="exportExcel()">📥 Export Excel</button>
+          <button class="btn btn-outline" onclick="openImportModal()">📂 Import</button>
+          <button class="btn btn-outline" onclick="exportExcel()">📥 Export XLSX</button>
           <button class="btn btn-primary" onclick="openModal()">+ Add Lead</button>
         </div>
         <div class="filters">
           <span style="font-size:10px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-right:4px">Filter:</span>
-          <button class="filter-btn active" data-filter="all" onclick="setFilter('all',this)">All</button>
-          <button class="filter-btn" data-filter="not-contacted" onclick="setFilter('not-contacted',this)">Not Contacted</button>
-          <button class="filter-btn" data-filter="contacted" onclick="setFilter('contacted',this)">Contacted</button>
-          <button class="filter-btn" data-filter="demo" onclick="setFilter('demo',this)">Demo Scheduled</button>
-          <button class="filter-btn" data-filter="proposal" onclick="setFilter('proposal',this)">Proposal Sent</button>
-          <button class="filter-btn" data-filter="closed" onclick="setFilter('closed',this)">Closed ✓</button>
+          <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
+          <button class="filter-btn" onclick="setFilter('not-contacted',this)">Not Contacted</button>
+          <button class="filter-btn" onclick="setFilter('contacted',this)">Contacted</button>
+          <button class="filter-btn" onclick="setFilter('demo',this)">Demo Scheduled</button>
+          <button class="filter-btn" onclick="setFilter('proposal',this)">Proposal Sent</button>
+          <button class="filter-btn" onclick="setFilter('closed',this)">Closed ✓</button>
         </div>
       </div>
     </div>
-
     <div class="card" style="animation-delay:0.1s;padding:20px 0;overflow-x:auto;">
-      <div class="card-header" style="padding:0 28px;justify-content:space-between;">
-        <div style="display:flex;align-items:center;gap:10px;">
-          <div class="card-icon">📋</div>
-          <span class="card-title">Leads</span>
-        </div>
+      <div style="display:flex;align-items:center;gap:10px;padding:0 28px;margin-bottom:8px;">
+        <div class="card-icon">📋</div><span class="card-title">Leads</span>
       </div>
       <div style="padding:0 28px 14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-        <span style="font-size:10px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);">Sort by date:</span>
+        <span style="font-size:10px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);">Sort:</span>
         <button class="filter-btn active" id="sort-latest-btn" onclick="setSortDate('latest',this)">🕐 Latest First</button>
         <button class="filter-btn" id="sort-oldest-btn" onclick="setSortDate('oldest',this)">🕐 Oldest First</button>
       </div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Company / Org</th>
-              <th>Last Contact</th>
-              <th>Contacts</th>
-              <th>Website</th>
-              <th class="sortable" id="th-city" onclick="setSortField('city')">City <em class="sort-arrow">↕</em></th>
-              <th class="sortable" id="th-country" onclick="setSortField('country')">Country <em class="sort-arrow">↕</em></th>
-              <th>Contacted</th>
-              <th>Demo</th>
-              <th>Proposal</th>
-              <th>Closed</th>
-              <th>Notes</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody id="leads-tbody"></tbody>
-        </table>
-        <div id="empty-state" class="empty-state" style="display:none;">
-          <div class="emoji">🎯</div>
-          <p>No leads yet. Add your first one!</p>
-        </div>
-      </div>
+      <table>
+        <thead><tr>
+          <th>Company / Org</th><th>Last Contact</th><th>Contacts</th><th>Website</th>
+          <th class="sortable" id="th-city" onclick="setSortField('city')">City <em class="sort-arrow">↕</em></th>
+          <th class="sortable" id="th-country" onclick="setSortField('country')">Country <em class="sort-arrow">↕</em></th>
+          <th>Contacted</th><th>Demo</th><th>Proposal</th><th>Closed</th><th>Notes</th><th></th>
+        </tr></thead>
+        <tbody id="leads-tbody"></tbody>
+      </table>
+      <div id="empty-state" class="empty-state" style="display:none;"><div class="emoji">🎯</div><p>No leads yet. Add your first one!</p></div>
     </div>
   </div>
 
-  <!-- ACTIVITY VIEW -->
   <div id="view-activity" style="display:none;">
     <div class="card" style="padding:20px 0;overflow-x:auto;">
       <div class="activity-header">
-        <div style="display:flex;align-items:center;gap:10px;">
-          <div class="card-icon">💬</div>
-          <span class="card-title">Communication Activity</span>
-        </div>
+        <div style="display:flex;align-items:center;gap:10px;"><div class="card-icon">💬</div><span class="card-title">Communication Activity</span></div>
         <div class="activity-pills">
-          <button class="act-pill active" data-act="all"    onclick="setActFilter('all',this)">All</button>
-          <button class="act-pill"        data-act="stale"  onclick="setActFilter('stale',this)">🔴 Overdue</button>
-          <button class="act-pill"        data-act="warn"   onclick="setActFilter('warn',this)">🟡 Follow up</button>
-          <button class="act-pill"        data-act="fresh"  onclick="setActFilter('fresh',this)">🟢 Active</button>
-          <button class="act-pill"        data-act="none"   onclick="setActFilter('none',this)">⚪ Never</button>
+          <button class="act-pill active" onclick="setActFilter('all',this)">All</button>
+          <button class="act-pill" onclick="setActFilter('stale',this)">🔴 Overdue</button>
+          <button class="act-pill" onclick="setActFilter('warn',this)">🟡 Follow up</button>
+          <button class="act-pill" onclick="setActFilter('fresh',this)">🟢 Active</button>
+          <button class="act-pill" onclick="setActFilter('none',this)">⚪ Never</button>
         </div>
         <div class="act-summary" id="act-summary"></div>
       </div>
-      <div class="table-wrap">
-        <table class="act-table">
-          <thead>
-            <tr>
-              <th>Company</th>
-              <th>Stage</th>
-              <th>Last Channel</th>
-              <th>Last Contact</th>
-              <th>Latest Note</th>
-              <th>Log</th>
-            </tr>
-          </thead>
-          <tbody id="activity-tbody"></tbody>
-        </table>
-        <div id="act-empty" class="empty-state" style="display:none;">
-          <div class="emoji">💬</div>
-          <p>No leads match this filter.</p>
-        </div>
-      </div>
+      <table class="act-table">
+        <thead><tr><th>Company</th><th>Stage</th><th>Last Channel</th><th>Last Contact</th><th>Latest Note</th><th>Log</th></tr></thead>
+        <tbody id="activity-tbody"></tbody>
+      </table>
+      <div id="act-empty" class="empty-state" style="display:none;"><div class="emoji">💬</div><p>No leads match this filter.</p></div>
     </div>
   </div>
-
 </div>
 
-<!-- ADD / EDIT MODAL -->
+<!-- ADD/EDIT MODAL -->
 <div class="modal-overlay" id="modal">
   <div class="modal">
     <h2 id="modal-title">Add New Lead</h2>
     <div class="form-grid">
-      <div class="form-group">
-        <label>Company / Organiser</label>
-        <input type="text" id="f-company">
-      </div>
-      <div class="form-group full">
-        <label>Website</label>
-        <input type="url" id="f-website">
-      </div>
-      <div class="form-group">
-        <label>City</label>
-        <input type="text" id="f-city">
-      </div>
-      <div class="form-group">
-        <label>Country</label>
-        <input type="text" id="f-country">
-      </div>
-
-      <!-- CONTACTS SECTION -->
+      <div class="form-group"><label>Company / Organiser</label><input type="text" id="f-company"></div>
+      <div class="form-group full"><label>Website</label><input type="url" id="f-website"></div>
+      <div class="form-group"><label>City</label><input type="text" id="f-city"></div>
+      <div class="form-group"><label>Country</label><input type="text" id="f-country"></div>
       <div class="contacts-section">
         <div class="contacts-section-header">
           <span class="contacts-section-label">Contacts</span>
@@ -420,34 +309,14 @@
         </div>
         <div id="contacts-list"></div>
       </div>
-
-      <div class="form-group full">
-        <label>Notes</label>
-        <textarea id="f-notes"></textarea>
-      </div>
+      <div class="form-group full"><label>Notes</label><textarea id="f-notes"></textarea></div>
       <div class="form-group full">
         <label>Status</label>
         <div class="checkboxes-row">
-          <label class="checkbox-item">
-            <input type="checkbox" id="f-contacted">
-            <span class="checkbox-box">✓</span>
-            <span class="checkbox-label">Contacted</span>
-          </label>
-          <label class="checkbox-item">
-            <input type="checkbox" id="f-demo">
-            <span class="checkbox-box">✓</span>
-            <span class="checkbox-label">Demo Scheduled</span>
-          </label>
-          <label class="checkbox-item">
-            <input type="checkbox" id="f-proposal">
-            <span class="checkbox-box">✓</span>
-            <span class="checkbox-label">Proposal Sent</span>
-          </label>
-          <label class="checkbox-item">
-            <input type="checkbox" id="f-closed">
-            <span class="checkbox-box">✓</span>
-            <span class="checkbox-label">Closed Deal 🎉</span>
-          </label>
+          <label class="checkbox-item"><input type="checkbox" id="f-contacted"><span class="checkbox-box">✓</span><span class="checkbox-label">Contacted</span></label>
+          <label class="checkbox-item"><input type="checkbox" id="f-demo"><span class="checkbox-box">✓</span><span class="checkbox-label">Demo Scheduled</span></label>
+          <label class="checkbox-item"><input type="checkbox" id="f-proposal"><span class="checkbox-box">✓</span><span class="checkbox-label">Proposal Sent</span></label>
+          <label class="checkbox-item"><input type="checkbox" id="f-closed"><span class="checkbox-box">✓</span><span class="checkbox-label">Closed Deal 🎉</span></label>
         </div>
       </div>
     </div>
@@ -458,22 +327,26 @@
   </div>
 </div>
 
-<!-- IMPORT CSV MODAL -->
+<!-- IMPORT MODAL -->
 <div class="modal-overlay" id="import-modal">
   <div class="modal" style="max-width:520px">
-    <h2>Import CSV</h2>
-    <div class="import-drop" id="import-drop" onclick="document.getElementById('import-file').click()">
-      <div class="drop-icon">📂</div>
-      <p>Click to select a CSV file</p>
-      <span>or drag and drop it here</span>
+    <h2>Import Leads</h2>
+    <div class="import-type-tabs">
+      <button class="import-type-tab active" id="itab-xlsx" onclick="setImportType('xlsx',this)">📊 Excel (.xlsx / .xls)</button>
+      <button class="import-type-tab" id="itab-csv" onclick="setImportType('csv',this)">📄 CSV</button>
     </div>
-    <input type="file" id="import-file" accept=".csv,.txt">
+    <div class="import-drop" id="import-drop" onclick="document.getElementById('import-file').click()">
+      <div class="drop-icon" id="drop-icon">📊</div>
+      <p id="drop-text">Click to select an Excel file</p>
+      <span id="drop-sub">or drag and drop · .xlsx, .xls</span>
+    </div>
+    <input type="file" id="import-file" accept=".xlsx,.xls">
     <div class="import-preview" id="import-preview"></div>
     <div class="import-note">
       <strong>Expected columns (header row required):</strong>
-      Company · Person · Email · Phone · Website · City · Country · Notes · Contacted · Demo · Proposal · Closed<br>
+      Company · Person · Role · Email · Phone · Website · City · Country · Notes · Contacted · Demo · Proposal · Closed<br>
       • Column order doesn't matter — matched by name<br>
-      • For status columns use <em>yes</em>, <em>1</em>, or <em>true</em><br>
+      • Status columns: use <em>yes</em>, <em>1</em>, or <em>true</em><br>
       • Existing leads are kept — imports are added on top
     </div>
     <div class="modal-actions">
@@ -483,7 +356,7 @@
   </div>
 </div>
 
-<!-- COMMS LOG PANEL -->
+<!-- COMMS PANEL -->
 <div id="comms-overlay" onclick="closeCommsPanel()"></div>
 <div id="comms-panel">
   <div class="cp-header">
@@ -496,7 +369,7 @@
     <div class="cp-form-label">Log a new interaction</div>
     <div>
       <div class="cp-form-label" style="margin-bottom:6px;">Channel</div>
-      <div class="channel-pills" id="channel-pills">
+      <div class="channel-pills">
         <button class="channel-pill" data-channel="Email" onclick="selectChannel(this)">✉️ Email</button>
         <button class="channel-pill" data-channel="WhatsApp" onclick="selectChannel(this)">💬 WhatsApp</button>
         <button class="channel-pill" data-channel="Call" onclick="selectChannel(this)">📞 Call</button>
@@ -506,68 +379,78 @@
         <button class="channel-pill" data-channel="In Person" onclick="selectChannel(this)">🤝 In Person</button>
       </div>
     </div>
-    <select class="cp-contact-select" id="cp-contact-select">
-      <option value="">— Contact person (optional) —</option>
-    </select>
+    <select class="cp-contact-select" id="cp-contact-select"><option value="">— Contact person (optional) —</option></select>
     <textarea class="cp-note-input" id="cp-note-input" placeholder="What happened? e.g. Sent intro email, no reply yet…" rows="2"></textarea>
     <div class="cp-form-row">
       <input type="date" class="cp-date-input" id="cp-date-input">
       <button class="btn-log" onclick="logInteraction()">+ Log</button>
     </div>
   </div>
-  <div class="cp-timeline" id="cp-timeline">
-    <div class="cp-empty"><div class="cp-empty-icon">💬</div>No interactions logged yet.</div>
-  </div>
+  <div class="cp-timeline" id="cp-timeline"><div class="cp-empty"><div class="cp-empty-icon">💬</div>No interactions logged yet.</div></div>
 </div>
 
 <footer>
-  Built by Emilio Miranda Escamilla
-  <br><br>
+  Built by Emilio Miranda Escamilla<br><br>
   <button onclick="history.back()" style="background:none;border:1.5px solid #e0e0e0;border-radius:8px;padding:6px 14px;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;color:#aaa;cursor:pointer;letter-spacing:0.04em;transition:all 0.15s;" onmouseover="this.style.borderColor='#111';this.style.color='#111'" onmouseout="this.style.borderColor='#e0e0e0';this.style.color='#aaa'">← Back</button>
 </footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
 const STORAGE_KEY = 'pipeline_leads_v4';
-let leads = [];
-let currentFilter = 'all';
-let searchQuery = '';
-let editingId = null;
-let pendingImport = [];
+let leads = [], currentFilter = 'all', searchQuery = '', editingId = null;
+let pendingImport = [], currentSort = 'latest', sortField = null, sortDir = 'asc';
+let currentTab = 'leads', actFilter = 'all', activeCommsId = null, selectedChannel = null;
+let contactCount = 0, importType = 'xlsx';
 
-let currentSort = 'latest';
-let sortField = null;
-let sortDir = 'asc';
+// ── IMPORT TYPE ───────────────────────────────────────
+function setImportType(type, btn) {
+  importType = type;
+  document.querySelectorAll('.import-type-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const fi = document.getElementById('import-file');
+  if (type === 'xlsx') {
+    fi.accept = '.xlsx,.xls';
+    document.getElementById('drop-icon').textContent = '📊';
+    document.getElementById('drop-text').textContent = 'Click to select an Excel file';
+    document.getElementById('drop-sub').textContent  = 'or drag and drop · .xlsx, .xls';
+  } else {
+    fi.accept = '.csv,.txt';
+    document.getElementById('drop-icon').textContent = '📄';
+    document.getElementById('drop-text').textContent = 'Click to select a CSV file';
+    document.getElementById('drop-sub').textContent  = 'or drag and drop · .csv';
+  }
+  resetImportPreview();
+}
+
+function resetImportPreview() {
+  pendingImport = [];
+  document.getElementById('import-preview').style.display = 'none';
+  document.getElementById('import-preview').innerHTML = '';
+  document.getElementById('import-file').value = '';
+  const btn = document.getElementById('import-confirm-btn');
+  btn.disabled = true; btn.style.opacity = '0.4'; btn.style.cursor = 'not-allowed';
+}
 
 // ── SORT ─────────────────────────────────────────────
 function setSortDate(dir, btn) {
   currentSort = dir; sortField = null;
   document.querySelectorAll('#sort-latest-btn,#sort-oldest-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  updateSortHeaders(); render();
+  btn.classList.add('active'); updateSortHeaders(); render();
 }
-
 function setSortField(field) {
-  if (sortField === field) { sortDir = sortDir === 'asc' ? 'desc' : 'asc'; }
-  else { sortField = field; sortDir = 'asc'; document.querySelectorAll('#sort-latest-btn,#sort-oldest-btn').forEach(b => b.classList.remove('active')); }
+  sortField === field ? (sortDir = sortDir === 'asc' ? 'desc' : 'asc') : (sortField = field, sortDir = 'asc', document.querySelectorAll('#sort-latest-btn,#sort-oldest-btn').forEach(b => b.classList.remove('active')));
   updateSortHeaders(); render();
 }
-
 function updateSortHeaders() {
   ['city','country'].forEach(f => {
-    const th = document.getElementById('th-'+f);
-    if (!th) return;
-    th.classList.remove('sort-asc','sort-desc');
-    th.querySelector('.sort-arrow').textContent = '↕';
-    if (sortField === f) {
-      th.classList.add(sortDir === 'asc' ? 'sort-asc' : 'sort-desc');
-      th.querySelector('.sort-arrow').textContent = sortDir === 'asc' ? '↑' : '↓';
-    }
+    const th = document.getElementById('th-'+f); if (!th) return;
+    th.classList.remove('sort-asc','sort-desc'); th.querySelector('.sort-arrow').textContent = '↕';
+    if (sortField === f) { th.classList.add(sortDir==='asc'?'sort-asc':'sort-desc'); th.querySelector('.sort-arrow').textContent = sortDir==='asc'?'↑':'↓'; }
   });
 }
 
 function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(leads)); }
-function load() { try { leads = JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch { leads = []; } }
+function load() { try { leads = JSON.parse(localStorage.getItem(STORAGE_KEY))||[]; } catch { leads=[]; } }
 
 // ── FILTER & RENDER ───────────────────────────────────
 function setFilter(f, el) {
@@ -575,717 +458,371 @@ function setFilter(f, el) {
   document.querySelectorAll('.filters .filter-btn').forEach(b => b.classList.remove('active'));
   el.classList.add('active'); render();
 }
-
 function filteredLeads() {
-  const filtered = leads.filter(l => {
+  return leads.filter(l => {
     const q = searchQuery.toLowerCase();
-    // Search across all contacts too
-    const contactMatch = (l.contacts||[]).some(c =>
-      (c.name||'').toLowerCase().includes(q) ||
-      (c.email||'').toLowerCase().includes(q) ||
-      (c.phone||'').toLowerCase().includes(q)
-    );
-    const matchSearch = !q ||
-      (l.company||'').toLowerCase().includes(q) ||
-      (l.city||'').toLowerCase().includes(q) ||
-      (l.country||'').toLowerCase().includes(q) ||
-      contactMatch;
-    if (!matchSearch) return false;
-    if (currentFilter === 'all') return true;
-    if (currentFilter === 'not-contacted') return !l.contacted;
-    if (currentFilter === 'contacted')     return l.contacted;
-    if (currentFilter === 'demo')          return l.demo;
-    if (currentFilter === 'proposal')      return l.proposal;
-    if (currentFilter === 'closed')        return l.closed;
-    return true;
-  });
-  return filtered.sort((a, b) => {
-    if (sortField) {
-      const va = (a[sortField]||'').toLowerCase();
-      const vb = (b[sortField]||'').toLowerCase();
-      return sortDir === 'asc' ? va.localeCompare(vb) : vb.localeCompare(va);
-    }
-    const ta = a.createdAt || 0, tb = b.createdAt || 0;
-    return currentSort === 'oldest' ? ta - tb : tb - ta;
+    const cm = (l.contacts||[]).some(c => (c.name||'').toLowerCase().includes(q)||(c.email||'').toLowerCase().includes(q));
+    const ms = !q||(l.company||'').toLowerCase().includes(q)||(l.city||'').toLowerCase().includes(q)||(l.country||'').toLowerCase().includes(q)||cm;
+    if (!ms) return false;
+    if (currentFilter==='all') return true;
+    if (currentFilter==='not-contacted') return !l.contacted;
+    return l[currentFilter==='closed'?'closed':currentFilter==='proposal'?'proposal':currentFilter==='demo'?'demo':'contacted'];
+  }).sort((a,b) => {
+    if (sortField) { const va=(a[sortField]||'').toLowerCase(),vb=(b[sortField]||'').toLowerCase(); return sortDir==='asc'?va.localeCompare(vb):vb.localeCompare(va); }
+    const ta=a.createdAt||0, tb=b.createdAt||0; return currentSort==='oldest'?ta-tb:tb-ta;
   });
 }
-
 function renderContactsCell(contacts) {
-  if (!contacts || contacts.length === 0) return '<span style="color:#ddd;font-size:13px">—</span>';
-  const show = contacts.slice(0, 2);
-  const rest = contacts.length - 2;
-  let html = '<div class="contacts-cell">';
-  show.forEach(c => {
-    html += `<div class="contact-chip">`;
-    if (c.name) html += `<span class="contact-chip-name">${esc(c.name)}</span>`;
-    if (c.role) html += `<span class="contact-chip-role">${esc(c.role)}</span>`;
-    if (c.email) html += `<span class="contact-chip-detail">✉️ ${esc(c.email)}</span>`;
-    if (c.phone) html += `<span class="contact-chip-detail">📞 ${esc(c.phone)}</span>`;
-    html += `</div>`;
-  });
-  if (rest > 0) html += `<span class="contacts-more">+${rest} more</span>`;
-  html += '</div>';
-  return html;
+  if (!contacts||!contacts.length) return '<span style="color:#ddd;font-size:13px">—</span>';
+  const show=contacts.slice(0,2), rest=contacts.length-2;
+  let h='<div class="contacts-cell">';
+  show.forEach(c=>{ h+=`<div class="contact-chip">${c.name?`<span class="contact-chip-name">${esc(c.name)}</span>`:''}${c.role?`<span class="contact-chip-role">${esc(c.role)}</span>`:''}${c.email?`<span class="contact-chip-detail">✉️ ${esc(c.email)}</span>`:''}${c.phone?`<span class="contact-chip-detail">📞 ${esc(c.phone)}</span>`:''}</div>`; });
+  if (rest>0) h+=`<span class="contacts-more">+${rest} more</span>`;
+  return h+'</div>';
 }
-
 function render() {
-  const fl = filteredLeads();
-  const tbody = document.getElementById('leads-tbody');
-  const empty = document.getElementById('empty-state');
-
-  if (fl.length === 0) {
-    tbody.innerHTML = '';
-    empty.style.display = 'block';
-  } else {
-    empty.style.display = 'none';
-    tbody.innerHTML = fl.map(l => {
-      const si = stalenessInfo(l);
-      const logCount = (l.commLog||[]).length;
-      return `
-      <tr>
-        <td>
-          <div class="company-cell">
-            <div class="stale-dot ${si.dot}" title="${si.label}"></div>
-            <div class="company-name">${esc(l.company||'—')}</div>
-          </div>
-        </td>
-        <td>
-          <span class="last-contact-badge ${si.level}">
-            ${si.level==='none'?'—':si.label}
-          </span>
-        </td>
+  const fl=filteredLeads(), tbody=document.getElementById('leads-tbody'), empty=document.getElementById('empty-state');
+  if (!fl.length) { tbody.innerHTML=''; empty.style.display='block'; }
+  else {
+    empty.style.display='none';
+    tbody.innerHTML=fl.map(l=>{
+      const si=stalenessInfo(l), lc=(l.commLog||[]).length;
+      return `<tr>
+        <td><div class="company-cell"><div class="stale-dot ${si.dot}" title="${si.label}"></div><div class="company-name">${esc(l.company||'—')}</div></div></td>
+        <td><span class="last-contact-badge ${si.level}">${si.level==='none'?'—':si.label}</span></td>
         <td>${renderContactsCell(l.contacts)}</td>
-        <td>${l.website ? `<a class="website-link" href="${esc(l.website)}" target="_blank" rel="noopener">🔗 ${esc(cleanUrl(l.website))}</a>` : '<span style="color:#ddd">—</span>'}</td>
-        <td>${esc(l.city||'—')}</td>
-        <td>${esc(l.country||'—')}</td>
+        <td>${l.website?`<a class="website-link" href="${esc(l.website)}" target="_blank" rel="noopener">🔗 ${esc(cleanUrl(l.website))}</a>`:'<span style="color:#ddd">—</span>'}</td>
+        <td>${esc(l.city||'—')}</td><td>${esc(l.country||'—')}</td>
         <td><button class="toggle-check ${l.contacted?'checked':''}" onclick="toggle('${l.id}','contacted')">${l.contacted?'✓':''}</button></td>
         <td><button class="toggle-check ${l.demo?'checked':''}" onclick="toggle('${l.id}','demo')">${l.demo?'✓':''}</button></td>
         <td><button class="toggle-check ${l.proposal?'checked':''}" onclick="toggle('${l.id}','proposal')">${l.proposal?'✓':''}</button></td>
         <td><button class="toggle-check ${l.closed?'closed-check':''}" onclick="toggle('${l.id}','closed')">${l.closed?'✓':''}</button></td>
         <td style="max-width:160px;white-space:normal;font-size:12px;color:var(--muted)">${esc(l.notes||'')}</td>
-        <td>
-          <div class="action-btns">
-            <button class="icon-btn comms" onclick="openCommsPanel('${l.id}')" title="Communication log" style="position:relative;">
-              💬${logCount > 0 ? `<span style="position:absolute;top:-4px;right:-4px;background:#6366f1;color:#fff;font-size:9px;font-weight:800;border-radius:99px;padding:1px 4px;min-width:14px;text-align:center;">${logCount}</span>` : ''}
-            </button>
-            <button class="icon-btn" onclick="editLead('${l.id}')" title="Edit">✏️</button>
-            <button class="icon-btn del" onclick="deleteLead('${l.id}')" title="Delete">🗑️</button>
-          </div>
-        </td>
-      </tr>`}).join('');
+        <td><div class="action-btns">
+          <button class="icon-btn comms" onclick="openCommsPanel('${l.id}')" title="Communication log" style="position:relative;">💬${lc>0?`<span style="position:absolute;top:-4px;right:-4px;background:#6366f1;color:#fff;font-size:9px;font-weight:800;border-radius:99px;padding:1px 4px;min-width:14px;text-align:center;">${lc}</span>`:''}</button>
+          <button class="icon-btn" onclick="editLead('${l.id}')" title="Edit">✏️</button>
+          <button class="icon-btn del" onclick="deleteLead('${l.id}')" title="Delete">🗑️</button>
+        </div></td>
+      </tr>`;
+    }).join('');
   }
-
-  document.getElementById('stat-total').textContent     = leads.length;
-  document.getElementById('stat-contacted').textContent  = leads.filter(l=>l.contacted).length;
-  document.getElementById('stat-demo').textContent       = leads.filter(l=>l.demo).length;
-  document.getElementById('stat-proposal').textContent   = leads.filter(l=>l.proposal).length;
-  document.getElementById('stat-closed').textContent     = leads.filter(l=>l.closed).length;
-
-  // Update tab badges
+  document.getElementById('stat-total').textContent    = leads.length;
+  document.getElementById('stat-contacted').textContent = leads.filter(l=>l.contacted).length;
+  document.getElementById('stat-demo').textContent      = leads.filter(l=>l.demo).length;
+  document.getElementById('stat-proposal').textContent  = leads.filter(l=>l.proposal).length;
+  document.getElementById('stat-closed').textContent    = leads.filter(l=>l.closed).length;
   document.getElementById('tab-leads-badge').textContent = leads.length;
-  const overdueCount = leads.filter(l => stalenessInfo(l).level === 'stale').length;
-  const actBadge = document.getElementById('tab-activity-badge');
-  actBadge.textContent = overdueCount;
-  actBadge.style.display = overdueCount > 0 ? '' : 'none';
-
-  // Re-render activity if active
-  if (currentTab === 'activity') renderActivity();
+  const oc=leads.filter(l=>stalenessInfo(l).level==='stale').length;
+  const ab=document.getElementById('tab-activity-badge'); ab.textContent=oc; ab.style.display=oc>0?'':'none';
+  if (currentTab==='activity') renderActivity();
 }
 
 // ── TABS ─────────────────────────────────────────────
-let currentTab = 'leads';
-let actFilter = 'all';
-
 function switchTab(tab) {
-  currentTab = tab;
-  document.getElementById('view-leads').style.display    = tab === 'leads'    ? '' : 'none';
-  document.getElementById('view-activity').style.display = tab === 'activity' ? '' : 'none';
-  document.getElementById('tab-leads').classList.toggle('active',    tab === 'leads');
-  document.getElementById('tab-activity').classList.toggle('active', tab === 'activity');
-  if (tab === 'activity') renderActivity();
+  currentTab=tab;
+  document.getElementById('view-leads').style.display    = tab==='leads'?'':'none';
+  document.getElementById('view-activity').style.display = tab==='activity'?'':'none';
+  document.getElementById('tab-leads').classList.toggle('active',    tab==='leads');
+  document.getElementById('tab-activity').classList.toggle('active', tab==='activity');
+  if (tab==='activity') renderActivity();
 }
-
-function setActFilter(f, el) {
-  actFilter = f;
-  document.querySelectorAll('.act-pill').forEach(p => p.classList.remove('active'));
-  el.classList.add('active');
-  renderActivity();
-}
-
-// ── ACTIVITY VIEW RENDER ─────────────────────────────
+function setActFilter(f,el) { actFilter=f; document.querySelectorAll('.act-pill').forEach(p=>p.classList.remove('active')); el.classList.add('active'); renderActivity(); }
 function getLeadStage(l) {
-  if (l.closed)   return { key:'closed',   label:'Closed 🎉' };
-  if (l.proposal) return { key:'proposal', label:'Proposal Sent' };
-  if (l.demo)     return { key:'demo',     label:'Demo Scheduled' };
-  if (l.contacted)return { key:'contacted',label:'Contacted' };
-  return { key:'none', label:'New' };
+  if (l.closed)    return {key:'closed',   label:'Closed 🎉'};
+  if (l.proposal)  return {key:'proposal', label:'Proposal Sent'};
+  if (l.demo)      return {key:'demo',     label:'Demo Scheduled'};
+  if (l.contacted) return {key:'contacted',label:'Contacted'};
+  return {key:'none',label:'New'};
 }
-
 function renderActivity() {
-  // Sort: stale first, then warn, then fresh, then none — then by date desc within each group
-  const order = { stale:0, warn:1, fresh:2, none:3 };
-  const sorted = [...leads].sort((a, b) => {
-    const sa = stalenessInfo(a), sb = stalenessInfo(b);
-    if (order[sa.level] !== order[sb.level]) return order[sa.level] - order[sb.level];
-    const la = getLastContact(a) || '0', lb = getLastContact(b) || '0';
-    return la < lb ? 1 : -1;
+  const order={stale:0,warn:1,fresh:2,none:3};
+  const sorted=[...leads].sort((a,b)=>{
+    const sa=stalenessInfo(a),sb=stalenessInfo(b);
+    if (order[sa.level]!==order[sb.level]) return order[sa.level]-order[sb.level];
+    const la=getLastContact(a)||'0',lb=getLastContact(b)||'0'; return la<lb?1:-1;
   });
-
-  const filtered = actFilter === 'all' ? sorted : sorted.filter(l => stalenessInfo(l).level === actFilter);
-
-  // Summary line
-  const staleN = leads.filter(l => stalenessInfo(l).level === 'stale').length;
-  const warnN  = leads.filter(l => stalenessInfo(l).level === 'warn').length;
-  const freshN = leads.filter(l => stalenessInfo(l).level === 'fresh').length;
-  const noneN  = leads.filter(l => stalenessInfo(l).level === 'none').length;
-  document.getElementById('act-summary').innerHTML =
-    `<strong>${staleN}</strong> overdue · <strong>${warnN}</strong> follow up · <strong>${freshN}</strong> active · <strong>${noneN}</strong> never contacted`;
-
-  const tbody = document.getElementById('activity-tbody');
-  const empty = document.getElementById('act-empty');
-
-  if (filtered.length === 0) {
-    tbody.innerHTML = '';
-    empty.style.display = 'block';
-    return;
-  }
-  empty.style.display = 'none';
-
-  tbody.innerHTML = filtered.map(l => {
-    const si       = stalenessInfo(l);
-    const stage    = getLeadStage(l);
-    const logs     = l.commLog || [];
-    const lastLog  = logs[0] || null;
-    const logCount = logs.length;
-
-    // Last channel display
-    let channelHtml = '<span style="color:#ddd;font-size:12px">—</span>';
-    if (lastLog) {
-      const icon = CHANNEL_ICONS[lastLog.channel] || '💬';
-      const bg   = CHANNEL_COLORS[lastLog.channel] || '#f5f5f5';
-      channelHtml = `<div class="act-last-channel">
-        <div class="act-channel-icon" style="background:${bg}">${icon}</div>
-        <div>
-          <div class="act-channel-name">${lastLog.channel}</div>
-          ${lastLog.contact ? `<div class="act-contact-name">${esc(lastLog.contact)}</div>` : ''}
-        </div>
-      </div>`;
-    }
-
-    // Last note
-    const noteHtml = lastLog && lastLog.note
-      ? `<span class="act-last-note" title="${esc(lastLog.note)}">${esc(lastLog.note)}</span>`
-      : '<span style="color:#ddd;font-size:12px">—</span>';
-
-    // Log count
-    const countHtml = `<div class="act-log-count">
-      <span class="count-num">${logCount}</span>
-      ${logCount === 1 ? 'entry' : 'entries'}
-    </div>`;
-
-    return `<tr onclick="openCommsPanel('${l.id}')" title="Open communication log">
-      <td>
-        <div class="act-company">
-          <div class="stale-dot ${si.dot}"></div>
-          <div>
-            <div class="act-company-name">${esc(l.company||'—')}</div>
-            ${(l.contacts||[]).length ? `<div style="font-size:11px;color:var(--muted);margin-top:1px">${esc((l.contacts[0].name||''))}</div>` : ''}
-          </div>
-        </div>
-      </td>
+  const filtered=actFilter==='all'?sorted:sorted.filter(l=>stalenessInfo(l).level===actFilter);
+  const sn=leads.filter(l=>stalenessInfo(l).level==='stale').length;
+  const wn=leads.filter(l=>stalenessInfo(l).level==='warn').length;
+  const fn=leads.filter(l=>stalenessInfo(l).level==='fresh').length;
+  const nn=leads.filter(l=>stalenessInfo(l).level==='none').length;
+  document.getElementById('act-summary').innerHTML=`<strong>${sn}</strong> overdue · <strong>${wn}</strong> follow up · <strong>${fn}</strong> active · <strong>${nn}</strong> never contacted`;
+  const tbody=document.getElementById('activity-tbody'),empty=document.getElementById('act-empty');
+  if (!filtered.length){tbody.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+  tbody.innerHTML=filtered.map(l=>{
+    const si=stalenessInfo(l),stage=getLeadStage(l),logs=l.commLog||[],ll=logs[0]||null,lc=logs.length;
+    let ch='<span style="color:#ddd;font-size:12px">—</span>';
+    if (ll){const ic=CHANNEL_ICONS[ll.channel]||'💬',bg=CHANNEL_COLORS[ll.channel]||'#f5f5f5';ch=`<div class="act-last-channel"><div class="act-channel-icon" style="background:${bg}">${ic}</div><div><div class="act-channel-name">${ll.channel}</div>${ll.contact?`<div class="act-contact-name">${esc(ll.contact)}</div>`:''}</div></div>`;}
+    const nh=ll&&ll.note?`<span class="act-last-note" title="${esc(ll.note)}">${esc(ll.note)}</span>`:'<span style="color:#ddd;font-size:12px">—</span>';
+    return `<tr onclick="openCommsPanel('${l.id}')">
+      <td><div class="act-company"><div class="stale-dot ${si.dot}"></div><div><div class="act-company-name">${esc(l.company||'—')}</div>${(l.contacts||[]).length?`<div style="font-size:11px;color:var(--muted);margin-top:1px">${esc(l.contacts[0].name||'')}</div>`:''}</div></div></td>
       <td><span class="act-stage ${stage.key}">${stage.label}</span></td>
-      <td>${channelHtml}</td>
+      <td>${ch}</td>
       <td><span class="last-contact-badge ${si.level}">${si.level==='none'?'Never':si.label}</span></td>
-      <td>${noteHtml}</td>
-      <td>${countHtml}</td>
+      <td>${nh}</td>
+      <td><div class="act-log-count"><span class="count-num">${lc}</span>${lc===1?'entry':'entries'}</div></td>
     </tr>`;
   }).join('');
 }
 
-function cleanUrl(url) { return url.replace(/^https?:\/\/(www\.)?/,'').replace(/\/$/,''); }
-function esc(str) { return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function cleanUrl(url){return url.replace(/^https?:\/\/(www\.)?/,'').replace(/\/$/,'');}
+function esc(str){return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
 // ── STALENESS ────────────────────────────────────────
-const STALE_DAYS = 14;
-const WARN_DAYS  = 7;
-
-function getLastContact(lead) {
-  const logs = lead.commLog || [];
-  if (!logs.length) return null;
-  return logs.reduce((latest, e) => e.date > latest ? e.date : latest, logs[0].date);
+const STALE_DAYS=14, WARN_DAYS=7;
+const CHANNEL_ICONS={Email:'✉️',WhatsApp:'💬',Call:'📞',LinkedIn:'🔗',Instagram:'📸',Facebook:'👤','In Person':'🤝'};
+const CHANNEL_COLORS={Email:'#dbeafe',WhatsApp:'#dcfce7',Call:'#f3e8ff',LinkedIn:'#dbeafe',Instagram:'#fce7f3',Facebook:'#e0f2fe','In Person':'#fef9c3'};
+function getLastContact(lead){const logs=lead.commLog||[];if(!logs.length)return null;return logs.reduce((l,e)=>e.date>l?e.date:l,logs[0].date);}
+function stalenessInfo(lead){
+  const last=getLastContact(lead);
+  if (!last) return {level:'none',label:'No contact',dot:'none'};
+  const days=Math.floor((Date.now()-new Date(last).getTime())/86400000);
+  if (days===0) return {level:'fresh',label:'Today',dot:'fresh'};
+  if (days===1) return {level:'fresh',label:'Yesterday',dot:'fresh'};
+  if (days<WARN_DAYS)  return {level:'fresh',label:`${days}d ago`,dot:'fresh'};
+  if (days<STALE_DAYS) return {level:'warn', label:`${days}d ago`,dot:'warn'};
+  return {level:'stale',label:`${days}d ago`,dot:'stale'};
 }
 
-function stalenessInfo(lead) {
-  const last = getLastContact(lead);
-  if (!last) return { level: 'none', label: 'No contact', dot: 'none' };
-  const days = Math.floor((Date.now() - new Date(last).getTime()) / 86400000);
-  if (days === 0) return { level: 'fresh', label: 'Today',        dot: 'fresh' };
-  if (days === 1) return { level: 'fresh', label: 'Yesterday',    dot: 'fresh' };
-  if (days < WARN_DAYS)  return { level: 'fresh', label: `${days}d ago`, dot: 'fresh' };
-  if (days < STALE_DAYS) return { level: 'warn',  label: `${days}d ago`, dot: 'warn'  };
-  return { level: 'stale', label: `${days}d ago`, dot: 'stale' };
-}
+function toggle(id,field){const l=leads.find(x=>x.id===id);if(!l)return;l[field]=!l[field];save();render();}
 
-const CHANNEL_ICONS = {
-  Email: '✉️', WhatsApp: '💬', Call: '📞',
-  LinkedIn: '🔗', Instagram: '📸', Facebook: '👤', 'In Person': '🤝'
-};
-const CHANNEL_COLORS = {
-  Email: '#dbeafe', WhatsApp: '#dcfce7', Call: '#f3e8ff',
-  LinkedIn: '#dbeafe', Instagram: '#fce7f3', Facebook: '#e0f2fe', 'In Person': '#fef9c3'
-};
-
-// ── TOGGLE ───────────────────────────────────────────
-function toggle(id, field) {
-  const lead = leads.find(l => l.id === id);
-  if (!lead) return;
-  lead[field] = !lead[field];
-  save(); render();
-}
-
-// ── CONTACTS IN MODAL ────────────────────────────────
-let contactCount = 0;
-
-function addContactRow(data = {}) {
-  contactCount++;
-  const idx = contactCount;
-  const div = document.createElement('div');
-  div.className = 'contact-row';
-  div.id = `contact-row-${idx}`;
-  div.innerHTML = `
-    <div class="contact-row-num">Contact ${idx}</div>
-    <button class="contact-remove" onclick="removeContactRow(${idx})" title="Remove">✕</button>
+// ── CONTACTS ─────────────────────────────────────────
+function addContactRow(data={}) {
+  contactCount++;const idx=contactCount;
+  const div=document.createElement('div');div.className='contact-row';div.id=`contact-row-${idx}`;
+  div.innerHTML=`<div class="contact-row-num">Contact ${idx}</div><button class="contact-remove" onclick="removeContactRow(${idx})">✕</button>
     <div class="contact-row-grid">
-      <div class="form-group">
-        <label>Name</label>
-        <input class="contact-input" type="text" id="c-name-${idx}" placeholder="Full name" value="${esc(data.name||'')}">
-      </div>
-      <div class="form-group">
-        <label>Role / Title</label>
-        <input class="contact-input" type="text" id="c-role-${idx}" placeholder="e.g. CEO, Booker…" value="${esc(data.role||'')}">
-      </div>
-      <div class="form-group">
-        <label>Email</label>
-        <input class="contact-input" type="email" id="c-email-${idx}" placeholder="email@example.com" value="${esc(data.email||'')}">
-      </div>
-      <div class="form-group">
-        <label>Phone</label>
-        <input class="contact-input" type="tel" id="c-phone-${idx}" placeholder="+31 6 00 00 00 00" value="${esc(data.phone||'')}">
-      </div>
+      <div class="form-group"><label>Name</label><input class="contact-input" type="text" id="c-name-${idx}" placeholder="Full name" value="${esc(data.name||'')}"></div>
+      <div class="form-group"><label>Role / Title</label><input class="contact-input" type="text" id="c-role-${idx}" placeholder="e.g. CEO, Booker…" value="${esc(data.role||'')}"></div>
+      <div class="form-group"><label>Email</label><input class="contact-input" type="email" id="c-email-${idx}" placeholder="email@example.com" value="${esc(data.email||'')}"></div>
+      <div class="form-group"><label>Phone</label><input class="contact-input" type="tel" id="c-phone-${idx}" placeholder="+31 6 00 00 00 00" value="${esc(data.phone||'')}"></div>
     </div>`;
   document.getElementById('contacts-list').appendChild(div);
 }
-
-function removeContactRow(idx) {
-  const el = document.getElementById(`contact-row-${idx}`);
-  if (el) el.remove();
-  renumberContacts();
-}
-
-function renumberContacts() {
-  document.querySelectorAll('.contact-row').forEach((row, i) => {
-    const numEl = row.querySelector('.contact-row-num');
-    if (numEl) numEl.textContent = `Contact ${i + 1}`;
+function removeContactRow(idx){const el=document.getElementById(`contact-row-${idx}`);if(el)el.remove();document.querySelectorAll('.contact-row').forEach((r,i)=>{const n=r.querySelector('.contact-row-num');if(n)n.textContent=`Contact ${i+1}`;});}
+function getContactsFromForm(){
+  const cs=[];
+  document.querySelectorAll('.contact-row').forEach(row=>{
+    const id=row.id.replace('contact-row-','');
+    const name=(document.getElementById(`c-name-${id}`)?.value||'').trim();
+    const role=(document.getElementById(`c-role-${id}`)?.value||'').trim();
+    const email=(document.getElementById(`c-email-${id}`)?.value||'').trim();
+    const phone=(document.getElementById(`c-phone-${id}`)?.value||'').trim();
+    if(name||email||phone) cs.push({name,role,email,phone});
   });
+  return cs;
 }
+function clearContactsForm(){document.getElementById('contacts-list').innerHTML='';contactCount=0;}
 
-function getContactsFromForm() {
-  const contacts = [];
-  document.querySelectorAll('.contact-row').forEach(row => {
-    const id = row.id.replace('contact-row-','');
-    const name  = (document.getElementById(`c-name-${id}`)?.value  || '').trim();
-    const role  = (document.getElementById(`c-role-${id}`)?.value  || '').trim();
-    const email = (document.getElementById(`c-email-${id}`)?.value || '').trim();
-    const phone = (document.getElementById(`c-phone-${id}`)?.value || '').trim();
-    if (name || email || phone) contacts.push({ name, role, email, phone });
-  });
-  return contacts;
+// ── MODAL ─────────────────────────────────────────────
+function openModal(){
+  editingId=null;document.getElementById('modal-title').textContent='Add New Lead';
+  ['company','website','city','country','notes'].forEach(f=>document.getElementById('f-'+f).value='');
+  ['contacted','demo','proposal','closed'].forEach(f=>document.getElementById('f-'+f).checked=false);
+  clearContactsForm();addContactRow();document.getElementById('modal').classList.add('open');
 }
-
-function clearContactsForm() {
-  document.getElementById('contacts-list').innerHTML = '';
-  contactCount = 0;
-}
-
-// ── MODAL ────────────────────────────────────────────
-function openModal() {
-  editingId = null;
-  document.getElementById('modal-title').textContent = 'Add New Lead';
-  document.getElementById('f-company').value = '';
-  document.getElementById('f-website').value = '';
-  document.getElementById('f-city').value = '';
-  document.getElementById('f-country').value = '';
-  document.getElementById('f-notes').value = '';
-  ['contacted','demo','proposal','closed'].forEach(f => document.getElementById('f-'+f).checked = false);
-  clearContactsForm();
-  addContactRow(); // start with one empty contact
+function editLead(id){
+  const l=leads.find(x=>x.id===id);if(!l)return;editingId=id;
+  document.getElementById('modal-title').textContent='Edit Lead';
+  document.getElementById('f-company').value=l.company||'';document.getElementById('f-website').value=l.website||'';
+  document.getElementById('f-city').value=l.city||'';document.getElementById('f-country').value=l.country||'';
+  document.getElementById('f-notes').value=l.notes||'';
+  ['contacted','demo','proposal','closed'].forEach(f=>document.getElementById('f-'+f).checked=!!l[f]);
+  clearContactsForm();(l.contacts&&l.contacts.length?l.contacts:[{}]).forEach(c=>addContactRow(c));
   document.getElementById('modal').classList.add('open');
 }
-
-function editLead(id) {
-  const l = leads.find(x => x.id === id);
-  if (!l) return;
-  editingId = id;
-  document.getElementById('modal-title').textContent = 'Edit Lead';
-  document.getElementById('f-company').value = l.company||'';
-  document.getElementById('f-website').value = l.website||'';
-  document.getElementById('f-city').value    = l.city||'';
-  document.getElementById('f-country').value = l.country||'';
-  document.getElementById('f-notes').value   = l.notes||'';
-  ['contacted','demo','proposal','closed'].forEach(f => document.getElementById('f-'+f).checked = !!l[f]);
-  clearContactsForm();
-  const contacts = l.contacts && l.contacts.length ? l.contacts : [{}];
-  contacts.forEach(c => addContactRow(c));
-  document.getElementById('modal').classList.add('open');
+function closeModal(){document.getElementById('modal').classList.remove('open');editingId=null;}
+function saveLead(){
+  const company=document.getElementById('f-company').value.trim();
+  if(!company){alert('Please enter a company or organiser name.');return;}
+  const data={company,website:document.getElementById('f-website').value.trim(),city:document.getElementById('f-city').value.trim(),country:document.getElementById('f-country').value.trim(),notes:document.getElementById('f-notes').value.trim(),contacts:getContactsFromForm(),contacted:document.getElementById('f-contacted').checked,demo:document.getElementById('f-demo').checked,proposal:document.getElementById('f-proposal').checked,closed:document.getElementById('f-closed').checked};
+  if(editingId){const idx=leads.findIndex(l=>l.id===editingId);if(idx>-1)leads[idx]={...leads[idx],...data};}
+  else leads.unshift({id:crypto.randomUUID(),createdAt:Date.now(),...data});
+  save();render();closeModal();
 }
+function deleteLead(id){if(!confirm('Delete this lead?'))return;leads=leads.filter(l=>l.id!==id);save();render();}
 
-function closeModal() {
-  document.getElementById('modal').classList.remove('open');
-  editingId = null;
-}
-
-function saveLead() {
-  const company = document.getElementById('f-company').value.trim();
-  if (!company) { alert('Please enter a company or organiser name.'); return; }
-  const contacts = getContactsFromForm();
-  const data = {
-    company,
-    website:   document.getElementById('f-website').value.trim(),
-    city:      document.getElementById('f-city').value.trim(),
-    country:   document.getElementById('f-country').value.trim(),
-    notes:     document.getElementById('f-notes').value.trim(),
-    contacts,
-    contacted: document.getElementById('f-contacted').checked,
-    demo:      document.getElementById('f-demo').checked,
-    proposal:  document.getElementById('f-proposal').checked,
-    closed:    document.getElementById('f-closed').checked,
-  };
-
-  if (editingId) {
-    const idx = leads.findIndex(l => l.id === editingId);
-    if (idx > -1) leads[idx] = { ...leads[idx], ...data };
-  } else {
-    leads.unshift({ id: crypto.randomUUID(), createdAt: Date.now(), ...data });
-  }
-  save(); render(); closeModal();
-}
-
-function deleteLead(id) {
-  if (!confirm('Delete this lead?')) return;
-  leads = leads.filter(l => l.id !== id);
-  save(); render();
-}
-
-// ── EXPORT EXCEL ─────────────────────────────────────
-function exportExcel() {
-  const rows = [];
-  leads.forEach(l => {
-    const contacts = l.contacts && l.contacts.length ? l.contacts : [{}];
-    contacts.forEach((c, i) => {
-      rows.push({
-        'Company / Org':    i === 0 ? (l.company||'') : '',
-        'Contact Name':     c.name||'',
-        'Role / Title':     c.role||'',
-        'Email':            c.email||'',
-        'Phone':            c.phone||'',
-        'Website':          i === 0 ? (l.website||'') : '',
-        'City':             i === 0 ? (l.city||'') : '',
-        'Country':          i === 0 ? (l.country||'') : '',
-        'Contacted':        i === 0 ? (l.contacted ? 'Yes' : 'No') : '',
-        'Demo Scheduled':   i === 0 ? (l.demo      ? 'Yes' : 'No') : '',
-        'Proposal Sent':    i === 0 ? (l.proposal  ? 'Yes' : 'No') : '',
-        'Closed Deal':      i === 0 ? (l.closed    ? 'Yes' : 'No') : '',
-        'Notes':            i === 0 ? (l.notes||'') : '',
-        'Created At':       i === 0 && l.createdAt ? new Date(l.createdAt).toLocaleDateString() : '',
-      });
-    });
+// ── EXPORT ────────────────────────────────────────────
+function exportExcel(){
+  const rows=[];
+  leads.forEach(l=>{
+    const cs=l.contacts&&l.contacts.length?l.contacts:[{}];
+    cs.forEach((c,i)=>rows.push({'Company / Org':i===0?(l.company||''):'','Contact Name':c.name||'','Role / Title':c.role||'','Email':c.email||'','Phone':c.phone||'','Website':i===0?(l.website||''):'','City':i===0?(l.city||''):'','Country':i===0?(l.country||''):'','Contacted':i===0?(l.contacted?'Yes':'No'):'','Demo Scheduled':i===0?(l.demo?'Yes':'No'):'','Proposal Sent':i===0?(l.proposal?'Yes':'No'):'','Closed Deal':i===0?(l.closed?'Yes':'No'):'','Notes':i===0?(l.notes||''):'','Created At':i===0&&l.createdAt?new Date(l.createdAt).toLocaleDateString():''}));
   });
-  const ws = XLSX.utils.json_to_sheet(rows);
-  ws['!cols'] = [22,22,18,28,18,24,16,16,14,16,16,14,36,16].map(w => ({ wch: w }));
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, 'Pipeline');
-  XLSX.writeFile(wb, `pipeline-${new Date().toISOString().slice(0,10)}.xlsx`);
+  const ws=XLSX.utils.json_to_sheet(rows);
+  ws['!cols']=[22,22,18,28,18,24,16,16,14,16,16,14,36,16].map(w=>({wch:w}));
+  const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Pipeline');
+  XLSX.writeFile(wb,`pipeline-${new Date().toISOString().slice(0,10)}.xlsx`);
 }
 
-// ── CSV IMPORT ────────────────────────────────────────
-function openImportModal() {
-  pendingImport = [];
-  document.getElementById('import-preview').style.display = 'none';
-  document.getElementById('import-preview').innerHTML = '';
-  document.getElementById('import-file').value = '';
-  const btn = document.getElementById('import-confirm-btn');
-  btn.disabled = true; btn.style.opacity = '0.4'; btn.style.cursor = 'not-allowed';
+// ── IMPORT ────────────────────────────────────────────
+function openImportModal(){
+  resetImportPreview();
+  setImportType('xlsx',document.getElementById('itab-xlsx'));
   document.getElementById('import-modal').classList.add('open');
 }
-function closeImportModal() { document.getElementById('import-modal').classList.remove('open'); pendingImport = []; }
+function closeImportModal(){document.getElementById('import-modal').classList.remove('open');pendingImport=[];}
 
-const dropZone = document.getElementById('import-drop');
-dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
-dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
-dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.remove('dragover'); const f = e.dataTransfer.files[0]; if (f) processCSVFile(f); });
-document.getElementById('import-file').addEventListener('change', e => { const f = e.target.files[0]; if (f) processCSVFile(f); });
+const dropZone=document.getElementById('import-drop');
+dropZone.addEventListener('dragover',e=>{e.preventDefault();dropZone.classList.add('dragover');});
+dropZone.addEventListener('dragleave',()=>dropZone.classList.remove('dragover'));
+dropZone.addEventListener('drop',e=>{e.preventDefault();dropZone.classList.remove('dragover');const f=e.dataTransfer.files[0];if(f)processImportFile(f);});
+document.getElementById('import-file').addEventListener('change',e=>{const f=e.target.files[0];if(f)processImportFile(f);});
 
-function processCSVFile(file) {
-  const reader = new FileReader();
-  reader.onload = e => {
-    const parsed = parseCSV(e.target.result);
-    pendingImport = parsed;
-    const preview = document.getElementById('import-preview');
-    const btn = document.getElementById('import-confirm-btn');
-    preview.style.display = 'block';
-    if (parsed.length === 0) {
-      preview.innerHTML = '⚠️ No valid rows found.';
-      btn.disabled = true; btn.style.opacity = '0.4'; btn.style.cursor = 'not-allowed';
-    } else {
-      preview.innerHTML = `✅ <strong>${parsed.length} lead${parsed.length>1?'s':''} ready to import</strong><br>
-        Preview: ${parsed.slice(0,3).map(l=>`<em>${esc(l.company)}</em>`).join(', ')}${parsed.length>3?' …':''}`;
-      btn.disabled = false; btn.style.opacity = '1'; btn.style.cursor = 'pointer';
-    }
+function processImportFile(file){
+  const ext=file.name.split('.').pop().toLowerCase();
+  if(ext==='xlsx'||ext==='xls') processXLSXFile(file);
+  else processCSVFile(file);
+}
+
+function processXLSXFile(file){
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const wb=XLSX.read(new Uint8Array(e.target.result),{type:'array'});
+      const ws=wb.Sheets[wb.SheetNames[0]];
+      const rows=XLSX.utils.sheet_to_json(ws,{defval:''});
+      showImportPreview(parseRowsToLeads(rows));
+    }catch(err){showImportError('Could not read the Excel file. Make sure it has a header row.');}
   };
+  reader.readAsArrayBuffer(file);
+}
+
+function processCSVFile(file){
+  const reader=new FileReader();
+  reader.onload=e=>showImportPreview(parseCSV(e.target.result));
   reader.readAsText(file);
 }
 
-function parseCSV(text) {
-  const lines = text.trim().split(/\r?\n/);
-  if (lines.length < 2) return [];
-  const headers = parseCSVRow(lines[0]).map(h => h.trim().toLowerCase());
-  const aliases = {
-    company:   ['company','company / org','organization','org','organiser','organizer','nombre empresa'],
-    person:    ['person','contact person','contact','name','full name','nombre','contact name'],
-    role:      ['role','title','role / title','cargo'],
-    email:     ['email','e-mail','email address','correo'],
-    phone:     ['phone','phone number','tel','telephone','telefono'],
-    website:   ['website','web','url','site','sitio'],
-    city:      ['city','ciudad','town'],
-    country:   ['country','pais','país','nation'],
-    notes:     ['notes','note','comments','comment','notas'],
-    contacted: ['contacted','contactado'],
-    demo:      ['demo','demo scheduled','demo agendado'],
-    proposal:  ['proposal','proposal sent','propuesta'],
-    closed:    ['closed','closed deal','cerrado','won'],
-  };
-  const colIdx = {};
-  for (const [field, aliasList] of Object.entries(aliases)) {
-    colIdx[field] = -1;
-    for (const a of aliasList) { const idx = headers.indexOf(a); if (idx !== -1) { colIdx[field] = idx; break; } }
-  }
-  const toBool = v => ['yes','1','true','x','✓','si','sí'].includes((v||'').trim().toLowerCase());
-  const results = [];
-  for (let i = 1; i < lines.length; i++) {
-    const row = parseCSVRow(lines[i]);
-    if (row.every(c => !c.trim())) continue;
-    const get = f => colIdx[f] !== -1 ? (row[colIdx[f]]||'').trim() : '';
-    const company = get('company');
-    if (!company) continue;
-    const contact = {};
-    if (get('person')) contact.name  = get('person');
-    if (get('role'))   contact.role  = get('role');
-    if (get('email'))  contact.email = get('email');
-    if (get('phone'))  contact.phone = get('phone');
-    results.push({
-      id: crypto.randomUUID(), createdAt: Date.now(),
-      company,
-      website:   get('website'),
-      city:      get('city'),
-      country:   get('country'),
-      notes:     get('notes'),
-      contacts:  Object.keys(contact).length ? [contact] : [],
-      contacted: toBool(get('contacted')),
-      demo:      toBool(get('demo')),
-      proposal:  toBool(get('proposal')),
-      closed:    toBool(get('closed')),
-    });
-  }
-  return results;
+function showImportPreview(parsed){
+  pendingImport=parsed;
+  const preview=document.getElementById('import-preview'),btn=document.getElementById('import-confirm-btn');
+  preview.style.display='block';
+  if(!parsed.length){preview.innerHTML='⚠️ No valid rows found. Make sure you have a header row and a "Company" column.';btn.disabled=true;btn.style.opacity='0.4';btn.style.cursor='not-allowed';}
+  else{preview.innerHTML=`✅ <strong>${parsed.length} lead${parsed.length>1?'s':''} ready to import</strong><br>Preview: ${parsed.slice(0,3).map(l=>`<em>${esc(l.company)}</em>`).join(', ')}${parsed.length>3?' …':''}`;btn.disabled=false;btn.style.opacity='1';btn.style.cursor='pointer';}
+}
+function showImportError(msg){
+  const preview=document.getElementById('import-preview'),btn=document.getElementById('import-confirm-btn');
+  preview.style.display='block';preview.innerHTML=`⚠️ ${msg}`;btn.disabled=true;btn.style.opacity='0.4';btn.style.cursor='not-allowed';
 }
 
-function parseCSVRow(line) {
-  const result = []; let cur = ''; let inQuote = false;
-  for (let i = 0; i < line.length; i++) {
-    const ch = line[i];
-    if (ch === '"') { if (inQuote && line[i+1] === '"') { cur += '"'; i++; } else inQuote = !inQuote; }
-    else if (ch === ',' && !inQuote) { result.push(cur); cur = ''; }
-    else cur += ch;
+// ── SHARED ROW PARSER ─────────────────────────────────
+const ALIASES={
+  company:  ['company','company / org','organization','org','organiser','organizer','nombre empresa'],
+  person:   ['person','contact person','contact','name','full name','nombre','contact name'],
+  role:     ['role','title','role / title','cargo'],
+  email:    ['email','e-mail','email address','correo'],
+  phone:    ['phone','phone number','tel','telephone','telefono'],
+  website:  ['website','web','url','site','sitio'],
+  city:     ['city','ciudad','town'],
+  country:  ['country','pais','país','nation'],
+  notes:    ['notes','note','comments','comment','notas'],
+  contacted:['contacted','contactado'],
+  demo:     ['demo','demo scheduled','demo agendado'],
+  proposal: ['proposal','proposal sent','propuesta'],
+  closed:   ['closed','closed deal','cerrado','won'],
+};
+const toBool=v=>['yes','1','true','x','✓','si','sí'].includes(String(v||'').trim().toLowerCase());
+
+function parseRowsToLeads(rows){
+  return rows.map(row=>{
+    const nr={};Object.keys(row).forEach(k=>{nr[k.toLowerCase().trim()]=row[k];});
+    const get=field=>{for(const a of ALIASES[field]){if(nr[a]!==undefined)return String(nr[a]).trim();}return '';};
+    const company=get('company');if(!company)return null;
+    const contact={};
+    if(get('person')) contact.name=get('person');
+    if(get('role'))   contact.role=get('role');
+    if(get('email'))  contact.email=get('email');
+    if(get('phone'))  contact.phone=get('phone');
+    return{id:crypto.randomUUID(),createdAt:Date.now(),company,website:get('website'),city:get('city'),country:get('country'),notes:get('notes'),contacts:Object.keys(contact).length?[contact]:[],contacted:toBool(get('contacted')),demo:toBool(get('demo')),proposal:toBool(get('proposal')),closed:toBool(get('closed'))};
+  }).filter(Boolean);
+}
+
+function parseCSV(text){
+  const lines=text.trim().split(/\r?\n/);if(lines.length<2)return[];
+  const headers=parseCSVRow(lines[0]).map(h=>h.trim().toLowerCase());
+  const rows=[];
+  for(let i=1;i<lines.length;i++){
+    const vals=parseCSVRow(lines[i]);if(vals.every(c=>!c.trim()))continue;
+    const obj={};headers.forEach((h,idx)=>{obj[h]=vals[idx]||'';});rows.push(obj);
   }
-  result.push(cur); return result;
+  return parseRowsToLeads(rows);
 }
-
-function confirmImport() {
-  if (!pendingImport.length) return;
-  leads = [...pendingImport, ...leads];
-  save(); render(); closeImportModal();
+function parseCSVRow(line){
+  const r=[];let cur='',inQ=false;
+  for(let i=0;i<line.length;i++){const ch=line[i];if(ch==='"'){if(inQ&&line[i+1]==='"'){cur+='"';i++;}else inQ=!inQ;}else if(ch===','&&!inQ){r.push(cur);cur='';}else cur+=ch;}
+  r.push(cur);return r;
 }
+function confirmImport(){if(!pendingImport.length)return;leads=[...pendingImport,...leads];save();render();closeImportModal();}
 
-// ── SEARCH ────────────────────────────────────────────
-document.getElementById('search-input').addEventListener('input', e => { searchQuery = e.target.value; render(); });
+document.getElementById('search-input').addEventListener('input',e=>{searchQuery=e.target.value;render();});
+['modal','import-modal'].forEach(id=>{document.getElementById(id).addEventListener('click',e=>{if(e.target.id===id){id==='modal'?closeModal():closeImportModal();}});});
 
-['modal','import-modal'].forEach(id => {
-  document.getElementById(id).addEventListener('click', e => {
-    if (e.target.id === id) { id === 'modal' ? closeModal() : closeImportModal(); }
-  });
-});
-
-// ── COMMS LOG PANEL ──────────────────────────────────
-let activeCommsId = null;
-let selectedChannel = null;
-
-function openCommsPanel(leadId) {
-  const lead = leads.find(l => l.id === leadId);
-  if (!lead) return;
-  activeCommsId = leadId;
-  selectedChannel = null;
-
-  // Header
-  document.getElementById('cp-company').textContent = lead.company || '—';
-  const contacts = lead.contacts || [];
-  document.getElementById('cp-contacts-preview').textContent =
-    contacts.length ? contacts.map(c => c.name).filter(Boolean).join(' · ') : '';
-
-  // Contact select
-  const sel = document.getElementById('cp-contact-select');
-  sel.innerHTML = '<option value="">— Contact person (optional) —</option>';
-  contacts.forEach(c => {
-    if (c.name) sel.innerHTML += `<option value="${esc(c.name)}">${esc(c.name)}${c.role?' ('+esc(c.role)+')':''}</option>`;
-  });
-
-  // Reset form
-  document.querySelectorAll('.channel-pill').forEach(p => p.classList.remove('active'));
-  document.getElementById('cp-note-input').value = '';
-  document.getElementById('cp-date-input').value = new Date().toISOString().slice(0,10);
-
+// ── COMMS PANEL ───────────────────────────────────────
+function openCommsPanel(leadId){
+  const lead=leads.find(l=>l.id===leadId);if(!lead)return;
+  activeCommsId=leadId;selectedChannel=null;
+  document.getElementById('cp-company').textContent=lead.company||'—';
+  const cs=lead.contacts||[];
+  document.getElementById('cp-contacts-preview').textContent=cs.length?cs.map(c=>c.name).filter(Boolean).join(' · '):'';
+  const sel=document.getElementById('cp-contact-select');
+  sel.innerHTML='<option value="">— Contact person (optional) —</option>';
+  cs.forEach(c=>{if(c.name)sel.innerHTML+=`<option value="${esc(c.name)}">${esc(c.name)}${c.role?' ('+esc(c.role)+')':''}</option>`;});
+  document.querySelectorAll('.channel-pill').forEach(p=>p.classList.remove('active'));
+  document.getElementById('cp-note-input').value='';
+  document.getElementById('cp-date-input').value=new Date().toISOString().slice(0,10);
   renderTimeline(lead);
-
   document.getElementById('comms-overlay').classList.add('open');
   document.getElementById('comms-panel').classList.add('open');
 }
-
-function closeCommsPanel() {
-  document.getElementById('comms-overlay').classList.remove('open');
-  document.getElementById('comms-panel').classList.remove('open');
-  activeCommsId = null;
+function closeCommsPanel(){document.getElementById('comms-overlay').classList.remove('open');document.getElementById('comms-panel').classList.remove('open');activeCommsId=null;}
+function selectChannel(btn){document.querySelectorAll('.channel-pill').forEach(p=>p.classList.remove('active'));btn.classList.add('active');selectedChannel=btn.dataset.channel;}
+function logInteraction(){
+  if(!activeCommsId)return;if(!selectedChannel){alert('Please select a channel.');return;}
+  const note=document.getElementById('cp-note-input').value.trim();
+  const date=document.getElementById('cp-date-input').value||new Date().toISOString().slice(0,10);
+  const contact=document.getElementById('cp-contact-select').value;
+  const lead=leads.find(l=>l.id===activeCommsId);if(!lead)return;
+  if(!lead.commLog)lead.commLog=[];
+  lead.commLog.unshift({id:crypto.randomUUID(),channel:selectedChannel,contact:contact||'',note,date,ts:Date.now()});
+  if(!lead.contacted)lead.contacted=true;
+  save();renderTimeline(lead);render();
+  document.getElementById('cp-note-input').value='';
+  document.getElementById('cp-date-input').value=new Date().toISOString().slice(0,10);
 }
-
-function selectChannel(btn) {
-  document.querySelectorAll('.channel-pill').forEach(p => p.classList.remove('active'));
-  btn.classList.add('active');
-  selectedChannel = btn.dataset.channel;
+function deleteLogEntry(leadId,entryId){
+  const lead=leads.find(l=>l.id===leadId);if(!lead||!lead.commLog)return;
+  lead.commLog=lead.commLog.filter(e=>e.id!==entryId);save();renderTimeline(lead);render();
 }
-
-function logInteraction() {
-  if (!activeCommsId) return;
-  if (!selectedChannel) { alert('Please select a channel.'); return; }
-
-  const note    = document.getElementById('cp-note-input').value.trim();
-  const date    = document.getElementById('cp-date-input').value || new Date().toISOString().slice(0,10);
-  const contact = document.getElementById('cp-contact-select').value;
-
-  const lead = leads.find(l => l.id === activeCommsId);
-  if (!lead) return;
-  if (!lead.commLog) lead.commLog = [];
-
-  lead.commLog.unshift({
-    id:      crypto.randomUUID(),
-    channel: selectedChannel,
-    contact: contact || '',
-    note:    note,
-    date:    date,
-    ts:      Date.now(),
-  });
-
-  // Auto-check "Contacted" if not already set
-  if (!lead.contacted) { lead.contacted = true; }
-
-  save();
-  renderTimeline(lead);
-  render();
-
-  // Reset form but keep channel selected for quick multi-log
-  document.getElementById('cp-note-input').value = '';
-  document.getElementById('cp-date-input').value = new Date().toISOString().slice(0,10);
-}
-
-function deleteLogEntry(leadId, entryId) {
-  const lead = leads.find(l => l.id === leadId);
-  if (!lead || !lead.commLog) return;
-  lead.commLog = lead.commLog.filter(e => e.id !== entryId);
-  save();
-  renderTimeline(lead);
-  render();
-}
-
-function renderTimeline(lead) {
-  const container = document.getElementById('cp-timeline');
-  const logs = lead.commLog || [];
-
-  if (!logs.length) {
-    container.innerHTML = `<div class="cp-empty"><div class="cp-empty-icon">💬</div>No interactions logged yet.<br>Log your first one above.</div>`;
-    return;
-  }
-
-  // Group by date
-  const groups = {};
-  logs.forEach(e => {
-    if (!groups[e.date]) groups[e.date] = [];
-    groups[e.date].push(e);
-  });
-
-  let html = '';
-  Object.keys(groups).sort((a,b) => b.localeCompare(a)).forEach(date => {
-    const d = new Date(date + 'T12:00:00');
-    const label = formatDateLabel(d);
-    html += `<div style="font-size:10px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin:6px 0 4px;">${label}</div>`;
-    groups[date].forEach(e => {
-      const icon = CHANNEL_ICONS[e.channel] || '💬';
-      const bg   = CHANNEL_COLORS[e.channel] || '#f5f5f5';
-      html += `<div class="log-entry">
-        <div class="log-icon" style="background:${bg}">${icon}</div>
-        <div class="log-body">
-          <div class="log-header">
-            <span class="log-channel">${e.channel}</span>
-            <button class="log-delete" onclick="deleteLogEntry('${lead.id}','${e.id}')" title="Delete">✕</button>
-          </div>
-          ${e.contact ? `<div class="log-contact">with ${esc(e.contact)}</div>` : ''}
-          ${e.note ? `<div class="log-note">${esc(e.note)}</div>` : ''}
-        </div>
-      </div>`;
+function renderTimeline(lead){
+  const container=document.getElementById('cp-timeline'),logs=lead.commLog||[];
+  if(!logs.length){container.innerHTML=`<div class="cp-empty"><div class="cp-empty-icon">💬</div>No interactions logged yet.<br>Log your first one above.</div>`;return;}
+  const groups={};logs.forEach(e=>{if(!groups[e.date])groups[e.date]=[];groups[e.date].push(e);});
+  let html='';
+  Object.keys(groups).sort((a,b)=>b.localeCompare(a)).forEach(date=>{
+    html+=`<div style="font-size:10px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin:6px 0 4px;">${formatDateLabel(new Date(date+'T12:00:00'))}</div>`;
+    groups[date].forEach(e=>{
+      const ic=CHANNEL_ICONS[e.channel]||'💬',bg=CHANNEL_COLORS[e.channel]||'#f5f5f5';
+      html+=`<div class="log-entry"><div class="log-icon" style="background:${bg}">${ic}</div><div class="log-body"><div class="log-header"><span class="log-channel">${e.channel}</span><button class="log-delete" onclick="deleteLogEntry('${lead.id}','${e.id}')">✕</button></div>${e.contact?`<div class="log-contact">with ${esc(e.contact)}</div>`:''}${e.note?`<div class="log-note">${esc(e.note)}</div>`:''}</div></div>`;
     });
   });
-
-  container.innerHTML = html;
+  container.innerHTML=html;
+}
+function formatDateLabel(d){
+  const today=new Date();today.setHours(0,0,0,0);const yd=new Date(today);yd.setDate(today.getDate()-1);
+  const t=new Date(d);t.setHours(0,0,0,0);
+  if(t.getTime()===today.getTime())return'Today';if(t.getTime()===yd.getTime())return'Yesterday';
+  return d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'});
 }
 
-function formatDateLabel(d) {
-  const today = new Date(); today.setHours(0,0,0,0);
-  const yesterday = new Date(today); yesterday.setDate(today.getDate()-1);
-  const target = new Date(d); target.setHours(0,0,0,0);
-  if (target.getTime() === today.getTime()) return 'Today';
-  if (target.getTime() === yesterday.getTime()) return 'Yesterday';
-  return d.toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric', year:'numeric' });
-}
-// If old data (v3) exists without contacts array, migrate it
-function migrateOldData() {
-  const oldKey = 'pipeline_leads_v3';
-  const old = localStorage.getItem(oldKey);
-  if (old && !localStorage.getItem(STORAGE_KEY)) {
-    try {
-      const oldLeads = JSON.parse(old);
-      const migrated = oldLeads.map(l => ({
-        ...l,
-        contacts: (l.person || l.email || l.phone) ? [{
-          name:  l.person  || '',
-          role:  '',
-          email: l.email   || '',
-          phone: l.phone   || '',
-        }] : [],
-      }));
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(migrated));
-    } catch {}
-  }
+// ── MIGRATION ─────────────────────────────────────────
+function migrateOldData(){
+  const old=localStorage.getItem('pipeline_leads_v3');
+  if(old&&!localStorage.getItem(STORAGE_KEY)){try{const ol=JSON.parse(old);localStorage.setItem(STORAGE_KEY,JSON.stringify(ol.map(l=>({...l,contacts:(l.person||l.email||l.phone)?[{name:l.person||'',role:'',email:l.email||'',phone:l.phone||''}]:[]}))));} catch{}}
 }
 
-migrateOldData();
-load();
-render();
+migrateOldData(); load(); render();
 </script>
 </body>
 </html>
