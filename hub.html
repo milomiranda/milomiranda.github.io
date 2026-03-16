@@ -15,7 +15,6 @@
     }
     body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 44px 24px 120px; }
 
-    /* ── Lock screen ── */
     #lock-screen { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 24px; }
     .lock-card { background: var(--card); border: 2px solid var(--border); border-radius: 20px; padding: 40px 36px; max-width: 380px; width: 100%; box-shadow: 0 2px 16px rgba(0,0,0,0.05); display: flex; flex-direction: column; align-items: center; gap: 20px; animation: fadeUp 0.35s ease both; }
     @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
@@ -35,17 +34,13 @@
     .lock-error { font-size: 12px; color: #e74c3c; font-weight: 600; text-align: center; opacity: 0; transition: opacity 0.2s; height: 16px; margin-top: -10px; }
     .lock-error.show { opacity: 1; }
 
-    /* ── Main ── */
     #main-content { display: none; max-width: 720px; margin: 0 auto; }
     .header { text-align: center; margin-bottom: 48px; }
     .badge { display: inline-block; background: var(--accent); border-radius: 20px; padding: 4px 16px; margin-bottom: 16px; font-size: 10px; font-weight: 800; color: #111; letter-spacing: 0.14em; text-transform: uppercase; }
     h1 { font-size: clamp(24px, 4vw, 40px); font-weight: 800; letter-spacing: -0.04em; line-height: 1.05; }
     .subtitle { margin-top: 10px; color: var(--muted); font-size: 14px; }
     .guest-banner { display: none; background: #fff8e1; border: 1.5px solid #ffe082; border-radius: 12px; padding: 10px 16px; font-size: 12px; font-weight: 600; color: #7a5f00; margin-bottom: 32px; text-align: center; }
-    .section-label { font-size: 10px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; margin-top: 36px; }
-    .section-label:first-of-type { margin-top: 0; }
 
-    /* ── App Grid ── */
     .app-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 16px; }
     .app-item { position: relative; display: flex; flex-direction: column; align-items: center; gap: 10px; cursor: pointer; text-decoration: none; animation: fadeUp 0.4s ease both; }
     .app-item.hidden-preview .app-icon { opacity: 0.4; filter: grayscale(1); border-style: dashed; }
@@ -57,7 +52,6 @@
     .app-tooltip::after { content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 6px solid transparent; border-top-color: var(--text); }
     .app-item:not(.hidden-preview):hover .app-tooltip { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-    /* ── Admin toolbar ── */
     #admin-toolbar { display: none; position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 200; background: #111; color: #fff; border-radius: 20px; box-shadow: 0 8px 40px rgba(0,0,0,0.22); min-width: 300px; max-width: 92vw; animation: slideUp 0.4s cubic-bezier(.34,1.56,.64,1) both; }
     @keyframes slideUp { from { opacity: 0; transform: translateX(-50%) translateY(40px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
     .toolbar-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px 12px; border-bottom: 1px solid rgba(255,255,255,0.08); cursor: pointer; user-select: none; }
@@ -70,7 +64,6 @@
     .toolbar-chevron.open { transform: rotate(180deg); }
     .toolbar-body { overflow: hidden; max-height: 0; transition: max-height 0.3s ease; }
     .toolbar-body.open { max-height: 600px; }
-    .toolbar-section { font-size: 9px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,255,255,0.3); padding: 12px 18px 5px; }
     .toolbar-row { display: flex; align-items: center; justify-content: space-between; padding: 7px 18px; gap: 12px; border-radius: 10px; margin: 0 6px; transition: background 0.15s; }
     .toolbar-row:hover { background: rgba(255,255,255,0.05); }
     .toolbar-row-left { display: flex; align-items: center; gap: 9px; }
@@ -142,10 +135,17 @@
   const SESSION_KEY    = 'milo_session';
   const VISIBILITY_KEY = 'milo_guest_vis';
 
-  // ── APP REGISTRY ─────────────────────────────────────
+  // ── APP REGISTRY ──────────────────────────────────────
+  // One flat list — no sections. To add a new app, just add an entry here.
   const APPS = [
     {
-      section: 'Personal',
+      id: 'productionbible',
+      emoji: '🎬',
+      name: 'Production Bible',
+      href: 'apps/production-bible.html',
+      tooltip: 'Build a complete production folder — technical sheet, casting, locations, budget, crew and more. Export as Word.',
+    },
+    {
       id: 'sacredcircle',
       emoji: '🔮',
       name: 'Sacred Circle',
@@ -153,7 +153,6 @@
       tooltip: 'A manifestation and ritual portal. Consecrate your circle, set your intention, and work with the four elements.',
     },
     {
-      section: 'Personal',
       id: 'budgettracker',
       emoji: '💸',
       name: 'Budget Tracker',
@@ -161,7 +160,6 @@
       tooltip: 'A flexible expense tracker with multi-currency support and real-time budget balance.',
     },
     {
-      section: 'Personal',
       id: 'movebudget',
       emoji: '✈️',
       name: 'Move Abroad Budget',
@@ -169,7 +167,6 @@
       tooltip: 'A grouped expense planner for moving abroad — track costs in EUR, USD, or MXN.',
     },
     {
-      section: 'Personal',
       id: 'systemprompt',
       emoji: '🎨',
       name: 'System Aesthetic Prompt',
@@ -177,7 +174,6 @@
       tooltip: 'Design system reference with a copyable prompt to replicate Milo\'s visual language in any new build.',
     },
     {
-      section: 'Personal',
       id: 'gymhub',
       emoji: '🏋️',
       name: 'Gym Hub',
@@ -185,7 +181,6 @@
       tooltip: 'Your personal training hub. Select a muscle group, load exercises with form tips and swap options, then pick your HIIT circuit.',
     },
     {
-      section: 'Work',
       id: 'ticketcalc',
       emoji: '🎟️',
       name: 'Fee & Booking Calculator',
@@ -193,7 +188,6 @@
       tooltip: 'Compare ticket purchase options side by side — price, fees, payment method — to find the best deal.',
     },
     {
-      section: 'Work',
       id: 'pipeline',
       emoji: '📊',
       name: 'Pipeline Tracker',
@@ -204,7 +198,7 @@
 
   let currentRole = null;
 
-  // ── VISIBILITY STORE ─────────────────────────────────
+  // ── VISIBILITY STORE ──────────────────────────────────
   function getVisibility() {
     let vis = {};
     try { vis = JSON.parse(localStorage.getItem(VISIBILITY_KEY)) || {}; } catch {}
@@ -213,69 +207,54 @@
   }
   function saveVisibility(v) { localStorage.setItem(VISIBILITY_KEY, JSON.stringify(v)); }
 
-  // ── BUILD UI FROM APPS ARRAY ─────────────────────────
+  // ── BUILD UI ──────────────────────────────────────────
   function buildAppGrid() {
     const container = document.getElementById('app-sections');
     container.innerHTML = '';
-    const sections = [...new Set(APPS.map(a => a.section))];
-    sections.forEach((section, si) => {
-      const label = document.createElement('div');
-      label.className = 'section-label';
-      label.textContent = section;
-      container.appendChild(label);
-      const grid = document.createElement('div');
-      grid.className = 'app-grid';
-      grid.id = `grid-${section.toLowerCase()}`;
-      APPS.filter(a => a.section === section).forEach((app, i) => {
-        const a = document.createElement('a');
-        a.className = 'app-item';
-        a.href = app.href;
-        a.dataset.id = app.id;
-        a.style.animationDelay = `${(si * 6 + i) * 0.04}s`;
-        a.innerHTML = `
-          <div class="app-icon">${app.emoji}
-            <div class="app-tooltip">${app.tooltip}</div>
-          </div>
-          <span class="app-name">${app.name}</span>`;
-        grid.appendChild(a);
-      });
-      container.appendChild(grid);
+    const grid = document.createElement('div');
+    grid.className = 'app-grid';
+    APPS.forEach((app, i) => {
+      const a = document.createElement('a');
+      a.className = 'app-item';
+      a.href = app.href;
+      a.dataset.id = app.id;
+      a.style.animationDelay = `${i * 0.04}s`;
+      a.innerHTML = `
+        <div class="app-icon">${app.emoji}
+          <div class="app-tooltip">${app.tooltip}</div>
+        </div>
+        <span class="app-name">${app.name}</span>`;
+      grid.appendChild(a);
     });
+    container.appendChild(grid);
   }
 
   function buildToolbar() {
     const container = document.getElementById('toolbar-rows');
     container.innerHTML = '';
-    const sections = [...new Set(APPS.map(a => a.section))];
-    sections.forEach(section => {
-      const sec = document.createElement('div');
-      sec.className = 'toolbar-section';
-      sec.textContent = section;
-      container.appendChild(sec);
-      APPS.filter(a => a.section === section).forEach(app => {
-        const row = document.createElement('div');
-        row.className = 'toolbar-row';
-        row.innerHTML = `
-          <div class="toolbar-row-left">
-            <span class="toolbar-emoji">${app.emoji}</span>
-            <span class="toolbar-name">${app.name}</span>
-          </div>
-          <label class="switch">
-            <input type="checkbox" data-target="${app.id}" onchange="updateVisibility(this)">
-            <span class="slider"></span>
-          </label>`;
-        container.appendChild(row);
-      });
+    APPS.forEach(app => {
+      const row = document.createElement('div');
+      row.className = 'toolbar-row';
+      row.innerHTML = `
+        <div class="toolbar-row-left">
+          <span class="toolbar-emoji">${app.emoji}</span>
+          <span class="toolbar-name">${app.name}</span>
+        </div>
+        <label class="switch">
+          <input type="checkbox" data-target="${app.id}" onchange="updateVisibility(this)">
+          <span class="slider"></span>
+        </label>`;
+      container.appendChild(row);
     });
   }
 
-  // ── BOOT ─────────────────────────────────────────────
+  // ── BOOT ──────────────────────────────────────────────
   buildAppGrid();
   buildToolbar();
   const stored = localStorage.getItem(SESSION_KEY);
   if (stored === 'admin' || stored === 'guest') { currentRole = stored; unlock(false); }
 
-  // ── AUTH ─────────────────────────────────────────────
+  // ── AUTH ──────────────────────────────────────────────
   function checkPassword() {
     const val = document.getElementById('pw-input').value;
     if (val === PW_ADMIN)      { currentRole = 'admin'; localStorage.setItem(SESSION_KEY, 'admin'); unlock(true); }
@@ -327,13 +306,13 @@
     saveVisibility(vis);
   }
 
-  // ── TOOLBAR COLLAPSE ─────────────────────────────────
+  // ── TOOLBAR COLLAPSE ──────────────────────────────────
   function toggleToolbar() {
     document.getElementById('toolbar-body').classList.toggle('open');
     document.getElementById('toolbar-chevron').classList.toggle('open');
   }
 
-  // ── LOGOUT ───────────────────────────────────────────
+  // ── LOGOUT ────────────────────────────────────────────
   function logout() {
     localStorage.removeItem(SESSION_KEY);
     currentRole = null;
@@ -346,7 +325,7 @@
     document.getElementById('lock-screen').style.display = 'flex';
   }
 
-  // ── PW VISIBILITY ────────────────────────────────────
+  // ── PW VISIBILITY ─────────────────────────────────────
   function toggleVisibility() {
     const input = document.getElementById('pw-input');
     const btn   = document.getElementById('toggle-pw-btn');
