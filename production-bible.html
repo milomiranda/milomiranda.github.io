@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Production Bible Builder</title>
+<link rel="icon" type="image/jpeg" href="https://milomiranda.github.io/img/Favicon2025.jpg">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root { --accent: #c5fe00; --bg: #f6f6f4; --card: #ffffff; --border: #ebebeb; --text: #111111; --muted: #aaaaaa; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 44px 24px 120px; }
+.container { max-width: 780px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+
+.header { text-align: center; margin-bottom: 12px; }
+.badge { display: inline-block; background: var(--accent); border-radius: 20px; padding: 4px 16px; margin-bottom: 14px; font-size: 10px; font-weight: 800; color: #111; letter-spacing: 0.14em; text-transform: uppercase; }
+.header h1 { font-size: clamp(26px,5vw,42px); font-weight: 800; letter-spacing: -0.04em; line-height: 1.05; }
+.header p { margin-top: 8px; color: var(--muted); font-size: 14px; }
+
+.top-bar { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+.btn { font-family: 'DM Sans', sans-serif; font-weight: 800; font-size: 13px; padding: 11px 20px; border-radius: 10px; border: none; cursor: pointer; transition: all 0.15s; display: inline-flex; align-items: center; gap: 6px; }
+.btn-primary { background: var(--accent); color: #111; }
+.btn-primary:hover { background: #b8ef00; box-shadow: 0 4px 14px rgba(197,254,0,0.45); }
+.btn-secondary { background: var(--card); color: var(--text); border: 1.5px solid var(--border); }
+.btn-secondary:hover { border-color: #bbb; }
+.btn-danger { background: #fff0f0; color: #c0392b; border: 1.5px solid #ffd5d5; font-size: 11px; padding: 5px 11px; font-weight: 700; }
+.btn-danger:hover { background: #ffe0e0; }
+.btn-ghost { background: none; border: 1.5px solid var(--border); color: var(--muted); font-size: 11px; padding: 5px 11px; font-weight: 700; border-radius: 8px; }
+.btn-ghost:hover { border-color: #aaa; color: var(--text); }
+
+/* CARD */
+.card { background: var(--card); border: 2px solid var(--border); border-radius: 20px; padding: 28px; display: flex; flex-direction: column; gap: 18px; box-shadow: 0 2px 16px rgba(0,0,0,0.05); animation: fadeUp 0.35s ease both; }
+@keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+.card.collapsed .card-body { display: none; }
+.card.section-hidden { border: 2px dashed #d0d0d0; opacity: 0.55; background: #fafafa; }
+.card.section-hidden .card-body { display: none; }
+
+.card-header { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.card-header-left { display: flex; align-items: center; gap: 12px; cursor: pointer; flex: 1; min-width: 0; user-select: none; }
+.card-icon { width: 34px; height: 34px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; }
+.card-num { font-size: 11px; color: var(--muted); font-weight: 600; letter-spacing: 0.08em; }
+.card-title { font-size: 14px; font-weight: 700; letter-spacing: 0.01em; text-transform: uppercase; }
+.card-header-actions { display: flex; gap: 6px; flex-shrink: 0; }
+.toggle-arrow { font-size: 11px; color: var(--muted); transition: transform 0.2s; display: inline-block; margin-left: 4px; }
+.card.collapsed .toggle-arrow { transform: rotate(-90deg); }
+.hidden-tag { display: none; font-size: 10px; font-weight: 700; color: #c0392b; letter-spacing: 0.1em; text-transform: uppercase; background: #fff0f0; border-radius: 6px; padding: 2px 7px; margin-left: 6px; }
+.card.section-hidden .hidden-tag { display: inline; }
+
+.section-label { font-size: 10px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 2px; }
+
+.field-group { display: flex; flex-direction: column; gap: 5px; }
+.input-wrap { display: flex; align-items: center; background: #fafafa; border: 1.5px solid var(--border); border-radius: 10px; overflow: hidden; transition: border-color 0.2s; }
+.input-wrap:focus-within { border-color: #bbb; }
+.input-prefix { padding: 0 12px; font-size: 12px; font-weight: 700; color: var(--muted); background: #f0f0ee; border-right: 1.5px solid var(--border); white-space: nowrap; align-self: stretch; display: flex; align-items: center; }
+.input-wrap input, .input-wrap textarea, .input-wrap select { flex:1; background:transparent; border:none; outline:none; color:var(--text); font-size:14px; font-family:'DM Sans',sans-serif; padding:11px 14px; }
+.input-wrap textarea { resize:vertical; min-height:80px; }
+.textarea-wrap { background:#fafafa; border:1.5px solid var(--border); border-radius:10px; transition:border-color 0.2s; }
+.textarea-wrap:focus-within { border-color:#bbb; }
+.textarea-wrap textarea { width:100%; background:transparent; border:none; outline:none; color:var(--text); font-size:14px; font-family:'DM Sans',sans-serif; padding:12px 14px; resize:vertical; min-height:100px; }
+
+.grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; }
+@media(max-width:560px){ .grid-2,.grid-3{ grid-template-columns:1fr; } }
+
+.add-btn { display:inline-flex; align-items:center; gap:6px; background:none; border:1.5px dashed #d0d0d0; border-radius:10px; color:var(--muted); font-family:'DM Sans',sans-serif; font-size:12px; font-weight:700; padding:8px 14px; cursor:pointer; transition:all 0.15s; align-self:flex-start; }
+.add-btn:hover { border-color:#aaa; color:var(--text); background:#f5f5f3; }
+.add-btn span { font-size:16px; font-weight:400; line-height:1; }
+
+/* ENTRY CARD */
+.entry-card { background:#fafafa; border:1.5px solid var(--border); border-radius:14px; padding:16px; display:flex; flex-direction:column; gap:12px; position:relative; padding-top:20px; }
+.entry-card-grid { display:grid; gap:10px; }
+.entry-del-btn { position:absolute; top:10px; right:10px; }
+
+/* IMAGE UPLOAD */
+.img-upload-area { border:2px dashed #d0d0d0; border-radius:12px; padding:18px; text-align:center; cursor:pointer; transition:all 0.2s; background:#fafafa; }
+.img-upload-area:hover { border-color:#aaa; background:#f0f0ee; }
+.img-upload-area p { font-size:12px; color:var(--muted); font-weight:600; margin-top:4px; }
+.img-upload-area .upload-icon { font-size:22px; }
+.img-preview-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(100px,1fr)); gap:10px; }
+.img-preview-item { position:relative; border-radius:10px; overflow:hidden; background:#f0f0ee; aspect-ratio:1; }
+.img-preview-item img { width:100%; height:100%; object-fit:cover; display:block; }
+.img-caption { position:absolute; bottom:0; left:0; right:0; background:rgba(0,0,0,0.55); }
+.img-caption input { width:100%; background:transparent; border:none; outline:none; color:#fff; font-size:11px; font-family:'DM Sans',sans-serif; padding:4px 7px; }
+.img-caption input::placeholder { color:rgba(255,255,255,0.5); }
+.del-img { position:absolute; top:4px; right:4px; background:rgba(0,0,0,0.5); border:none; color:#fff; border-radius:50%; width:20px; height:20px; font-size:10px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+.del-img:hover { background:rgba(192,57,43,0.85); }
+
+/* AUDIO */
+.audio-item { display:flex; align-items:center; gap:10px; background:#fafafa; border:1.5px solid var(--border); border-radius:10px; padding:10px 14px; flex-wrap:wrap; }
+.audio-name { font-size:12px; font-weight:600; color:var(--text); flex:1; min-width:120px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.audio-item audio { flex:2; min-width:160px; height:34px; }
+
+/* PALETTE */
+.palette-presets { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px; margin-bottom:4px; }
+.palette-preset { border:2px solid var(--border); border-radius:12px; padding:10px 12px; cursor:pointer; transition:all 0.2s; background:#fff; }
+.palette-preset:hover { border-color:#aaa; transform:translateY(-2px); box-shadow:0 4px 12px rgba(0,0,0,0.07); }
+.palette-preset.selected { border-color:#111; box-shadow:0 0 0 2px #111; }
+.palette-preset-name { font-size:11px; font-weight:800; letter-spacing:0.04em; margin-bottom:6px; }
+.palette-swatches { display:flex; gap:3px; height:18px; }
+.palette-swatches span { flex:1; border-radius:4px; }
+.custom-swatches { display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; margin-bottom:8px; }
+.swatch-item { display:flex; flex-direction:column; align-items:center; gap:4px; position:relative; }
+.swatch-item input[type=color] { width:44px; height:44px; border:2px solid var(--border); border-radius:10px; cursor:pointer; padding:2px; background:#fff; }
+.swatch-item .sw-label { width:44px; background:transparent; border:none; outline:none; font-family:'DM Sans',sans-serif; font-size:9px; font-weight:700; color:var(--muted); text-align:center; text-transform:uppercase; letter-spacing:0.06em; }
+.swatch-del { position:absolute; top:-7px; right:-7px; background:#c0392b; border:none; color:#fff; border-radius:50%; width:16px; height:16px; font-size:9px; cursor:pointer; display:flex; align-items:center; justify-content:center; line-height:1; }
+
+/* CREW CHIPS */
+.crew-chips-wrap { display:flex; flex-wrap:wrap; gap:6px; min-height:32px; }
+.crew-chip { display:inline-flex; align-items:center; gap:5px; padding:5px 12px; border:1.5px solid var(--border); border-radius:20px; font-size:12px; font-weight:600; cursor:pointer; transition:all 0.15s; user-select:none; background:#fff; }
+.crew-chip:hover { border-color:#999; }
+.crew-chip.selected { background:#111; color:#fff; border-color:#111; }
+
+/* BUDGET */
+.budget-summary { background:#f6f6f4; border:1.5px solid var(--border); border-radius:14px; padding:16px 20px; display:flex; gap:24px; flex-wrap:wrap; align-items:center; }
+.budget-stat { display:flex; flex-direction:column; gap:2px; }
+.budget-stat-label { font-size:10px; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); }
+.budget-stat-value { font-family:monospace; font-size:24px; font-weight:800; color:var(--text); }
+.budget-stat-value.over { color:#c0392b; }
+.b-line-row { display:flex; align-items:center; gap:8px; padding:9px 12px; background:#fafafa; border:1.5px solid var(--border); border-radius:10px; }
+.b-line-name { flex:1; background:transparent; border:none; outline:none; font-family:'DM Sans',sans-serif; font-size:14px; color:var(--text); }
+.b-line-cat { width:130px; background:transparent; border:none; outline:none; font-family:'DM Sans',sans-serif; font-size:12px; color:var(--muted); font-weight:600; cursor:pointer; }
+.b-line-amount { width:100px; text-align:right; background:transparent; border:none; outline:none; font-family:monospace; font-size:15px; font-weight:700; color:var(--text); }
+.b-line-del { background:none; border:none; color:#ccc; font-size:18px; cursor:pointer; transition:color 0.15s; flex-shrink:0; line-height:1; padding:0 2px; }
+.b-line-del:hover { color:#c0392b; }
+
+/* BANNER */
+.summary-banner { background:var(--accent); border-radius:20px; padding:22px 28px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; box-shadow:0 8px 30px rgba(197,254,0,0.28); }
+.sum-stat { display:flex; flex-direction:column; gap:2px; }
+.sum-label { font-size:10px; font-weight:800; letter-spacing:0.14em; text-transform:uppercase; color:rgba(0,0,0,0.45); }
+.sum-val { font-family:monospace; font-size:20px; font-weight:800; color:#111; }
+
+/* CHECKLIST */
+.checklist { display:flex; flex-direction:column; gap:8px; }
+.check-item { display:flex; align-items:center; gap:10px; padding:10px 14px; background:#fafafa; border:1.5px solid var(--border); border-radius:10px; cursor:pointer; transition:all 0.15s; }
+.check-item:hover { border-color:#bbb; }
+.check-item input[type=checkbox] { width:16px; height:16px; accent-color:#111; cursor:pointer; flex-shrink:0; }
+.check-item label { font-size:13px; font-weight:500; cursor:pointer; flex:1; }
+.check-item.checked { background:#f5ffe0; border-color:#b8ef00; }
+
+.optional-tag { font-size:10px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); background:#f0f0ee; border-radius:6px; padding:2px 8px; margin-left:4px; }
+.sep { border:none; border-top:1px solid var(--border); margin:2px 0; }
+
+#toast { position:fixed; bottom:32px; left:50%; transform:translateX(-50%) translateY(80px); background:#111; color:#fff; font-size:13px; font-weight:700; padding:10px 22px; border-radius:30px; opacity:0; transition:all 0.35s cubic-bezier(.34,1.56,.64,1); z-index:999; pointer-events:none; white-space:nowrap; }
+#toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+footer { text-align:center; margin-top:48px; font-size:12px; color:var(--muted); }
+footer strong { color:#888; }
+</style>
+</head>
+<body>
+<div id="toast"></div>
+<div class="container">
+
+  <div class="header">
+    <div class="badge">🎬 Production</div>
+    <h1>Production Bible Builder</h1>
+    <p>Fill each section · click the header to collapse · use Hide/Show to keep sections out of the way without losing data.</p>
+  </div>
+
+  <div class="top-bar">
+    <button class="btn btn-secondary" onclick="clearAll()">🗑 Clear All</button>
+    <button class="btn btn-primary" onclick="exportDocx()">⬇ Export .docx</button>
+  </div>
+
+  <div class="summary-banner">
+    <div class="sum-stat"><span class="sum-label">Sections Filled</span><span class="sum-val" id="stat-filled">0 / 20</span></div>
+    <div class="sum-stat"><span class="sum-label">Project</span><span class="sum-val" id="stat-title" style="font-size:14px;max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">—</span></div>
+    <div class="sum-stat"><span class="sum-label">Status</span><span class="sum-val" id="stat-status" style="font-size:13px">Not Started</span></div>
+  </div>
+
+  <!-- S1 COVER -->
+  <div class="card" id="sec-1" data-section="1">
+    <div class="card-header">
+      <div class="card-header-left" onclick="toggleCard('sec-1')">
+        <div class="card-icon">📄</div>
+        <div><div class="card-num">Section 1</div><div class="card-title">Cover <span class="toggle-arrow">▾</span><span class="hidden-tag">Hidden</span></div></div>
+      </div>
+      <div class="card-header-actions"><button class="btn btn-ghost" onclick="toggleHide('sec-1')">Hide / Show</button></div>
+    </div>
+    <div class="card-body">
+      <div class="field-group"><div class="section-label">Project Name</div><div class="input-wrap"><input type="text" id="cover-project" placeholder="e.g. The Last Harvest" oninput="autosave();updateStats()"></div></div>
+      <div class="field-group"><div class="section-label">Tagline</div><div class="input-wrap"><input type="text" id="cover-tagline" placeholder="Short tagline for the cover" oninput="autosave()"></div></div>
+      <div class="field-group"><div class="section-label">Cover Notes</div><div class="textarea-wrap"><textarea id="cover-notes" placeholder="Design notes, visual direction for the cover..." oninput="autosave()"></textarea></div></div>
+    </div>
+  </div>
+
+  <!-- S2 TECH -->
+  <div class="card" id="sec-2" data-section="2">
+    <div class="card-header">
+      <div class="card-header-left" onclick="toggleCard('sec-2')">
+        <div class="card-icon">🎞</div>
+        <div><div class="card-num">Section 2</div><div class="card-title">Technical Sheet <span class="toggle-arrow">▾</span><span class="hidden-tag">Hidden</span></div></div>
+      </div>
+      <div class="card-header-actions"><button class="btn btn-ghost" onclick="toggleHide('sec-2')">Hide / Show</button></div>
+    </div>
+    <div class="card-body">
+      <div class="grid-2">
+        <div class="field-group"><div class="section-label">Title</div><div class="input-wrap"><input type="text" id="tech-title" placeholder="Official title" oninput="autosave()"></div></div>
+        <div class="field-group"><div class="section-label">Year</div><div class="input-wrap"><input type="text" id="tech-year" placeholder="2025" oninput="autosave()"></div></div>
+        <div class="field-group"><div class="section-label">Country</div><div class="input-wrap"><input type="text" id="tech-country" placeholder="e.g. Mexico, Netherlands" oninput="autosave()"></div></div>
+        <div class="field-group"><div class="section-label">Format</div><div class="input-wrap"><input type="text" id="tech-format" placeholder="e.g. Video HD 4K, 16:9" oninput="autosave()"></div></div>
+        <div class="field-group"><div class="section-label">Duration</div><div class="input-wrap"><input type="text" id="tech-duration" placeholder="e.g. 15 min" oninput="autosave()"></div></div>
+        <div class="field-group"><div class="section-label">Genre</div><div class="input-wrap"><input type="text" id="tech-genre" placeholder="e.g. Fashion Film, Documentary" oninput="autosave()"></div></div>
+        <div class="field-group"><div class="section-label">Direction</div><div class="input-wrap"><input type="text" id="tech-direction" placeholder="Director's name" oninput="autosave()"></div></div>
+        <div class="field-group"><div class="section-label">Production</div><div class="input-wrap"><input type="text" id="tech-production" placeholder="Production company" oninput="autosave()"></div></div>
+        <div class="field-group"><div class="section-label">Script</div><div class="input-wrap"><input type="text" id="tech-script" placeholder="Screenwriter" oninput="autosave()"></div></div>
+        <div class="field-group"><div class="section-label">Photography (DOP)</div><div class="input-wrap"><input type="text" id="tech-dop" placeholder="Director of Photography" oninput="autosave()"></div></div>
+        <div class="field-group"><div class="section-label">Production Design</div><div class="input-wrap"><input type="text" id="tech-proddesign" placeholder="Production Designer" oninput="autosave()"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S3 TOC -->
+  <div class="card" id="sec-3" data-section="3">
+    <div class="card-header">
+      <div class="card-header-left" onclick="toggleCard('sec-3')">
+        <div class="card-icon">📋</div>
+        <div><div class="card-num">Section 3</div><div class="card-title">Table of Contents <span class="toggle-arrow">▾</span><span class="hidden-tag">Hidden</span></div></div>
+      </div>
+      <div class="card-header-actions"><button class="btn btn-ghost" onclick="toggleHide('sec-3')">Hide / Show</button></div>
+    </div>
+    <div class="card-body">
+      <p style="font-size:13px;color:var(--muted)">Auto-generated in export. Add custom notes below.</p>
+      <div class="field-group"><div class="section-label">Custom TOC Notes</div><div class="textarea-wrap"><textarea id="toc-notes" placeholder="Any structural notes..." oninput="autosave()"></textarea></div></div>
+    </div>
+  </div>
+
+  <!-- S4 EXECUTIVE -->
+  <div class="card" id="sec-4" data-section="4">
+    <div class="card-header">
+      <div class="card-header-left" onclick="toggleCard('sec-4')">
+        <div class="card-icon">📢</div>
+        <div><div class="card-num">Section 4</div><div class="card-title">Executive Presentation <span class="toggle-arrow">▾</span><span class="hidden-tag">Hidden</span></div></div>
+      </div>
+      <div class="card-header-actions"><button class="btn btn-ghost" onclick="toggleHide('sec-4')">Hide / Show</button></div>
+    </div>
+    <div class="card-body">
+      <div class="field-group"><div class="section-label">Producer's Letter</div><div class="textarea-wrap"><textarea id="exec-letter" style="min-height:160px" placeholder="Dear reader,&#10;&#10;This project was born from..." oninput="autosave()"></textarea></div></div>
+      <div class="field-group"><div class="section-label">Why This Project?</div><div class="textarea-wrap"><textarea id="exec-why" placeholder="Motivation, context, relevance..." oninput="autosave()"></textarea></div></div>
+      <div class="field-group"><div class="section-label">Target Audience</div><div class="textarea-wrap"><textarea id="exec-audience" placeholder="Who is this for?" oninput="autosave()"></textarea></div></div>
+    </div>
+  </div>
+
+  <!-- S5 SYNOPSIS -->
+  <div class="card" id="sec-5" data-section="5">
+    <div class="card-header">
+      <div class="card-header-left" onclick="toggleCard('sec-5')">
+        <div class="card-icon">✏️</div>
+        <div><div class="card-num">Section 5</div><div class="card-title">Synopsis & Logline <span class="toggle-arrow">▾</span><span class="hidden-tag">Hidden</span></div></div>
+      </div>
+      <div class="card-header-actions"><button class="btn btn-ghost" onclick="toggleHide('sec-5')">Hide / Show</button></div>
+    </div>
+    <div class="card-body">
+      <div class="field-group"><div class="section-label">Logline <span style="font-weight:400;font-size:11px;text-transform:none;letter-spacing:0">(1–2 sentences max)</span></div><div class="textarea-wrap"><textarea id="syn-logline" style="min-height:60px" placeholder="One sentence pitch that captures the essence..." oninput="autosave()"></textarea></div></div>
+      <div class="field-group"><div class="section-label">Short Synopsis</div><div class="textarea-wrap"><textarea id="syn-short" style="min-height:120px" placeholder="1–2 paragraphs..." oninput="autosave()"></textarea></div></div>
+      <div class="field-group"><div class="section-label">Extended Synopsis</div><div class="textarea-wrap"><textarea id="syn-long" style="min-height:160px" placeholder="Full narrative synopsis..." oninput="autosave()"></textarea></div></div>
+    </div>
+  </div>
+
+  <!-- S6 SCRIPT -->
+  <div class="card" id="sec-6" data-section="6">
+    <div class="card-header">
+      <div class="card-header-left" onclick="toggleCard('sec-6')">
+        <div class="card-icon">📝</div>
+        <div><div class="card-num">Section 6</div><div class="card-title">Script / Action <span class="toggle-arrow">▾</span><span class="hidden-tag">Hidden</span></div></div>
+      </div>
+      <div class="card-header-actions"><button class="btn btn-ghost" onclick="toggleHide('sec-6')">Hide / Show</button></div>
+    </div>
+    <div class="card-body">
+      <div class="field-group"><div class="section-label">Script / Action Description</div><div class="textarea-wrap"><textarea id="script-body" style="min-height:220px" placeholder="Scene-by-scene breakdown or full script..." oninput="autosave()"></textarea></div></div>
+      <div class="field-group"><div class="section-label">Script File Reference</div><div class="input-wrap"><input type="text" id="script-link" placeholder="https://drive.google.com/..." oninput="autosave()"></div></div>
+    </div>
+  </div>
+
+  <!-- S7 SHOOTING LIST -->
+  <div class="card" id="sec-7" data-section="7">
+    <div class="card-header">
+      <div class="card-header-left" onclick="toggleCard('sec-7')">
+        <div class="card-icon">🎥</div>
+        <div><div class="card-num">Section 7</div><div class="card-title">Shooting List <span class="optional-tag">Optional</span><span class="toggle-arrow">▾</span><span class="hidden-tag">Hidden</span></div></div>
+      </div>
+      <div class="card-header-actions"><button class="btn btn-ghost" onclick="toggleHide('sec-7')">Hide / Show</button></div>
+    </div>
+    <div class="card-body">
+      <p style="font-size:13px;color:var(--muted)">The DOP decides whether to include this section.</p>
+      <div id="shots-list" style="display:flex;flex-direction:column;gap:10px"></div>
+      <button class="add-btn" onclick="addShot()"><span>+</span> Add Shot</button>
+    </div>
+  </div>
+
+  <!-- S8 CASTING -->
+  <div class="card" id="sec-8" data-section="8">
+    <div class="card-header">
+      <div class="card-header-left" onclick="toggleCard('sec-8')">
+        <div class="card-icon">🎭</div>
+        <div><div class="card-num">Section 8</div><div class="card-title">Casting <span class="toggle-arrow">▾</span><span class="hidden-tag">Hidden</span></div></div>
+      </div>
+      <div class="card-header-actions"><button class="btn btn-ghost" onclick="toggleHide('sec-8')">Hide / Show</button></div>
+    </div>
+    <div class="card-body">
+      <div id="cast-list" style="display:flex;flex-direction:column;gap:12px"></div>
+      <button class="add-btn" onclick="addCast()"><span>+</span> Add Cast Member</button>
+    </div>
+  </div>
+
+  <!-- S9 LOCATIONS -->
+  <div class="card" id="sec-9" data-section="9">
+    <div class="card-header">
+      <div class="card-header-left" onclick="toggleCard('sec-9')">
+        <div class="card-icon">📍</div>
+        <div><div class="card-num">Section 9</div><div class="card-title">Locations <span class="toggle-arrow">▾</span><span class="hidden-tag">Hidden</span></div></div>
+      </div>
+      <div class="card-header-actions"><button class="btn btn-ghost" onclick="toggleHide('sec-9')">Hide / Show</button></div>
+    </div>
+    <div class="card-body">
+      <div id="locations-list" style="display:flex;flex-direction:column;gap:14px"></div>
+      <button class="add-btn" onclick="addLocation()"><span>+</span> Add Location</button>
+    </div>
+  </div>
+
+  <!-- S10 PHOTOGRAPHY -->
+  <div class="card" id="sec-10" data-section="10">
+    <div class="card-header">
+      <div class="card-header-left" onclick="toggleCard('sec-10')">
+        <div class="card-icon">📷</div>
+        <div><div class="card-num">Section 10</div><div class="card-title">Photography Proposal <span class="toggle-arrow">▾</span><span class="hidden-tag">Hidden</span></div></div>
+      </div>
+      <div class="card-header-actions"><button class="btn btn-ghost" onclick="toggleHide('sec-10')">Hide / Show</button></div>
+    </div>
+    <div class="card-body">
+      <div class="field-group"><div class="section-label">Visual Style & Aesthetic</div><div class="textarea-wrap"><textarea id="photo-style" placeholder="Photographic style, mood, lighting approach..." oninput="autosave()"></textarea></div></div>
+      <div class="field-group"><div class="section-label">References / Moodboard Notes</div><div class="textarea-wrap"><textarea id="photo-refs" placeholder="Photographers, films, references that inspire this work..." oninput="autosave()"></textarea></div></div>
+      <div class="field-group"><div class="section-label">Camera & Equipment</div><div class="textarea-wrap"><textarea id="photo-equip" placeholder="Camera body, lenses, lighting equipment..." oninput="autosave()"></textarea></div></div>
+      <div class="field-group">
+        <div class="section-label">Visual References — Upload Images</div>
+        <div class="img-upload-area" onclick="document.getElementById('photo-img-inp').click()"><div class="upload-icon">🖼</div><p>Click to upload reference images</p></div>
+        <input type="file" id="photo-img-inp" accept="image/*" multiple style="display:none" onchange="handleImgUpload(event,'photo-imgs-wrap')">
+        <div class="img-preview-grid" id="photo-imgs-wrap" style="margin-top:10px"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S11 PRODUCTION DESIGN -->
+  <div class="card" id="sec-11" data-section="11">
+    <div class="card-header">
+      <div class="card-header-left" onclick="toggleCard('sec-11')">
+        <div class="card-icon">🎨</div>
+        <div><div class="card-num">Section 11</div><div class="card-title">Production Design <span class="toggle-arrow">▾</span><span class="hidden-tag">Hidden</span></div></div>
+      </div>
+      <div class="card-header-actions"><button class="btn btn-ghost" onclick="toggleHide('sec-11')">Hide / Show</button></div>
+    </div>
+    <div class="card-body">
+      <div class="field-group"><div class="section-label">Set Decoration</div><div class="textarea-wrap"><textarea id="pd-set" placeholder="Set decoration concept..." oninput="autosave()"></textarea></div></div>
+      <div class="field-group"><div class="section-label">Props</div><div class="textarea-wrap"><textarea id="pd-props" placeholder="Key props and their significance..." oninput="autosave()"></textarea></div></div>
+      <div class="field-group"><div class="section-label">Art Direction Notes</div><div class="textarea-wrap"><textarea id="pd-art" placeholder="Art direction concept and references..." oninput="autosave()"></textarea></div></div>
+      <!-- COLOR PALETTE -->
+      <div class="field-group">
+        <div class="section-label">Color Palette</div>
+        <div class="section-label" style="font-size:9px;margin-top:6px;margin-bottom:8px">Cinematic Preset Palettes — click to select</div>
+        <div class="palette-presets" id="palette-presets"></div>
+        <div class="section-label" style="font-size:9px;margin-top:10px;margin-bottom:8px">Custom Colors — click swatch to edit</div>
+        <div class="custom-swatches" id="custom-swatches"></div>
+        <button class="add-btn" onclick="addCustomSwatch()"><span>+</span> Add Color</button>
+        <div class="field-group" style="margin-top:10px"><div class="section-label">Palette Notes</div><div class="textarea-wrap"><textarea id="pd-palette-notes" placeholder="Describe the palette — mood, Pantone references, usage..." oninput="autosave()"></textarea></div></div>
+      </div>
+      <!-- VISUAL REFS -->
+      <div class="field-group">
+        <div class="section-label">Visual References — Upload Images</div>
+        <div class="img-upload-area" onclick="document.getElementById('pd-img-inp').click()"><div class="upload-icon">🖼</div><p>Click to upload reference images with descriptions</p></div>
+        <input type="file" id="pd-img-inp" accept="image/*" multiple style="display:none" onchange="handleImgUpload(event,'pd-imgs-wrap')">
+        <div class="img-preview-grid" id="pd-imgs-wrap" style="margin-top:10px"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S12 COSTUME -->
+  <div class="card" id="sec-12" data-section="12">
+    <div class="card-header">
+      <div class="card-header-left" onclick="toggleCard('sec-12')">
+        <div class="card-icon">👗</div>
+        <div><div class="card-num">Section 12</div><div class="card-title">Costume Design <span class="toggle-arrow">▾</span><span class="hidden-tag">Hidden</span></div></div>
+      </div>
+      <div class="card-header-actions"><button class="btn btn-ghost" onclick="toggleHide('sec-12')">Hide / Show</button></div>
+    </div>
+    <div class="card-body">
+      <div class="field-group"><div class="section-label">Overall Concept</div><div class="textarea-wrap"><textarea id="costume-concept" placeholder="Aesthetic direction for wardrobe and costume..." oninput="autosave()"></textarea></div></div>
+      <div class="field-group"><div class="section-label">Makeup</div><div class="textarea-wrap"><textarea id="costume-makeup" placeholder="Makeup concept and references..." oninput="autosave()"></textarea></div></div>
+      <div class="field-group"><div class="section-label">Hairstyle</div><div class="textarea-wrap"><textarea id="costume-hair" placeholder="Hairstyle concept and references..." oninput="autosave()"></textarea></div></div>
+      <div class="field-group"><div class="section-label">Nails</div><div class="textarea-wrap"><textarea id="costume-nails" placeholder="Nail design concept..." oninput="autosave()"></textarea></div></div>
+      <hr class="sep">
+      <div class="section-label" style="margin-bottom:6px">Characters & Looks</div>
+      <div id="costume-looks-list" style="display:flex;flex-direction:column;gap:14px"></div>
+      <button class="add-btn" onclick="addCostumeLook()"><span>+</span> Add Character / Look</button>
+    </div>
+  </div>
+
+  <!-- S13 SOUND -->
+  <div class="card" id="sec-13" data-section="13">
+    <div class="card-header">
+      <div class="card-header-left" onclick="toggleCard('sec-13')">
+        <div class="card-icon">🎵</div>
+        <div><div class="card-num">Section 13</div><div class="card-title">Sound Design <span class="toggle-arrow">▾</span><span class="hidden-tag">Hidden</span></div></div>
+      </div>
+      <div class="card-header-actions"><button class="btn btn-ghost" onclick="toggleHide('sec-13')">Hide / Show</button></div>
+    </div>
+    <div class="card-body">
+      <div class="field-group"><div class="section-label">Music Concept — Why This Music?</div><div class="textarea-wrap"><textarea id="sound-music" placeholder="Explain the musical direction and why it serves the project..." oninput="autosave()"></textarea></div></div>
+      <div class="field-group"><div class="section-label">Incidental Sounds / SFX</div><div class="textarea-wrap"><textarea id="sound-sfx" placeholder="Key sound effects, ambient sounds, sound design notes..." oninput="autosave()"></textarea></div></div>
+      <div class="section-label" style="margin-bottom:6px">Tracks & References</div>
+      <div id="sound-tracks-list" style="display:flex;flex-direction:column;gap:10px"></div>
+      <button class="add-btn" onclick="addSoundTrack()"><span>+</span> Add Track / Reference</button>
+      <hr class="sep" style="margin-top:4px">
+      <div class="field-group">
+        <div class="section-label">Upload Audio Files</div>
+        <div class="img-upload-area" onclick="document.getElementById('audio-inp').click()"><div class="upload-icon">🎧</div><p>Click to upload MP3, WAV, M4A…</p></div>
+        <input type="file" id="audio-inp" accept="audio/*" multiple style="display:none" onchange="handleAudioUpload(event)">
+        <div id="audio-list" style="display:flex;flex-direction:column;gap:8px;margin-top:8px"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S14 CREW -->
+  <div class="card" id="sec-14" data-section="14">
+    <div class="card-header">
+      <div class="card-header-left" onclick="toggleCard('sec-14')">
+        <div class="card-icon">👥</div>
+        <div><div class="card-num">Section 14</div><div class="card-title">Crew <span class="toggle-arrow">▾</span><span class="hidden-tag">Hidden</span></div></div>
+      </div>
+      <div class="card-header-actions"><button class="btn btn-ghost" onclick="toggleHide('sec-14')">Hide / Show</button></div>
+    </div>
+    <div class="card-body">
+      <div id="crew-list" style="display:flex;flex-direction:column;gap:12px"></div>
+      <button class="add-btn" onclick="addCrew()"><span>+</span> Add Crew Member</button>
+    </div>
+  </div>
+
+  <!-- S15 CRITICAL PATH -->
+  <div class="card" id="sec-15" data-section="15">
+    <div class="card-header">
+      <div class="card-header-left" onclick="toggleCard('sec-15')">
+        <div class="card-icon">⏱</div>
+        <div><div class="card-num">Section 15</div><div class="card-title">Critical Path <span class="toggle-arrow">▾</span><span class="hidden-tag">Hidden</span></div></div>
+      </div>
+      <div class="card-header-actions"><button class="btn btn-ghost" onclick="toggleHide('sec-15')">Hide / Show</button></div>
+    </div>
+    <div class="card-body">
+      <div id="critpath-list" style="display:flex;flex-direction:column;gap:10px"></div>
+      <button class="add-btn" onclick="addCritPath()"><span>+</span> Add Milestone</button>
+    </div>
+  </div>
+
+  <!-- S16 SHOOTING PLAN -->
+  <div class="card" id="sec-16" data-section="16">
+    <div class="card-header">
+      <div class="card-header-left" onclick="toggleCard('sec-16')">
+        <div class="card-icon">📅</div>
+        <div><div class="card-num">Section 16</div><div class="card-title">Shooting Plan <span class="toggle-arrow">▾</span><span class="hidden-tag">Hidden</span></div></div>
+      </div>
+      <div class="card-header-actions"><button class="btn btn-ghost" onclick="toggleHide('sec-16')">Hide / Show</button></div>
+    </div>
+    <div class="card-body">
+      <div id="shootplan-list" style="display:flex;flex-direction:column;gap:14px"></div>
+      <button class="add-btn" onclick="addShootDay()"><span>+</span> Add Shooting Day</button>
+      <div class="field-group" style="margin-top:8px"><div class="section-label">Catering Notes</div><div class="textarea-wrap"><textarea id="shootplan-catering" placeholder="Catering arrangements, dietary requirements..." oninput="autosave()"></textarea></div></div>
+    </div>
+  </div>
+
+  <!-- S17 BUDGET -->
+  <div class="card" id="sec-17" data-section="17">
+    <div class="card-header">
+      <div class="card-header-left" onclick="toggleCard('sec-17')">
+        <div class="card-icon">💰</div>
+        <div><div class="card-num">Section 17</div><div class="card-title">Budget <span class="toggle-arrow">▾</span><span class="hidden-tag">Hidden</span></div></div>
+      </div>
+      <div class="card-header-actions"><button class="btn btn-ghost" onclick="toggleHide('sec-17')">Hide / Show</button></div>
+    </div>
+    <div class="card-body">
+      <div class="grid-2">
+        <div class="field-group"><div class="section-label">Total Budget</div><div class="input-wrap"><span class="input-prefix" id="budget-prefix">€</span><input type="number" id="budget-total" placeholder="0.00" oninput="autosave();calcBudget()"></div></div>
+        <div class="field-group"><div class="section-label">Currency</div><div class="input-wrap"><select id="budget-currency" onchange="autosave();updateCurrSymbol();calcBudget()"><option value="EUR">EUR €</option><option value="USD">USD $</option><option value="MXN">MXN MX$</option></select></div></div>
+      </div>
+      <div class="budget-summary">
+        <div class="budget-stat"><span class="budget-stat-label">Total Budget</span><span class="budget-stat-value" id="bs-total">€ 0.00</span></div>
+        <div class="budget-stat"><span class="budget-stat-label">Spent</span><span class="budget-stat-value" id="bs-spent">€ 0.00</span></div>
+        <div class="budget-stat"><span class="budget-stat-label">Remaining</span><span class="budget-stat-value" id="bs-rem">€ 0.00</span></div>
+      </div>
+      <div class="field-group"><div class="section-label">Budget Notes</div><div class="textarea-wrap"><textarea id="budget-notes" placeholder="Overview of budget categories, funding sources..." oninput="autosave()"></textarea></div></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <div class="section-label">Line Items</div>
+        <button class="add-btn" onclick="addBudgetLine()" style="margin:0"><span>+</span> Add Item</button>
+      </div>
+      <div id="budget-lines-list" style="display:flex;flex-direction:column;gap:6px"></div>
+    </div>
+  </div>
+
+  <!-- S18 DISTRIBUTION -->
+  <div class="card" id="sec-18" data-section="18">
+    <div class="card-header">
+      <div class="card-header-left" onclick="toggleCard('sec-18')">
+        <div class="card-icon">🌍</div>
+        <div><div class="card-num">Section 18</div><div class="card-title">Distribution Plan <span class="toggle-arrow">▾</span><span class="hidden-tag">Hidden</span></div></div>
+      </div>
+      <div class="card-header-actions"><button class="btn btn-ghost" onclick="toggleHide('sec-18')">Hide / Show</button></div>
+    </div>
+    <div class="card-body">
+      <div class="field-group"><div class="section-label">Strategy</div><div class="textarea-wrap"><textarea id="dist-strategy" placeholder="How will this project be distributed and shown?" oninput="autosave()"></textarea></div></div>
+      <div id="dist-festivals-list" style="display:flex;flex-direction:column;gap:10px"></div>
+      <button class="add-btn" onclick="addFestival()"><span>+</span> Add Festival / Platform</button>
+    </div>
+  </div>
+
+  <!-- S19 COPYRIGHT -->
+  <div class="card" id="sec-19" data-section="19">
+    <div class="card-header">
+      <div class="card-header-left" onclick="toggleCard('sec-19')">
+        <div class="card-icon">©️</div>
+        <div><div class="card-num">Section 19</div><div class="card-title">Copyright Registration <span class="toggle-arrow">▾</span><span class="hidden-tag">Hidden</span></div></div>
+      </div>
+      <div class="card-header-actions"><button class="btn btn-ghost" onclick="toggleHide('sec-19')">Hide / Show</button></div>
+    </div>
+    <div class="card-body">
+      <div class="grid-2">
+        <div class="field-group"><div class="section-label">Registration Number</div><div class="input-wrap"><input type="text" id="cr-number" placeholder="INDAUTOR / Copyright number" oninput="autosave()"></div></div>
+        <div class="field-group"><div class="section-label">Registration Date</div><div class="input-wrap"><input type="date" id="cr-date" oninput="autosave()"></div></div>
+      </div>
+      <div class="field-group"><div class="section-label">Copyright Holder</div><div class="input-wrap"><input type="text" id="cr-holder" placeholder="Name or entity" oninput="autosave()"></div></div>
+      <div class="field-group"><div class="section-label">Notes</div><div class="textarea-wrap"><textarea id="cr-notes" placeholder="Additional registration notes..." oninput="autosave()"></textarea></div></div>
+    </div>
+  </div>
+
+  <!-- S20 PERMITS -->
+  <div class="card" id="sec-20" data-section="20">
+    <div class="card-header">
+      <div class="card-header-left" onclick="toggleCard('sec-20')">
+        <div class="card-icon">📜</div>
+        <div><div class="card-num">Section 20</div><div class="card-title">Permits & Releases <span class="toggle-arrow">▾</span><span class="hidden-tag">Hidden</span></div></div>
+      </div>
+      <div class="card-header-actions"><button class="btn btn-ghost" onclick="toggleHide('sec-20')">Hide / Show</button></div>
+    </div>
+    <div class="card-body">
+      <div class="checklist">
+        <div class="check-item" onclick="toggleCheck(this)"><input type="checkbox" onclick="event.stopPropagation();toggleCheck(this.parentElement)"><label>Location permits obtained</label></div>
+        <div class="check-item" onclick="toggleCheck(this)"><input type="checkbox" onclick="event.stopPropagation();toggleCheck(this.parentElement)"><label>Actor release forms signed</label></div>
+        <div class="check-item" onclick="toggleCheck(this)"><input type="checkbox" onclick="event.stopPropagation();toggleCheck(this.parentElement)"><label>Music usage rights secured</label></div>
+        <div class="check-item" onclick="toggleCheck(this)"><input type="checkbox" onclick="event.stopPropagation();toggleCheck(this.parentElement)"><label>Brand / logo usage approved</label></div>
+        <div class="check-item" onclick="toggleCheck(this)"><input type="checkbox" onclick="event.stopPropagation();toggleCheck(this.parentElement)"><label>Crew commitment letters signed</label></div>
+      </div>
+      <div id="permits-list" style="display:flex;flex-direction:column;gap:10px;margin-top:8px"></div>
+      <button class="add-btn" onclick="addPermit()"><span>+</span> Add Permit / Document</button>
+      <div class="field-group"><div class="section-label">Notes</div><div class="textarea-wrap"><textarea id="permits-notes" placeholder="Legal notes, pending items..." oninput="autosave()"></textarea></div></div>
+    </div>
+  </div>
+
+  <!-- CHECKLIST -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-header-left" onclick="this.closest('.card').classList.toggle('collapsed')">
+        <div class="card-icon">✅</div>
+        <div><div class="card-title">Production Checklist <span class="toggle-arrow">▾</span></div></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="checklist">
+        <div class="check-item" onclick="toggleCheck(this)"><input type="checkbox" onclick="event.stopPropagation();toggleCheck(this.parentElement)"><label>✦ Creativity — Is the concept strong and original?</label></div>
+        <div class="check-item" onclick="toggleCheck(this)"><input type="checkbox" onclick="event.stopPropagation();toggleCheck(this.parentElement)"><label>✦ Viability — Can this actually be produced with the available resources?</label></div>
+        <div class="check-item" onclick="toggleCheck(this)"><input type="checkbox" onclick="event.stopPropagation();toggleCheck(this.parentElement)"><label>✦ Folder Complete — All sections filled or consciously skipped?</label></div>
+      </div>
+    </div>
+  </div>
+
+  <footer>built by <strong>Emilio Miranda Escamilla</strong></footer>
+</div>
+
+<script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
+<script>
+const STORE = 'prod_bible_v3';
+
+const CREW_ROLES = ['— Select Role —','Director','Co-Director','Second Unit Director','Executive Producer','Producer','Line Producer','Associate Producer','Production Manager','Unit Production Manager (UPM)','Production Coordinator','Production Assistant (PA)','Office PA','1st Assistant Director (1st AD)','2nd Assistant Director (2nd AD)','3rd Assistant Director','Script Supervisor','Screenwriter','Director of Photography (DOP)','Camera Operator','1st Assistant Camera (1st AC)','2nd Assistant Camera (2nd AC)','DIT (Digital Imaging Technician)','Film Loader','Steadicam Operator','Drone Operator','Camera PA / Trainee','Gaffer','Best Boy Electric','Electrician','Key Grip','Best Boy Grip','Grip','Dolly Grip','Production Sound Mixer','Boom Operator','Sound Assistant','Production Designer','Art Director','Set Decorator','Set Dresser','Props Master','Props Buyer','Prop Maker','Construction Coordinator','Costume Designer','Costume Coordinator','Wardrobe Supervisor','Costume Standby','Tailor / Seamstress','Costume Shopper','Makeup Designer','Key Makeup Artist','Makeup Artist','Hair Designer','Key Hairstylist','Hairstylist','SFX Makeup Artist','Casting Director','Location Manager','Location Scout','Location Assistant','Editor','Assistant Editor','Colorist','VFX Supervisor','VFX Artist / Compositor','Sound Designer','Sound Editor','Re-recording Mixer','Music Composer','Music Supervisor','Still Photographer','BTS Videographer','Production Accountant','Transportation Coordinator','Driver','Catering Supervisor','Craft Services','Stunt Coordinator','Stunt Performer','Security','Other (Custom)'];
+
+const BUDGET_CATS = ['Pre-Production','Direction','Production Design','Wardrobe & Costume','Hair & Makeup','Camera & Equipment','Lighting & Grip','Sound','Locations & Permits','Talent / Cast','Crew Fees','Transportation','Catering','Post-Production','Music & Rights','Marketing & Distribution','Miscellaneous'];
+
+const CURRENCY_SYMS = { EUR:'€', USD:'$', MXN:'MX$' };
+
+const CINEMATIC_PALETTES = [
+  {name:'Godfather Amber',   colors:['#3b1a0e','#7a3a1e','#c47a35','#e8c27a','#f5ead8']},
+  {name:'Blade Runner Neon', colors:['#0a0a1e','#1a1a3e','#7b2d8b','#e040fb','#00e5ff']},
+  {name:'Wes Anderson',      colors:['#f7c5a0','#f4a261','#e76f51','#264653','#2a9d8f']},
+  {name:'Moonlight Blue',    colors:['#03045e','#0077b6','#00b4d8','#90e0ef','#caf0f8']},
+  {name:'Mad Max Desert',    colors:['#1a0a00','#5c2d00','#c27a00','#f5c518','#ffe08a']},
+  {name:'Her Warm Blush',    colors:['#2d0a00','#7a2d00','#cc6633','#f5a27a','#ffd6b3']},
+  {name:'Matrix Green',      colors:['#001200','#003300','#005500','#00aa00','#00ff41']},
+  {name:'2001 Monolith',     colors:['#000000','#1a1a1a','#3d3d3d','#808080','#ffffff']},
+  {name:'Amélie Teal & Red', colors:['#003333','#005555','#cc2200','#ff4422','#ffcc99']},
+  {name:'La La Land Dusk',   colors:['#1a0033','#6600cc','#cc0066','#ff6699','#ffccee']},
+  {name:'Parasite Grey',     colors:['#1a2200','#3d5200','#7a8a3d','#b8c97a','#e8edd0']},
+  {name:'Drive Night',       colors:['#0a0005','#300022','#880055','#ff0077','#ff99cc']},
+];
+
+// ═══ UTILS ═══
+let saveTimer;
+function autosave(){ clearTimeout(saveTimer); saveTimer=setTimeout(()=>{ persist(); showToast('✓ Saved'); },700); }
+function showToast(m){ const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2000); }
+function v(id){ return document.getElementById(id)?.value||''; }
+
+// ═══ PERSIST ═══
+function persist(){
+  const d={};
+  document.querySelectorAll('[id]').forEach(el=>{
+    if((el.tagName==='INPUT'||el.tagName==='TEXTAREA'||el.tagName==='SELECT')&&el.type!=='file'&&el.type!=='color') d[el.id]=el.value;
+  });
+  d._hidden=Array.from(document.querySelectorAll('.card.section-hidden')).map(c=>c.id);
+  d._collapsed=Array.from(document.querySelectorAll('.card.collapsed')).map(c=>c.id);
+  d._checks=Array.from(document.querySelectorAll('.check-item')).map(ci=>ci.classList.contains('checked'));
+  d._pal=selectedPal;
+  d._swatches=getSwatches();
+  d._budgetLines=getBudgetLines();
+  localStorage.setItem(STORE,JSON.stringify(d));
+}
+
+function restore(){
+  const raw=localStorage.getItem(STORE);
+  if(!raw){ initLists(); return; }
+  const d=JSON.parse(raw);
+  document.querySelectorAll('[id]').forEach(el=>{
+    if((el.tagName==='INPUT'||el.tagName==='TEXTAREA'||el.tagName==='SELECT')&&el.type!=='file'&&el.type!=='color'&&d[el.id]!==undefined) el.value=d[el.id];
+  });
+  if(d._hidden) d._hidden.forEach(id=>{ const c=document.getElementById(id); if(c){ c.classList.add('section-hidden'); c.classList.add('collapsed'); }});
+  if(d._collapsed) d._collapsed.forEach(id=>{ const c=document.getElementById(id); if(c) c.classList.add('collapsed'); });
+  if(d._checks){ const items=document.querySelectorAll('.check-item'); d._checks.forEach((v,i)=>{ if(items[i]&&v){ items[i].classList.add('checked'); const cb=items[i].querySelector('input'); if(cb) cb.checked=true; }}); }
+  if(d._pal!==undefined){ selectedPal=d._pal; highlightPal(selectedPal); }
+  if(d._swatches) d._swatches.forEach(s=>addCustomSwatch(s.color,s.label));
+  if(d._budgetLines) d._budgetLines.forEach(l=>addBudgetLine(l));
+  updateCurrSymbol(); calcBudget(); updateStats();
+}
+
+function initLists(){ addShot(); addCast(); addLocation(); addCrew(); addCritPath(); addShootDay(); addSoundTrack(); addBudgetLine(); addFestival(); addPermit(); }
+
+// ═══ CARD TOGGLE ═══
+function toggleCard(id){ document.getElementById(id)?.classList.toggle('collapsed'); }
+
+// ═══ HIDE / SHOW ═══
+function toggleHide(id){
+  const c=document.getElementById(id);
+  const isHidden=c.classList.contains('section-hidden');
+  if(isHidden){ c.classList.remove('section-hidden'); c.classList.remove('collapsed'); showToast('Section restored'); }
+  else { c.classList.add('section-hidden'); c.classList.add('collapsed'); showToast('Section hidden — data is safe'); }
+  autosave();
+}
+
+// ═══ CHECKLIST ═══
+function toggleCheck(el){ el.classList.toggle('checked'); const cb=el.querySelector('input[type=checkbox]'); if(cb) cb.checked=el.classList.contains('checked'); autosave(); }
+
+// ═══ STATS ═══
+function updateStats(){
+  const title=v('cover-project'); document.getElementById('stat-title').textContent=title||'—';
+  const keys=['cover-project','tech-title','exec-letter','syn-logline','script-body','photo-style','pd-set','costume-concept','sound-music','dist-strategy','cr-number'];
+  const filled=keys.filter(k=>{ const e=document.getElementById(k); return e&&e.value.trim(); }).length;
+  document.getElementById('stat-filled').textContent=filled+' / 20';
+  document.getElementById('stat-status').textContent=filled===0?'Not Started':filled<5?'In Progress':filled<10?'Getting There':filled<15?'Almost Done':'✓ Ready';
+}
+
+// ═══ PALETTE ═══
+let selectedPal=-1;
+function buildPalettePresets(){
+  const grid=document.getElementById('palette-presets');
+  CINEMATIC_PALETTES.forEach((p,i)=>{
+    const el=document.createElement('div'); el.className='palette-preset'; el.dataset.idx=i;
+    el.innerHTML=`<div class="palette-preset-name">${p.name}</div><div class="palette-swatches">${p.colors.map(c=>`<span style="background:${c}"></span>`).join('')}</div>`;
+    el.onclick=()=>{ selectedPal=selectedPal===i?-1:i; highlightPal(selectedPal); autosave(); };
+    grid.appendChild(el);
+  });
+}
+function highlightPal(i){ document.querySelectorAll('.palette-preset').forEach((el,idx)=>el.classList.toggle('selected',idx===i)); }
+function addCustomSwatch(color='#c5fe00',label=''){
+  const wrap=document.getElementById('custom-swatches');
+  const item=document.createElement('div'); item.className='swatch-item';
+  item.innerHTML=`<input type="color" value="${color}" onchange="autosave()"><input class="sw-label" type="text" value="${label}" placeholder="Name" oninput="autosave()"><button class="swatch-del" onclick="this.closest('.swatch-item').remove();autosave()">✕</button>`;
+  wrap.appendChild(item); autosave();
+}
+function getSwatches(){ return Array.from(document.querySelectorAll('.swatch-item')).map(el=>({color:el.querySelector('input[type=color]')?.value||'#000',label:el.querySelector('.sw-label')?.value||''})); }
+
+// ═══ IMAGE UPLOAD ═══
+function handleImgUpload(evt,containerId){
+  const container=typeof containerId==='string'?document.getElementById(containerId):containerId;
+  Array.from(evt.target.files).forEach(file=>{
+    const reader=new FileReader(); reader.onload=e=>{ const item=document.createElement('div'); item.className='img-preview-item'; item.innerHTML=`<img src="${e.target.result}" alt=""><div class="img-caption"><input type="text" placeholder="Caption / description..." oninput="autosave()"></div><button class="del-img" onclick="this.closest('.img-preview-item').remove()">✕</button>`; container.appendChild(item); }; reader.readAsDataURL(file);
+  }); evt.target.value='';
+}
+
+// ═══ AUDIO UPLOAD ═══
+function handleAudioUpload(evt){
+  const list=document.getElementById('audio-list');
+  Array.from(evt.target.files).forEach(file=>{ const url=URL.createObjectURL(file); const item=document.createElement('div'); item.className='audio-item'; item.innerHTML=`<span class="audio-name">🎵 ${file.name}</span><audio controls src="${url}"></audio><button class="btn btn-danger" onclick="this.closest('.audio-item').remove()">✕</button>`; list.appendChild(item); }); evt.target.value='';
+}
+
+// ═══ CREW HELPERS ═══
+function getCrewMembers(){ return Array.from(document.querySelectorAll('#crew-list .entry-card')).map(el=>({name:el.querySelector('[data-f="crew-name"]')?.value||'',role:el.querySelector('[data-f="crew-role"]')?.value||''})).filter(c=>c.name); }
+
+function buildCrewChips(wrap,selectedNames){
+  wrap.innerHTML='';
+  const crew=getCrewMembers();
+  if(!crew.length){ wrap.innerHTML='<span style="font-size:12px;color:var(--muted)">Add crew in Section 14 first, then come back here.</span>'; return; }
+  crew.forEach(c=>{ const chip=document.createElement('div'); chip.className='crew-chip'+(selectedNames&&selectedNames.includes(c.name)?' selected':''); chip.textContent=c.name+(c.role&&c.role!=='— Select Role —'?' ('+c.role.split(' ')[0]+')':''); chip.dataset.name=c.name; chip.onclick=()=>{ chip.classList.toggle('selected'); autosave(); }; wrap.appendChild(chip); });
+}
+
+function refreshCrewChips(){ document.querySelectorAll('.crew-chips-wrap').forEach(wrap=>{ const sel=Array.from(wrap.querySelectorAll('.crew-chip.selected')).map(c=>c.dataset.name); buildCrewChips(wrap,sel); }); }
+
+// ═══ BUDGET ═══
+function updateCurrSymbol(){ const cur=v('budget-currency')||'EUR'; document.getElementById('budget-prefix').textContent=CURRENCY_SYMS[cur]||'€'; }
+function calcBudget(){
+  const cur=v('budget-currency')||'EUR'; const sym=CURRENCY_SYMS[cur]||'€';
+  const total=parseFloat(document.getElementById('budget-total')?.value)||0;
+  let spent=0; document.querySelectorAll('.b-line-amount').forEach(el=>spent+=parseFloat(el.value)||0);
+  const rem=total-spent;
+  document.getElementById('bs-total').textContent=sym+' '+total.toFixed(2);
+  document.getElementById('bs-spent').textContent=sym+' '+spent.toFixed(2);
+  const remEl=document.getElementById('bs-rem'); remEl.textContent=sym+' '+rem.toFixed(2); remEl.className='budget-stat-value'+(rem<0?' over':'');
+}
+function addBudgetLine(v2){
+  const list=document.getElementById('budget-lines-list');
+  const row=document.createElement('div'); row.className='b-line-row';
+  const catOpts=BUDGET_CATS.map(c=>`<option${v2&&v2.cat===c?' selected':''}>${c}</option>`).join('');
+  row.innerHTML=`<input class="b-line-name" data-f="bl-name" type="text" placeholder="Item description" value="${v2?.name||''}" oninput="autosave()"><select class="b-line-cat" data-f="bl-cat" onchange="autosave()">${catOpts}</select><input class="b-line-amount" data-f="bl-amount" type="number" placeholder="0.00" value="${v2?.amount||''}" oninput="autosave();calcBudget()"><button class="b-line-del" onclick="this.closest('.b-line-row').remove();autosave();calcBudget()">✕</button>`;
+  list.appendChild(row); autosave();
+}
+function getBudgetLines(){ return Array.from(document.querySelectorAll('.b-line-row')).map(r=>({name:r.querySelector('.b-line-name')?.value||'',cat:r.querySelector('.b-line-cat')?.value||'',amount:r.querySelector('.b-line-amount')?.value||''})); }
+
+// ═══ ENTRY MAKER ═══
+function makeEntry(listId, fields, vals){
+  const list=document.getElementById(listId); if(!list) return null;
+  const card=document.createElement('div'); card.className='entry-card';
+  const cols=Math.min(fields.filter(f=>!f.full).length,2);
+  let html=`<button class="btn btn-danger entry-del-btn" onclick="this.closest('.entry-card').remove();autosave();refreshCrewChips()">✕ Remove</button>`;
+  html+=`<div class="entry-card-grid" style="grid-template-columns:repeat(${cols},1fr)">`;
+  fields.forEach(f=>{
+    const val=(vals&&vals[f.key])||'';
+    let inp;
+    if(f.type==='select'){
+      const opts=f.options.map(o=>`<option${val===o?' selected':''}>${o}</option>`).join('');
+      inp=`<div class="input-wrap"><select data-f="${f.key}" onchange="autosave()">${opts}</select></div>`;
+    } else if(f.type==='textarea'){
+      inp=`<div class="textarea-wrap"><textarea data-f="${f.key}" placeholder="${f.ph||''}" oninput="autosave()" style="min-height:60px">${val}</textarea></div>`;
+    } else {
+      inp=`<div class="input-wrap"><input type="${f.type||'text'}" data-f="${f.key}" placeholder="${f.ph||''}" value="${val.replace(/"/g,'&quot;')}" oninput="autosave()"></div>`;
+    }
+    html+=`<div class="field-group"${f.full?' style="grid-column:1/-1"':''}><div class="section-label">${f.label}</div>${inp}</div>`;
+  });
+  html+='</div>';
+  card.innerHTML=html; list.appendChild(card); return card;
+}
+
+function addShot(v2){ makeEntry('shots-list',[{key:'shot-num',label:'Shot #',ph:'01'},{key:'shot-lens',label:'Lens',ph:'e.g. 50mm'},{key:'shot-desc',label:'Description',ph:'Shot description...',type:'textarea',full:true}],v2); }
+
+function addCast(v2){ makeEntry('cast-list',[{key:'cast-name',label:'Name',ph:'Actor / Model name'},{key:'cast-role',label:'Role / Character',ph:'Character name'},{key:'cast-phone',label:'Phone',ph:'+1 555 000 0000',type:'tel'},{key:'cast-email',label:'Email',ph:'actor@email.com',type:'email'},{key:'cast-agency',label:'Agency',ph:'Agency name'},{key:'cast-notes',label:'Notes (measurements, etc.)',ph:'Additional details...',type:'textarea',full:true}],v2); }
+
+function addLocation(v2){
+  const card=makeEntry('locations-list',[{key:'loc-name',label:'Location Name',ph:'e.g. Rooftop Studio A'},{key:'loc-address',label:'Address',ph:'Full address'},{key:'loc-notes',label:'Notes',ph:'Permits, access info...',type:'textarea',full:true}],v2);
+  if(!card) return;
+  const imgSec=document.createElement('div'); imgSec.className='field-group';
+  imgSec.innerHTML=`<div class="section-label">Photos</div><div class="img-upload-area" style="padding:12px" onclick="this.nextElementSibling.click()"><div class="upload-icon" style="font-size:18px">📷</div><p>Upload location photos</p></div><input type="file" accept="image/*" multiple style="display:none"><div class="img-preview-grid" style="margin-top:8px"></div>`;
+  imgSec.querySelector('input[type=file]').onchange=function(e){ Array.from(e.target.files).forEach(file=>{ const reader=new FileReader(); reader.onload=ev=>{ const item=document.createElement('div'); item.className='img-preview-item'; item.innerHTML=`<img src="${ev.target.result}" alt=""><div class="img-caption"><input type="text" placeholder="Caption..." oninput="autosave()"></div><button class="del-img" onclick="this.closest('.img-preview-item').remove()">✕</button>`; e.target.nextElementSibling.appendChild(item); }; reader.readAsDataURL(file); }); e.target.value=''; };
+  card.appendChild(imgSec);
+}
+
+function addCrew(v2){
+  makeEntry('crew-list',[{key:'crew-name',label:'Full Name',ph:'Name'},{key:'crew-role',label:'Role',type:'select',options:CREW_ROLES},{key:'crew-phone',label:'Phone',ph:'+1 555 000 0000',type:'tel'},{key:'crew-email',label:'Email',ph:'crew@email.com',type:'email'},{key:'crew-notes',label:'Notes',ph:'IMDB, IG, references...',type:'textarea',full:true}],v2);
+  setTimeout(refreshCrewChips,50);
+}
+
+function addCritPath(v2){ makeEntry('critpath-list',[{key:'cp-date',label:'Date / Deadline',type:'date'},{key:'cp-status',label:'Status',ph:'Pending / Done'},{key:'cp-milestone',label:'Milestone',ph:'What needs to happen...',type:'textarea',full:true}],v2); }
+
+function addShootDay(v2){
+  const card=makeEntry('shootplan-list',[{key:'sp-day',label:'Day #',ph:'Day 1'},{key:'sp-date',label:'Date',type:'date'},{key:'sp-location',label:'Location',ph:'Where?'},{key:'sp-scenes',label:'# of Scenes',ph:'e.g. 3 scenes'}],v2);
+  if(!card) return;
+  const crewSec=document.createElement('div'); crewSec.className='field-group';
+  const sel=v2&&v2['sp-crew']?v2['sp-crew'].split(',').map(s=>s.trim()):[];
+  crewSec.innerHTML=`<div class="section-label">Crew Present <span style="font-weight:400;font-size:10px;text-transform:none;letter-spacing:0">(click to select)</span></div><div class="crew-chips-wrap"></div><div style="font-size:11px;color:var(--muted);margin-top:4px">Updates as you add crew in Section 14</div>`;
+  card.appendChild(crewSec);
+  buildCrewChips(crewSec.querySelector('.crew-chips-wrap'),sel);
+}
+
+function addSoundTrack(v2){ makeEntry('sound-tracks-list',[{key:'st-title',label:'Track Title',ph:'Track name'},{key:'st-artist',label:'Artist',ph:'Artist name'},{key:'st-notes',label:'Notes / Usage',ph:'Where used, licensing status...',type:'textarea',full:true}],v2); }
+
+function addCostumeLook(v2){
+  const card=makeEntry('costume-looks-list',[{key:'cl-char',label:'Character / Person',ph:'Name'},{key:'cl-designer',label:'Designer',ph:'Designer name'},{key:'cl-piece',label:'Key Piece',ph:'e.g. Red silk dress'},{key:'cl-look',label:'Look Description',ph:'Describe the look...'},{key:'cl-notes',label:'Notes',ph:'References, measurements, sources...',type:'textarea',full:true}],v2);
+  if(!card) return;
+  const imgSec=document.createElement('div'); imgSec.className='field-group';
+  imgSec.innerHTML=`<div class="section-label">Photo References</div><div class="img-upload-area" style="padding:12px" onclick="this.nextElementSibling.click()"><div class="upload-icon" style="font-size:18px">📸</div><p>Upload costume reference photos</p></div><input type="file" accept="image/*" multiple style="display:none"><div class="img-preview-grid" style="margin-top:8px"></div>`;
+  imgSec.querySelector('input[type=file]').onchange=function(e){ Array.from(e.target.files).forEach(file=>{ const reader=new FileReader(); reader.onload=ev=>{ const item=document.createElement('div'); item.className='img-preview-item'; item.innerHTML=`<img src="${ev.target.result}" alt=""><div class="img-caption"><input type="text" placeholder="Caption..." oninput="autosave()"></div><button class="del-img" onclick="this.closest('.img-preview-item').remove()">✕</button>`; e.target.nextElementSibling.appendChild(item); }; reader.readAsDataURL(file); }); e.target.value=''; };
+  card.appendChild(imgSec);
+}
+
+function addFestival(v2){ makeEntry('dist-festivals-list',[{key:'fest-name',label:'Festival / Platform',ph:'e.g. Sundance'},{key:'fest-deadline',label:'Deadline',type:'date'},{key:'fest-cost',label:'Cost',ph:'0.00'},{key:'fest-notes',label:'Notes',ph:'Category, format requirements...',type:'textarea',full:true}],v2); }
+
+function addPermit(v2){ makeEntry('permits-list',[{key:'perm-name',label:'Document / Permit',ph:'e.g. Location release'},{key:'perm-status',label:'Status',ph:'Signed / Pending'},{key:'perm-notes',label:'Notes',ph:'Contact, expiry date...',type:'textarea',full:true}],v2); }
+
+// ═══ EXPORT DOCX ═══
+async function exportDocx(){
+  showToast('Building document…');
+  const {Document,Packer,Paragraph,TextRun,HeadingLevel,AlignmentType,PageBreak,BorderStyle}=docx;
+  const nl=()=>new Paragraph({children:[new TextRun('')]});
+  const h1=t=>new Paragraph({heading:HeadingLevel.HEADING_1,children:[new TextRun({text:t,bold:true,size:36,font:'Arial'})]});
+  const h2=t=>new Paragraph({heading:HeadingLevel.HEADING_2,children:[new TextRun({text:t,bold:true,size:28,font:'Arial'})]});
+  const h3=t=>new Paragraph({children:[new TextRun({text:t,bold:true,size:22,font:'Arial',color:'444444'})]});
+  const kv=(l,val)=>val?new Paragraph({children:[new TextRun({text:l+': ',bold:true,size:22,font:'Arial'}),new TextRun({text:val,size:22,font:'Arial'})]}):null;
+  const body=txt=>txt?txt.split('\n').map(line=>new Paragraph({children:[new TextRun({text:line,size:22,font:'Arial'})]})):[];
+  const div=()=>new Paragraph({border:{bottom:{style:BorderStyle.SINGLE,size:4,color:'dddddd',space:1}},children:[new TextRun('')]});
+  const pb=()=>new Paragraph({children:[new PageBreak()]});
+  const vis=id=>{ const el=document.getElementById(id); return el&&!el.classList.contains('section-hidden'); };
+  const push=(arr,...items)=>items.forEach(i=>{ if(!i) return; if(Array.isArray(i)) i.forEach(x=>{ if(x) arr.push(x); }); else arr.push(i); });
+  const entries=(listId,flds)=>Array.from(document.querySelectorAll('#'+listId+' .entry-card')).map(c=>{ const obj={}; flds.forEach(f=>{ obj[f]=c.querySelector('[data-f="'+f+'"]')?.value||''; }); return obj; });
+
+  const ch=[];
+
+  if(vis('sec-1')){ push(ch,new Paragraph({alignment:AlignmentType.CENTER,spacing:{before:2880,after:480},children:[new TextRun({text:v('cover-project')||'Untitled Project',bold:true,size:64,font:'Arial'})]})); if(v('cover-tagline')) push(ch,new Paragraph({alignment:AlignmentType.CENTER,children:[new TextRun({text:v('cover-tagline'),size:28,color:'666666',font:'Arial'})]})); push(ch,...body(v('cover-notes')),pb()); }
+
+  if(vis('sec-2')){ push(ch,h1('Technical Sheet'),div()); [['Title','tech-title'],['Year','tech-year'],['Country','tech-country'],['Format','tech-format'],['Duration','tech-duration'],['Genre','tech-genre'],['Direction','tech-direction'],['Production','tech-production'],['Script','tech-script'],['Photography (DOP)','tech-dop'],['Production Design','tech-proddesign']].forEach(([l,id])=>push(ch,kv(l,v(id)))); push(ch,nl(),pb()); }
+
+  if(vis('sec-4')){ push(ch,h1('Executive Presentation'),div()); if(v('exec-letter')) push(ch,h2("Producer's Letter"),nl(),...body(v('exec-letter')),nl()); if(v('exec-why')) push(ch,h2('Why This Project?'),...body(v('exec-why')),nl()); if(v('exec-audience')) push(ch,h2('Target Audience'),...body(v('exec-audience'))); push(ch,nl(),pb()); }
+
+  if(vis('sec-5')){ push(ch,h1('Synopsis & Logline'),div()); if(v('syn-logline')) push(ch,h2('Logline'),...body(v('syn-logline')),nl()); if(v('syn-short')) push(ch,h2('Short Synopsis'),...body(v('syn-short')),nl()); if(v('syn-long')) push(ch,h2('Extended Synopsis'),...body(v('syn-long'))); push(ch,nl(),pb()); }
+
+  if(vis('sec-6')){ push(ch,h1('Script / Action'),div(),...body(v('script-body'))); if(v('script-link')) push(ch,nl(),kv('File Reference',v('script-link'))); push(ch,nl(),pb()); }
+
+  if(vis('sec-7')){ const shots=entries('shots-list',['shot-num','shot-lens','shot-desc']).filter(s=>s['shot-desc']||s['shot-num']); if(shots.length){ push(ch,h1('Shooting List'),div()); shots.forEach(s=>{ push(ch,h3('Shot '+(s['shot-num']||'#')+(s['shot-lens']?' — '+s['shot-lens']:'')),...body(s['shot-desc']),nl()); }); push(ch,pb()); } }
+
+  if(vis('sec-8')){ const cast=entries('cast-list',['cast-name','cast-role','cast-phone','cast-email','cast-agency','cast-notes']).filter(c=>c['cast-name']); if(cast.length){ push(ch,h1('Casting'),div()); cast.forEach(c=>{ push(ch,h2(c['cast-name']+(c['cast-role']?' — '+c['cast-role']:'')),kv('Phone',c['cast-phone']),kv('Email',c['cast-email']),kv('Agency',c['cast-agency']),...body(c['cast-notes']),nl()); }); push(ch,pb()); } }
+
+  if(vis('sec-9')){ const locs=entries('locations-list',['loc-name','loc-address','loc-notes']).filter(l=>l['loc-name']); if(locs.length){ push(ch,h1('Locations'),div()); locs.forEach(l=>{ push(ch,h2(l['loc-name']),kv('Address',l['loc-address']),...body(l['loc-notes']),nl()); }); push(ch,pb()); } }
+
+  if(vis('sec-10')){ push(ch,h1('Photography Proposal'),div()); if(v('photo-style')) push(ch,h2('Visual Style'),...body(v('photo-style')),nl()); if(v('photo-refs')) push(ch,h2('References / Moodboard'),...body(v('photo-refs')),nl()); if(v('photo-equip')) push(ch,h2('Camera & Equipment'),...body(v('photo-equip'))); push(ch,nl(),pb()); }
+
+  if(vis('sec-11')){ push(ch,h1('Production Design'),div()); if(v('pd-set')) push(ch,h2('Set Decoration'),...body(v('pd-set')),nl()); if(v('pd-props')) push(ch,h2('Props'),...body(v('pd-props')),nl()); if(v('pd-art')) push(ch,h2('Art Direction'),...body(v('pd-art')),nl()); if(selectedPal>=0){ const p=CINEMATIC_PALETTES[selectedPal]; push(ch,h2('Color Palette — '+p.name),new Paragraph({children:[new TextRun({text:'Colors: '+p.colors.join(' · '),size:22,font:'Arial',color:'444444'})]}),nl()); } const sw=getSwatches(); if(sw.length) push(ch,h2('Custom Palette'),new Paragraph({children:[new TextRun({text:sw.map(s=>(s.label||'Color')+': '+s.color).join(' · '),size:22,font:'Arial',color:'444444'})]}),nl()); if(v('pd-palette-notes')) push(ch,...body(v('pd-palette-notes'))); push(ch,nl(),pb()); }
+
+  if(vis('sec-12')){ push(ch,h1('Costume Design'),div()); if(v('costume-concept')) push(ch,h2('Concept'),...body(v('costume-concept')),nl()); if(v('costume-makeup')) push(ch,h2('Makeup'),...body(v('costume-makeup')),nl()); if(v('costume-hair')) push(ch,h2('Hairstyle'),...body(v('costume-hair')),nl()); if(v('costume-nails')) push(ch,h2('Nails'),...body(v('costume-nails')),nl()); const looks=entries('costume-looks-list',['cl-char','cl-designer','cl-piece','cl-look','cl-notes']).filter(l=>l['cl-char']||l['cl-look']); if(looks.length){ push(ch,h2('Characters & Looks')); looks.forEach(l=>{ push(ch,h3(l['cl-char']||(l['cl-piece']||'Look')),kv('Designer',l['cl-designer']),kv('Key Piece',l['cl-piece']),...body(l['cl-look']),...body(l['cl-notes']),nl()); }); } push(ch,pb()); }
+
+  if(vis('sec-13')){ push(ch,h1('Sound Design'),div()); if(v('sound-music')) push(ch,h2('Music Concept'),...body(v('sound-music')),nl()); if(v('sound-sfx')) push(ch,h2('SFX / Incidental Sounds'),...body(v('sound-sfx')),nl()); const tracks=entries('sound-tracks-list',['st-title','st-artist','st-notes']).filter(t=>t['st-title']); if(tracks.length){ push(ch,h2('Tracks')); tracks.forEach(t=>{ push(ch,h3(t['st-title']+(t['st-artist']?' — '+t['st-artist']:'')),...body(t['st-notes']),nl()); }); } push(ch,pb()); }
+
+  if(vis('sec-14')){ const crew=entries('crew-list',['crew-name','crew-role','crew-phone','crew-email','crew-notes']).filter(c=>c['crew-name']); if(crew.length){ push(ch,h1('Crew'),div()); crew.forEach(c=>{ push(ch,kv(c['crew-role']&&c['crew-role']!=='— Select Role —'?c['crew-role']:'Crew',c['crew-name']+(c['crew-phone']?' · '+c['crew-phone']:'')+(c['crew-email']?' · '+c['crew-email']:'')));  if(c['crew-notes']) push(ch,...body(c['crew-notes'])); }); push(ch,nl(),pb()); } }
+
+  if(vis('sec-15')){ const cps=entries('critpath-list',['cp-date','cp-status','cp-milestone']).filter(c=>c['cp-milestone']); if(cps.length){ push(ch,h1('Critical Path'),div()); cps.forEach(c=>{ push(ch,h3((c['cp-date']||'—')+(c['cp-status']?' · '+c['cp-status']:'')),...body(c['cp-milestone']),nl()); }); push(ch,pb()); } }
+
+  if(vis('sec-16')){ const days=Array.from(document.querySelectorAll('#shootplan-list .entry-card')).map(c=>({day:c.querySelector('[data-f="sp-day"]')?.value||'',date:c.querySelector('[data-f="sp-date"]')?.value||'',loc:c.querySelector('[data-f="sp-location"]')?.value||'',scenes:c.querySelector('[data-f="sp-scenes"]')?.value||'',crew:Array.from(c.querySelectorAll('.crew-chip.selected')).map(ch=>ch.dataset.name).join(', ')})).filter(d=>d.day||d.loc); if(days.length){ push(ch,h1('Shooting Plan'),div()); days.forEach(d=>{ push(ch,h2((d.day||'Day')+(d.date?' — '+d.date:'')),kv('Location',d.loc),kv('Scenes',d.scenes),kv('Crew Present',d.crew),nl()); }); } if(v('shootplan-catering')) push(ch,h2('Catering'),...body(v('shootplan-catering'))); push(ch,nl(),pb()); }
+
+  if(vis('sec-17')){ const cur=v('budget-currency')||'EUR'; const sym=CURRENCY_SYMS[cur]||'€'; const total=parseFloat(document.getElementById('budget-total')?.value)||0; let spent=0; document.querySelectorAll('.b-line-amount').forEach(el=>spent+=parseFloat(el.value)||0); push(ch,h1('Budget'),div(),kv('Total Budget',sym+' '+total.toFixed(2)),kv('Spent',sym+' '+spent.toFixed(2)),kv('Remaining',sym+' '+(total-spent).toFixed(2)),nl()); if(v('budget-notes')) push(ch,...body(v('budget-notes')),nl()); const lines=getBudgetLines().filter(l=>l.name); if(lines.length){ push(ch,h2('Budget Lines')); lines.forEach(l=>push(ch,kv(l.name+(l.cat?' ['+l.cat+']':''),sym+' '+(parseFloat(l.amount)||0).toFixed(2)))); } push(ch,nl(),pb()); }
+
+  if(vis('sec-18')){ push(ch,h1('Distribution Plan'),div(),...body(v('dist-strategy'))); const fests=entries('dist-festivals-list',['fest-name','fest-deadline','fest-cost','fest-notes']).filter(f=>f['fest-name']); if(fests.length){ push(ch,nl(),h2('Festivals & Platforms')); fests.forEach(f=>{ push(ch,h3(f['fest-name']),kv('Deadline',f['fest-deadline']),kv('Cost',f['fest-cost']),...body(f['fest-notes']),nl()); }); } push(ch,pb()); }
+
+  if(vis('sec-19')){ push(ch,h1('Copyright Registration'),div(),kv('Registration Number',v('cr-number')),kv('Date',v('cr-date')),kv('Holder',v('cr-holder')),...body(v('cr-notes')),nl(),pb()); }
+
+  if(vis('sec-20')){ push(ch,h1('Permits & Releases'),div()); const permits=entries('permits-list',['perm-name','perm-status','perm-notes']).filter(p=>p['perm-name']); permits.forEach(p=>push(ch,kv(p['perm-name'],p['perm-status']),...body(p['perm-notes']),nl())); push(ch,...body(v('permits-notes'))); }
+
+  const doc=new Document({ styles:{default:{document:{run:{font:'Arial',size:22}}},paragraphStyles:[{id:'Heading1',name:'Heading 1',basedOn:'Normal',next:'Normal',quickFormat:true,run:{size:36,bold:true,font:'Arial'},paragraph:{spacing:{before:360,after:240},outlineLevel:0}},{id:'Heading2',name:'Heading 2',basedOn:'Normal',next:'Normal',quickFormat:true,run:{size:28,bold:true,font:'Arial'},paragraph:{spacing:{before:240,after:160},outlineLevel:1}}]}, sections:[{properties:{page:{size:{width:11906,height:16838},margin:{top:1440,right:1440,bottom:1440,left:1440}}},children:ch.filter(Boolean)}] });
+
+  const title=v('cover-project')||'production-bible';
+  const fname=title.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'')+'.docx';
+  const buf=await Packer.toBuffer(doc);
+  const blob=new Blob([buf],{type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+  const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=fname; a.click(); URL.revokeObjectURL(url);
+  showToast('✓ Exported!');
+}
+
+// ═══ CLEAR ═══
+function clearAll(){ if(!confirm('Clear all data? This cannot be undone.')) return; localStorage.removeItem(STORE); location.reload(); }
+
+// ═══ INIT ═══
+document.addEventListener('DOMContentLoaded',()=>{
+  buildPalettePresets();
+  restore();
+  document.querySelectorAll('input,textarea,select').forEach(el=>el.addEventListener('input',updateStats));
+});
+</script>
+</body>
+</html>
