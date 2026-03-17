@@ -54,6 +54,35 @@
   tr.lead-row.snoozed-row:hover td { opacity: 0.7; background: #f5f5f3; }
   .icon-btn.snooze:hover { border-color: #f59e0b; color: #f59e0b; background: #fffbeb; }
   .icon-btn.snoozed-active { background: #fff8e1; border-color: #f59e0b; color: #f59e0b; }
+
+  /* ── SNOOZE POPOVER ── */
+  .snooze-popover { position: fixed; background: var(--card); border: 2px solid var(--border); border-radius: 14px; padding: 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.12); z-index: 500; width: 230px; animation: fadeUp 0.15s ease; }
+  .snooze-popover h4 { font-size: 12px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+  .snooze-checkbox-row { display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; padding: 4px 0; }
+  .snooze-checkbox-box { width: 20px; height: 20px; border-radius: 6px; border: 1.5px solid var(--border); background: #fafafa; display: flex; align-items: center; justify-content: center; font-size: 11px; transition: all 0.15s; flex-shrink: 0; }
+  .snooze-checkbox-box.checked { background: #f59e0b; border-color: #f59e0b; color: #fff; }
+  .snooze-checkbox-label { font-size: 13px; font-weight: 600; color: var(--text); }
+  .snooze-date-input { padding: 8px 12px; background: #fafafa; border: 1.5px solid var(--border); border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--text); outline: none; width: 100%; transition: border-color 0.15s; }
+  .snooze-date-input:focus { border-color: #f59e0b; }
+  .snooze-confirm-btn { width: 100%; padding: 9px; border-radius: 10px; border: none; background: #111; color: #fff; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 800; cursor: pointer; transition: all 0.15s; }
+  .snooze-confirm-btn:hover { background: #333; }
+  #snooze-overlay { display: none; position: fixed; inset: 0; z-index: 499; }
+  #snooze-overlay.open { display: block; }
+
+  /* ── REMINDER BANNER ── */
+  #reminder-banner { display: none; background: #fff; border: 2px solid #f59e0b; border-radius: 16px; padding: 16px 20px; margin-bottom: 0; box-shadow: 0 4px 20px rgba(245,158,11,0.15); }
+  #reminder-banner.has-items { display: block; }
+  .reminder-banner-title { font-size: 11px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #d97706; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+  .reminder-items { display: flex; flex-direction: column; gap: 6px; }
+  .reminder-item { display: flex; align-items: center; justify-content: space-between; background: #fffbeb; border-radius: 10px; padding: 10px 14px; gap: 12px; }
+  .reminder-item-left { display: flex; align-items: center; gap: 10px; }
+  .reminder-item-name { font-size: 14px; font-weight: 700; }
+  .reminder-item-date { font-size: 11px; color: #d97706; font-weight: 600; }
+  .reminder-item-btns { display: flex; gap: 6px; flex-shrink: 0; }
+  .reminder-btn { padding: 5px 12px; border-radius: 8px; border: 1.5px solid var(--border); background: #fff; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.15s; }
+  .reminder-btn.primary { background: #f59e0b; border-color: #f59e0b; color: #fff; }
+  .reminder-btn.primary:hover { background: #d97706; }
+  .reminder-btn:hover { border-color: var(--text); }
   .company-name { font-weight: 700; }
   .comms-inline-btn { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 6px; background: #f0f0f0; border: none; cursor: pointer; font-size: 11px; position: relative; flex-shrink: 0; transition: background 0.15s; }
   .comms-inline-btn:hover { background: #ede9fe; }
@@ -229,6 +258,13 @@
 </div>
 
 <div class="main">
+
+  <!-- REMINDER BANNER -->
+  <div id="reminder-banner">
+    <div class="reminder-banner-title">👋 Time to follow up</div>
+    <div class="reminder-items" id="reminder-items"></div>
+  </div>
+
   <div class="view-tabs">
     <button class="view-tab active" id="tab-leads" onclick="switchTab('leads')">📋 Leads <span class="tab-badge" id="tab-leads-badge">0</span></button>
     <button class="view-tab" id="tab-activity" onclick="switchTab('activity')">💬 Communication Activity <span class="tab-badge red" id="tab-activity-badge">0</span></button>
@@ -398,6 +434,20 @@
   <div class="cp-timeline" id="cp-timeline"><div class="cp-empty"><div class="cp-empty-icon">💬</div>No interactions logged yet.</div></div>
 </div>
 
+<!-- SNOOZE POPOVER -->
+<div id="snooze-overlay" onclick="closeSnoozePopover()"></div>
+<div id="snooze-popover" class="snooze-popover" style="display:none;">
+  <h4>🔕 Snooze lead</h4>
+  <label class="snooze-checkbox-row" id="snooze-reminder-toggle" onclick="toggleSnoozeReminder()">
+    <span class="snooze-checkbox-box" id="snooze-checkbox-box"></span>
+    <span class="snooze-checkbox-label">Set a reminder</span>
+  </label>
+  <div id="snooze-date-section" style="display:none;margin-top:10px;">
+    <input type="date" class="snooze-date-input" id="snooze-date-input">
+  </div>
+  <button class="snooze-confirm-btn" style="margin-top:12px;" onclick="confirmSnooze()">Snooze</button>
+</div>
+
 <footer>
   Built by Emilio Miranda Escamilla<br><br>
   <button onclick="history.back()" style="background:none;border:1.5px solid #e0e0e0;border-radius:8px;padding:6px 14px;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;color:#aaa;cursor:pointer;letter-spacing:0.04em;transition:all 0.15s;" onmouseover="this.style.borderColor='#111';this.style.color='#111'" onmouseout="this.style.borderColor='#e0e0e0';this.style.color='#aaa'">← Back</button>
@@ -518,7 +568,7 @@ function render() {
         <td onclick="event.stopPropagation()"><button class="toggle-check ${l.closed?'closed-check':''}" onclick="toggle('${l.id}','closed')">${l.closed?'✓':''}</button></td>
         <td style="max-width:160px;white-space:normal;font-size:12px;color:var(--muted)">${esc(l.notes||'')}</td>
         <td onclick="event.stopPropagation()"><div class="action-btns">
-          <button class="icon-btn snooze${l.snoozed?' snoozed-active':''}" onclick="toggleSnooze('${l.id}')" title="${l.snoozed?'Un-snooze lead':'Snooze — not interested right now'}">🔕</button>
+          <button class="icon-btn snooze${l.snoozed?' snoozed-active':''}" onclick="event.stopPropagation();toggleSnooze('${l.id}',this)" title="${l.snoozed?'Un-snooze lead':'Snooze — not interested right now'}">${l.snoozed?'🔕':'🔕'}</button>
           <button class="icon-btn" onclick="editLead('${l.id}')" title="Edit">✏️</button>
           <button class="icon-btn del" onclick="deleteLead('${l.id}')" title="Delete">🗑️</button>
         </div></td>
@@ -535,6 +585,7 @@ function render() {
   const scEl = document.getElementById('snooze-count'); if(scEl) scEl.textContent = sc;
   const oc=leads.filter(l=>stalenessInfo(l).level==='stale').length;
   const ab=document.getElementById('tab-activity-badge'); ab.textContent=oc; ab.style.display=oc>0?'':'none';
+  renderReminderBanner();
   if (currentTab==='activity') renderActivity();
 }
 
@@ -607,10 +658,108 @@ function stalenessInfo(lead){
 }
 
 function toggle(id,field){const l=leads.find(x=>x.id===id);if(!l)return;l[field]=!l[field];save();render();}
-function toggleSnooze(id){
-  const l=leads.find(x=>x.id===id);if(!l)return;
-  l.snoozed=!l.snoozed;
-  save();render();
+
+// ── SNOOZE ────────────────────────────────────────────
+let snoozeTargetId = null;
+let snoozeReminderOn = false;
+
+function toggleSnooze(id, btnEl) {
+  const l = leads.find(x=>x.id===id);
+  if (!l) return;
+  // Already snoozed → un-snooze immediately
+  if (l.snoozed) {
+    l.snoozed = false; l.snoozeDate = null;
+    save(); render(); return;
+  }
+  // Open popover
+  snoozeTargetId = id;
+  snoozeReminderOn = false;
+  const pop = document.getElementById('snooze-popover');
+  const overlay = document.getElementById('snooze-overlay');
+  // Reset checkbox state
+  document.getElementById('snooze-checkbox-box').classList.remove('checked');
+  document.getElementById('snooze-date-section').style.display = 'none';
+  document.getElementById('snooze-date-input').value = '';
+  document.getElementById('snooze-date-input').min = new Date().toISOString().slice(0,10);
+  // Position near button
+  const rect = btnEl.getBoundingClientRect();
+  pop.style.display = 'block';
+  overlay.classList.add('open');
+  const popW = 230, popH = 160;
+  let top  = rect.bottom + 8;
+  let left = rect.left - popW + rect.width;
+  if (left < 8) left = 8;
+  if (top + popH > window.innerHeight - 8) top = rect.top - popH - 8;
+  pop.style.top = top + 'px';
+  pop.style.left = left + 'px';
+}
+
+function toggleSnoozeReminder() {
+  snoozeReminderOn = !snoozeReminderOn;
+  document.getElementById('snooze-checkbox-box').classList.toggle('checked', snoozeReminderOn);
+  document.getElementById('snooze-date-section').style.display = snoozeReminderOn ? 'block' : 'none';
+  if (snoozeReminderOn) document.getElementById('snooze-date-input').focus();
+}
+
+function confirmSnooze() {
+  const l = leads.find(x=>x.id===snoozeTargetId);
+  if (!l) return;
+  if (snoozeReminderOn) {
+    const d = document.getElementById('snooze-date-input').value;
+    if (!d) { document.getElementById('snooze-date-input').focus(); return; }
+    l.snoozeDate = d;
+  } else {
+    l.snoozeDate = null;
+  }
+  l.snoozed = true;
+  save(); render(); closeSnoozePopover();
+}
+
+function closeSnoozePopover() {
+  document.getElementById('snooze-popover').style.display = 'none';
+  document.getElementById('snooze-overlay').classList.remove('open');
+  snoozeTargetId = null; snoozeReminderOn = false;
+}
+
+// ── REMINDER BANNER ───────────────────────────────────
+function renderReminderBanner() {
+  const today = new Date().toISOString().slice(0,10);
+  const due = leads.filter(l => l.snoozed && l.snoozeDate && l.snoozeDate <= today);
+  const banner = document.getElementById('reminder-banner');
+  const items  = document.getElementById('reminder-items');
+  if (!due.length) { banner.classList.remove('has-items'); return; }
+  banner.classList.add('has-items');
+  items.innerHTML = due.map(l => {
+    const daysAgo = Math.floor((Date.now() - new Date(l.snoozeDate+'T12:00:00').getTime()) / 86400000);
+    const dateLabel = daysAgo === 0 ? 'Today' : daysAgo === 1 ? 'Yesterday' : `${daysAgo}d ago`;
+    return `<div class="reminder-item">
+      <div class="reminder-item-left">
+        <div>
+          <div class="reminder-item-name">${esc(l.company)}</div>
+          <div class="reminder-item-date">📅 Reminder was set for ${dateLabel}</div>
+        </div>
+      </div>
+      <div class="reminder-item-btns">
+        <button class="reminder-btn" onclick="dismissReminder('${l.id}')">Park again</button>
+        <button class="reminder-btn primary" onclick="unsnoozeFromBanner('${l.id}')">Back to pipeline</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function dismissReminder(id) {
+  const l = leads.find(x=>x.id===id);
+  if (!l) return;
+  l.snoozeDate = null; // remove date, stay snoozed
+  save(); render();
+}
+
+function unsnoozeFromBanner(id) {
+  const l = leads.find(x=>x.id===id);
+  if (!l) return;
+  l.snoozed = false;
+  l.snoozeDate = null;
+  save(); render();
 }
 
 // ── CONTACTS ─────────────────────────────────────────
