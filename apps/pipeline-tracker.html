@@ -48,8 +48,12 @@
   th.sort-asc .sort-arrow, th.sort-desc .sort-arrow { opacity: 1; color: var(--text); }
   td { padding: 12px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
   tr:last-child td { border-bottom: none; }
-  tr:hover td { background: #fafafa; }
+  tr.lead-row { cursor: pointer; }
+  tr.lead-row:hover td { background: #f0f0ee; }
   .company-name { font-weight: 700; }
+  .comms-inline-btn { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 6px; background: #f0f0f0; border: none; cursor: pointer; font-size: 11px; position: relative; flex-shrink: 0; transition: background 0.15s; }
+  .comms-inline-btn:hover { background: #ede9fe; }
+  .comms-inline-badge { position: absolute; top: -4px; right: -4px; background: #6366f1; color: #fff; font-size: 8px; font-weight: 800; border-radius: 99px; padding: 1px 3px; min-width: 13px; text-align: center; line-height: 1.4; }
   .website-link { color: var(--text); font-size: 12px; text-decoration: none; font-weight: 600; }
   .website-link:hover { text-decoration: underline; }
   .contacts-cell { display: flex; flex-direction: column; gap: 6px; min-width: 180px; }
@@ -487,19 +491,26 @@ function render() {
     empty.style.display='none';
     tbody.innerHTML=fl.map(l=>{
       const si=stalenessInfo(l), lc=(l.commLog||[]).length;
-      return `<tr>
-        <td><div class="company-cell"><div class="stale-dot ${si.dot}" title="${si.label}"></div><div class="company-name">${esc(l.company||'—')}</div></div></td>
+      return `<tr class="lead-row" onclick="openCommsPanel('${l.id}')" title="Click to open communication log">
+        <td>
+          <div class="company-cell">
+            <div class="stale-dot ${si.dot}" title="${si.label}"></div>
+            <div class="company-name">${esc(l.company||'—')}</div>
+            <button class="comms-inline-btn" onclick="event.stopPropagation();openCommsPanel('${l.id}')" title="Communication log">
+              💬${lc>0?`<span class="comms-inline-badge">${lc}</span>`:''}
+            </button>
+          </div>
+        </td>
         <td><span class="last-contact-badge ${si.level}">${si.level==='none'?'—':si.label}</span></td>
         <td>${renderContactsCell(l.contacts)}</td>
-        <td>${l.website?`<a class="website-link" href="${esc(l.website)}" target="_blank" rel="noopener">🔗 ${esc(cleanUrl(l.website))}</a>`:'<span style="color:#ddd">—</span>'}</td>
+        <td>${l.website?`<a class="website-link" href="${esc(l.website)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">🔗 ${esc(cleanUrl(l.website))}</a>`:'<span style="color:#ddd">—</span>'}</td>
         <td>${esc(l.city||'—')}</td><td>${esc(l.country||'—')}</td>
-        <td><button class="toggle-check ${l.contacted?'checked':''}" onclick="toggle('${l.id}','contacted')">${l.contacted?'✓':''}</button></td>
-        <td><button class="toggle-check ${l.demo?'checked':''}" onclick="toggle('${l.id}','demo')">${l.demo?'✓':''}</button></td>
-        <td><button class="toggle-check ${l.proposal?'checked':''}" onclick="toggle('${l.id}','proposal')">${l.proposal?'✓':''}</button></td>
-        <td><button class="toggle-check ${l.closed?'closed-check':''}" onclick="toggle('${l.id}','closed')">${l.closed?'✓':''}</button></td>
+        <td onclick="event.stopPropagation()"><button class="toggle-check ${l.contacted?'checked':''}" onclick="toggle('${l.id}','contacted')">${l.contacted?'✓':''}</button></td>
+        <td onclick="event.stopPropagation()"><button class="toggle-check ${l.demo?'checked':''}" onclick="toggle('${l.id}','demo')">${l.demo?'✓':''}</button></td>
+        <td onclick="event.stopPropagation()"><button class="toggle-check ${l.proposal?'checked':''}" onclick="toggle('${l.id}','proposal')">${l.proposal?'✓':''}</button></td>
+        <td onclick="event.stopPropagation()"><button class="toggle-check ${l.closed?'closed-check':''}" onclick="toggle('${l.id}','closed')">${l.closed?'✓':''}</button></td>
         <td style="max-width:160px;white-space:normal;font-size:12px;color:var(--muted)">${esc(l.notes||'')}</td>
-        <td><div class="action-btns">
-          <button class="icon-btn comms" onclick="openCommsPanel('${l.id}')" title="Communication log" style="position:relative;">💬${lc>0?`<span style="position:absolute;top:-4px;right:-4px;background:#6366f1;color:#fff;font-size:9px;font-weight:800;border-radius:99px;padding:1px 4px;min-width:14px;text-align:center;">${lc}</span>`:''}</button>
+        <td onclick="event.stopPropagation()"><div class="action-btns">
           <button class="icon-btn" onclick="editLead('${l.id}')" title="Edit">✏️</button>
           <button class="icon-btn del" onclick="deleteLead('${l.id}')" title="Delete">🗑️</button>
         </div></td>
