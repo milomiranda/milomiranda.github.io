@@ -50,6 +50,10 @@
   tr:last-child td { border-bottom: none; }
   tr.lead-row { cursor: pointer; }
   tr.lead-row:hover td { background: #f0f0ee; }
+  tr.lead-row.snoozed-row td { opacity: 0.45; }
+  tr.lead-row.snoozed-row:hover td { opacity: 0.7; background: #f5f5f3; }
+  .icon-btn.snooze:hover { border-color: #f59e0b; color: #f59e0b; background: #fffbeb; }
+  .icon-btn.snoozed-active { background: #fff8e1; border-color: #f59e0b; color: #f59e0b; }
   .company-name { font-weight: 700; }
   .comms-inline-btn { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 6px; background: #f0f0f0; border: none; cursor: pointer; font-size: 11px; position: relative; flex-shrink: 0; transition: background 0.15s; }
   .comms-inline-btn:hover { background: #ede9fe; }
@@ -250,6 +254,7 @@
           <button class="filter-btn" onclick="setFilter('demo',this)">Demo Scheduled</button>
           <button class="filter-btn" onclick="setFilter('proposal',this)">Proposal Sent</button>
           <button class="filter-btn" onclick="setFilter('closed',this)">Closed ✓</button>
+          <button class="filter-btn" onclick="setFilter('snoozed',this)">🔕 Snoozed <span id="snooze-count" style="font-size:10px;background:#f0f0f0;border-radius:99px;padding:1px 6px;margin-left:2px;">0</span></button>
         </div>
       </div>
     </div>
@@ -468,6 +473,8 @@ function filteredLeads() {
     const cm = (l.contacts||[]).some(c => (c.name||'').toLowerCase().includes(q)||(c.email||'').toLowerCase().includes(q));
     const ms = !q||(l.company||'').toLowerCase().includes(q)||(l.city||'').toLowerCase().includes(q)||(l.country||'').toLowerCase().includes(q)||cm;
     if (!ms) return false;
+    if (currentFilter==='snoozed') return !!l.snoozed;
+    if (l.snoozed) return false; // hide snoozed from all other filters
     if (currentFilter==='all') return true;
     if (currentFilter==='not-contacted') return !l.contacted;
     return l[currentFilter==='closed'?'closed':currentFilter==='proposal'?'proposal':currentFilter==='demo'?'demo':'contacted'];
@@ -491,7 +498,7 @@ function render() {
     empty.style.display='none';
     tbody.innerHTML=fl.map(l=>{
       const si=stalenessInfo(l), lc=(l.commLog||[]).length;
-      return `<tr class="lead-row" onclick="openCommsPanel('${l.id}')" title="Click to open communication log">
+      return `<tr class="lead-row${l.snoozed?' snoozed-row':''}" onclick="openCommsPanel('${l.id}')" title="Click to open communication log">
         <td>
           <div class="company-cell">
             <div class="stale-dot ${si.dot}" title="${si.label}"></div>
@@ -511,18 +518,21 @@ function render() {
         <td onclick="event.stopPropagation()"><button class="toggle-check ${l.closed?'closed-check':''}" onclick="toggle('${l.id}','closed')">${l.closed?'✓':''}</button></td>
         <td style="max-width:160px;white-space:normal;font-size:12px;color:var(--muted)">${esc(l.notes||'')}</td>
         <td onclick="event.stopPropagation()"><div class="action-btns">
+          <button class="icon-btn snooze${l.snoozed?' snoozed-active':''}" onclick="toggleSnooze('${l.id}')" title="${l.snoozed?'Un-snooze lead':'Snooze — not interested right now'}">🔕</button>
           <button class="icon-btn" onclick="editLead('${l.id}')" title="Edit">✏️</button>
           <button class="icon-btn del" onclick="deleteLead('${l.id}')" title="Delete">🗑️</button>
         </div></td>
       </tr>`;
     }).join('');
   }
-  document.getElementById('stat-total').textContent    = leads.length;
-  document.getElementById('stat-contacted').textContent = leads.filter(l=>l.contacted).length;
-  document.getElementById('stat-demo').textContent      = leads.filter(l=>l.demo).length;
-  document.getElementById('stat-proposal').textContent  = leads.filter(l=>l.proposal).length;
+  document.getElementById('stat-total').textContent    = leads.filter(l=>!l.snoozed).length;
+  document.getElementById('stat-contacted').textContent = leads.filter(l=>l.contacted&&!l.snoozed).length;
+  document.getElementById('stat-demo').textContent      = leads.filter(l=>l.demo&&!l.snoozed).length;
+  document.getElementById('stat-proposal').textContent  = leads.filter(l=>l.proposal&&!l.snoozed).length;
   document.getElementById('stat-closed').textContent    = leads.filter(l=>l.closed).length;
-  document.getElementById('tab-leads-badge').textContent = leads.length;
+  document.getElementById('tab-leads-badge').textContent = leads.filter(l=>!l.snoozed).length;
+  const sc = leads.filter(l=>l.snoozed).length;
+  const scEl = document.getElementById('snooze-count'); if(scEl) scEl.textContent = sc;
   const oc=leads.filter(l=>stalenessInfo(l).level==='stale').length;
   const ab=document.getElementById('tab-activity-badge'); ab.textContent=oc; ab.style.display=oc>0?'':'none';
   if (currentTab==='activity') renderActivity();
@@ -597,6 +607,11 @@ function stalenessInfo(lead){
 }
 
 function toggle(id,field){const l=leads.find(x=>x.id===id);if(!l)return;l[field]=!l[field];save();render();}
+function toggleSnooze(id){
+  const l=leads.find(x=>x.id===id);if(!l)return;
+  l.snoozed=!l.snoozed;
+  save();render();
+}
 
 // ── CONTACTS ─────────────────────────────────────────
 function addContactRow(data={}) {
