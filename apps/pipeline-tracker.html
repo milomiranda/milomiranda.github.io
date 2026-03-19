@@ -485,19 +485,20 @@
 <!-- IMPORT CSV MODAL -->
 <div class="modal-overlay" id="import-modal">
   <div class="modal" style="max-width:520px">
-    <h2>Import CSV</h2>
+    <h2>Import CSV or Excel</h2>
     <div class="import-drop" id="import-drop" onclick="document.getElementById('import-file').click()">
       <div class="drop-icon">📂</div>
-      <p>Click to select a CSV file</p>
-      <span>or drag and drop it here</span>
+      <p>Click to select a file</p>
+      <span>CSV (.csv) or Excel (.xlsx, .xls) — drag and drop works too</span>
     </div>
-    <input type="file" id="import-file" accept=".csv,.txt">
+    <input type="file" id="import-file" accept=".csv,.txt,.xlsx,.xls">
     <div class="import-preview" id="import-preview"></div>
     <div class="import-note">
       <strong>Expected columns (header row required):</strong>
-      Company · Person · Email · Phone · Website · City · Country · Notes · Contacted · Demo · Proposal · Closed<br>
+      Company · Person · Role · Email · Phone · Website · City · Country · Notes · Contacted · Demo · Proposal · Closed<br>
       • Column order doesn't matter — matched by name<br>
       • For status columns use <em>yes</em>, <em>1</em>, or <em>true</em><br>
+      • Works with the Excel export from this app<br>
       • Existing leads are kept — imports are added on top
     </div>
     <div class="modal-actions">
@@ -1227,34 +1228,93 @@ function closeImportModal() { document.getElementById('import-modal').classList.
 const dropZone = document.getElementById('import-drop');
 dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
 dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
-dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.remove('dragover'); const f = e.dataTransfer.files[0]; if (f) processCSVFile(f); });
-document.getElementById('import-file').addEventListener('change', e => { const f = e.target.files[0]; if (f) processCSVFile(f); });
+dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.remove('dragover'); const f = e.dataTransfer.files[0]; if (f) processImportFile(f); });
+document.getElementById('import-file').addEventListener('change', e => { const f = e.target.files[0]; if (f) processImportFile(f); });
+
+function processImportFile(file) {
+  const ext = file.name.split('.').pop().toLowerCase();
+  if (ext === 'xlsx' || ext === 'xls') {
+    processXLSXFile(file);
+  } else {
+    processCSVFile(file);
+  }
+}
+
+function processXLSXFile(file) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const wb = XLSX.read(e.target.result, { type: 'array' });
+      // Use first sheet
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      // Convert to array of arrays
+      const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+      if (rows.length < 2) {
+        showImportPreview([], 'No valid rows found in the Excel file.');
+        return;
+      }
+      // Convert to CSV-style text and reuse parseCSV logic
+      // Build headers from first row
+      const headers = rows[0].map(h => String(h).trim());
+      const parsed = [];
+      const aliases = buildAliases();
+      const colIdx = mapColumns(headers.map(h => h.toLowerCase()), aliases);
+      const toBool = v => ['yes','1','true','x','✓','si','sí'].includes(String(v||'').trim().toLowerCase());
+
+      for (let i = 1; i < rows.length; i++) {
+        const row = rows[i];
+        if (row.every(c => !String(c).trim())) continue;
+        const get = f => colIdx[f] !== -1 ? String(row[colIdx[f]] || '').trim() : '';
+        const company = get('company');
+        if (!company) continue;
+        const contact = {};
+        if (get('person')) contact.name  = get('person');
+        if (get('role'))   contact.role  = get('role');
+        if (get('email'))  contact.email = get('email');
+        if (get('phone'))  contact.phone = get('phone');
+        parsed.push({
+          id: crypto.randomUUID(), createdAt: Date.now(),
+          company, website: get('website'), city: get('city'),
+          country: get('country'), notes: get('notes'),
+          contacts: Object.keys(contact).length ? [contact] : [],
+          contacted: toBool(get('contacted')), demo: toBool(get('demo')),
+          proposal: toBool(get('proposal')), closed: toBool(get('closed')),
+        });
+      }
+      showImportPreview(parsed);
+    } catch(err) {
+      showImportPreview([], '⚠️ Could not read Excel file. Make sure it\'s a valid .xlsx or .xls file.');
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
 
 function processCSVFile(file) {
   const reader = new FileReader();
   reader.onload = e => {
     const parsed = parseCSV(e.target.result);
-    pendingImport = parsed;
-    const preview = document.getElementById('import-preview');
-    const btn = document.getElementById('import-confirm-btn');
-    preview.style.display = 'block';
-    if (parsed.length === 0) {
-      preview.innerHTML = '⚠️ No valid rows found.';
-      btn.disabled = true; btn.style.opacity = '0.4'; btn.style.cursor = 'not-allowed';
-    } else {
-      preview.innerHTML = `✅ <strong>${parsed.length} lead${parsed.length>1?'s':''} ready to import</strong><br>
-        Preview: ${parsed.slice(0,3).map(l=>`<em>${esc(l.company)}</em>`).join(', ')}${parsed.length>3?' …':''}`;
-      btn.disabled = false; btn.style.opacity = '1'; btn.style.cursor = 'pointer';
-    }
+    showImportPreview(parsed);
   };
   reader.readAsText(file);
 }
 
-function parseCSV(text) {
-  const lines = text.trim().split(/\r?\n/);
-  if (lines.length < 2) return [];
-  const headers = parseCSVRow(lines[0]).map(h => h.trim().toLowerCase());
-  const aliases = {
+function showImportPreview(parsed, errorMsg) {
+  pendingImport = parsed;
+  const preview = document.getElementById('import-preview');
+  const btn = document.getElementById('import-confirm-btn');
+  preview.style.display = 'block';
+  if (errorMsg || parsed.length === 0) {
+    preview.innerHTML = errorMsg || '⚠️ No valid rows found. Make sure there\'s a header row with a Company column.';
+    btn.disabled = true; btn.style.opacity = '0.4'; btn.style.cursor = 'not-allowed';
+  } else {
+    preview.innerHTML = `✅ <strong>${parsed.length} lead${parsed.length>1?'s':''} ready to import</strong><br>
+      Preview: ${parsed.slice(0,3).map(l=>`<em>${esc(l.company)}</em>`).join(', ')}${parsed.length>3?' …':''}`;
+    btn.disabled = false; btn.style.opacity = '1'; btn.style.cursor = 'pointer';
+  }
+}
+
+function buildAliases() {
+  return {
     company:   ['company','company / org','organization','org','organiser','organizer','nombre empresa'],
     person:    ['person','contact person','contact','name','full name','nombre','contact name'],
     role:      ['role','title','role / title','cargo'],
@@ -1269,12 +1329,24 @@ function parseCSV(text) {
     proposal:  ['proposal','proposal sent','propuesta'],
     closed:    ['closed','closed deal','cerrado','won'],
   };
+}
+
+function mapColumns(headers, aliases) {
   const colIdx = {};
   for (const [field, aliasList] of Object.entries(aliases)) {
     colIdx[field] = -1;
     for (const a of aliasList) { const idx = headers.indexOf(a); if (idx !== -1) { colIdx[field] = idx; break; } }
   }
-  const toBool = v => ['yes','1','true','x','✓','si','sí'].includes((v||'').trim().toLowerCase());
+  return colIdx;
+}
+
+function parseCSV(text) {
+  const lines = text.trim().split(/\r?\n/);
+  if (lines.length < 2) return [];
+  const headers = parseCSVRow(lines[0]).map(h => h.trim().toLowerCase());
+  const aliases = buildAliases();
+  const colIdx  = mapColumns(headers, aliases);
+  const toBool  = v => ['yes','1','true','x','✓','si','sí'].includes((v||'').trim().toLowerCase());
   const results = [];
   for (let i = 1; i < lines.length; i++) {
     const row = parseCSVRow(lines[i]);
@@ -1289,16 +1361,11 @@ function parseCSV(text) {
     if (get('phone'))  contact.phone = get('phone');
     results.push({
       id: crypto.randomUUID(), createdAt: Date.now(),
-      company,
-      website:   get('website'),
-      city:      get('city'),
-      country:   get('country'),
-      notes:     get('notes'),
-      contacts:  Object.keys(contact).length ? [contact] : [],
-      contacted: toBool(get('contacted')),
-      demo:      toBool(get('demo')),
-      proposal:  toBool(get('proposal')),
-      closed:    toBool(get('closed')),
+      company, website: get('website'), city: get('city'),
+      country: get('country'), notes: get('notes'),
+      contacts: Object.keys(contact).length ? [contact] : [],
+      contacted: toBool(get('contacted')), demo: toBool(get('demo')),
+      proposal: toBool(get('proposal')), closed: toBool(get('closed')),
     });
   }
   return results;
