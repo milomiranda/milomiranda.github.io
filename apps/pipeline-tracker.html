@@ -82,6 +82,18 @@
   .icon-btn.del:hover { border-color: #ff4444; color: #ff4444; }
   .icon-btn.comms { border-color: var(--border); }
   .icon-btn.comms:hover { border-color: #6366f1; color: #6366f1; background: #f5f3ff; }
+  .icon-btn.snoozed { border-color: #f59e0b; background: #fffbeb; color: #d97706; }
+  .icon-btn.snooze-btn:hover { border-color: #f59e0b; color: #d97706; background: #fffbeb; }
+
+  /* SNOOZE DROPDOWN */
+  .snooze-wrap { position: relative; }
+  .snooze-menu { display: none; position: absolute; bottom: calc(100% + 6px); right: 0; background: #111; border-radius: 12px; padding: 6px; min-width: 140px; box-shadow: 0 8px 30px rgba(0,0,0,0.18); z-index: 50; animation: fadeUp 0.15s ease; }
+  .snooze-menu.open { display: block; }
+  .snooze-menu-title { font-size: 9px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.3); padding: 4px 8px 6px; }
+  .snooze-opt { display: block; width: 100%; background: none; border: none; padding: 7px 10px; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.75); cursor: pointer; border-radius: 8px; text-align: left; transition: background 0.1s; white-space: nowrap; }
+  .snooze-opt:hover { background: rgba(255,255,255,0.1); color: #fff; }
+  .snooze-opt.unsnooze { color: #f87171; }
+  .snooze-opt.unsnooze:hover { background: rgba(248,113,113,0.15); }
 
   /* ── STALENESS DOT + BADGE ── */
   .company-cell { display: flex; align-items: center; gap: 8px; }
@@ -90,11 +102,13 @@
   .stale-dot.warn   { background: #f59e0b; }
   .stale-dot.stale  { background: #ef4444; }
   .stale-dot.none   { background: #ddd; }
+  .stale-dot.snoozed { background: #f59e0b; opacity: 0.4; }
   .last-contact-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px; white-space: nowrap; }
   .last-contact-badge.fresh  { background: #f0fdf4; color: #16a34a; }
   .last-contact-badge.warn   { background: #fffbeb; color: #d97706; }
   .last-contact-badge.stale  { background: #fef2f2; color: #ef4444; }
   .last-contact-badge.none   { background: #f5f5f5; color: #aaa; }
+  .last-contact-badge.snoozed { background: #fffbeb; color: #d97706; }
 
   /* ── SLIDE-OUT PANEL ── */
   #comms-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.25); backdrop-filter: blur(2px); z-index: 300; }
@@ -199,6 +213,40 @@
   .empty-state .emoji { font-size: 48px; margin-bottom: 12px; }
   .empty-state p { font-size: 15px; font-weight: 500; }
 
+  /* ── FOLLOW-UP ── */
+  .followup-alert { max-width: calc(1400px - 64px); margin: 0 auto 16px; background: #fff; border: 2px solid #f59e0b; border-radius: 14px; padding: 14px 20px; display: none; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; animation: fadeUp 0.3s ease both; }
+  .followup-alert.visible { display: flex; }
+  .followup-alert-left { display: flex; align-items: center; gap: 10px; }
+  .followup-alert-icon { font-size: 20px; flex-shrink: 0; }
+  .followup-alert-title { font-size: 13px; font-weight: 800; color: #b45309; }
+  .followup-alert-sub { font-size: 11px; color: #d97706; margin-top: 1px; font-weight: 500; }
+  .followup-alert-leads { display: flex; gap: 6px; flex-wrap: wrap; }
+  .followup-chip { background: #fef3c7; border: 1.5px solid #f59e0b; border-radius: 99px; padding: 3px 10px; font-size: 11px; font-weight: 700; color: #b45309; cursor: pointer; transition: all 0.15s; }
+  .followup-chip:hover { background: #f59e0b; color: #fff; }
+  .followup-chip.overdue { background: #fef2f2; border-color: #ef4444; color: #b91c1c; }
+  .followup-chip.overdue:hover { background: #ef4444; color: #fff; }
+
+  .icon-btn.followup-set { border-color: #f59e0b; background: #fffbeb; color: #d97706; }
+  .icon-btn.followup-btn:hover { border-color: #f59e0b; color: #d97706; background: #fffbeb; }
+
+  /* FOLLOW-UP MODAL */
+  .followup-modal-company { font-size: 16px; font-weight: 800; color: var(--text); margin-bottom: 16px; letter-spacing: -0.02em; }
+  .fu-date-wrap { display: flex; flex-direction: column; gap: 6px; }
+  .fu-label { font-size: 10px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+  .fu-date-input { padding: 10px 14px; background: #fafafa; border: 1.5px solid var(--border); border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text); outline: none; width: 100%; transition: border-color 0.15s; }
+  .fu-date-input:focus { border-color: var(--text); }
+  .fu-note-input { padding: 10px 14px; background: #fafafa; border: 1.5px solid var(--border); border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text); outline: none; width: 100%; resize: none; min-height: 80px; transition: border-color 0.15s; }
+  .fu-note-input:focus { border-color: var(--text); }
+  .fu-note-input::placeholder { color: #bbb; }
+  .fu-no-date { display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; margin-top: 4px; }
+  .fu-no-date input[type="checkbox"] { display: none; }
+  .fu-no-date-box { width: 18px; height: 18px; border-radius: 5px; border: 1.5px solid var(--border); background: #fafafa; display: flex; align-items: center; justify-content: center; font-size: 10px; transition: all 0.15s; flex-shrink: 0; }
+  .fu-no-date input:checked + .fu-no-date-box { background: var(--accent); border-color: var(--accent); }
+  .fu-no-date-label { font-size: 13px; color: var(--muted); font-weight: 500; }
+  .fu-current { background: #fffbeb; border: 1.5px solid #f59e0b; border-radius: 10px; padding: 10px 14px; font-size: 12px; color: #b45309; font-weight: 600; display: none; margin-bottom: 4px; }
+  .fu-current.visible { display: block; }
+  .fu-clear { background: none; border: none; font-family: 'DM Sans', sans-serif; font-size: 11px; color: #ef4444; font-weight: 700; cursor: pointer; padding: 0; text-decoration: underline; }
+
   /* ── BACKUP NUDGE ── */
   .backup-nudge { max-width: calc(1400px - 64px); margin: 0 auto 16px; background: #fff8e1; border: 1.5px solid #ffe082; border-radius: 14px; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; animation: fadeUp 0.3s ease both; }
   .backup-nudge.urgent { background: #fff1f1; border-color: #fca5a5; }
@@ -282,6 +330,18 @@
   <div class="summary-stat"><span>Closed 🎉</span><span id="stat-closed">0</span></div>
 </div>
 
+<!-- FOLLOW-UP ALERT BANNER -->
+<div class="followup-alert" id="followup-alert">
+  <div class="followup-alert-left">
+    <div class="followup-alert-icon">📅</div>
+    <div>
+      <div class="followup-alert-title" id="followup-alert-title">Follow-ups due today</div>
+      <div class="followup-alert-sub" id="followup-alert-sub"></div>
+    </div>
+  </div>
+  <div class="followup-alert-leads" id="followup-alert-leads"></div>
+</div>
+
 <!-- BACKUP NUDGE -->
 <div id="backup-nudge" style="display:none;">
   <div class="backup-nudge" id="backup-nudge-inner">
@@ -329,6 +389,8 @@
           <button class="filter-btn" data-filter="demo" onclick="setFilter('demo',this)">Demo Scheduled</button>
           <button class="filter-btn" data-filter="proposal" onclick="setFilter('proposal',this)">Proposal Sent</button>
           <button class="filter-btn" data-filter="closed" onclick="setFilter('closed',this)">Closed ✓</button>
+          <button class="filter-btn" data-filter="followup" onclick="setFilter('followup',this)">📅 Follow-up <span id="filter-followup-count" style="background:#f59e0b;color:#fff;font-size:9px;font-weight:800;padding:1px 5px;border-radius:99px;margin-left:2px;display:none;"></span></button>
+          <button class="filter-btn" data-filter="snoozed" onclick="setFilter('snoozed',this)">💤 Snoozed</button>
         </div>
       </div>
     </div>
@@ -508,6 +570,37 @@
   </div>
 </div>
 
+<!-- FOLLOW-UP MODAL -->
+<div class="modal-overlay" id="followup-modal">
+  <div class="modal" style="max-width:440px;">
+    <h2>📅 Schedule Follow-up</h2>
+    <div class="followup-modal-company" id="fu-company-name"></div>
+    <div class="fu-current" id="fu-current">
+      <span id="fu-current-text"></span> —
+      <button class="fu-clear" onclick="clearFollowup()">Clear</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div class="fu-date-wrap">
+        <div class="fu-label">Follow-up date</div>
+        <input type="date" class="fu-date-input" id="fu-date-input">
+        <label class="fu-no-date">
+          <input type="checkbox" id="fu-no-date-cb" onchange="toggleNoDate()">
+          <span class="fu-no-date-box">✓</span>
+          <span class="fu-no-date-label">No specific date — just mark as snoozed</span>
+        </label>
+      </div>
+      <div class="fu-date-wrap">
+        <div class="fu-label">Note (optional)</div>
+        <textarea class="fu-note-input" id="fu-note-input" placeholder="e.g. Call to follow up on proposal, ask about budget…"></textarea>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeFollowupModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveFollowup()">Save Follow-up</button>
+    </div>
+  </div>
+</div>
+
 <!-- COMMS LOG PANEL -->
 <div id="comms-overlay" onclick="closeCommsPanel()"></div>
 <div id="comms-panel">
@@ -589,17 +682,20 @@ async function load() {
 
     // Assemble leads with nested contacts and comm_log
     leads = rawLeads.map(l => ({
-      id:        l.id,
-      createdAt: new Date(l.created_at).getTime(),
-      company:   l.company,
-      website:   l.website   || '',
-      city:      l.city      || '',
-      country:   l.country   || '',
-      notes:     l.notes     || '',
-      contacted: l.contacted || false,
-      demo:      l.demo      || false,
-      proposal:  l.proposal  || false,
-      closed:    l.closed    || false,
+      id:           l.id,
+      createdAt:    new Date(l.created_at).getTime(),
+      company:      l.company,
+      website:      l.website      || '',
+      city:         l.city         || '',
+      country:      l.country      || '',
+      notes:        l.notes        || '',
+      contacted:    l.contacted    || false,
+      demo:         l.demo         || false,
+      proposal:     l.proposal     || false,
+      closed:       l.closed       || false,
+      snoozedUntil:  l.snoozed_until  || null,
+      followupDate:  l.followup_date  || null,
+      followupNote:  l.followup_note  || null,
       contacts:  rawContacts.filter(c => c.lead_id === l.id).map(c => ({
         id:    c.id,
         name:  c.name  || '',
@@ -627,15 +723,18 @@ async function load() {
 // ── SAVE LEAD (insert or update) ──────────────────────
 async function saveToDB(leadData, contacts, isNew) {
   const row = {
-    company:   leadData.company,
-    website:   leadData.website   || null,
-    city:      leadData.city      || null,
-    country:   leadData.country   || null,
-    notes:     leadData.notes     || null,
-    contacted: leadData.contacted || false,
-    demo:      leadData.demo      || false,
-    proposal:  leadData.proposal  || false,
-    closed:    leadData.closed    || false,
+    company:       leadData.company,
+    website:       leadData.website      || null,
+    city:          leadData.city         || null,
+    country:       leadData.country      || null,
+    notes:         leadData.notes        || null,
+    contacted:     leadData.contacted    || false,
+    demo:          leadData.demo         || false,
+    proposal:      leadData.proposal     || false,
+    closed:        leadData.closed       || false,
+    snoozed_until:  leadData.snoozedUntil || null,
+    followup_date:  leadData.followupDate  || null,
+    followup_note:  leadData.followupNote  || null,
   };
 
   let leadId;
@@ -785,6 +884,8 @@ function filteredLeads() {
     if (currentFilter === 'demo')          return l.demo;
     if (currentFilter === 'proposal')      return l.proposal;
     if (currentFilter === 'closed')        return l.closed;
+    if (currentFilter === 'followup')      return !!(l.followupDate || (l.snoozedUntil && new Date(l.snoozedUntil).getTime() > Date.now() === false));
+    if (currentFilter === 'snoozed')       return l.snoozedUntil && new Date(l.snoozedUntil).getTime() > Date.now();
     return true;
   });
   return filtered.sort((a, b) => {
@@ -856,6 +957,18 @@ function render() {
             <button class="icon-btn comms" onclick="openCommsPanel('${l.id}')" title="Communication log" style="position:relative;">
               💬${logCount > 0 ? `<span style="position:absolute;top:-4px;right:-4px;background:#6366f1;color:#fff;font-size:9px;font-weight:800;border-radius:99px;padding:1px 4px;min-width:14px;text-align:center;">${logCount}</span>` : ''}
             </button>
+            <button class="icon-btn followup-btn${l.followupDate||l.snoozedUntil?' followup-set':''}" onclick="openFollowupModal('${l.id}')" title="${l.followupDate?'Follow-up: '+l.followupDate:l.snoozedUntil?'Snoozed':'Schedule follow-up'}">📅</button>
+            <div class="snooze-wrap">
+              <button class="icon-btn snooze-btn${si.level==='snoozed'?' snoozed':''}" onclick="toggleSnoozeMenu('${l.id}',event)" title="${si.level==='snoozed'?'Snoozed — click to change':'Snooze this lead'}">💤</button>
+              <div class="snooze-menu" id="snooze-menu-${l.id}">
+                <div class="snooze-menu-title">Snooze for…</div>
+                <button class="snooze-opt" onclick="snooze('${l.id}',3)">3 days</button>
+                <button class="snooze-opt" onclick="snooze('${l.id}',7)">1 week</button>
+                <button class="snooze-opt" onclick="snooze('${l.id}',14)">2 weeks</button>
+                <button class="snooze-opt" onclick="snooze('${l.id}',30)">1 month</button>
+                ${si.level==='snoozed'?`<button class="snooze-opt unsnooze" onclick="snooze('${l.id}',0)">✕ Remove snooze</button>`:''}
+              </div>
+            </div>
             <button class="icon-btn" onclick="editLead('${l.id}')" title="Edit">✏️</button>
             <button class="icon-btn del" onclick="deleteLead('${l.id}')" title="Delete">🗑️</button>
           </div>
@@ -875,6 +988,14 @@ function render() {
   const actBadge = document.getElementById('tab-activity-badge');
   actBadge.textContent = overdueCount;
   actBadge.style.display = overdueCount > 0 ? '' : 'none';
+
+  // Follow-up filter badge
+  const fuCount = leads.filter(l => l.followupDate).length;
+  const fuBadge = document.getElementById('filter-followup-count');
+  if (fuBadge) { fuBadge.textContent = fuCount; fuBadge.style.display = fuCount > 0 ? '' : 'none'; }
+
+  // Follow-up alert banner
+  checkFollowupAlert();
 
   // Re-render activity if active
   if (currentTab === 'activity') renderActivity();
@@ -1006,6 +1127,14 @@ function getLastContact(lead) {
 }
 
 function stalenessInfo(lead) {
+  // Check if snoozed
+  if (lead.snoozedUntil) {
+    const snoozeEnd = new Date(lead.snoozedUntil).getTime();
+    if (Date.now() < snoozeEnd) {
+      const daysLeft = Math.ceil((snoozeEnd - Date.now()) / 86400000);
+      return { level: 'snoozed', label: `💤 ${daysLeft}d`, dot: 'snoozed' };
+    }
+  }
   const last = getLastContact(lead);
   if (!last) return { level: 'none', label: 'No contact', dot: 'none' };
   const days = Math.floor((Date.now() - new Date(last).getTime()) / 86400000);
@@ -1631,6 +1760,186 @@ function checkBackupNudge() {
     nudgeSub.textContent  = 'Consider exporting to keep a fresh backup.';
   } else {
     nudge.style.display = 'none';
+  }
+}
+
+// ── FOLLOW-UP ─────────────────────────────────────────
+let activeFollowupId = null;
+
+function checkFollowupAlert() {
+  const today = new Date().toISOString().slice(0, 10);
+  const due     = leads.filter(l => l.followupDate && l.followupDate <= today);
+  const overdue = due.filter(l => l.followupDate < today);
+  const todayDue = due.filter(l => l.followupDate === today);
+  const snoozed = leads.filter(l => !l.followupDate && l.snoozedUntil && new Date(l.snoozedUntil).getTime() > Date.now());
+
+  const banner = document.getElementById('followup-alert');
+  if (!due.length && !snoozed.length) { banner.classList.remove('visible'); return; }
+
+  banner.classList.add('visible');
+  const title = document.getElementById('followup-alert-title');
+  const sub   = document.getElementById('followup-alert-sub');
+  const chips = document.getElementById('followup-alert-leads');
+
+  const parts = [];
+  if (overdue.length)  parts.push(`${overdue.length} overdue`);
+  if (todayDue.length) parts.push(`${todayDue.length} due today`);
+  if (snoozed.length)  parts.push(`${snoozed.length} snoozed`);
+  title.textContent = '📅 Follow-up reminders';
+  sub.textContent   = parts.join(' · ');
+
+  chips.innerHTML = due.slice(0, 5).map(l => {
+    const isOverdue = l.followupDate < today;
+    return `<span class="followup-chip${isOverdue?' overdue':''}" onclick="openFollowupModal('${l.id}')">${esc(l.company)}${isOverdue?' ⚠️':''}</span>`;
+  }).join('') + (due.length > 5 ? `<span class="followup-chip">+${due.length - 5} more</span>` : '');
+}
+
+function openFollowupModal(leadId) {
+  const lead = leads.find(l => l.id === leadId);
+  if (!lead) return;
+  activeFollowupId = leadId;
+
+  document.getElementById('fu-company-name').textContent = lead.company || '—';
+  document.getElementById('fu-date-input').value = lead.followupDate || '';
+  document.getElementById('fu-note-input').value = lead.followupNote || '';
+  document.getElementById('fu-no-date-cb').checked = !lead.followupDate && !!lead.snoozedUntil;
+  document.getElementById('fu-date-input').style.display = (!lead.followupDate && !!lead.snoozedUntil) ? 'none' : '';
+
+  // Show current follow-up if set
+  const fuCurrent = document.getElementById('fu-current');
+  const fuCurrentText = document.getElementById('fu-current-text');
+  if (lead.followupDate) {
+    const d = new Date(lead.followupDate + 'T12:00:00');
+    const today = new Date().toISOString().slice(0,10);
+    const isOverdue = lead.followupDate < today;
+    fuCurrentText.textContent = `${isOverdue ? '⚠️ Overdue: ' : '📅 Scheduled: '}${d.toLocaleDateString('en-US', {weekday:'short', month:'short', day:'numeric'})}${lead.followupNote ? ' — ' + lead.followupNote : ''}`;
+    fuCurrent.classList.add('visible');
+  } else if (lead.snoozedUntil && new Date(lead.snoozedUntil).getTime() > Date.now()) {
+    fuCurrentText.textContent = `💤 Snoozed until ${new Date(lead.snoozedUntil + 'T12:00:00').toLocaleDateString('en-US', {month:'short', day:'numeric'})}`;
+    fuCurrent.classList.add('visible');
+  } else {
+    fuCurrent.classList.remove('visible');
+  }
+
+  document.getElementById('followup-modal').classList.add('open');
+}
+
+function closeFollowupModal() {
+  document.getElementById('followup-modal').classList.remove('open');
+  activeFollowupId = null;
+}
+
+function toggleNoDate() {
+  const checked = document.getElementById('fu-no-date-cb').checked;
+  document.getElementById('fu-date-input').style.display = checked ? 'none' : '';
+  if (checked) document.getElementById('fu-date-input').value = '';
+}
+
+async function saveFollowup() {
+  const lead = leads.find(l => l.id === activeFollowupId);
+  if (!lead) return;
+
+  const noDate  = document.getElementById('fu-no-date-cb').checked;
+  const date    = document.getElementById('fu-date-input').value || null;
+  const note    = document.getElementById('fu-note-input').value.trim() || null;
+
+  // If "no date" checked → snooze indefinitely (1 year from now as placeholder)
+  if (noDate) {
+    const farFuture = new Date(); farFuture.setFullYear(farFuture.getFullYear() + 1);
+    lead.snoozedUntil = farFuture.toISOString().slice(0,10);
+    lead.followupDate = null;
+    lead.followupNote = note;
+  } else {
+    lead.followupDate  = date;
+    lead.followupNote  = note;
+    lead.snoozedUntil  = null;
+  }
+
+  closeFollowupModal();
+  render();
+
+  try {
+    await sbFetch(`leads?id=eq.${activeFollowupId || lead.id}`, {
+      method: 'PATCH',
+      body: JSON.stringify({
+        followup_date:  lead.followupDate  || null,
+        followup_note:  lead.followupNote  || null,
+        snoozed_until:  lead.snoozedUntil  || null,
+      }),
+    });
+    showError(noDate ? '✅ Lead snoozed' : date ? `✅ Follow-up set for ${date}` : '✅ Follow-up cleared');
+  } catch(e) {
+    showError('Could not save follow-up. Check your connection.');
+    await load();
+  }
+}
+
+async function clearFollowup() {
+  const lead = leads.find(l => l.id === activeFollowupId);
+  if (!lead) return;
+  lead.followupDate = null;
+  lead.followupNote = null;
+  lead.snoozedUntil = null;
+  closeFollowupModal();
+  render();
+  try {
+    await sbFetch(`leads?id=eq.${lead.id}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ followup_date: null, followup_note: null, snoozed_until: null }),
+    });
+    showError('✅ Follow-up cleared');
+  } catch(e) {
+    showError('Could not clear follow-up. Check your connection.');
+    await load();
+  }
+}
+
+document.getElementById('followup-modal').addEventListener('click', e => {
+  if (e.target.id === 'followup-modal') closeFollowupModal();
+});
+
+// ── SNOOZE ────────────────────────────────────────────
+let openSnoozeMenu = null;
+
+function toggleSnoozeMenu(leadId, e) {
+  e.stopPropagation();
+  const menu = document.getElementById('snooze-menu-' + leadId);
+  if (!menu) return;
+  // Close any other open menu
+  if (openSnoozeMenu && openSnoozeMenu !== menu) openSnoozeMenu.classList.remove('open');
+  menu.classList.toggle('open');
+  openSnoozeMenu = menu.classList.contains('open') ? menu : null;
+}
+
+document.addEventListener('click', () => {
+  if (openSnoozeMenu) { openSnoozeMenu.classList.remove('open'); openSnoozeMenu = null; }
+});
+
+async function snooze(leadId, days) {
+  const lead = leads.find(l => l.id === leadId);
+  if (!lead) return;
+  if (openSnoozeMenu) { openSnoozeMenu.classList.remove('open'); openSnoozeMenu = null; }
+
+  if (days === 0) {
+    lead.snoozedUntil = null;
+  } else {
+    const until = new Date();
+    until.setDate(until.getDate() + days);
+    lead.snoozedUntil = until.toISOString().slice(0, 10);
+  }
+
+  render();
+
+  try {
+    await sbFetch(`leads?id=eq.${leadId}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ snoozed_until: lead.snoozedUntil }),
+    });
+    if (days > 0) showError(`✅ Snoozed for ${days === 30 ? '1 month' : days === 14 ? '2 weeks' : days === 7 ? '1 week' : days + ' days'}`);
+    else showError('✅ Snooze removed');
+  } catch(e) {
+    showError('Could not save snooze. Check your connection.');
+    await load();
   }
 }
 
