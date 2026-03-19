@@ -701,17 +701,20 @@ function showLoading(on) {
   el.style.opacity = on ? '1' : '0';
 }
 
-function showError(msg) {
+function showError(msg, isSuccess) {
   let el = document.getElementById('sb-error');
   if (!el) {
     el = document.createElement('div');
     el.id = 'sb-error';
-    el.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#ef4444;color:#fff;font-family:DM Sans,sans-serif;font-size:13px;font-weight:700;padding:10px 20px;border-radius:10px;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,0.2);';
+    el.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);font-family:DM Sans,sans-serif;font-size:13px;font-weight:700;padding:10px 20px;border-radius:10px;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,0.2);transition:background 0.2s;';
     document.body.appendChild(el);
   }
+  const success = isSuccess || msg.startsWith('✅');
+  el.style.background = success ? '#16a34a' : '#ef4444';
+  el.style.color = '#fff';
   el.textContent = msg;
   el.style.display = 'block';
-  setTimeout(() => { el.style.display = 'none'; }, 4000);
+  setTimeout(() => { el.style.display = 'none'; }, 5000);
 }
 
 const STORAGE_KEY = 'pipeline_leads_v4'; // kept for backup nudge key only
@@ -1316,15 +1319,15 @@ function showImportPreview(parsed, errorMsg) {
 function buildAliases() {
   return {
     company:   ['company','company / org','organization','org','organiser','organizer','nombre empresa'],
-    person:    ['person','contact person','contact','name','full name','nombre','contact name'],
-    role:      ['role','title','role / title','cargo'],
+    person:    ['person','contact person','contact','name','full name','nombre','contact name','contact name'],
+    role:      ['role','title','role / title','cargo','role / title'],
     email:     ['email','e-mail','email address','correo'],
     phone:     ['phone','phone number','tel','telephone','telefono'],
     website:   ['website','web','url','site','sitio'],
     city:      ['city','ciudad','town'],
     country:   ['country','pais','país','nation'],
     notes:     ['notes','note','comments','comment','notas'],
-    contacted: ['contacted','contactado'],
+    contacted: ['contacted','contactado','contacted'],
     demo:      ['demo','demo scheduled','demo agendado'],
     proposal:  ['proposal','proposal sent','propuesta'],
     closed:    ['closed','closed deal','cerrado','won'],
@@ -1383,16 +1386,68 @@ function parseCSVRow(line) {
 }
 
 async function confirmImport() {
-  if (!pendingImport.length) return;
+  if (!pendingImport.length) {
+    showError('No leads to import — please select a file first.');
+    return;
+  }
+  const toImport = [...pendingImport];
   closeImportModal();
   showLoading(true);
+
+  let added = 0, skipped = 0, contactsAdded = 0;
+
   try {
-    for (const l of pendingImport) {
-      await saveToDB(l, l.contacts || [], true);
+    for (const incoming of toImport) {
+      // Check if company already exists (case-insensitive match)
+      const existing = leads.find(l =>
+        (l.company||'').toLowerCase().trim() === (incoming.company||'').toLowerCase().trim()
+      );
+
+      if (!existing) {
+        // Truly new lead — insert everything
+        await saveToDB(incoming, incoming.contacts || [], true);
+        added++;
+      } else {
+        // Lead exists — check for new contacts to add
+        const existingEmails = (existing.contacts||[]).map(c => (c.email||'').toLowerCase()).filter(Boolean);
+        const existingNames  = (existing.contacts||[]).map(c => (c.name||'').toLowerCase()).filter(Boolean);
+
+        const newContacts = (incoming.contacts||[]).filter(c => {
+          const emailMatch = c.email && existingEmails.includes(c.email.toLowerCase());
+          const nameMatch  = c.name  && existingNames.includes(c.name.toLowerCase());
+          return !emailMatch && !nameMatch; // only add if neither email nor name already exists
+        });
+
+        if (newContacts.length) {
+          // Insert only the new contacts for this lead
+          const contactRows = newContacts.map(c => ({
+            lead_id: existing.id,
+            name:  c.name  || null,
+            role:  c.role  || null,
+            email: c.email || null,
+            phone: c.phone || null,
+          }));
+          await sbFetch('contacts', { method: 'POST', body: JSON.stringify(contactRows) });
+          contactsAdded += newContacts.length;
+        }
+        skipped++;
+      }
     }
+
     await load();
+
+    // Show summary
+    const parts = [];
+    if (added)         parts.push(`${added} new lead${added>1?'s':''} added`);
+    if (contactsAdded) parts.push(`${contactsAdded} new contact${contactsAdded>1?'s':''} added to existing leads`);
+    if (skipped && !contactsAdded) parts.push(`${skipped} duplicate${skipped>1?'s':''} skipped`);
+    if (skipped && contactsAdded)  parts.push(`${skipped} existing lead${skipped>1?'s':''} checked`);
+
+    showError('✅ ' + (parts.join(' · ') || 'Nothing new to import'));
+
   } catch(e) {
-    showError('Import failed. Check your connection.');
+    console.error('Import error:', e);
+    showError('Import failed: ' + (e.message || 'Check your connection.'));
     showLoading(false);
   }
 }
