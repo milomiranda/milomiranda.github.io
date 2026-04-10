@@ -54,7 +54,7 @@
     .grid {
       display: flex;
       gap: 20px;
-      max-width: 900px;
+      max-width: 960px;
       margin: 0 auto;
       flex-wrap: wrap;
     }
@@ -130,6 +130,7 @@
       border-right: 1.5px solid #ebebeb;
       background: #f5f5f5;
       user-select: none;
+      white-space: nowrap;
     }
     input[type="number"], select {
       background: transparent; border: none; outline: none;
@@ -141,8 +142,42 @@
     input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
     select { cursor: pointer; appearance: none; }
 
+    /* ── Type toggle ($ / %) ── */
+    .type-toggle {
+      display: flex;
+      background: #f0f0f0;
+      border-radius: 8px;
+      padding: 3px;
+      gap: 2px;
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+    .type-btn {
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: none;
+      background: transparent;
+      color: #aaa;
+      font-size: 12px; font-weight: 700;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      transition: all 0.15s;
+    }
+    .type-btn.active {
+      background: #fff;
+      color: #111;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+    }
+
+    .field-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
     /* ── Qty buttons ── */
-    .qty-wrap { display: flex; flex-wrap: wrap; gap: 6px; }
+    .qty-wrap { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
     .qty-btn {
       padding: 5px 13px;
       border-radius: 8px;
@@ -162,6 +197,22 @@
       font-weight: 800;
       box-shadow: 0 2px 10px rgba(197,254,0,0.4);
     }
+    .qty-custom-input {
+      width: 72px;
+      padding: 5px 10px;
+      border-radius: 8px;
+      border: 2px solid #e5e5e5;
+      background: #fff;
+      color: #222;
+      font-size: 13px; font-weight: 500;
+      font-family: monospace;
+      outline: none;
+      transition: border-color 0.15s;
+      -moz-appearance: textfield;
+    }
+    .qty-custom-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+    .qty-custom-input:focus { border-color: var(--accent); }
+    .qty-custom-input.active { border-color: var(--accent); background: var(--accent); color: #111; font-weight: 800; }
 
     /* ── Breakdown ── */
     .breakdown {
@@ -176,6 +227,7 @@
     .breakdown-label.faint { color: #ddd; }
     .breakdown-value { font-size: 13px; color: #666; font-family: monospace; }
     .breakdown-value.faint { color: #ddd; }
+    .breakdown-value.green { color: #5ab800; font-weight: 700; }
 
     .total-row {
       display: flex; justify-content: space-between; align-items: baseline;
@@ -191,14 +243,105 @@
     }
     .card.best .total-value { color: var(--accent-dark); }
 
+    .kickback-row {
+      display: flex; justify-content: space-between; align-items: center;
+      background: #f7ffe0;
+      border-radius: 8px 8px 0 0;
+      padding: 8px 10px;
+      margin-top: 2px;
+    }
+    .kickback-label { font-size: 12px; color: #8ab800; font-weight: 700; }
+    .kickback-value { font-size: 13px; color: #8ab800; font-family: monospace; font-weight: 700; }
+
+    .net-total-row {
+      display: flex; justify-content: space-between; align-items: center;
+      background: #eaffa0;
+      border-radius: 0 0 8px 8px;
+      padding: 8px 12px;
+      border-top: 1px dashed #c5e840;
+    }
+    .net-total-label { font-size: 11px; color: #5a8200; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+    .net-total-hint { font-size: 10px; color: #8ab800; margin-top: 2px; }
+    .net-total-value { font-size: 18px; color: #3a6200; font-family: monospace; font-weight: 800; }
+
+    .provider-row {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      background: #f0f0f0;
+      border-radius: 8px;
+      padding: 8px 12px;
+      margin-top: 6px;
+      gap: 8px;
+    }
+    .provider-label { font-size: 12px; color: #888; font-weight: 600; line-height: 1.5; }
+    .provider-value { font-size: 13px; color: #555; font-family: monospace; font-weight: 700; flex-shrink: 0; }
+
+    /* ── On/Off Toggle Switch ── */
+    .toggle-field {
+      display: flex; align-items: center; justify-content: space-between;
+      background: #fafafa;
+      border: 1.5px solid #ebebeb;
+      border-radius: 10px;
+      padding: 10px 14px;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .toggle-field.on {
+      background: #f7ffe0;
+      border-color: #c5fe00;
+    }
+    .toggle-field-label { font-size: 13px; color: #444; font-weight: 600; line-height: 1.3; }
+    .toggle-field-sub { font-size: 11px; color: #aaa; margin-top: 1px; font-weight: 400; }
+    .toggle-field.on .toggle-field-label { color: #3a6200; }
+    .toggle-field.on .toggle-field-sub { color: #8ab800; }
+    .switch {
+      position: relative; width: 40px; height: 22px; flex-shrink: 0;
+    }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider {
+      position: absolute; inset: 0;
+      background: #ddd; border-radius: 22px;
+      transition: background 0.2s;
+      cursor: pointer;
+    }
+    .slider::before {
+      content: ''; position: absolute;
+      width: 16px; height: 16px; border-radius: 50%;
+      background: #fff; left: 3px; top: 3px;
+      transition: transform 0.2s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+    input:checked + .slider { background: #8ab800; }
+    input:checked + .slider::before { transform: translateX(18px); }
+
+    /* ── Refund protection breakdown row ── */
+    .refund-row {
+      display: flex; justify-content: space-between; align-items: center;
+      background: #f0fff0;
+      border-left: 3px solid #8ab800;
+      border-radius: 4px;
+      padding: 5px 10px;
+    }
+    .refund-label { font-size: 12px; color: #5a8200; font-weight: 600; }
+    .refund-value { font-size: 13px; color: #3a6200; font-family: monospace; font-weight: 700; }
+
+    /* ── Refund kickback row ── */
+    .refund-kickback-row {
+      display: flex; justify-content: space-between; align-items: center;
+      background: #f7ffe0;
+      border-radius: 8px;
+      padding: 8px 10px;
+    }
+    .refund-kickback-label { font-size: 12px; color: #8ab800; font-weight: 700; }
+    .refund-kickback-value { font-size: 13px; color: #8ab800; font-family: monospace; font-weight: 700; }
+
     /* ── Banner ── */
     .banner {
-      max-width: 900px;
+      max-width: 960px;
       margin: 20px auto 0;
       border-radius: 18px;
       padding: 22px 28px;
       display: none;
-      align-items: center;
+      align-items: flex-start;
       justify-content: space-between;
       flex-wrap: wrap;
       gap: 16px;
@@ -226,6 +369,8 @@
     .banner-title { font-size: 22px; font-weight: 800; color: #111; }
     .banner-sub { font-size: 13px; color: rgba(0,0,0,0.5); margin-top: 3px; }
 
+    .banner-right { display: flex; flex-direction: column; align-items: flex-end; gap: 12px; }
+
     .banner-totals { display: flex; gap: 28px; }
     .banner-opt { text-align: center; }
     .banner-opt-label {
@@ -245,6 +390,35 @@
       text-decoration: line-through;
     }
 
+    /* Kickback banner section */
+    .banner-kickback {
+      display: flex; gap: 28px;
+      background: rgba(0,0,0,0.07);
+      border-radius: 10px;
+      padding: 8px 14px;
+    }
+    .banner.tie .banner-kickback { background: #f7f7f7; }
+    .banner-kb-opt { text-align: center; }
+    .banner-kb-label {
+      font-size: 9px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      color: rgba(0,0,0,0.4);
+      margin-bottom: 2px;
+    }
+    .banner-kb-value {
+      font-size: 15px; font-weight: 800;
+      font-family: monospace; color: #5a8200;
+    }
+    .banner.tie .banner-kb-value { color: #8ab800; }
+    .banner-kb-value.faint { color: rgba(0,0,0,0.2); }
+    .banner-kickback-label {
+      font-size: 9px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      color: rgba(0,0,0,0.35);
+      margin-bottom: 4px;
+    }
+    .banner.tie .banner-kickback-label { color: #bbb; }
+
     /* ── Footer ── */
     footer {
       text-align: center;
@@ -259,36 +433,9 @@
       from { opacity: 0; transform: translateY(10px); }
       to   { opacity: 1; transform: none; }
     }
-
-    /* ── Back button ── */
-    .back-btn {
-      position: fixed;
-      top: 24px; left: 24px;
-      display: flex; align-items: center; gap: 7px;
-      background: var(--card);
-      border: 2px solid var(--border);
-      border-radius: 30px;
-      padding: 8px 16px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 12px; font-weight: 700; color: var(--text);
-      text-decoration: none;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
-      transition: border-color 0.15s, box-shadow 0.15s;
-      z-index: 100;
-    }
-    .back-btn:hover {
-      border-color: var(--accent);
-      box-shadow: 0 4px 16px rgba(197,254,0,0.25);
-    }
-    </style>
+  </style>
 </head>
 <body>
-
-  <a class="back-btn" href="https://milomiranda.github.io/hub.html">
-    <span>←</span>
-    <span>Go back</span>
-  </a>
-
 
   <!-- Header -->
   <div class="header">
@@ -330,6 +477,58 @@
       </div>
 
       <div class="field">
+        <div class="field-row">
+          <label class="field-label">Booking Fee</label>
+          <div class="type-toggle">
+            <button class="type-btn active" id="bookingTypeA_dollar" onclick="setType('A','booking','dollar')">$</button>
+            <button class="type-btn" id="bookingTypeA_pct" onclick="setType('A','booking','pct')">%</button>
+          </div>
+        </div>
+        <div class="input-wrap">
+          <div class="prefix" id="bookingPrefixA">$</div>
+          <input type="number" id="bookingA" min="0" placeholder="0.00" oninput="update()" />
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-row">
+          <label class="field-label">Kickback <span>(al organizador)</span></label>
+          <div class="type-toggle">
+            <button class="type-btn active" id="kickbackTypeA_dollar" onclick="setType('A','kickback','dollar')">$</button>
+            <button class="type-btn" id="kickbackTypeA_pct" onclick="setType('A','kickback','pct')">%</button>
+          </div>
+        </div>
+        <div class="input-wrap">
+          <div class="prefix" id="kickbackPrefixA">$</div>
+          <input type="number" id="kickbackA" min="0" placeholder="0.00" oninput="update()" />
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-label">Ticketing Refund Protection <span>(8.34% of ticket price)</span></div>
+        <label class="toggle-field" id="refundToggleA" onclick="toggleRefund('A')">
+          <div>
+            <div class="toggle-field-label">Refund Protection</div>
+            <div class="toggle-field-sub" id="refundSubA">Off — not included</div>
+          </div>
+          <label class="switch" onclick="event.stopPropagation()">
+            <input type="checkbox" id="refundA" onchange="toggleRefund('A')" />
+            <span class="slider"></span>
+          </label>
+        </label>
+      </div>
+
+      <div class="field" id="refundKickbackFieldA" style="display:none">
+        <div class="field-row">
+          <label class="field-label">Kickback on Refund Protection <span>(%)</span></label>
+        </div>
+        <div class="input-wrap">
+          <div class="prefix">%</div>
+          <input type="number" id="refundKickbackA" min="0" max="100" step="0.1" placeholder="0.00" oninput="update()" />
+        </div>
+      </div>
+
+      <div class="field">
         <label class="field-label">Payment Method</label>
         <div class="input-wrap">
           <select id="methodA" onchange="onMethodChange('A')"></select>
@@ -353,6 +552,14 @@
           <span class="breakdown-label">Subtotal</span>
           <span class="breakdown-value" id="subtotalA">$0.00</span>
         </div>
+        <div class="refund-row" id="refundRowA" style="display:none">
+          <span class="refund-label" id="refundRowLabelA">🛡 Refund protection (8.34%)</span>
+          <span class="refund-value" id="refundValA">$0.00</span>
+        </div>
+        <div class="breakdown-row" id="bookingRowA" style="display:none">
+          <span class="breakdown-label" id="bookingRowLabelA">Booking fee</span>
+          <span class="breakdown-value" id="bookingValA">$0.00</span>
+        </div>
         <div class="breakdown-row">
           <span class="breakdown-label" id="feeRowLabelA">Payment fee (0%)</span>
           <span class="breakdown-value" id="feeValA">$0.00</span>
@@ -360,6 +567,25 @@
         <div class="total-row">
           <span class="total-label">Total</span>
           <span class="total-value" id="totalA">$0.00</span>
+        </div>
+        <div class="kickback-row" id="kickbackRowA" style="display:none">
+          <span class="kickback-label" id="kickbackLabelA">↩ Kickback al organizador</span>
+          <span class="kickback-value" id="kickbackValA">$0.00</span>
+        </div>
+        <div class="refund-kickback-row" id="refundKickbackRowA" style="display:none">
+          <span class="refund-kickback-label" id="refundKickbackLabelA">↩ Kickback on refund protection</span>
+          <span class="refund-kickback-value" id="refundKickbackValA">$0.00</span>
+        </div>
+        <div class="net-total-row" id="netTotalRowA" style="display:none">
+          <div>
+            <div class="net-total-label">Organizer receives</div>
+            <div class="net-total-hint" id="netTotalHintA"></div>
+          </div>
+          <span class="net-total-value" id="netTotalA">$0.00</span>
+        </div>
+        <div class="provider-row" id="providerRowA">
+          <span class="provider-label" id="providerLabelA">🎟 Ticket provider receives</span>
+          <span class="provider-value" id="providerValA">$0.00</span>
         </div>
       </div>
     </div>
@@ -394,6 +620,58 @@
       </div>
 
       <div class="field">
+        <div class="field-row">
+          <label class="field-label">Booking Fee</label>
+          <div class="type-toggle">
+            <button class="type-btn active" id="bookingTypeB_dollar" onclick="setType('B','booking','dollar')">$</button>
+            <button class="type-btn" id="bookingTypeB_pct" onclick="setType('B','booking','pct')">%</button>
+          </div>
+        </div>
+        <div class="input-wrap">
+          <div class="prefix" id="bookingPrefixB">$</div>
+          <input type="number" id="bookingB" min="0" placeholder="0.00" oninput="update()" />
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-row">
+          <label class="field-label">Kickback <span>(al organizador)</span></label>
+          <div class="type-toggle">
+            <button class="type-btn active" id="kickbackTypeB_dollar" onclick="setType('B','kickback','dollar')">$</button>
+            <button class="type-btn" id="kickbackTypeB_pct" onclick="setType('B','kickback','pct')">%</button>
+          </div>
+        </div>
+        <div class="input-wrap">
+          <div class="prefix" id="kickbackPrefixB">$</div>
+          <input type="number" id="kickbackB" min="0" placeholder="0.00" oninput="update()" />
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-label">Ticketing Refund Protection <span>(8.34% of ticket price)</span></div>
+        <label class="toggle-field" id="refundToggleB" onclick="toggleRefund('B')">
+          <div>
+            <div class="toggle-field-label">Refund Protection</div>
+            <div class="toggle-field-sub" id="refundSubB">Off — not included</div>
+          </div>
+          <label class="switch" onclick="event.stopPropagation()">
+            <input type="checkbox" id="refundB" onchange="toggleRefund('B')" />
+            <span class="slider"></span>
+          </label>
+        </label>
+      </div>
+
+      <div class="field" id="refundKickbackFieldB" style="display:none">
+        <div class="field-row">
+          <label class="field-label">Kickback on Refund Protection <span>(%)</span></label>
+        </div>
+        <div class="input-wrap">
+          <div class="prefix">%</div>
+          <input type="number" id="refundKickbackB" min="0" max="100" step="0.1" placeholder="0.00" oninput="update()" />
+        </div>
+      </div>
+
+      <div class="field">
         <label class="field-label">Payment Method</label>
         <div class="input-wrap">
           <select id="methodB" onchange="onMethodChange('B')"></select>
@@ -417,6 +695,14 @@
           <span class="breakdown-label">Subtotal</span>
           <span class="breakdown-value" id="subtotalB">$0.00</span>
         </div>
+        <div class="refund-row" id="refundRowB" style="display:none">
+          <span class="refund-label" id="refundRowLabelB">🛡 Refund protection (8.34%)</span>
+          <span class="refund-value" id="refundValB">$0.00</span>
+        </div>
+        <div class="breakdown-row" id="bookingRowB" style="display:none">
+          <span class="breakdown-label" id="bookingRowLabelB">Booking fee</span>
+          <span class="breakdown-value" id="bookingValB">$0.00</span>
+        </div>
         <div class="breakdown-row">
           <span class="breakdown-label" id="feeRowLabelB">Payment fee (0%)</span>
           <span class="breakdown-value" id="feeValB">$0.00</span>
@@ -424,6 +710,25 @@
         <div class="total-row">
           <span class="total-label">Total</span>
           <span class="total-value" id="totalB">$0.00</span>
+        </div>
+        <div class="kickback-row" id="kickbackRowB" style="display:none">
+          <span class="kickback-label" id="kickbackLabelB">↩ Kickback al organizador</span>
+          <span class="kickback-value" id="kickbackValB">$0.00</span>
+        </div>
+        <div class="refund-kickback-row" id="refundKickbackRowB" style="display:none">
+          <span class="refund-kickback-label" id="refundKickbackLabelB">↩ Kickback on refund protection</span>
+          <span class="refund-kickback-value" id="refundKickbackValB">$0.00</span>
+        </div>
+        <div class="net-total-row" id="netTotalRowB" style="display:none">
+          <div>
+            <div class="net-total-label">Organizer receives</div>
+            <div class="net-total-hint" id="netTotalHintB"></div>
+          </div>
+          <span class="net-total-value" id="netTotalB">$0.00</span>
+        </div>
+        <div class="provider-row" id="providerRowB">
+          <span class="provider-label" id="providerLabelB">🎟 Ticket provider receives</span>
+          <span class="provider-value" id="providerValB">$0.00</span>
         </div>
       </div>
     </div>
@@ -437,14 +742,40 @@
       <div class="banner-title" id="bannerTitle"></div>
       <div class="banner-sub" id="bannerSub"></div>
     </div>
-    <div class="banner-totals">
-      <div class="banner-opt">
-        <div class="banner-opt-label">Option A</div>
-        <div class="banner-opt-value" id="bannerA">$0.00</div>
+    <div class="banner-right">
+      <div class="banner-totals">
+        <div class="banner-opt">
+          <div class="banner-opt-label">Option A</div>
+          <div class="banner-opt-value" id="bannerA">$0.00</div>
+        </div>
+        <div class="banner-opt">
+          <div class="banner-opt-label">Option B</div>
+          <div class="banner-opt-value" id="bannerB">$0.00</div>
+        </div>
       </div>
-      <div class="banner-opt">
-        <div class="banner-opt-label">Option B</div>
-        <div class="banner-opt-value" id="bannerB">$0.00</div>
+      <div id="bannerKickbackSection" style="display:none; width:100%;">
+        <div class="banner-kickback-label">↩ Kickback al organizador</div>
+        <div class="banner-kickback">
+          <div class="banner-kb-opt">
+            <div class="banner-kb-label">Option A</div>
+            <div class="banner-kb-value" id="bannerKbA">$0.00</div>
+          </div>
+          <div class="banner-kb-opt">
+            <div class="banner-kb-label">Option B</div>
+            <div class="banner-kb-value" id="bannerKbB">$0.00</div>
+          </div>
+        </div>
+        <div class="banner-kickback-label" style="margin-top:8px;">⚡ Organizer receives</div>
+        <div class="banner-kickback">
+          <div class="banner-kb-opt">
+            <div class="banner-kb-label">Option A</div>
+            <div class="banner-kb-value" id="bannerNetA" style="color:#111;">$0.00</div>
+          </div>
+          <div class="banner-kb-opt">
+            <div class="banner-kb-label">Option B</div>
+            <div class="banner-kb-value" id="bannerNetB" style="color:#111;">$0.00</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -454,27 +785,63 @@
 
   <script>
     const PAYMENT_METHODS = [
-      { label: "Credit Card", fee: 3.5 },
-      { label: "Debit Card", fee: 1.5 },
-      { label: "PayPal",      fee: 4.0 },
-      { label: "Bank Transfer", fee: 0 },
+      { label: "Trustly",          fee: 3.5 },
+      { label: "Bancontact",       fee: 3.5 },
+      { label: "PayPal",           fee: 5.5 },
+      { label: "Visa / Mastercard",fee: 3.5 },
+      { label: "Apple Pay",        fee: 3.5 },
     ];
     const QTY_OPTIONS = [1, 2, 3, 4, 5, 10, 15, 20];
-    const state = { A: { qty: 1 }, B: { qty: 1 } };
 
-    // Build qty buttons
+    // State: qty + type toggles
+    const state = {
+      A: { qty: 1, bookingType: 'dollar', kickbackType: 'dollar', customActive: false, refundOn: false },
+      B: { qty: 1, bookingType: 'dollar', kickbackType: 'dollar', customActive: false, refundOn: false },
+    };
+
+    /* ── Build qty buttons + custom input ── */
     ["A","B"].forEach(opt => {
       const wrap = document.getElementById("qty" + opt);
       QTY_OPTIONS.forEach(q => {
         const btn = document.createElement("button");
         btn.className = "qty-btn" + (q === 1 ? " active" : "");
         btn.textContent = q;
-        btn.onclick = () => { state[opt].qty = q; renderQty(opt); update(); };
+        btn.dataset.val = q;
+        btn.onclick = () => {
+          state[opt].qty = q;
+          state[opt].customActive = false;
+          renderQty(opt);
+          update();
+        };
         wrap.appendChild(btn);
       });
+
+      // Custom input
+      const ci = document.createElement("input");
+      ci.type = "number";
+      ci.min = "1";
+      ci.placeholder = "otro";
+      ci.className = "qty-custom-input";
+      ci.id = "qtyCustom" + opt;
+      ci.oninput = () => {
+        const v = parseInt(ci.value);
+        if (!isNaN(v) && v > 0) {
+          state[opt].qty = v;
+          state[opt].customActive = true;
+          renderQty(opt);
+          update();
+        }
+      };
+      ci.onfocus = () => {
+        if (ci.value) {
+          state[opt].customActive = true;
+          renderQty(opt);
+        }
+      };
+      wrap.appendChild(ci);
     });
 
-    // Build selects
+    /* ── Build payment selects ── */
     ["A","B"].forEach(opt => {
       const sel = document.getElementById("method" + opt);
       PAYMENT_METHODS.forEach(m => {
@@ -486,10 +853,29 @@
       document.getElementById("fee" + opt).value = PAYMENT_METHODS[0].fee;
     });
 
+    /* ── Type toggle handler ── */
+    function setType(opt, field, type) {
+      state[opt][field + 'Type'] = type;
+      // Update button styles
+      document.getElementById(`${field}Type${opt}_dollar`).classList.toggle('active', type === 'dollar');
+      document.getElementById(`${field}Type${opt}_pct`).classList.toggle('active', type === 'pct');
+      // Update prefix
+      document.getElementById(`${field}Prefix${opt}`).textContent = type === 'dollar' ? '$' : '%';
+      update();
+    }
+
     function renderQty(opt) {
-      document.querySelectorAll(`#qty${opt} .qty-btn`).forEach((btn, i) => {
-        btn.classList.toggle("active", QTY_OPTIONS[i] === state[opt].qty);
+      document.querySelectorAll(`#qty${opt} .qty-btn`).forEach(btn => {
+        const v = parseInt(btn.dataset.val);
+        btn.classList.toggle("active", !state[opt].customActive && v === state[opt].qty);
       });
+      const ci = document.getElementById("qtyCustom" + opt);
+      if (state[opt].customActive) {
+        ci.classList.add("active");
+      } else {
+        ci.classList.remove("active");
+        ci.value = "";
+      }
     }
 
     function onMethodChange(opt) {
@@ -504,19 +890,79 @@
       const ticket  = parseFloat(document.getElementById("ticket"  + opt).value) || 0;
       const service = parseFloat(document.getElementById("service" + opt).value) || 0;
       const fee     = parseFloat(document.getElementById("fee"     + opt).value) || 0;
-      const qty     = state[opt].qty;
-      const perBase = ticket + service;
+      const bookingRaw = parseFloat(document.getElementById("booking" + opt).value) || 0;
+      const kickbackRaw = parseFloat(document.getElementById("kickback" + opt).value) || 0;
+      const refundKickbackPct = parseFloat(document.getElementById("refundKickback" + opt).value) || 0;
+      const qty = state[opt].qty;
+      const refundOn = state[opt].refundOn;
+
+      const REFUND_PCT = 8.34;
+
+      const perBase  = ticket + service;
       const subtotal = perBase * qty;
-      const payFee   = subtotal * (fee / 100);
-      return { ticket, service, fee, qty, perBase, subtotal, payFee, total: subtotal + payFee };
+
+      // Refund protection: 8.34% of ticket price × qty
+      const refundPerTicket = refundOn ? ticket * (REFUND_PCT / 100) : 0;
+      const refundTotal     = refundPerTicket * qty;
+
+      // Booking fee: $ per ticket (×qty) or % of subtotal
+      let bookingFee = 0;
+      if (state[opt].bookingType === 'dollar') {
+        bookingFee = bookingRaw * qty;
+      } else {
+        bookingFee = subtotal * (bookingRaw / 100);
+      }
+
+      const payFee = (subtotal + bookingFee + refundTotal) * (fee / 100);
+      const total  = subtotal + refundTotal + bookingFee + payFee;
+
+      // Kickback on ticket price ($ per ticket or % of total)
+      let kickback = 0;
+      if (state[opt].kickbackType === 'dollar') {
+        kickback = kickbackRaw * qty;
+      } else {
+        kickback = total * (kickbackRaw / 100);
+      }
+
+      // Kickback on refund protection (% of refundTotal)
+      const refundKickback = refundOn ? refundTotal * (refundKickbackPct / 100) : 0;
+
+      const netTotal = total - kickback - refundKickback;
+
+      return {
+        ticket, service, fee, qty, perBase, subtotal,
+        refundOn, refundPerTicket, refundTotal, REFUND_PCT,
+        bookingFee, bookingRaw, payFee, total,
+        kickback, kickbackRaw,
+        refundKickback, refundKickbackPct,
+        netTotal,
+
+        // ── Revenue split ──
+        // Organizer: ticket price × qty  +  $0.20 per ticket from booking fee  +  50% of refund kickback  +  main kickback
+        organizerReceives: (ticket * qty) + (0.20 * qty) + (refundKickback * 0.5) + kickback,
+
+        // Provider: service cost × qty  +  (bookingFee − $0.20×qty)  +  payment fee  +  50% of refund kickback
+        providerReceives:  (service * qty) + Math.max(0, bookingFee - (0.20 * qty)) + payFee + (refundKickback * 0.5),
+      };
+    }
+
+    function toggleRefund(opt) {
+      const cb = document.getElementById("refund" + opt);
+      state[opt].refundOn = cb.checked;
+      const toggle = document.getElementById("refundToggle" + opt);
+      const sub    = document.getElementById("refundSub"    + opt);
+      const field  = document.getElementById("refundKickbackField" + opt);
+      toggle.classList.toggle("on", cb.checked);
+      sub.textContent = cb.checked ? "On — 8.34% of ticket price per ticket" : "Off — not included";
+      field.style.display = cb.checked ? "block" : "none";
+      update();
     }
 
     function update() {
       const a = calc("A"), b = calc("B");
 
-      // Update each card
       [["A", a], ["B", b]].forEach(([opt, r]) => {
-        // per-ticket row
+        // Per-ticket row
         const perRow = document.getElementById("perRow" + opt);
         if (r.qty > 1) {
           perRow.style.display = "flex";
@@ -525,10 +971,95 @@
         } else {
           perRow.style.display = "none";
         }
-        document.getElementById("subtotal"     + opt).textContent = fmt(r.subtotal);
-        document.getElementById("feeRowLabel"  + opt).textContent = `Payment fee (${r.fee}%)`;
-        document.getElementById("feeVal"       + opt).textContent = fmt(r.payFee);
-        document.getElementById("total"        + opt).textContent = fmt(r.total);
+
+        document.getElementById("subtotal"    + opt).textContent = fmt(r.subtotal);
+
+        // Refund protection row
+        const rRow = document.getElementById("refundRow" + opt);
+        if (r.refundOn && r.refundTotal > 0) {
+          rRow.style.display = "flex";
+          const label = r.qty > 1
+            ? `🛡 Refund protection (${r.REFUND_PCT}% × ${r.qty} tickets = $${r.refundPerTicket.toFixed(2)} each)`
+            : `🛡 Refund protection (${r.REFUND_PCT}% of $${r.ticket.toFixed(2)})`;
+          document.getElementById("refundRowLabel" + opt).textContent = label;
+          document.getElementById("refundVal"      + opt).textContent = fmt(r.refundTotal);
+        } else {
+          rRow.style.display = "none";
+        }
+
+        // Booking fee row
+        const bRow = document.getElementById("bookingRow" + opt);
+        if (r.bookingRaw > 0) {
+          bRow.style.display = "flex";
+          const bType = state[opt].bookingType;
+          document.getElementById("bookingRowLabel" + opt).textContent =
+            bType === 'pct' ? `Booking fee (${r.bookingRaw}%)` : `Booking fee ($${r.bookingRaw} × ${r.qty})`;
+          document.getElementById("bookingVal" + opt).textContent = fmt(r.bookingFee);
+        } else {
+          bRow.style.display = "none";
+        }
+
+        document.getElementById("feeRowLabel" + opt).textContent = `Payment fee (${r.fee}%)`;
+        document.getElementById("feeVal"      + opt).textContent = fmt(r.payFee);
+        document.getElementById("total"       + opt).textContent = fmt(r.total);
+
+        // Provider receives row
+        const providerEl = document.getElementById("providerVal" + opt);
+        const providerLabelEl = document.getElementById("providerLabel" + opt);
+        if (providerEl) {
+          providerEl.textContent = fmt(r.providerReceives);
+          if (providerLabelEl) {
+            const parts = [];
+            if (r.service > 0)    parts.push(`service ${fmt(r.service * r.qty)}`);
+            const bookingNet = Math.max(0, r.bookingFee - (0.20 * r.qty));
+            if (bookingNet > 0)   parts.push(`booking ${fmt(bookingNet)}`);
+            if (r.payFee > 0)     parts.push(`payment fee ${fmt(r.payFee)}`);
+            if (r.refundKickback > 0) parts.push(`50% refund kickback ${fmt(r.refundKickback * 0.5)}`);
+            providerLabelEl.innerHTML = `🎟 Ticket provider receives` + (parts.length ? `<br><span style="font-size:10px;color:#aaa;font-weight:400">${parts.join(' + ')}</span>` : '');
+          }
+        }
+
+        // Kickback row
+        const kRow = document.getElementById("kickbackRow" + opt);
+        const netRow = document.getElementById("netTotalRow" + opt);
+        const rkRow  = document.getElementById("refundKickbackRow" + opt);
+        const hasAnyKickback = r.kickbackRaw > 0 || r.refundKickback > 0;
+        if (r.kickbackRaw > 0) {
+          kRow.style.display = "flex";
+          const kType = state[opt].kickbackType;
+          const kLabel = document.getElementById("kickbackLabel" + opt);
+          if (kLabel) {
+            kLabel.textContent = kType === 'dollar'
+              ? (r.qty > 1 ? `↩ Kickback ($${r.kickbackRaw} × ${r.qty} tickets)` : `↩ Kickback ($${r.kickbackRaw}/ticket)`)
+              : `↩ Kickback (${r.kickbackRaw}% of total)`;
+          }
+          document.getElementById("kickbackVal" + opt).textContent = fmt(r.kickback);
+        } else {
+          kRow.style.display = "none";
+        }
+
+        // Refund kickback row
+        if (r.refundOn && r.refundKickbackPct > 0 && r.refundTotal > 0) {
+          rkRow.style.display = "flex";
+          const rkLabel = document.getElementById("refundKickbackLabel" + opt);
+          if (rkLabel) rkLabel.textContent = `↩ Kickback on refund (${r.refundKickbackPct}% of ${fmt(r.refundTotal)})`;
+          document.getElementById("refundKickbackVal" + opt).textContent = fmt(r.refundKickback);
+        } else {
+          rkRow.style.display = "none";
+        }
+
+        if (hasAnyKickback || r.ticket > 0) {
+          netRow.style.display = "flex";
+          document.getElementById("netTotal" + opt).textContent = fmt(r.organizerReceives);
+          const parts = [];
+          parts.push(`tickets ${fmt(r.ticket * r.qty)}`);
+          if (r.qty > 0) parts.push(`$${(0.20 * r.qty).toFixed(2)} booking share`);
+          if (r.kickback > 0)       parts.push(`kickback ${fmt(r.kickback)}`);
+          if (r.refundKickback > 0) parts.push(`50% refund kickback ${fmt(r.refundKickback * 0.5)}`);
+          document.getElementById("netTotalHint" + opt).textContent = parts.join(' + ');
+        } else {
+          netRow.style.display = "none";
+        }
       });
 
       const hasValues = a.total > 0 || b.total > 0;
@@ -540,11 +1071,27 @@
       document.getElementById("bannerA").textContent = fmt(a.total);
       document.getElementById("bannerB").textContent = fmt(b.total);
 
+      // Kickback in banner
+      const kbSection = document.getElementById("bannerKickbackSection");
+      const hasKickback = a.kickbackRaw > 0 || b.kickbackRaw > 0;
+      kbSection.style.display = hasKickback ? "block" : "none";
+      if (hasKickback) {
+        const kbA = document.getElementById("bannerKbA");
+        const kbB = document.getElementById("bannerKbB");
+        const netA = document.getElementById("bannerNetA");
+        const netB = document.getElementById("bannerNetB");
+        kbA.textContent = a.kickbackRaw > 0 ? fmt(a.kickback) : "—";
+        kbB.textContent = b.kickbackRaw > 0 ? fmt(b.kickback) : "—";
+        kbA.className = "banner-kb-value" + (a.kickbackRaw === 0 ? " faint" : "");
+        kbB.className = "banner-kb-value" + (b.kickbackRaw === 0 ? " faint" : "");
+        netA.textContent = a.kickbackRaw > 0 ? fmt(a.netTotal) : fmt(a.total);
+        netB.textContent = b.kickbackRaw > 0 ? fmt(b.netTotal) : fmt(b.total);
+      }
+
       const cardA = document.getElementById("cardA");
       const cardB = document.getElementById("cardB");
 
       if (a.total === b.total || (a.total === 0 && b.total === 0)) {
-        // Tie
         banner.classList.remove("winner"); banner.classList.add("tie");
         cardA.classList.remove("best"); cardB.classList.remove("best");
         document.getElementById("bannerLabel").textContent = "Result";
@@ -561,7 +1108,14 @@
         cardB.classList.toggle("best", winner === "B");
         document.getElementById("bannerLabel").textContent = "Best Deal";
         document.getElementById("bannerTitle").textContent = `Option ${winner} is cheaper 🎉`;
-        document.getElementById("bannerSub").innerHTML = `You save <strong>$${diff}</strong> vs Option ${loser}`;
+
+        const winnerKb = winner === "A" ? a.kickback : b.kickback;
+        const winnerKbRaw = winner === "A" ? a.kickbackRaw : b.kickbackRaw;
+        let subHTML = `You save <strong>$${diff}</strong> vs Option ${loser}`;
+        if (winnerKbRaw > 0) {
+          subHTML += ` · Kickback: <strong>${fmt(winnerKb)}</strong>`;
+        }
+        document.getElementById("bannerSub").innerHTML = subHTML;
         document.getElementById("banner" + winner).className = "banner-opt-value";
         document.getElementById("banner" + loser).className  = "banner-opt-value loser";
       }
