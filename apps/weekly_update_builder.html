@@ -1,0 +1,316 @@
+
+<h2 class="sr-only">Weekly update builder — fill in your week and export as PDF</h2>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans)}
+.app{display:grid;grid-template-columns:220px 1fr;gap:0;min-height:600px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden}
+.sidebar{background:var(--color-background-secondary);border-right:0.5px solid var(--color-border-tertiary);padding:1rem;display:flex;flex-direction:column;gap:8px}
+.sidebar-title{font-size:11px;font-weight:500;color:var(--color-text-tertiary);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;padding:0 4px}
+.week-entry{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:10px 12px;cursor:pointer;transition:border-color .15s}
+.week-entry:hover{border-color:var(--color-border-secondary)}
+.week-entry.active{border-color:var(--color-border-primary)}
+.week-entry .we-label{font-size:13px;font-weight:500;color:var(--color-text-primary)}
+.week-entry .we-sub{font-size:11px;color:var(--color-text-tertiary);margin-top:2px}
+.new-btn{background:var(--color-background-primary);border:0.5px dashed var(--color-border-secondary);border-radius:var(--border-radius-md);padding:10px 12px;cursor:pointer;font-size:13px;color:var(--color-text-secondary);display:flex;align-items:center;gap:6px;width:100%;text-align:left}
+.new-btn:hover{color:var(--color-text-primary);border-style:solid}
+.main{background:var(--color-background-primary);padding:1.5rem;display:flex;flex-direction:column;gap:1.25rem}
+.top-bar{display:flex;align-items:center;justify-content:space-between}
+.week-label-big{font-size:15px;font-weight:500;color:var(--color-text-primary)}
+.week-label-sub{font-size:12px;color:var(--color-text-tertiary);margin-top:1px}
+.actions{display:flex;gap:8px}
+.btn{border:0.5px solid var(--color-border-secondary);background:transparent;border-radius:var(--border-radius-md);padding:6px 12px;font-size:13px;color:var(--color-text-primary);cursor:pointer;display:flex;align-items:center;gap:5px}
+.btn:hover{background:var(--color-background-secondary)}
+.btn.primary{background:var(--color-text-primary);color:var(--color-background-primary);border-color:var(--color-text-primary)}
+.btn.primary:hover{opacity:.85}
+.btn.danger{color:var(--color-text-danger);border-color:var(--color-border-danger)}
+.btn.danger:hover{background:var(--color-background-danger)}
+.section-card{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden}
+.section-head{padding:10px 14px;display:flex;align-items:center;gap:8px;background:var(--color-background-secondary);border-bottom:0.5px solid var(--color-border-tertiary)}
+.section-icon{font-size:16px;color:var(--color-text-secondary)}
+.section-label{font-size:13px;font-weight:500;color:var(--color-text-primary)}
+.section-hint{font-size:11px;color:var(--color-text-tertiary);margin-left:auto}
+textarea{width:100%;border:none;background:transparent;resize:none;font-size:14px;color:var(--color-text-primary);font-family:var(--font-sans);line-height:1.6;padding:12px 14px;outline:none;min-height:80px}
+textarea::placeholder{color:var(--color-text-tertiary)}
+.save-bar{display:flex;align-items:center;justify-content:space-between;padding-top:4px}
+.save-status{font-size:12px;color:var(--color-text-tertiary)}
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:12px;color:var(--color-text-tertiary);padding:2rem;text-align:center}
+.empty-state i{font-size:32px;opacity:.4}
+.empty-state p{font-size:14px}
+.toast{position:absolute;bottom:16px;right:16px;background:var(--color-text-primary);color:var(--color-background-primary);padding:8px 14px;border-radius:var(--border-radius-md);font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.show{opacity:1}
+.sidebar-actions{margin-top:auto;display:flex;flex-direction:column;gap:6px}
+</style>
+
+<div style="position:relative">
+<div class="app" id="app">
+  <div class="sidebar">
+    <div class="sidebar-title">History</div>
+    <div id="history-list"></div>
+    <button class="new-btn" id="new-btn" onclick="newEntry()">
+      <i class="ti ti-plus" aria-hidden="true"></i> New week
+    </button>
+    <div class="sidebar-actions">
+      <button class="btn" onclick="exportJSON()" title="Backup all entries as JSON">
+        <i class="ti ti-download" aria-hidden="true"></i> Backup JSON
+      </button>
+    </div>
+  </div>
+  <div class="main" id="main-area">
+    <div class="empty-state" id="empty-state">
+      <i class="ti ti-calendar-week" aria-hidden="true"></i>
+      <p>Create a new week to get started</p>
+      <button class="btn primary" onclick="newEntry()"><i class="ti ti-plus" aria-hidden="true"></i> New week</button>
+    </div>
+    <div id="editor" style="display:none;flex-direction:column;gap:1.25rem">
+      <div class="top-bar">
+        <div>
+          <div class="week-label-big" id="editor-title">Week of —</div>
+          <div class="week-label-sub" id="editor-sub"></div>
+        </div>
+        <div class="actions">
+          <button class="btn danger" onclick="deleteEntry()"><i class="ti ti-trash" aria-hidden="true"></i> Delete</button>
+          <button class="btn primary" onclick="exportPDF()"><i class="ti ti-file" aria-hidden="true"></i> Export PDF</button>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-head"><i class="ti ti-trophy section-icon" aria-hidden="true"></i><span class="section-label">This week's wins</span><span class="section-hint">What went well?</span></div>
+        <textarea id="f-highlights" placeholder="Key achievements, closed deals, milestones..." oninput="autoSave()" rows="4"></textarea>
+      </div>
+
+      <div class="section-card">
+        <div class="section-head"><i class="ti ti-circle-check section-icon" aria-hidden="true"></i><span class="section-label">Tasks completed</span><span class="section-hint">What got done?</span></div>
+        <textarea id="f-tasks_done" placeholder="List the tasks you finished this week..." oninput="autoSave()" rows="4"></textarea>
+      </div>
+
+      <div class="section-card">
+        <div class="section-head"><i class="ti ti-alert-triangle section-icon" aria-hidden="true"></i><span class="section-label">Blockers</span><span class="section-hint">Where do you need help?</span></div>
+        <textarea id="f-blockers" placeholder="Anything slowing you down or blocking progress..." oninput="autoSave()" rows="3"></textarea>
+      </div>
+
+      <div class="section-card">
+        <div class="section-head"><i class="ti ti-calendar section-icon" aria-hidden="true"></i><span class="section-label">Next week's plan</span><span class="section-hint">What are your priorities?</span></div>
+        <textarea id="f-next_week" placeholder="Key tasks and goals for next week..." oninput="autoSave()" rows="4"></textarea>
+      </div>
+
+      <div class="section-card">
+        <div class="section-head"><i class="ti ti-message section-icon" aria-hidden="true"></i><span class="section-label">Notes</span><span class="section-hint">Anything else?</span></div>
+        <textarea id="f-notes" placeholder="Context, observations, side notes..." oninput="autoSave()" rows="3"></textarea>
+      </div>
+
+      <div class="save-bar">
+        <span class="save-status" id="save-status">All changes saved</span>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+const STORE_KEY = 'weekly_updates_v1';
+let entries = [];
+let activeId = null;
+let saveTimer = null;
+
+function load() {
+  try { entries = JSON.parse(localStorage.getItem(STORE_KEY)) || []; } catch(e) { entries = []; }
+}
+function save() { localStorage.setItem(STORE_KEY, JSON.stringify(entries)); }
+function getMonday(d) {
+  const dt = new Date(d);
+  const day = dt.getDay();
+  const diff = dt.getDate() - day + (day === 0 ? -6 : 1);
+  dt.setDate(diff);
+  return dt;
+}
+function formatDate(d) {
+  return new Date(d).toLocaleDateString('en-GB', {day:'2-digit', month:'short', year:'numeric'});
+}
+function weekLabel(isoDate) {
+  const mon = getMonday(new Date(isoDate));
+  const fri = new Date(mon); fri.setDate(fri.getDate() + 4);
+  return `Week of ${formatDate(mon)} – ${formatDate(fri)}`;
+}
+
+function renderSidebar() {
+  const list = document.getElementById('history-list');
+  list.innerHTML = '';
+  const sorted = [...entries].sort((a,b) => new Date(b.date) - new Date(a.date));
+  sorted.forEach(e => {
+    const div = document.createElement('div');
+    div.className = 'week-entry' + (e.id === activeId ? ' active' : '');
+    const mon = getMonday(new Date(e.date));
+    const fri = new Date(mon); fri.setDate(fri.getDate() + 4);
+    div.innerHTML = `<div class="we-label">${mon.toLocaleDateString('en-GB',{day:'2-digit',month:'short'})}</div><div class="we-sub">${mon.toLocaleDateString('en-GB',{month:'short',year:'numeric'})}</div>`;
+    div.onclick = () => openEntry(e.id);
+    list.appendChild(div);
+  });
+}
+
+function openEntry(id) {
+  activeId = id;
+  const e = entries.find(x => x.id === id);
+  if (!e) return;
+  document.getElementById('empty-state').style.display = 'none';
+  const ed = document.getElementById('editor');
+  ed.style.display = 'flex';
+  document.getElementById('editor-title').textContent = weekLabel(e.date);
+  document.getElementById('editor-sub').textContent = 'Sent Friday · ' + formatDate(e.date);
+  ['highlights','tasks_done','blockers','next_week','notes'].forEach(f => {
+    document.getElementById('f-'+f).value = e[f] || '';
+  });
+  document.getElementById('save-status').textContent = 'All changes saved';
+  renderSidebar();
+}
+
+function newEntry() {
+  const today = new Date().toISOString().split('T')[0];
+  const exists = entries.find(x => {
+    const aM = getMonday(new Date(x.date)).toDateString();
+    const bM = getMonday(new Date(today)).toDateString();
+    return aM === bM;
+  });
+  if (exists) { openEntry(exists.id); return; }
+  const id = 'w_' + Date.now();
+  const entry = {id, date: today, highlights:'', tasks_done:'', blockers:'', next_week:'', notes:''};
+  entries.push(entry);
+  save();
+  openEntry(id);
+}
+
+function autoSave() {
+  if (!activeId) return;
+  clearTimeout(saveTimer);
+  document.getElementById('save-status').textContent = 'Saving...';
+  saveTimer = setTimeout(() => {
+    const e = entries.find(x => x.id === activeId);
+    if (!e) return;
+    ['highlights','tasks_done','blockers','next_week','notes'].forEach(f => {
+      e[f] = document.getElementById('f-'+f).value;
+    });
+    save();
+    document.getElementById('save-status').textContent = 'All changes saved';
+  }, 600);
+}
+
+function deleteEntry() {
+  if (!activeId) return;
+  if (!confirm('Delete this week\'s entry?')) return;
+  entries = entries.filter(x => x.id !== activeId);
+  activeId = null;
+  save();
+  document.getElementById('editor').style.display = 'none';
+  document.getElementById('empty-state').style.display = '';
+  renderSidebar();
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function exportJSON() {
+  const blob = new Blob([JSON.stringify(entries, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'weekly-updates-backup.json';
+  a.click();
+  showToast('Backup downloaded');
+}
+
+function exportPDF() {
+  const e = entries.find(x => x.id === activeId);
+  if (!e) return;
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({unit:'mm', format:'a4'});
+  const W = 210, PL = 20, PR = 20, TW = W - PL - PR;
+  let y = 0;
+
+  const sections = [
+    {key:'highlights', label:'This week\'s wins', icon:'trophy'},
+    {key:'tasks_done', label:'Tasks completed', icon:'check'},
+    {key:'blockers', label:'Blockers', icon:'alert'},
+    {key:'next_week', label:'Next week\'s plan', icon:'calendar'},
+    {key:'notes', label:'Notes', icon:'message'},
+  ];
+
+  function addPage() {
+    doc.addPage();
+    y = 20;
+  }
+  function checkY(needed) {
+    if (y + needed > 272) addPage();
+  }
+
+  doc.setFillColor(245, 245, 243);
+  doc.rect(0, 0, 210, 38, 'F');
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(18);
+  doc.setTextColor(30,30,28);
+  doc.text('Weekly update', PL, 18);
+  doc.setFont('helvetica','normal');
+  doc.setFontSize(10);
+  doc.setTextColor(120,118,114);
+  doc.text(weekLabel(e.date), PL, 26);
+  const today = new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+  doc.text('Emilio Miranda Escamilla · Account & Growth Manager · Ticketapp', PL, 32);
+  y = 50;
+
+  sections.forEach(sec => {
+    const text = (e[sec.key] || '').trim();
+    if (!text) return;
+    const lines = doc.splitTextToSize(text, TW - 4);
+    const blockH = 8 + lines.length * 5.5 + 8;
+    checkY(blockH + 14);
+
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(11);
+    doc.setTextColor(30,30,28);
+    doc.text(sec.label, PL, y);
+    y += 3;
+    doc.setDrawColor(220,218,214);
+    doc.setLineWidth(0.3);
+    doc.line(PL, y, PL + TW, y);
+    y += 5;
+
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(10);
+    doc.setTextColor(60,60,58);
+    lines.forEach(line => {
+      checkY(6);
+      doc.text(line, PL + 2, y);
+      y += 5.5;
+    });
+    y += 10;
+  });
+
+  doc.setDrawColor(220,218,214);
+  doc.setLineWidth(0.3);
+  const pageCount = doc.internal.getNumberOfPages();
+  for (let i = 1; i <= pageCount; i++) {
+    doc.setPage(i);
+    doc.line(PL, 282, W - PR, 282);
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(8);
+    doc.setTextColor(160,158,154);
+    doc.text('Emilio Miranda · Ticketapp', PL, 287);
+    doc.text(`${i} / ${pageCount}`, W - PR, 287, {align:'right'});
+  }
+
+  const mon = getMonday(new Date(e.date));
+  const fname = `weekly-update-${mon.toISOString().split('T')[0]}.pdf`;
+  doc.save(fname);
+  showToast('PDF exported');
+}
+
+load();
+renderSidebar();
+if (entries.length > 0) {
+  const latest = [...entries].sort((a,b) => new Date(b.date)-new Date(a.date))[0];
+  openEntry(latest.id);
+}
+</script>
