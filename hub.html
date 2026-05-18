@@ -135,8 +135,6 @@
   const SESSION_KEY    = 'milo_session';
   const VISIBILITY_KEY = 'milo_guest_vis';
 
-  // ── APP REGISTRY ──────────────────────────────────────
-  // One flat list — no sections. To add a new app, just add an entry here.
   const APPS = [
     {
       id: 'productionbible',
@@ -194,11 +192,17 @@
       href: 'apps/pipeline-tracker.html',
       tooltip: 'Track sales leads from first contact to closed deal. Filter by status, export to Excel, no backend needed.',
     },
+    {
+      id: 'weeklyupdate',
+      emoji: '📝',
+      name: 'Weekly Update Builder',
+      href: 'apps/weekly_update_builder.html',
+      tooltip: 'Build and format your weekly updates fast — wins, blockers, next steps, all structured and ready to share.',
+    },
   ];
 
   let currentRole = null;
 
-  // ── VISIBILITY STORE ──────────────────────────────────
   function getVisibility() {
     let vis = {};
     try { vis = JSON.parse(localStorage.getItem(VISIBILITY_KEY)) || {}; } catch {}
@@ -207,7 +211,6 @@
   }
   function saveVisibility(v) { localStorage.setItem(VISIBILITY_KEY, JSON.stringify(v)); }
 
-  // ── BUILD UI ──────────────────────────────────────────
   function buildAppGrid() {
     const container = document.getElementById('app-sections');
     container.innerHTML = '';
@@ -248,13 +251,11 @@
     });
   }
 
-  // ── BOOT ──────────────────────────────────────────────
   buildAppGrid();
   buildToolbar();
   const stored = localStorage.getItem(SESSION_KEY);
   if (stored === 'admin' || stored === 'guest') { currentRole = stored; unlock(false); }
 
-  // ── AUTH ──────────────────────────────────────────────
   function checkPassword() {
     const val = document.getElementById('pw-input').value;
     if (val === PW_ADMIN)      { currentRole = 'admin'; localStorage.setItem(SESSION_KEY, 'admin'); unlock(true); }
@@ -278,7 +279,6 @@
     else go();
   }
 
-  // ── APPLY ROLE ────────────────────────────────────────
   function applyRole() {
     const vis = getVisibility();
     if (currentRole === 'admin') {
@@ -299,20 +299,17 @@
     }
   }
 
-  // ── ADMIN VISIBILITY TOGGLE ───────────────────────────
   function updateVisibility(cb) {
     const vis = getVisibility();
     vis[cb.dataset.target] = cb.checked;
     saveVisibility(vis);
   }
 
-  // ── TOOLBAR COLLAPSE ──────────────────────────────────
   function toggleToolbar() {
     document.getElementById('toolbar-body').classList.toggle('open');
     document.getElementById('toolbar-chevron').classList.toggle('open');
   }
 
-  // ── LOGOUT ────────────────────────────────────────────
   function logout() {
     localStorage.removeItem(SESSION_KEY);
     currentRole = null;
@@ -325,7 +322,6 @@
     document.getElementById('lock-screen').style.display = 'flex';
   }
 
-  // ── PW VISIBILITY ─────────────────────────────────────
   function toggleVisibility() {
     const input = document.getElementById('pw-input');
     const btn   = document.getElementById('toggle-pw-btn');
