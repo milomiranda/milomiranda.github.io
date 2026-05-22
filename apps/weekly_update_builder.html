@@ -1,152 +1,579 @@
-
-<h2 class="sr-only">Weekly update builder — fill in your week and export as PDF</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weekly Update Builder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--font-sans)}
-.app{display:grid;grid-template-columns:220px 1fr;gap:0;min-height:600px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden}
-.sidebar{background:var(--color-background-secondary);border-right:0.5px solid var(--color-border-tertiary);padding:1rem;display:flex;flex-direction:column;gap:8px}
-.sidebar-title{font-size:11px;font-weight:500;color:var(--color-text-tertiary);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;padding:0 4px}
-.week-entry{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:10px 12px;cursor:pointer;transition:border-color .15s}
-.week-entry:hover{border-color:var(--color-border-secondary)}
-.week-entry.active{border-color:var(--color-border-primary)}
-.week-entry .we-label{font-size:13px;font-weight:500;color:var(--color-text-primary)}
-.week-entry .we-sub{font-size:11px;color:var(--color-text-tertiary);margin-top:2px}
-.new-btn{background:var(--color-background-primary);border:0.5px dashed var(--color-border-secondary);border-radius:var(--border-radius-md);padding:10px 12px;cursor:pointer;font-size:13px;color:var(--color-text-secondary);display:flex;align-items:center;gap:6px;width:100%;text-align:left}
-.new-btn:hover{color:var(--color-text-primary);border-style:solid}
-.main{background:var(--color-background-primary);padding:1.5rem;display:flex;flex-direction:column;gap:1.25rem}
-.top-bar{display:flex;align-items:center;justify-content:space-between}
-.week-label-big{font-size:15px;font-weight:500;color:var(--color-text-primary)}
-.week-label-sub{font-size:12px;color:var(--color-text-tertiary);margin-top:1px}
-.actions{display:flex;gap:8px}
-.btn{border:0.5px solid var(--color-border-secondary);background:transparent;border-radius:var(--border-radius-md);padding:6px 12px;font-size:13px;color:var(--color-text-primary);cursor:pointer;display:flex;align-items:center;gap:5px}
-.btn:hover{background:var(--color-background-secondary)}
-.btn.primary{background:var(--color-text-primary);color:var(--color-background-primary);border-color:var(--color-text-primary)}
-.btn.primary:hover{opacity:.85}
-.btn.danger{color:var(--color-text-danger);border-color:var(--color-border-danger)}
-.btn.danger:hover{background:var(--color-background-danger)}
-.section-card{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden}
-.section-head{padding:10px 14px;display:flex;align-items:center;gap:8px;background:var(--color-background-secondary);border-bottom:0.5px solid var(--color-border-tertiary)}
-.section-icon{font-size:16px;color:var(--color-text-secondary)}
-.section-label{font-size:13px;font-weight:500;color:var(--color-text-primary)}
-.section-hint{font-size:11px;color:var(--color-text-tertiary);margin-left:auto}
-textarea{width:100%;border:none;background:transparent;resize:none;font-size:14px;color:var(--color-text-primary);font-family:var(--font-sans);line-height:1.6;padding:12px 14px;outline:none;min-height:80px}
-textarea::placeholder{color:var(--color-text-tertiary)}
-.save-bar{display:flex;align-items:center;justify-content:space-between;padding-top:4px}
-.save-status{font-size:12px;color:var(--color-text-tertiary)}
-.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:12px;color:var(--color-text-tertiary);padding:2rem;text-align:center}
-.empty-state i{font-size:32px;opacity:.4}
-.empty-state p{font-size:14px}
-.toast{position:absolute;bottom:16px;right:16px;background:var(--color-text-primary);color:var(--color-background-primary);padding:8px 14px;border-radius:var(--border-radius-md);font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none}
-.toast.show{opacity:1}
-.sidebar-actions{margin-top:auto;display:flex;flex-direction:column;gap:6px}
-</style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-<div style="position:relative">
-<div class="app" id="app">
-  <div class="sidebar">
+  :root {
+    --bg: #f6f6f4;
+    --surface: #ffffff;
+    --border: #ebebeb;
+    --border-mid: #d8d8d6;
+    --text: #1a1a18;
+    --muted: #8a8a88;
+    --hint: #b8b8b6;
+    --accent: #c5fe00;
+    --accent-dark: #8cb800;
+    --radius: 14px;
+    --radius-sm: 8px;
+    --danger: #e24b4a;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── Layout ── */
+  .shell {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    flex: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    width: 100%;
+    gap: 0;
+  }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-height: calc(100vh - 56px);
+  }
+
+  .sidebar-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--hint);
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    margin-bottom: 8px;
+    padding: 0 4px;
+  }
+
+  .week-entry {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    cursor: pointer;
+    transition: border-color .15s, background .15s;
+  }
+  .week-entry:hover { border-color: var(--border-mid); }
+  .week-entry.active { border-color: var(--text); background: var(--surface); }
+
+  .we-label { font-size: 13px; font-weight: 500; }
+  .we-sub { font-size: 11px; color: var(--muted); margin-top: 2px; font-family: 'DM Mono', monospace; }
+
+  .new-btn {
+    background: transparent;
+    border: 1px dashed var(--border-mid);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    cursor: pointer;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    transition: color .15s, border-color .15s;
+  }
+  .new-btn:hover { color: var(--text); border-color: var(--text); border-style: solid; }
+
+  .sidebar-foot { margin-top: auto; padding-top: 16px; }
+
+  /* ── Topbar ── */
+  .topbar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .topbar-brand {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    letter-spacing: -.01em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .topbar-dot {
+    width: 8px; height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    border: 1px solid var(--accent-dark);
+  }
+
+  /* ── Main area ── */
+  .main {
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .editor-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .editor-week { font-size: 18px; font-weight: 500; }
+  .editor-sub { font-size: 12px; color: var(--muted); margin-top: 3px; font-family: 'DM Mono', monospace; }
+
+  .actions { display: flex; gap: 8px; flex-shrink: 0; }
+
+  .btn {
+    border: 1px solid var(--border-mid);
+    background: var(--surface);
+    border-radius: var(--radius-sm);
+    padding: 8px 16px;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background .15s, border-color .15s;
+    font-weight: 400;
+  }
+  .btn:hover { background: var(--bg); border-color: var(--text); }
+  .btn.primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--text);
+    font-weight: 500;
+  }
+  .btn.primary:hover { background: #d4fe10; border-color: #d4fe10; }
+  .btn.ghost { background: transparent; border-color: transparent; color: var(--muted); }
+  .btn.ghost:hover { color: var(--danger); border-color: var(--danger); background: #fff0f0; }
+  .btn-icon { padding: 8px 10px; }
+
+  /* ── Section cards ── */
+  .section-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .section-head {
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+  }
+  .section-icon { font-size: 15px; }
+  .section-label { font-size: 12px; font-weight: 500; color: var(--text); }
+  .section-hint { font-size: 11px; color: var(--hint); margin-left: auto; font-family: 'DM Mono', monospace; }
+
+  textarea {
+    width: 100%;
+    border: none;
+    background: transparent;
+    resize: none;
+    font-size: 14px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    line-height: 1.65;
+    padding: 14px 16px;
+    outline: none;
+    min-height: 90px;
+  }
+  textarea::placeholder { color: var(--hint); }
+
+  /* ── Metrics grid ── */
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .metric-cell {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .metric-cell:nth-child(odd) { border-right: 1px solid var(--border); }
+  .metric-cell:last-child,
+  .metric-cell:nth-last-child(2):nth-child(odd) { border-bottom: none; }
+  .metrics-foot {
+    padding: 10px 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .metric-label-inp {
+    font-size: 10px;
+    font-family: 'DM Mono', monospace;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    color: var(--muted);
+    border: none;
+    background: transparent;
+    outline: none;
+    width: 100%;
+  }
+  .metric-label-inp::placeholder { color: var(--hint); }
+
+  .metric-val-inp {
+    font-size: 26px;
+    font-weight: 300;
+    border: none;
+    background: transparent;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    width: 100%;
+    letter-spacing: -.02em;
+  }
+  .metric-val-inp::placeholder { font-size: 14px; font-weight: 400; color: var(--hint); }
+
+  .add-metric-btn {
+    background: none;
+    border: none;
+    font-size: 12px;
+    color: var(--muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-family: 'DM Sans', sans-serif;
+    padding: 0;
+  }
+  .add-metric-btn:hover { color: var(--text); }
+
+  .remove-metric {
+    background: none;
+    border: none;
+    color: var(--hint);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 0;
+    margin-left: auto;
+    line-height: 1;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .remove-metric:hover { color: var(--danger); }
+
+  /* ── Status bar ── */
+  .status-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 4px;
+  }
+  .save-status { font-size: 12px; color: var(--hint); font-family: 'DM Mono', monospace; }
+
+  /* ── Empty state ── */
+  .empty-state {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    text-align: center;
+    padding: 4rem;
+    color: var(--muted);
+  }
+  .empty-icon { font-size: 40px; opacity: .3; }
+  .empty-state p { font-size: 14px; }
+
+  /* ── Toast ── */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--text);
+    color: white;
+    padding: 9px 16px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    opacity: 0;
+    transition: opacity .2s;
+    pointer-events: none;
+    z-index: 99;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .toast.show { opacity: 1; }
+
+  svg.icon { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; vertical-align: middle; }
+
+  /* ── Footer ── */
+  .app-footer {
+    text-align: center;
+    padding: 12px;
+    font-size: 11px;
+    color: var(--hint);
+    font-family: 'DM Mono', monospace;
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-brand">
+    <div class="topbar-dot"></div>
+    weekly update builder
+  </div>
+  <div style="font-size:11px;color:var(--hint);font-family:'DM Mono',monospace">ticketapp · emilio miranda</div>
+</header>
+
+<div class="shell">
+  <aside class="sidebar">
     <div class="sidebar-title">History</div>
     <div id="history-list"></div>
-    <button class="new-btn" id="new-btn" onclick="newEntry()">
-      <i class="ti ti-plus" aria-hidden="true"></i> New week
+    <button class="new-btn" onclick="newEntry()">
+      <svg class="icon"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      New week
     </button>
-    <div class="sidebar-actions">
-      <button class="btn" onclick="exportJSON()" title="Backup all entries as JSON">
-        <i class="ti ti-download" aria-hidden="true"></i> Backup JSON
+    <div class="sidebar-foot">
+      <button class="btn" style="width:100%;justify-content:center" onclick="exportJSON()">
+        <svg class="icon"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Backup JSON
       </button>
     </div>
-  </div>
-  <div class="main" id="main-area">
+  </aside>
+
+  <main class="main" id="main-area">
     <div class="empty-state" id="empty-state">
-      <i class="ti ti-calendar-week" aria-hidden="true"></i>
-      <p>Create a new week to get started</p>
-      <button class="btn primary" onclick="newEntry()"><i class="ti ti-plus" aria-hidden="true"></i> New week</button>
+      <div class="empty-icon">📋</div>
+      <p>Start a new week to build your update</p>
+      <button class="btn primary" onclick="newEntry()">
+        <svg class="icon"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        New week
+      </button>
     </div>
-    <div id="editor" style="display:none;flex-direction:column;gap:1.25rem">
-      <div class="top-bar">
+
+    <div id="editor" style="display:none;flex-direction:column;gap:20px">
+
+      <div class="editor-head">
         <div>
-          <div class="week-label-big" id="editor-title">Week of —</div>
-          <div class="week-label-sub" id="editor-sub"></div>
+          <div class="editor-week" id="editor-title">Week of —</div>
+          <div class="editor-sub" id="editor-sub"></div>
         </div>
         <div class="actions">
-          <button class="btn danger" onclick="deleteEntry()"><i class="ti ti-trash" aria-hidden="true"></i> Delete</button>
-          <button class="btn primary" onclick="exportPDF()"><i class="ti ti-file" aria-hidden="true"></i> Export PDF</button>
+          <button class="btn ghost btn-icon" onclick="deleteEntry()" title="Delete entry">
+            <svg class="icon"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+          </button>
+          <button class="btn primary" onclick="exportPDF()">
+            <svg class="icon"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Export PDF
+          </button>
         </div>
       </div>
 
       <div class="section-card">
-        <div class="section-head"><i class="ti ti-trophy section-icon" aria-hidden="true"></i><span class="section-label">This week's wins</span><span class="section-hint">What went well?</span></div>
-        <textarea id="f-highlights" placeholder="Key achievements, closed deals, milestones..." oninput="autoSave()" rows="4"></textarea>
+        <div class="section-head">
+          <span class="section-icon">🏆</span>
+          <span class="section-label">This week's wins</span>
+          <span class="section-hint">What went well?</span>
+        </div>
+        <textarea id="f-highlights" placeholder="Key achievements, closed deals, demos, milestones..." oninput="autoSave()" rows="3"></textarea>
       </div>
 
       <div class="section-card">
-        <div class="section-head"><i class="ti ti-circle-check section-icon" aria-hidden="true"></i><span class="section-label">Tasks completed</span><span class="section-hint">What got done?</span></div>
-        <textarea id="f-tasks_done" placeholder="List the tasks you finished this week..." oninput="autoSave()" rows="4"></textarea>
+        <div class="section-head">
+          <span class="section-icon">✅</span>
+          <span class="section-label">Tasks completed</span>
+          <span class="section-hint">What got done?</span>
+        </div>
+        <textarea id="f-tasks_done" placeholder="List the tasks you finished this week..." oninput="autoSave()" rows="3"></textarea>
       </div>
 
       <div class="section-card">
-        <div class="section-head"><i class="ti ti-alert-triangle section-icon" aria-hidden="true"></i><span class="section-label">Blockers</span><span class="section-hint">Where do you need help?</span></div>
+        <div class="section-head">
+          <span class="section-icon">📊</span>
+          <span class="section-label">KPIs / metrics</span>
+          <span class="section-hint">Click labels and values to edit</span>
+        </div>
+        <div class="metrics-grid" id="metrics-grid"></div>
+        <div class="metrics-foot">
+          <button class="add-metric-btn" onclick="addMetric()">
+            <svg class="icon" style="width:12px;height:12px"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add metric
+          </button>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-head">
+          <span class="section-icon">🚧</span>
+          <span class="section-label">Blockers</span>
+          <span class="section-hint">Where do you need help?</span>
+        </div>
         <textarea id="f-blockers" placeholder="Anything slowing you down or blocking progress..." oninput="autoSave()" rows="3"></textarea>
       </div>
 
       <div class="section-card">
-        <div class="section-head"><i class="ti ti-calendar section-icon" aria-hidden="true"></i><span class="section-label">Next week's plan</span><span class="section-hint">What are your priorities?</span></div>
-        <textarea id="f-next_week" placeholder="Key tasks and goals for next week..." oninput="autoSave()" rows="4"></textarea>
+        <div class="section-head">
+          <span class="section-icon">📅</span>
+          <span class="section-label">Next week's plan</span>
+          <span class="section-hint">Your priorities</span>
+        </div>
+        <textarea id="f-next_week" placeholder="Key tasks and goals for next week..." oninput="autoSave()" rows="3"></textarea>
       </div>
 
       <div class="section-card">
-        <div class="section-head"><i class="ti ti-message section-icon" aria-hidden="true"></i><span class="section-label">Notes</span><span class="section-hint">Anything else?</span></div>
+        <div class="section-head">
+          <span class="section-icon">💬</span>
+          <span class="section-label">Notes</span>
+          <span class="section-hint">Anything else?</span>
+        </div>
         <textarea id="f-notes" placeholder="Context, observations, side notes..." oninput="autoSave()" rows="3"></textarea>
       </div>
 
-      <div class="save-bar">
-        <span class="save-status" id="save-status">All changes saved</span>
+      <div class="status-bar">
+        <span class="save-status" id="save-status">all changes saved</span>
+        <span style="font-size:11px;color:var(--hint);font-family:'DM Mono',monospace">stored locally in browser</span>
       </div>
+
     </div>
-  </div>
-</div>
-<div class="toast" id="toast"></div>
+  </main>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<footer class="app-footer">built by Emilio Miranda Escamilla</footer>
+<div class="toast" id="toast"></div>
+
 <script>
-const STORE_KEY = 'weekly_updates_v1';
-let entries = [];
-let activeId = null;
-let saveTimer = null;
+const STORE_KEY = 'weekly_updates_v2';
+let entries = [], activeId = null, saveTimer = null;
+
+const DEFAULT_METRICS = [
+  { label: 'Demos booked', value: '' },
+  { label: 'Clients contacted', value: '' },
+  { label: 'Deals in pipeline', value: '' },
+  { label: 'Follow-ups sent', value: '' },
+];
 
 function load() {
-  try { entries = JSON.parse(localStorage.getItem(STORE_KEY)) || []; } catch(e) { entries = []; }
+  try { entries = JSON.parse(localStorage.getItem(STORE_KEY)) || []; }
+  catch(e) { entries = []; }
 }
-function save() { localStorage.setItem(STORE_KEY, JSON.stringify(entries)); }
+
+function persist() {
+  localStorage.setItem(STORE_KEY, JSON.stringify(entries));
+}
+
 function getMonday(d) {
   const dt = new Date(d);
   const day = dt.getDay();
-  const diff = dt.getDate() - day + (day === 0 ? -6 : 1);
-  dt.setDate(diff);
+  dt.setDate(dt.getDate() - day + (day === 0 ? -6 : 1));
   return dt;
 }
-function formatDate(d) {
-  return new Date(d).toLocaleDateString('en-GB', {day:'2-digit', month:'short', year:'numeric'});
+
+function fmt(d) {
+  return new Date(d).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
 }
-function weekLabel(isoDate) {
-  const mon = getMonday(new Date(isoDate));
+
+function fmtShort(d) {
+  return new Date(d).toLocaleDateString('en-GB', { day: '2-digit', month: 'long' });
+}
+
+function weekLabel(iso) {
+  const mon = getMonday(new Date(iso));
   const fri = new Date(mon); fri.setDate(fri.getDate() + 4);
-  return `Week of ${formatDate(mon)} – ${formatDate(fri)}`;
+  return `Week of ${fmt(mon)} – ${fmt(fri)}`;
 }
 
 function renderSidebar() {
   const list = document.getElementById('history-list');
   list.innerHTML = '';
-  const sorted = [...entries].sort((a,b) => new Date(b.date) - new Date(a.date));
-  sorted.forEach(e => {
-    const div = document.createElement('div');
-    div.className = 'week-entry' + (e.id === activeId ? ' active' : '');
-    const mon = getMonday(new Date(e.date));
-    const fri = new Date(mon); fri.setDate(fri.getDate() + 4);
-    div.innerHTML = `<div class="we-label">${mon.toLocaleDateString('en-GB',{day:'2-digit',month:'short'})}</div><div class="we-sub">${mon.toLocaleDateString('en-GB',{month:'short',year:'numeric'})}</div>`;
-    div.onclick = () => openEntry(e.id);
-    list.appendChild(div);
+  [...entries]
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
+    .forEach(e => {
+      const div = document.createElement('div');
+      div.className = 'week-entry' + (e.id === activeId ? ' active' : '');
+      const mon = getMonday(new Date(e.date));
+      const hasContent = e.highlights || e.tasks_done || e.next_week;
+      div.innerHTML = `<div class="we-label">${fmtShort(mon)}</div><div class="we-sub">${mon.getFullYear()} ${hasContent ? '·  filled' : '·  empty'}</div>`;
+      div.onclick = () => openEntry(e.id);
+      list.appendChild(div);
+    });
+}
+
+function renderMetrics(metrics) {
+  const grid = document.getElementById('metrics-grid');
+  grid.innerHTML = '';
+  (metrics || []).forEach((m, i) => {
+    const cell = document.createElement('div');
+    cell.className = 'metric-cell';
+    cell.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <input class="metric-label-inp" placeholder="KPI NAME" value="${escHtml(m.label || '')}" oninput="updateMetric(${i}, 'label', this.value)">
+        <button class="remove-metric" onclick="removeMetric(${i})" title="Remove">✕</button>
+      </div>
+      <input class="metric-val-inp" placeholder="—" value="${escHtml(m.value || '')}" oninput="updateMetric(${i}, 'value', this.value)">
+    `;
+    grid.appendChild(cell);
   });
+  // fill odd slot
+  if ((metrics || []).length % 2 !== 0) {
+    const ph = document.createElement('div');
+    ph.className = 'metric-cell';
+    ph.style.background = '#fafafa';
+    grid.appendChild(ph);
+  }
+}
+
+function escHtml(s) {
+  return (s || '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function updateMetric(i, field, val) {
+  const e = entries.find(x => x.id === activeId);
+  if (!e) return;
+  e.metrics[i][field] = val;
+  autoSave();
+}
+
+function removeMetric(i) {
+  const e = entries.find(x => x.id === activeId);
+  if (!e) return;
+  e.metrics.splice(i, 1);
+  renderMetrics(e.metrics);
+  autoSave();
+}
+
+function addMetric() {
+  const e = entries.find(x => x.id === activeId);
+  if (!e) return;
+  e.metrics.push({ label: '', value: '' });
+  renderMetrics(e.metrics);
+  autoSave();
 }
 
 function openEntry(id) {
@@ -157,50 +584,53 @@ function openEntry(id) {
   const ed = document.getElementById('editor');
   ed.style.display = 'flex';
   document.getElementById('editor-title').textContent = weekLabel(e.date);
-  document.getElementById('editor-sub').textContent = 'Sent Friday · ' + formatDate(e.date);
-  ['highlights','tasks_done','blockers','next_week','notes'].forEach(f => {
-    document.getElementById('f-'+f).value = e[f] || '';
+  document.getElementById('editor-sub').textContent = 'friday update · ' + fmt(e.date);
+  ['highlights', 'tasks_done', 'blockers', 'next_week', 'notes'].forEach(f => {
+    document.getElementById('f-' + f).value = e[f] || '';
   });
-  document.getElementById('save-status').textContent = 'All changes saved';
+  renderMetrics(e.metrics || []);
+  document.getElementById('save-status').textContent = 'all changes saved';
   renderSidebar();
 }
 
 function newEntry() {
   const today = new Date().toISOString().split('T')[0];
-  const exists = entries.find(x => {
-    const aM = getMonday(new Date(x.date)).toDateString();
-    const bM = getMonday(new Date(today)).toDateString();
-    return aM === bM;
-  });
-  if (exists) { openEntry(exists.id); return; }
+  const thisMon = getMonday(new Date(today)).toDateString();
+  const exists = entries.find(x => getMonday(new Date(x.date)).toDateString() === thisMon);
+  if (exists) { openEntry(exists.id); showToast('This week already exists'); return; }
   const id = 'w_' + Date.now();
-  const entry = {id, date: today, highlights:'', tasks_done:'', blockers:'', next_week:'', notes:''};
-  entries.push(entry);
-  save();
+  entries.push({
+    id, date: today,
+    highlights: '', tasks_done: '', blockers: '', next_week: '', notes: '',
+    metrics: DEFAULT_METRICS.map(m => ({ ...m }))
+  });
+  persist();
   openEntry(id);
 }
 
 function autoSave() {
   if (!activeId) return;
   clearTimeout(saveTimer);
-  document.getElementById('save-status').textContent = 'Saving...';
+  document.getElementById('save-status').textContent = 'saving...';
   saveTimer = setTimeout(() => {
     const e = entries.find(x => x.id === activeId);
     if (!e) return;
-    ['highlights','tasks_done','blockers','next_week','notes'].forEach(f => {
-      e[f] = document.getElementById('f-'+f).value;
+    ['highlights', 'tasks_done', 'blockers', 'next_week', 'notes'].forEach(f => {
+      const el = document.getElementById('f-' + f);
+      if (el) e[f] = el.value;
     });
-    save();
-    document.getElementById('save-status').textContent = 'All changes saved';
-  }, 600);
+    // metrics are written directly in updateMetric(); no DOM re-read needed here
+    persist();
+    document.getElementById('save-status').textContent = 'all changes saved';
+    renderSidebar();
+  }, 700);
 }
 
 function deleteEntry() {
-  if (!activeId) return;
-  if (!confirm('Delete this week\'s entry?')) return;
+  if (!activeId || !confirm('Delete this week\'s entry?')) return;
   entries = entries.filter(x => x.id !== activeId);
   activeId = null;
-  save();
+  persist();
   document.getElementById('editor').style.display = 'none';
   document.getElementById('empty-state').style.display = '';
   renderSidebar();
@@ -208,13 +638,12 @@ function deleteEntry() {
 
 function showToast(msg) {
   const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
+  t.textContent = msg; t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2500);
 }
 
 function exportJSON() {
-  const blob = new Blob([JSON.stringify(entries, null, 2)], {type:'application/json'});
+  const blob = new Blob([JSON.stringify(entries, null, 2)], { type: 'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = 'weekly-updates-backup.json';
@@ -226,91 +655,119 @@ function exportPDF() {
   const e = entries.find(x => x.id === activeId);
   if (!e) return;
   const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({unit:'mm', format:'a4'});
-  const W = 210, PL = 20, PR = 20, TW = W - PL - PR;
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+  const PL = 20, PR = 20, W = 210, TW = W - PL - PR;
   let y = 0;
 
-  const sections = [
-    {key:'highlights', label:'This week\'s wins', icon:'trophy'},
-    {key:'tasks_done', label:'Tasks completed', icon:'check'},
-    {key:'blockers', label:'Blockers', icon:'alert'},
-    {key:'next_week', label:'Next week\'s plan', icon:'calendar'},
-    {key:'notes', label:'Notes', icon:'message'},
-  ];
-
-  function addPage() {
-    doc.addPage();
-    y = 20;
-  }
-  function checkY(needed) {
-    if (y + needed > 272) addPage();
+  function checkY(n) {
+    if (y + n > 272) { doc.addPage(); y = 20; }
   }
 
-  doc.setFillColor(245, 245, 243);
-  doc.rect(0, 0, 210, 38, 'F');
-  doc.setFont('helvetica','bold');
+  // Header block
+  doc.setFillColor(246, 246, 244);
+  doc.rect(0, 0, 210, 42, 'F');
+  doc.setFont('helvetica', 'bold');
   doc.setFontSize(18);
-  doc.setTextColor(30,30,28);
+  doc.setTextColor(26, 26, 24);
   doc.text('Weekly update', PL, 18);
-  doc.setFont('helvetica','normal');
+  doc.setFont('helvetica', 'normal');
   doc.setFontSize(10);
-  doc.setTextColor(120,118,114);
-  doc.text(weekLabel(e.date), PL, 26);
-  const today = new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
-  doc.text('Emilio Miranda Escamilla · Account & Growth Manager · Ticketapp', PL, 32);
-  y = 50;
+  doc.setTextColor(110, 108, 104);
+  doc.text(weekLabel(e.date), PL, 27);
+  doc.text('Emilio Miranda Escamilla  ·  Account & Growth Manager  ·  Ticketapp', PL, 35);
+  y = 54;
+
+  // Metrics block
+  const metrics = (e.metrics || []).filter(m => m.label || m.value);
+  if (metrics.length) {
+    checkY(16);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11);
+    doc.setTextColor(26, 26, 24);
+    doc.text('KPIs / metrics', PL, y);
+    y += 3;
+    doc.setDrawColor(220, 218, 214);
+    doc.setLineWidth(0.3);
+    doc.line(PL, y, PL + TW, y);
+    y += 6;
+
+    const cols = 2, cw = TW / cols;
+    for (let i = 0; i < metrics.length; i += cols) {
+      checkY(22);
+      for (let j = 0; j < cols; j++) {
+        const m = metrics[i + j]; if (!m) continue;
+        const x = PL + j * cw;
+        doc.setFillColor(246, 246, 244);
+        doc.roundedRect(x, y - 4, cw - 5, 18, 2, 2, 'F');
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(16);
+        doc.setTextColor(26, 26, 24);
+        doc.text(m.value || '—', x + 5, y + 6);
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(8);
+        doc.setTextColor(138, 138, 136);
+        doc.text((m.label || '').toUpperCase(), x + 5, y + 12);
+      }
+      y += 24;
+    }
+    y += 8;
+  }
+
+  // Text sections
+  const sections = [
+    { key: 'highlights', label: "This week's wins" },
+    { key: 'tasks_done', label: 'Tasks completed' },
+    { key: 'blockers', label: 'Blockers' },
+    { key: 'next_week', label: "Next week's plan" },
+    { key: 'notes', label: 'Notes' },
+  ];
 
   sections.forEach(sec => {
     const text = (e[sec.key] || '').trim();
     if (!text) return;
-    const lines = doc.splitTextToSize(text, TW - 4);
-    const blockH = 8 + lines.length * 5.5 + 8;
-    checkY(blockH + 14);
-
-    doc.setFont('helvetica','bold');
+    const lines = doc.splitTextToSize(text, TW - 2);
+    checkY(14 + lines.length * 5.8);
+    doc.setFont('helvetica', 'bold');
     doc.setFontSize(11);
-    doc.setTextColor(30,30,28);
+    doc.setTextColor(26, 26, 24);
     doc.text(sec.label, PL, y);
     y += 3;
-    doc.setDrawColor(220,218,214);
+    doc.setDrawColor(220, 218, 214);
     doc.setLineWidth(0.3);
     doc.line(PL, y, PL + TW, y);
     y += 5;
-
-    doc.setFont('helvetica','normal');
+    doc.setFont('helvetica', 'normal');
     doc.setFontSize(10);
-    doc.setTextColor(60,60,58);
-    lines.forEach(line => {
-      checkY(6);
-      doc.text(line, PL + 2, y);
-      y += 5.5;
-    });
+    doc.setTextColor(55, 54, 52);
+    lines.forEach(l => { checkY(6); doc.text(l, PL + 2, y); y += 5.8; });
     y += 10;
   });
 
-  doc.setDrawColor(220,218,214);
-  doc.setLineWidth(0.3);
-  const pageCount = doc.internal.getNumberOfPages();
-  for (let i = 1; i <= pageCount; i++) {
+  // Footer on all pages
+  const pages = doc.internal.getNumberOfPages();
+  for (let i = 1; i <= pages; i++) {
     doc.setPage(i);
+    doc.setDrawColor(220, 218, 214);
+    doc.setLineWidth(0.3);
     doc.line(PL, 282, W - PR, 282);
-    doc.setFont('helvetica','normal');
+    doc.setFont('helvetica', 'normal');
     doc.setFontSize(8);
-    doc.setTextColor(160,158,154);
-    doc.text('Emilio Miranda · Ticketapp', PL, 287);
-    doc.text(`${i} / ${pageCount}`, W - PR, 287, {align:'right'});
+    doc.setTextColor(160, 158, 154);
+    doc.text('Emilio Miranda  ·  Ticketapp', PL, 287);
+    doc.text(`${i} / ${pages}`, W - PR, 287, { align: 'right' });
   }
 
   const mon = getMonday(new Date(e.date));
-  const fname = `weekly-update-${mon.toISOString().split('T')[0]}.pdf`;
-  doc.save(fname);
+  doc.save(`weekly-update-${mon.toISOString().split('T')[0]}.pdf`);
   showToast('PDF exported');
 }
 
+// Init
 load();
 renderSidebar();
-if (entries.length > 0) {
-  const latest = [...entries].sort((a,b) => new Date(b.date)-new Date(a.date))[0];
-  openEntry(latest.id);
+if (entries.length) {
+  openEntry([...entries].sort((a, b) => new Date(b.date) - new Date(a.date))[0].id);
 }
 </script>
+</body>
+</html>
