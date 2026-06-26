@@ -1,62 +1,48 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Garment Cards</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
+  :root {
+    --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --color-text-primary: #111111;
+    --color-text-secondary: #555555;
+    --color-text-tertiary: #999999;
+    --color-background-primary: #ffffff;
+    --color-background-secondary: #f6f6f4;
+    --color-border-secondary: #d8d8d8;
+    --color-border-tertiary: #ebebeb;
+    --border-radius-md: 8px;
+    --border-radius-lg: 12px;
+  }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: var(--font-sans); }
-  .app { padding: 1rem 0; }
+  body { font-family: var(--font-sans); background: var(--color-background-secondary); min-height: 100vh; padding: 2rem 1.5rem; }
+  .app { max-width: 1100px; margin: 0 auto; }
   .toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 12px; }
-  .toolbar h1 { font-size: 17px; font-weight: 500; color: var(--color-text-primary); letter-spacing: -0.01em; }
+  .toolbar h1 { font-size: 17px; font-weight: 500; color: var(--color-text-primary); }
   .btn { font-size: 13px; font-weight: 500; padding: 7px 14px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: var(--color-background-primary); color: var(--color-text-primary); cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
   .btn:hover { background: var(--color-background-secondary); }
   .btn-primary { background: var(--color-text-primary); color: var(--color-background-primary); border-color: transparent; }
   .btn-primary:hover { opacity: 0.82; }
-
-  /* ── GRID ── */
-  .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
-  .empty-state { text-align: center; padding: 3.5rem 1rem; color: var(--color-text-tertiary); font-size: 13px; grid-column: 1/-1; }
-
-  /* ── CARD ── */
+  .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; }
+  .empty-state { text-align: center; padding: 3.5rem 1rem; color: var(--color-text-tertiary); font-size: 13px; grid-column: 1/-1; background: var(--color-background-primary); border-radius: var(--border-radius-lg); border: 0.5px solid var(--color-border-tertiary); }
   .look-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); overflow: hidden; display: flex; flex-direction: column; }
-
-  /* Brand header */
   .card-header { padding: 11px 13px 9px; border-bottom: 0.5px solid var(--color-border-tertiary); }
-  .card-brand { font-size: 14px; font-weight: 600; color: var(--color-text-primary); letter-spacing: 0.02em; text-transform: uppercase; }
+  .card-brand { font-size: 14px; font-weight: 600; color: var(--color-text-primary); letter-spacing: 0.04em; text-transform: uppercase; }
   .card-meta { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 4px; align-items: center; }
-
-  /* Garment photo */
   .card-photo { width: 100%; aspect-ratio: 3/4; background: var(--color-background-secondary); border-bottom: 0.5px solid var(--color-border-tertiary); display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; overflow: hidden; }
   .card-photo img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
   .card-photo .ph { display: flex; flex-direction: column; align-items: center; gap: 7px; color: var(--color-text-tertiary); font-size: 11px; }
   .card-photo input[type=file] { display: none; }
-
-  /* Fields */
   .card-body { padding: 9px 13px; display: flex; flex-direction: column; gap: 4px; }
-  .field-row { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
-  .fl { font-size: 10px; color: var(--color-text-tertiary); text-transform: uppercase; letter-spacing: 0.05em; flex-shrink: 0; }
-  .fv { font-size: 12px; color: var(--color-text-primary); text-align: right; }
-  .story-block { margin-top: 5px; padding-top: 6px; border-top: 0.5px solid var(--color-border-tertiary); font-size: 11px; color: var(--color-text-secondary); font-style: italic; line-height: 1.6; }
-
-  /* QR zone */
-  .qr-zone { margin: 0 12px 12px; border: 0.5px dashed var(--color-border-secondary); border-radius: var(--border-radius-md); overflow: hidden; }
-  .qr-cta { font-size: 10px; color: var(--color-text-secondary); text-align: center; padding: 7px 8px 4px; line-height: 1.5; }
-  .qr-cta strong { display: block; font-size: 11px; color: var(--color-text-primary); }
-  .qr-frame { width: 80px; height: 80px; margin: 0 auto 10px; background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: 6px; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; overflow: hidden; }
-  .qr-frame img { width: 100%; height: 100%; object-fit: contain; position: absolute; inset: 0; padding: 4px; }
-  .qr-frame .qph { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--color-text-tertiary); font-size: 10px; }
-  .qr-frame input[type=file] { display: none; }
-
-  /* Footer */
-  .card-footer { padding: 7px 12px; border-top: 0.5px solid var(--color-border-tertiary); display: flex; gap: 5px; justify-content: flex-end; }
-  .btn-sm { font-size: 11px; padding: 4px 9px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: var(--color-background-primary); color: var(--color-text-secondary); cursor: pointer; display: inline-flex; align-items: center; gap: 3px; }
-  .btn-sm:hover { background: var(--color-background-secondary); color: var(--color-text-primary); }
-  .btn-sm.danger:hover { color: #a32d2d; border-color: #a32d2d; }
-
-  /* Badges */
-  .season-badge { font-size: 10px; font-weight: 500; padding: 2px 6px; border-radius: 20px; }
-  .ss  { background:#EAF3DE;color:#3B6D11;border:0.5px solid #97C459; }
-  .aw  { background:#E6F1FB;color:#185FA5;border:0.5px solid #85B7EB; }
-  .resort { background:#FAEEDA;color:#854F0B;border:0.5px solid #EF9F27; }
-  .prefall { background:#EEEDFE;color:#534AB7;border:0.5px solid #AFA9EC; }
-
+  .specs-row { display: flex; justify-content: space-between; gap: 6px; margin-bottom: 4px; }
+  .spec-item { display: flex; flex-direction: column; align-items: center; flex: 1; }
+  .spec-label { font-size: 9px; color: var(--color-text-tertiary); text-transform: uppercase; letter-spacing: 0.05em; }
+  .spec-val { font-size: 12px; font-weight: 600; color: var(--color-text-primary); }
   .cond-badge { font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 20px; white-space: nowrap; }
   .c-ds  { background:#0D0D0D;color:#C4FF00; }
   .c-nwt { background:#EAF3DE;color:#3B6D11;border:0.5px solid #97C459; }
@@ -66,8 +52,23 @@
   .c-fr  { background:#FAECE7;color:#993C1D;border:0.5px solid #F0997B; }
   .c-p   { background:#F5F5F5;color:#666;border:0.5px solid #CCC; }
   .c-dam { background:#2D0000;color:#FF6B6B; }
-
-  /* Modal */
+  .story-block { font-size: 11px; color: var(--color-text-secondary); font-style: italic; line-height: 1.5; padding-top: 5px; border-top: 0.5px solid var(--color-border-tertiary); margin-top: 2px; }
+  .qr-zone { margin: 0 12px 12px; border: 0.5px dashed var(--color-border-secondary); border-radius: var(--border-radius-md); padding: 8px 10px; display: flex; align-items: center; gap: 10px; }
+  .qr-thumb { width: 44px; height: 44px; border: 0.5px solid var(--color-border-tertiary); border-radius: 4px; background: var(--color-background-secondary); flex-shrink: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; cursor: pointer; }
+  .qr-thumb img { width: 100%; height: 100%; object-fit: contain; }
+  .qr-cta { font-size: 10px; color: var(--color-text-secondary); font-style: italic; line-height: 1.5; }
+  .qr-cta strong { display: block; font-size: 11px; color: var(--color-text-primary); font-style: normal; }
+  .season-badge { font-size: 10px; font-weight: 500; padding: 2px 6px; border-radius: 20px; }
+  .ss { background:#EAF3DE;color:#3B6D11;border:0.5px solid #97C459; }
+  .aw { background:#E6F1FB;color:#185FA5;border:0.5px solid #85B7EB; }
+  .resort { background:#FAEEDA;color:#854F0B;border:0.5px solid #EF9F27; }
+  .prefall { background:#EEEDFE;color:#534AB7;border:0.5px solid #AFA9EC; }
+  .card-footer { padding: 7px 12px; border-top: 0.5px solid var(--color-border-tertiary); display: flex; gap: 5px; justify-content: flex-end; }
+  .btn-sm { font-size: 11px; padding: 4px 9px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: var(--color-background-primary); color: var(--color-text-secondary); cursor: pointer; display: inline-flex; align-items: center; gap: 3px; }
+  .btn-sm:hover { background: var(--color-background-secondary); color: var(--color-text-primary); }
+  .btn-sm.danger:hover { color: #a32d2d; border-color: #a32d2d; }
+  .btn-sm.export { background: var(--color-text-primary); color: var(--color-background-primary); border-color: transparent; }
+  .btn-sm.export:hover { opacity: 0.82; }
   .modal-bg { position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:100;display:flex;align-items:flex-start;justify-content:center;padding:1.5rem 1rem;overflow-y:auto; }
   .modal { background:var(--color-background-primary);border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-secondary);padding:1.5rem;width:100%;max-width:480px; }
   .modal h2 { font-size:15px;font-weight:500;margin-bottom:1.25rem;color:var(--color-text-primary); }
@@ -82,23 +83,28 @@
   .ai-btn { font-size:11px;padding:4px 9px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-secondary);cursor:pointer;display:inline-flex;align-items:center;gap:4px;margin-top:4px; }
   .ai-btn:hover { color:var(--color-text-primary); }
   .ai-spin { font-size:11px;color:var(--color-text-tertiary);font-style:italic;margin-top:4px; }
+  .qr-upload-box { border:0.5px dashed var(--color-border-secondary);border-radius:var(--border-radius-md);padding:10px 12px;display:flex;align-items:center;gap:12px;cursor:pointer;margin-top:4px; }
+  .qr-upload-box:hover { background:var(--color-background-secondary); }
+  .qr-preview-box { width:52px;height:52px;border:0.5px solid var(--color-border-tertiary);border-radius:4px;background:var(--color-background-secondary);flex-shrink:0;display:flex;align-items:center;justify-content:center;overflow:hidden; }
+  .qr-preview-box img { width:100%;height:100%;object-fit:contain; }
+  .qr-upload-text strong { display:block;font-size:12px;color:var(--color-text-primary);margin-bottom:2px; }
+  .qr-upload-text { font-size:11px;color:var(--color-text-secondary);line-height:1.5; }
   .hidden { display:none; }
 </style>
-
+</head>
+<body>
 <div class="app">
   <div class="toolbar">
-    <h1><i class="ti ti-tag" aria-hidden="true"></i> Garment cards</h1>
+    <h1><i class="ti ti-tag"></i> Garment cards</h1>
     <button class="btn btn-primary" onclick="openModal()"><i class="ti ti-plus"></i> Add garment</button>
   </div>
   <div class="cards-grid" id="grid"></div>
 </div>
 
-<!-- MODAL -->
 <div class="modal-bg hidden" id="modalBg">
   <div class="modal">
     <h2 id="modalTitle">New garment</h2>
     <div class="fg">
-
       <div class="sdiv">Garment</div>
       <div class="g full"><label>Brand *</label><input id="f-brand" placeholder="e.g. Maison Margiela"></div>
       <div class="g full"><label>Collection # (official)</label><input id="f-collnum" placeholder="e.g. Collection 6"></div>
@@ -114,9 +120,8 @@
       <div class="g"><label>Country of origin</label><input id="f-country" placeholder="e.g. France"></div>
       <div class="g"><label>Size</label><input id="f-size" placeholder="e.g. 38 / S"></div>
       <div class="g full"><label>Price</label><input id="f-price" placeholder="e.g. € 1,800"></div>
-
       <div class="sdiv">Condition</div>
-      <div class="g full"><label>Estado de conservación</label>
+      <div class="g full">
         <select id="f-condition">
           <option value="">— Select —</option>
           <option value="Deadstock">Deadstock</option>
@@ -129,15 +134,22 @@
           <option value="Damaged / For parts">Damaged / For parts</option>
         </select>
       </div>
-
       <div class="sdiv">Storytelling</div>
       <div class="g full">
         <label>Editorial description</label>
-        <textarea id="f-story" placeholder="e.g. Tailored black wool coat from the AW 1998 collection by Martin Margiela. Featuring exaggerated shoulders and signature deconstruction details emblematic of the designer's late-90s work."></textarea>
+        <textarea id="f-story" placeholder="e.g. Tailored black wool coat from the AW 1998 collection…"></textarea>
         <button class="ai-btn" id="ai-btn" onclick="genStory()"><i class="ti ti-sparkles"></i> Generate with AI</button>
         <span class="ai-spin hidden" id="ai-spin">Writing editorial copy…</span>
       </div>
-
+      <div class="sdiv">Vinted QR code</div>
+      <div class="g full">
+        <label>Upload your Vinted listing QR code</label>
+        <div class="qr-upload-box" onclick="document.getElementById('modal-qr-input').click()">
+          <div class="qr-preview-box" id="modal-qr-preview"><i class="ti ti-qrcode" style="font-size:20px;color:#999"></i></div>
+          <div class="qr-upload-text"><strong id="modal-qr-label">Upload QR image</strong>Square PNG or JPG — redirects to your Vinted listing</div>
+        </div>
+        <input type="file" accept="image/*" id="modal-qr-input" class="hidden" onchange="handleModalQR(this)">
+      </div>
     </div>
     <div class="mf">
       <button class="btn" onclick="closeModal()">Cancel</button>
@@ -146,75 +158,77 @@
   </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 let cards = [];
 let editingId = null;
+let pendingQR = null;
 
 const FIELDS = ['brand','collnum','season','year','country','size','price','condition','story'];
 const SC = { SS:'ss', AW:'aw', Resort:'resort', 'Pre-Fall':'prefall' };
-const COND_CLS = {
-  'Deadstock':'c-ds','New with tags':'c-nwt','Excellent':'c-exc',
-  'Very Good':'c-vg','Good':'c-gd','Fair':'c-fr','Poor':'c-p','Damaged / For parts':'c-dam'
-};
+const COND_CLS = { 'Deadstock':'c-ds','New with tags':'c-nwt','Excellent':'c-exc','Very Good':'c-vg','Good':'c-gd','Fair':'c-fr','Poor':'c-p','Damaged / For parts':'c-dam' };
 
 function openModal(id) {
   editingId = id || null;
+  pendingQR = null;
   document.getElementById('modalTitle').textContent = id ? 'Edit garment' : 'New garment';
   const prev = id ? cards.find(x=>x.id===id) : {};
-  FIELDS.forEach(f => {
-    const el = document.getElementById('f-'+f);
-    if (el) el.value = prev[f] || (f==='season'?'AW':'');
-  });
+  FIELDS.forEach(f => { const el=document.getElementById('f-'+f); if(el) el.value=prev[f]||(f==='season'?'AW':''); });
+  const qrPrev = document.getElementById('modal-qr-preview');
+  const qrLbl  = document.getElementById('modal-qr-label');
+  if (prev.qr) {
+    qrPrev.innerHTML = `<img src="${prev.qr}" alt="QR">`;
+    qrLbl.textContent = 'QR uploaded ✓';
+    pendingQR = prev.qr;
+  } else {
+    qrPrev.innerHTML = `<i class="ti ti-qrcode" style="font-size:20px;color:#999"></i>`;
+    qrLbl.textContent = 'Upload QR image';
+  }
+  document.getElementById('modal-qr-input').value = '';
   document.getElementById('modalBg').classList.remove('hidden');
 }
-function closeModal() {
-  document.getElementById('modalBg').classList.add('hidden');
-  editingId = null;
+
+function handleModalQR(input) {
+  const file = input.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    pendingQR = e.target.result;
+    document.getElementById('modal-qr-preview').innerHTML = `<img src="${pendingQR}" alt="QR">`;
+    document.getElementById('modal-qr-label').textContent = 'QR uploaded ✓';
+  };
+  reader.readAsDataURL(file);
 }
+
+function closeModal() { document.getElementById('modalBg').classList.add('hidden'); editingId=null; pendingQR=null; }
+
 function saveCard() {
   const brand = document.getElementById('f-brand').value.trim();
   if (!brand) { alert('Brand is required.'); return; }
   const prev = editingId ? cards.find(x=>x.id===editingId) : {};
-  const d = { id: editingId||Date.now(), photo: prev.photo||null, qr: prev.qr||null };
+  const d = { id: editingId||Date.now(), photo: prev.photo||null, qr: pendingQR!==null ? pendingQR : (prev.qr||null) };
   FIELDS.forEach(f => { const el=document.getElementById('f-'+f); d[f]=el?el.value.trim():''; });
-  if (editingId) cards = cards.map(c=>c.id===editingId?d:c);
-  else cards.push(d);
+  if (editingId) cards=cards.map(c=>c.id===editingId?d:c); else cards.push(d);
   render(); closeModal();
 }
-function del(id) {
-  if (!confirm('Remove this card?')) return;
-  cards = cards.filter(c=>c.id!==id); render();
-}
+
+function del(id) { if(!confirm('Remove this card?')) return; cards=cards.filter(c=>c.id!==id); render(); }
+
 function triggerPhoto(id) { document.getElementById('pi-'+id).click(); }
-function triggerQR(id)    { document.getElementById('qi-'+id).click(); }
-function handlePhoto(id,inp) {
+function handlePhoto(id, inp) {
   const f=inp.files[0]; if(!f) return;
   const r=new FileReader(); r.onload=e=>{cards=cards.map(c=>c.id===id?{...c,photo:e.target.result}:c);render();};
   r.readAsDataURL(f);
 }
-function handleQR(id,inp) {
-  const f=inp.files[0]; if(!f) return;
-  const r=new FileReader(); r.onload=e=>{cards=cards.map(c=>c.id===id?{...c,qr:e.target.result}:c);render();};
-  r.readAsDataURL(f);
-}
 
 async function genStory() {
-  const brand   = document.getElementById('f-brand').value.trim();
-  const season  = document.getElementById('f-season').value;
-  const year    = document.getElementById('f-year').value.trim();
-  const collnum = document.getElementById('f-collnum').value.trim();
-  const country = document.getElementById('f-country').value.trim();
-  const size    = document.getElementById('f-size').value.trim();
-  const cond    = document.getElementById('f-condition').value;
+  const brand=document.getElementById('f-brand').value.trim();
   if (!brand) { alert('Add the brand name first.'); return; }
   document.getElementById('ai-btn').classList.add('hidden');
   document.getElementById('ai-spin').classList.remove('hidden');
   try {
     const res = await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ model:'claude-sonnet-4-6', max_tokens:1000, messages:[{ role:'user', content:
-        `Write a short editorial description for a vintage garment listed for resale at a luxury vintage fashion pop-up or archive sale.\n\nDetails:\n- Brand: ${brand}\n- Season: ${season} ${year}\n${collnum?'- Collection: '+collnum+'\n':''}${country?'- Country: '+country+'\n':''}${size?'- Size: '+size+'\n':''}${cond?'- Condition: '+cond+'\n':''}\n\n2–4 sentences max. Tone: editorial, precise, evocative — like a high-end auction catalogue. Mention the season, any signature design codes of the house if known, and what makes this piece collectible. No marketing fluff. Output only the description text, no quotes, no labels.`
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:
+        `Write a short editorial description for a vintage garment listed for resale at a luxury vintage fashion pop-up.\n\nBrand: ${brand}\nSeason: ${document.getElementById('f-season').value} ${document.getElementById('f-year').value}\nCollection: ${document.getElementById('f-collnum').value}\nCountry: ${document.getElementById('f-country').value}\nSize: ${document.getElementById('f-size').value}\nCondition: ${document.getElementById('f-condition').value}\n\n2–3 sentences max. Tone: editorial, precise, evocative like a high-end auction catalogue. No marketing fluff. Output only the description, no quotes or labels.`
       }]})
     });
     const data = await res.json();
@@ -225,105 +239,143 @@ async function genStory() {
 }
 
 function exportPDF(id) {
-  const c = cards.find(x=>x.id===id); if(!c) return;
+  const card = cards.find(x=>x.id===id); if(!card) return;
   if (typeof window.jspdf==='undefined') { alert('PDF library loading, try again in a moment.'); return; }
   const {jsPDF} = window.jspdf;
-  const doc = new jsPDF({orientation:'portrait',unit:'mm',format:'a5'});
-  const W=148, H=210;
+  const doc = new jsPDF({orientation:'portrait', unit:'pt', format:'a5'});
+  const W=419.5, H=595.3;
+  const pad=10, r=(W-2*pad)/2, arch_cy=H-pad-r;
 
-  // White bg + outer border
   doc.setFillColor(255,255,255); doc.rect(0,0,W,H,'F');
-  doc.setDrawColor(17,17,17); doc.setLineWidth(0.4);
-  doc.rect(4,4,W-8,H-8,'S');
 
-  // Brand
-  doc.setFont('helvetica','bold'); doc.setFontSize(14); doc.setTextColor(17,17,17);
-  doc.text(c.brand.toUpperCase(), W/2, 14, {align:'center'});
-
-  // Subtitle
-  let y = 20;
-  const subs=[];
-  if(c.season||c.year) subs.push((c.season||'')+(c.year?' '+c.year:''));
-  if(c.collnum) subs.push(c.collnum);
-  if(c.country) subs.push(c.country);
-  if(subs.length){
-    doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(140,140,140);
-    doc.text(subs.join('  ·  '), W/2, y, {align:'center'}); y+=5;
+  doc.setDrawColor(17,17,17); doc.setLineWidth(1.0);
+  doc.line(pad, pad, pad, arch_cy);
+  doc.line(pad, pad, W-pad, pad);
+  doc.line(W-pad, pad, W-pad, arch_cy);
+  const steps=60;
+  for(let i=0;i<steps;i++){
+    const a1=Math.PI*i/steps, a2=Math.PI*(i+1)/steps;
+    const x1=W/2+r*Math.cos(Math.PI-a1), y1=arch_cy+r*Math.sin(Math.PI-a1);
+    const x2=W/2+r*Math.cos(Math.PI-a2), y2=arch_cy+r*Math.sin(Math.PI-a2);
+    doc.line(x1, H-y1, x2, H-y2);
   }
 
-  // Rule
-  doc.setDrawColor(220,220,220); doc.setLineWidth(0.3); doc.line(10,y,W-10,y); y+=4;
+  doc.setDrawColor(17,17,17); doc.setLineWidth(0.5); doc.setFillColor(255,255,255);
+  doc.circle(W/2, H-(arch_cy+r-16), 5.5, 'FD');
 
-  // Photo
-  const pH=115, pW=76, pX=(W-pW)/2;
-  if(c.photo){
-    try { doc.addImage(c.photo,'JPEG',pX,y,pW,pH); } catch(e){}
-  } else {
-    doc.setFillColor(245,245,245); doc.setDrawColor(204,204,204);
-    doc.rect(pX,y,pW,pH,'FD');
-    doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(187,187,187);
-    doc.text('garment photo',W/2,y+pH/2, {align:'center'});
-  }
-  y += pH+5;
-
-  // Rule
-  doc.setDrawColor(220,220,220); doc.line(10,y,W-10,y); y+=5;
-
-  // Fields
-  const rows=[['SIZE',c.size],['PRICE',c.price],['CONDITION',c.condition]].filter(r=>r[1]);
-  rows.forEach(([l,v])=>{
-    doc.setFont('helvetica','bold'); doc.setFontSize(6); doc.setTextColor(153,153,153);
-    doc.text(l, 10, y);
-    doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(17,17,17);
-    doc.text(v, W-10, y, {align:'right'}); y+=6;
-  });
-
-  // Story
-  if(c.story && y < H-52){
-    doc.setDrawColor(220,220,220); doc.line(10,y,W-10,y); y+=5;
-    doc.setFont('helvetica','italic'); doc.setFontSize(6.8); doc.setTextColor(60,60,60);
-    const lines = doc.splitTextToSize(c.story, W-20);
-    lines.slice(0,4).forEach(l=>{ if(y<H-48){doc.text(l,10,y); y+=4.5;} });
-  }
-
-  // QR zone — dashed box at bottom
-  const qzY=H-46, qzH=38;
-  doc.setDrawColor(187,187,187); doc.setLineDashPattern([1.5,1.5],0); doc.setLineWidth(0.4);
-  doc.rect(10,qzY,W-20,qzH,'S');
+  const bar_h=40, bar_y_rl=pad+4, bar_w=W-2*pad-12;
+  const bar_y_pdf = H - bar_y_rl - bar_h;
+  doc.setLineDashPattern([1.5,2],0);
+  doc.setDrawColor(187,187,187); doc.setLineWidth(0.5);
+  doc.rect(pad+6, bar_y_pdf, bar_w, bar_h, 'S');
   doc.setLineDashPattern([],0);
 
-  // CTA
-  doc.setFont('helvetica','italic'); doc.setFontSize(6.8); doc.setTextColor(100,100,100);
-  doc.text('Maybe not now, but how about later?', W/2, qzY+7, {align:'center'});
-  doc.setFont('helvetica','bold'); doc.setFontSize(7.5); doc.setTextColor(17,17,17);
-  doc.text('Buy it online', W/2, qzY+13, {align:'center'});
-
-  // QR image (square)
-  const qSz=20, qX=W/2-qSz/2, qY=qzY+15;
-  if(c.qr){
-    try { doc.addImage(c.qr,'PNG',qX,qY,qSz,qSz); } catch(e){
-      doc.setFillColor(238,238,238); doc.rect(qX,qY,qSz,qSz,'F');
-    }
+  const qr_sz=30, qr_x=pad+10;
+  const qr_y_rl = bar_y_rl + (bar_h-qr_sz)/2;
+  const qr_y_pdf = H - qr_y_rl - qr_sz;
+  if(card.qr){
+    try { doc.addImage(card.qr,'PNG',qr_x,qr_y_pdf,qr_sz,qr_sz); }
+    catch(e){ try { doc.addImage(card.qr,'JPEG',qr_x,qr_y_pdf,qr_sz,qr_sz); } catch(e2){} }
   } else {
-    doc.setFillColor(238,238,238); doc.setDrawColor(204,204,204);
-    doc.rect(qX,qY,qSz,qSz,'FD');
-    doc.setFont('helvetica','normal'); doc.setFontSize(5.5); doc.setTextColor(170,170,170);
-    doc.text('QR',W/2,qY+qSz/2+1,{align:'center'});
+    doc.setFillColor(239,239,239); doc.setDrawColor(200,200,200); doc.setLineWidth(0.4);
+    doc.rect(qr_x, qr_y_pdf, qr_sz, qr_sz, 'FD');
+    doc.setFont('helvetica','normal'); doc.setFontSize(6); doc.setTextColor(170,170,170);
+    doc.text('QR', qr_x+qr_sz/2, qr_y_pdf+qr_sz/2+2, {align:'center'});
   }
 
-  doc.save((c.brand+'_'+c.season+(c.year||'')+'.pdf').replace(/\s+/g,'_'));
+  const cta_x = qr_x+qr_sz+9;
+  const cta_mid_pdf = bar_y_pdf + bar_h/2;
+  doc.setFont('helvetica','italic'); doc.setFontSize(7); doc.setTextColor(17,17,17);
+  doc.text('Maybe not now, but how about later?', cta_x, cta_mid_pdf - 3);
+  doc.setFont('helvetica','bold'); doc.setFontSize(8.5); doc.setTextColor(17,17,17);
+  doc.text('Buy it online \u2192', cta_x, cta_mid_pdf + 9);
+
+  const specs_y_rl = bar_y_rl + bar_h + 13;
+  const specs_y_pdf = H - specs_y_rl - 10;
+  const specItems = [['SIZE',card.size],['PRICE',card.price],['CONDITION',card.condition]].filter(r=>r[1]);
+  if(specItems.length){
+    const col_w = bar_w / specItems.length;
+    specItems.forEach(([lbl,val],i)=>{
+      const cx = pad+6 + i*col_w + col_w/2;
+      doc.setFont('helvetica','normal'); doc.setFontSize(6.5); doc.setTextColor(17,17,17);
+      doc.text(lbl, cx, specs_y_pdf - 8, {align:'center'});
+      doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(17,17,17);
+      doc.text(val, cx, specs_y_pdf+2, {align:'center'});
+    });
+  }
+
+  const rule_above_specs_rl = bar_y_rl + bar_h + 35;
+  const rule_above_specs_pdf = H - rule_above_specs_rl;
+  doc.setDrawColor(204,204,204); doc.setLineWidth(0.35);
+  doc.line(pad+14, rule_above_specs_pdf, W-pad-14, rule_above_specs_pdf);
+
+  let story_block_top_rl = rule_above_specs_rl;
+  if(card.story){
+    const storyLine = card.story.substring(0,90);
+    doc.setFont('helvetica','italic'); doc.setFontSize(7.5); doc.setTextColor(17,17,17);
+    doc.text(storyLine, pad+14, H-(rule_above_specs_rl+9));
+    story_block_top_rl = rule_above_specs_rl + 20;
+  }
+
+  const rule2_rl = story_block_top_rl + 8;
+  const rule2_pdf = H - rule2_rl;
+  doc.setDrawColor(204,204,204); doc.setLineWidth(0.35);
+  doc.line(pad+14, rule2_pdf, W-pad-14, rule2_pdf);
+
+  const content_top_rl = arch_cy - 18;
+  const brand_y_rl = content_top_rl - 22;
+  const brand_y_pdf = H - brand_y_rl;
+  doc.setFont('helvetica','bold'); doc.setFontSize(22); doc.setTextColor(17,17,17);
+  doc.text(card.brand.toUpperCase(), W/2, brand_y_pdf, {align:'center'});
+
+  const subs=[];
+  if(card.season||card.year) subs.push((card.season||'')+(card.year?' '+card.year:''));
+  if(card.collnum) subs.push(card.collnum);
+  if(card.country) subs.push(card.country);
+  if(subs.length){
+    doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(17,17,17);
+    doc.text(subs.join('  \u00b7  '), W/2, brand_y_pdf+15, {align:'center'});
+  }
+
+  const rule_below_brand_rl = brand_y_rl - 28;
+  const rule_below_brand_pdf = H - rule_below_brand_rl;
+  doc.setDrawColor(204,204,204); doc.setLineWidth(0.35);
+  doc.line(pad+14, rule_below_brand_pdf, W-pad-14, rule_below_brand_pdf);
+
+  const photo_top_rl  = rule_below_brand_rl - 4;
+  const photo_bot_rl  = rule2_rl + 4;
+  let photo_h = photo_top_rl - photo_bot_rl;
+  let photo_w = Math.round(photo_h * 3/4);
+  const max_w = W - 2*pad - 16;
+  if(photo_w > max_w){ photo_w=max_w; photo_h=Math.round(photo_w*4/3); }
+  const ph_x=(W-photo_w)/2;
+  const ph_y_pdf = H - (rule_below_brand_rl - 4);
+
+  if(card.photo){
+    try { doc.addImage(card.photo,'JPEG',ph_x,ph_y_pdf,photo_w,photo_h); }
+    catch(e){ try { doc.addImage(card.photo,'PNG',ph_x,ph_y_pdf,photo_w,photo_h); } catch(e2){} }
+  } else {
+    doc.setFillColor(244,244,244); doc.setDrawColor(187,187,187); doc.setLineWidth(0.5);
+    doc.rect(ph_x, ph_y_pdf, photo_w, photo_h, 'FD');
+    doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(187,187,187);
+    doc.text('runway reference', W/2, ph_y_pdf+photo_h/2, {align:'center'});
+    doc.setFontSize(7); doc.text('3 : 4', W/2, ph_y_pdf+photo_h/2+10, {align:'center'});
+  }
+
+  doc.save((card.brand+'_'+card.season+(card.year||'')+'.pdf').replace(/\s+/g,'_'));
 }
 
 function render() {
   const grid=document.getElementById('grid');
   grid.innerHTML='';
   if(!cards.length){
-    grid.innerHTML='<div class="empty-state"><i class="ti ti-hanger" style="font-size:30px;display:block;margin-bottom:8px" aria-hidden="true"></i>No garments yet. Add your first card.</div>';
+    grid.innerHTML='<div class="empty-state"><i class="ti ti-hanger" style="font-size:30px;display:block;margin-bottom:8px"></i>No garments yet. Add your first card.</div>';
     return;
   }
   cards.forEach(c=>{
     const sc=SC[c.season]||'ss';
     const ck=COND_CLS[c.condition]||'';
+    const specItems=[['Size',c.size],['Price',c.price]].filter(r=>r[1]);
     const div=document.createElement('div');
     div.className='look-card';
     div.innerHTML=`
@@ -331,30 +383,30 @@ function render() {
         <div class="card-brand">${c.brand}</div>
         <div class="card-meta">
           ${c.season||c.year?`<span class="season-badge ${sc}">${c.season||''}${c.year?' '+c.year:''}</span>`:''}
-          ${c.collnum?`<span style="font-size:10px;color:var(--color-text-tertiary)">${c.collnum}</span>`:''}
-          ${c.country?`<span style="font-size:10px;color:var(--color-text-tertiary)">· ${c.country}</span>`:''}
+          ${c.collnum?`<span style="font-size:10px;color:#999">${c.collnum}</span>`:''}
+          ${c.country?`<span style="font-size:10px;color:#999">· ${c.country}</span>`:''}
         </div>
       </div>
       <div class="card-photo" onclick="triggerPhoto(${c.id})">
-        ${c.photo?`<img src="${c.photo}" alt="">`:`<div class="ph"><i class="ti ti-camera" style="font-size:26px" aria-hidden="true"></i><span>Add garment photo</span></div>`}
+        ${c.photo?`<img src="${c.photo}" alt="">`:`<div class="ph"><i class="ti ti-camera" style="font-size:24px"></i><span>Add runway photo</span></div>`}
         <input type="file" accept="image/*" id="pi-${c.id}" onchange="handlePhoto(${c.id},this)">
       </div>
       <div class="card-body">
-        ${c.condition?`<div class="field-row"><span class="fl">Condition</span><span class="cond-badge ${ck}">${c.condition}</span></div>`:''}
-        ${c.size?`<div class="field-row"><span class="fl">Size</span><span class="fv">${c.size}</span></div>`:''}
-        ${c.price?`<div class="field-row"><span class="fl">Price</span><span class="fv" style="font-weight:600">${c.price}</span></div>`:''}
-        ${c.story?`<div class="story-block">${c.story}</div>`:''}
+        <div class="specs-row">
+          ${specItems.map(([l,v])=>`<div class="spec-item"><span class="spec-label">${l}</span><span class="spec-val">${v}</span></div>`).join('')}
+          ${c.condition?`<div class="spec-item"><span class="spec-label">Condition</span><span class="cond-badge ${ck}" style="margin-top:2px">${c.condition}</span></div>`:''}
+        </div>
+        ${c.story?`<div class="story-block">${c.story.substring(0,120)}${c.story.length>120?'…':''}</div>`:''}
       </div>
       <div class="qr-zone">
-        <div class="qr-cta">Maybe not now, but how about later?<strong>Buy it online</strong></div>
-        <div class="qr-frame" onclick="triggerQR(${c.id})">
-          ${c.qr?`<img src="${c.qr}" alt="QR">`:`<div class="qph"><i class="ti ti-qrcode" style="font-size:20px" aria-hidden="true"></i><span>Upload QR</span></div>`}
-          <input type="file" accept="image/*" id="qi-${c.id}" onchange="handleQR(${c.id},this)">
+        <div class="qr-thumb" onclick="openModal(${c.id})" title="Edit to update QR">
+          ${c.qr?`<img src="${c.qr}" alt="QR">`:`<i class="ti ti-qrcode" style="font-size:18px;color:#999"></i>`}
         </div>
+        <div class="qr-cta">Maybe not now, but how about later?<strong>Buy it online →</strong></div>
       </div>
       <div class="card-footer">
         <button class="btn-sm" onclick="openModal(${c.id})"><i class="ti ti-edit"></i> Edit</button>
-        <button class="btn-sm" onclick="exportPDF(${c.id})"><i class="ti ti-download"></i> PDF</button>
+        <button class="btn-sm export" onclick="exportPDF(${c.id})"><i class="ti ti-download"></i> Export PDF</button>
         <button class="btn-sm danger" onclick="del(${c.id})"><i class="ti ti-trash"></i></button>
       </div>`;
     grid.appendChild(div);
@@ -364,3 +416,5 @@ function render() {
 render();
 document.getElementById('modalBg').addEventListener('click',function(e){if(e.target===this)closeModal();});
 </script>
+</body>
+</html>
