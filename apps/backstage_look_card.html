@@ -38,11 +38,11 @@
   .card-photo img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
   .card-photo .ph { display: flex; flex-direction: column; align-items: center; gap: 7px; color: var(--color-text-tertiary); font-size: 11px; }
   .card-photo input[type=file] { display: none; }
-  .card-body { padding: 9px 13px; display: flex; flex-direction: column; gap: 4px; }
-  .specs-row { display: flex; justify-content: space-between; gap: 6px; margin-bottom: 4px; }
-  .spec-item { display: flex; flex-direction: column; align-items: center; flex: 1; }
-  .spec-label { font-size: 9px; color: var(--color-text-tertiary); text-transform: uppercase; letter-spacing: 0.05em; }
-  .spec-val { font-size: 12px; font-weight: 600; color: var(--color-text-primary); }
+  .card-body { padding: 0 13px; display: flex; flex-direction: column; }
+  .specs-row { display: flex; justify-content: space-between; border-top: 0.5px solid var(--color-border-tertiary); border-bottom: 0.5px solid var(--color-border-tertiary); padding: 8px 0 10px; gap: 4px; }
+  .spec-item { display: flex; flex-direction: column; align-items: center; flex: 1; gap: 3px; }
+  .spec-label { font-size: 9px; color: var(--color-text-tertiary); text-transform: uppercase; letter-spacing: 0.05em; line-height: 1; }
+  .spec-val { font-size: 13px; font-weight: 700; color: var(--color-text-primary); line-height: 1; }
   .cond-badge { font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 20px; white-space: nowrap; }
   .c-ds  { background:#0D0D0D;color:#C4FF00; }
   .c-nwt { background:#EAF3DE;color:#3B6D11;border:0.5px solid #97C459; }
@@ -52,8 +52,8 @@
   .c-fr  { background:#FAECE7;color:#993C1D;border:0.5px solid #F0997B; }
   .c-p   { background:#F5F5F5;color:#666;border:0.5px solid #CCC; }
   .c-dam { background:#2D0000;color:#FF6B6B; }
-  .story-block { font-size: 11px; color: var(--color-text-secondary); font-style: italic; line-height: 1.5; padding-top: 5px; border-top: 0.5px solid var(--color-border-tertiary); margin-top: 2px; }
-  .qr-zone { margin: 0 12px 12px; border: 0.5px dashed var(--color-border-secondary); border-radius: var(--border-radius-md); padding: 8px 10px; display: flex; align-items: center; gap: 10px; }
+  .story-block { font-size: 11px; color: var(--color-text-secondary); font-style: italic; line-height: 1.5; padding: 8px 0 6px; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .qr-zone { margin: 8px 0 10px; border: 0.5px dashed var(--color-border-secondary); border-radius: var(--border-radius-md); padding: 8px 10px; display: flex; align-items: center; gap: 10px; }
   .qr-thumb { width: 44px; height: 44px; border: 0.5px solid var(--color-border-tertiary); border-radius: 4px; background: var(--color-background-secondary); flex-shrink: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; cursor: pointer; }
   .qr-thumb img { width: 100%; height: 100%; object-fit: contain; }
   .qr-cta { font-size: 10px; color: var(--color-text-secondary); font-style: italic; line-height: 1.5; }
@@ -228,7 +228,7 @@ async function genStory() {
     const res = await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:
-        `Write a short editorial description for a vintage garment listed for resale at a luxury vintage fashion pop-up.\n\nBrand: ${brand}\nSeason: ${document.getElementById('f-season').value} ${document.getElementById('f-year').value}\nCollection: ${document.getElementById('f-collnum').value}\nCountry: ${document.getElementById('f-country').value}\nSize: ${document.getElementById('f-size').value}\nCondition: ${document.getElementById('f-condition').value}\n\n2–3 sentences max. Tone: editorial, precise, evocative like a high-end auction catalogue. No marketing fluff. Output only the description, no quotes or labels.`
+        `Write a short editorial description for a vintage garment listed for resale at a luxury vintage fashion pop-up.\n\nBrand: ${brand}\nSeason: ${document.getElementById('f-season').value} ${document.getElementById('f-year').value}\nCollection: ${document.getElementById('f-collnum').value}\nCountry: ${document.getElementById('f-country').value}\nSize: ${document.getElementById('f-size').value}\nCondition: ${document.getElementById('f-condition').value}\n\n2-3 sentences max. Tone: editorial, precise, evocative like a high-end auction catalogue. No marketing fluff. Output only the description, no quotes or labels.`
       }]})
     });
     const data = await res.json();
@@ -240,94 +240,83 @@ async function genStory() {
 
 function exportPDF(id) {
   const card = cards.find(x=>x.id===id); if(!card) return;
-  if (typeof window.jspdf==='undefined') { alert('PDF library loading, try again in a moment.'); return; }
+  if (typeof window.jspdf==='undefined') { alert('PDF library loading, try again.'); return; }
   const {jsPDF} = window.jspdf;
   const doc = new jsPDF({orientation:'portrait', unit:'pt', format:'a5'});
-  const W=419.5, H=595.3;
-  const pad=10, r=(W-2*pad)/2, arch_cy=H-pad-r;
+  const W=419.5, H=595.3, pad=10, r=(W-2*pad)/2, arch_cy=H-pad-r;
 
   doc.setFillColor(255,255,255); doc.rect(0,0,W,H,'F');
 
+  // Tombstone outline
   doc.setDrawColor(17,17,17); doc.setLineWidth(1.0);
-  doc.line(pad, pad, pad, arch_cy);
-  doc.line(pad, pad, W-pad, pad);
-  doc.line(W-pad, pad, W-pad, arch_cy);
-  const steps=60;
-  for(let i=0;i<steps;i++){
-    const a1=Math.PI*i/steps, a2=Math.PI*(i+1)/steps;
-    const x1=W/2+r*Math.cos(Math.PI-a1), y1=arch_cy+r*Math.sin(Math.PI-a1);
-    const x2=W/2+r*Math.cos(Math.PI-a2), y2=arch_cy+r*Math.sin(Math.PI-a2);
-    doc.line(x1, H-y1, x2, H-y2);
+  doc.line(pad,pad,pad,arch_cy);
+  doc.line(pad,pad,W-pad,pad);
+  doc.line(W-pad,pad,W-pad,arch_cy);
+  for(let i=0;i<60;i++){
+    const a1=Math.PI*i/60,a2=Math.PI*(i+1)/60;
+    doc.line(W/2+r*Math.cos(Math.PI-a1),H-(arch_cy+r*Math.sin(Math.PI-a1)),W/2+r*Math.cos(Math.PI-a2),H-(arch_cy+r*Math.sin(Math.PI-a2)));
   }
-
   doc.setDrawColor(17,17,17); doc.setLineWidth(0.5); doc.setFillColor(255,255,255);
   doc.circle(W/2, H-(arch_cy+r-16), 5.5, 'FD');
 
-  const bar_h=40, bar_y_rl=pad+4, bar_w=W-2*pad-12;
-  const bar_y_pdf = H - bar_y_rl - bar_h;
-  doc.setLineDashPattern([1.5,2],0);
-  doc.setDrawColor(187,187,187); doc.setLineWidth(0.5);
+  // Bottom bar
+  const bar_h=40, bar_y_rl=pad+4, bar_w=W-2*pad-12, bar_y_pdf=H-bar_y_rl-bar_h;
+  doc.setLineDashPattern([1.5,2],0); doc.setDrawColor(187,187,187); doc.setLineWidth(0.5);
   doc.rect(pad+6, bar_y_pdf, bar_w, bar_h, 'S');
   doc.setLineDashPattern([],0);
 
-  const qr_sz=30, qr_x=pad+10;
-  const qr_y_rl = bar_y_rl + (bar_h-qr_sz)/2;
-  const qr_y_pdf = H - qr_y_rl - qr_sz;
+  // QR
+  const qr_sz=30, qr_x=pad+10, qr_y_rl=bar_y_rl+(bar_h-qr_sz)/2, qr_y_pdf=H-qr_y_rl-qr_sz;
   if(card.qr){
-    try { doc.addImage(card.qr,'PNG',qr_x,qr_y_pdf,qr_sz,qr_sz); }
-    catch(e){ try { doc.addImage(card.qr,'JPEG',qr_x,qr_y_pdf,qr_sz,qr_sz); } catch(e2){} }
+    try{doc.addImage(card.qr,'PNG',qr_x,qr_y_pdf,qr_sz,qr_sz);}
+    catch(e){try{doc.addImage(card.qr,'JPEG',qr_x,qr_y_pdf,qr_sz,qr_sz);}catch(e2){}}
   } else {
     doc.setFillColor(239,239,239); doc.setDrawColor(200,200,200); doc.setLineWidth(0.4);
-    doc.rect(qr_x, qr_y_pdf, qr_sz, qr_sz, 'FD');
-    doc.setFont('helvetica','normal'); doc.setFontSize(6); doc.setTextColor(170,170,170);
-    doc.text('QR', qr_x+qr_sz/2, qr_y_pdf+qr_sz/2+2, {align:'center'});
+    doc.rect(qr_x,qr_y_pdf,qr_sz,qr_sz,'FD');
   }
 
-  const cta_x = qr_x+qr_sz+9;
-  const cta_mid_pdf = bar_y_pdf + bar_h/2;
+  // CTA
+  const cta_x=qr_x+qr_sz+9, cta_mid=bar_y_pdf+bar_h/2;
   doc.setFont('helvetica','italic'); doc.setFontSize(7); doc.setTextColor(17,17,17);
-  doc.text('Maybe not now, but how about later?', cta_x, cta_mid_pdf - 3);
-  doc.setFont('helvetica','bold'); doc.setFontSize(8.5); doc.setTextColor(17,17,17);
-  doc.text('Buy it online \u2192', cta_x, cta_mid_pdf + 9);
+  doc.text('Maybe not now, but how about later?', cta_x, cta_mid-3);
+  doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(17,17,17);
+  doc.text('Buy it online \u2192', cta_x, cta_mid+9);
 
-  const specs_y_rl = bar_y_rl + bar_h + 13;
-  const specs_y_pdf = H - specs_y_rl - 10;
-  const specItems = [['SIZE',card.size],['PRICE',card.price],['CONDITION',card.condition]].filter(r=>r[1]);
+  // Specs band — label above, value below, both inside band between two rules
+  const specs_band_bottom = bar_y_rl + bar_h + 6;
+  const specs_band_top    = specs_band_bottom + 28;
+  const rule_above_specs  = specs_band_top + 4;
+  const rule_above_pdf    = H - rule_above_specs;
+  doc.setDrawColor(204,204,204); doc.setLineWidth(0.35);
+  doc.line(pad+14, rule_above_pdf, W-pad-14, rule_above_pdf);
+
+  const specItems=[['SIZE',card.size],['PRICE',card.price],['CONDITION',card.condition]].filter(r=>r[1]);
   if(specItems.length){
     const col_w = bar_w / specItems.length;
     specItems.forEach(([lbl,val],i)=>{
       const cx = pad+6 + i*col_w + col_w/2;
       doc.setFont('helvetica','normal'); doc.setFontSize(6.5); doc.setTextColor(17,17,17);
-      doc.text(lbl, cx, specs_y_pdf - 8, {align:'center'});
-      doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(17,17,17);
-      doc.text(val, cx, specs_y_pdf+2, {align:'center'});
+      doc.text(lbl, cx, H-(specs_band_top-2), {align:'center'});
+      doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.setTextColor(17,17,17);
+      doc.text(val, cx, H-(specs_band_bottom+2), {align:'center'});
     });
   }
 
-  const rule_above_specs_rl = bar_y_rl + bar_h + 35;
-  const rule_above_specs_pdf = H - rule_above_specs_rl;
-  doc.setDrawColor(204,204,204); doc.setLineWidth(0.35);
-  doc.line(pad+14, rule_above_specs_pdf, W-pad-14, rule_above_specs_pdf);
-
-  let story_block_top_rl = rule_above_specs_rl;
+  // Story
+  let story_top_rl = rule_above_specs;
   if(card.story){
-    const storyLine = card.story.substring(0,90);
     doc.setFont('helvetica','italic'); doc.setFontSize(7.5); doc.setTextColor(17,17,17);
-    doc.text(storyLine, pad+14, H-(rule_above_specs_rl+9));
-    story_block_top_rl = rule_above_specs_rl + 20;
+    doc.text(card.story.substring(0,85), pad+14, H-(rule_above_specs+10));
+    story_top_rl = rule_above_specs + 22;
   }
-
-  const rule2_rl = story_block_top_rl + 8;
-  const rule2_pdf = H - rule2_rl;
+  const rule2_rl = story_top_rl + 6, rule2_pdf = H - rule2_rl;
   doc.setDrawColor(204,204,204); doc.setLineWidth(0.35);
   doc.line(pad+14, rule2_pdf, W-pad-14, rule2_pdf);
 
-  const content_top_rl = arch_cy - 18;
-  const brand_y_rl = content_top_rl - 22;
-  const brand_y_pdf = H - brand_y_rl;
+  // Brand
+  const brand_y_rl = arch_cy - 18 - 22, brand_y_pdf = H - brand_y_rl;
   doc.setFont('helvetica','bold'); doc.setFontSize(22); doc.setTextColor(17,17,17);
   doc.text(card.brand.toUpperCase(), W/2, brand_y_pdf, {align:'center'});
-
   const subs=[];
   if(card.season||card.year) subs.push((card.season||'')+(card.year?' '+card.year:''));
   if(card.collnum) subs.push(card.collnum);
@@ -336,30 +325,23 @@ function exportPDF(id) {
     doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(17,17,17);
     doc.text(subs.join('  \u00b7  '), W/2, brand_y_pdf+15, {align:'center'});
   }
-
-  const rule_below_brand_rl = brand_y_rl - 28;
-  const rule_below_brand_pdf = H - rule_below_brand_rl;
+  const rule_bb_rl = brand_y_rl - 28, rule_bb_pdf = H - rule_bb_rl;
   doc.setDrawColor(204,204,204); doc.setLineWidth(0.35);
-  doc.line(pad+14, rule_below_brand_pdf, W-pad-14, rule_below_brand_pdf);
+  doc.line(pad+14, rule_bb_pdf, W-pad-14, rule_bb_pdf);
 
-  const photo_top_rl  = rule_below_brand_rl - 4;
-  const photo_bot_rl  = rule2_rl + 4;
-  let photo_h = photo_top_rl - photo_bot_rl;
-  let photo_w = Math.round(photo_h * 3/4);
-  const max_w = W - 2*pad - 16;
-  if(photo_w > max_w){ photo_w=max_w; photo_h=Math.round(photo_w*4/3); }
-  const ph_x=(W-photo_w)/2;
-  const ph_y_pdf = H - (rule_below_brand_rl - 4);
-
+  // Photo
+  let ph=rule_bb_rl-4-(rule2_rl+4), pw=Math.round(ph*3/4);
+  const mw=W-2*pad-16; if(pw>mw){pw=mw;ph=Math.round(pw*4/3);}
+  const px=(W-pw)/2, py_pdf=H-(rule_bb_rl-4);
   if(card.photo){
-    try { doc.addImage(card.photo,'JPEG',ph_x,ph_y_pdf,photo_w,photo_h); }
-    catch(e){ try { doc.addImage(card.photo,'PNG',ph_x,ph_y_pdf,photo_w,photo_h); } catch(e2){} }
+    try{doc.addImage(card.photo,'JPEG',px,py_pdf,pw,ph);}
+    catch(e){try{doc.addImage(card.photo,'PNG',px,py_pdf,pw,ph);}catch(e2){}}
   } else {
     doc.setFillColor(244,244,244); doc.setDrawColor(187,187,187); doc.setLineWidth(0.5);
-    doc.rect(ph_x, ph_y_pdf, photo_w, photo_h, 'FD');
+    doc.rect(px,py_pdf,pw,ph,'FD');
     doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(187,187,187);
-    doc.text('runway reference', W/2, ph_y_pdf+photo_h/2, {align:'center'});
-    doc.setFontSize(7); doc.text('3 : 4', W/2, ph_y_pdf+photo_h/2+10, {align:'center'});
+    doc.text('runway reference',W/2,py_pdf+ph/2,{align:'center'});
+    doc.setFontSize(7); doc.text('3 : 4',W/2,py_pdf+ph/2+10,{align:'center'});
   }
 
   doc.save((card.brand+'_'+card.season+(card.year||'')+'.pdf').replace(/\s+/g,'_'));
@@ -375,7 +357,6 @@ function render() {
   cards.forEach(c=>{
     const sc=SC[c.season]||'ss';
     const ck=COND_CLS[c.condition]||'';
-    const specItems=[['Size',c.size],['Price',c.price]].filter(r=>r[1]);
     const div=document.createElement('div');
     div.className='look-card';
     div.innerHTML=`
@@ -393,16 +374,17 @@ function render() {
       </div>
       <div class="card-body">
         <div class="specs-row">
-          ${specItems.map(([l,v])=>`<div class="spec-item"><span class="spec-label">${l}</span><span class="spec-val">${v}</span></div>`).join('')}
+          ${c.size?`<div class="spec-item"><span class="spec-label">Size</span><span class="spec-val">${c.size}</span></div>`:''}
+          ${c.price?`<div class="spec-item"><span class="spec-label">Price</span><span class="spec-val">${c.price}</span></div>`:''}
           ${c.condition?`<div class="spec-item"><span class="spec-label">Condition</span><span class="cond-badge ${ck}" style="margin-top:2px">${c.condition}</span></div>`:''}
         </div>
         ${c.story?`<div class="story-block">${c.story.substring(0,120)}${c.story.length>120?'…':''}</div>`:''}
-      </div>
-      <div class="qr-zone">
-        <div class="qr-thumb" onclick="openModal(${c.id})" title="Edit to update QR">
-          ${c.qr?`<img src="${c.qr}" alt="QR">`:`<i class="ti ti-qrcode" style="font-size:18px;color:#999"></i>`}
+        <div class="qr-zone">
+          <div class="qr-thumb" onclick="openModal(${c.id})" title="Edit to update QR">
+            ${c.qr?`<img src="${c.qr}" alt="QR">`:`<i class="ti ti-qrcode" style="font-size:18px;color:#999"></i>`}
+          </div>
+          <div class="qr-cta">Maybe not now, but how about later?<strong>Buy it online →</strong></div>
         </div>
-        <div class="qr-cta">Maybe not now, but how about later?<strong>Buy it online →</strong></div>
       </div>
       <div class="card-footer">
         <button class="btn-sm" onclick="openModal(${c.id})"><i class="ti ti-edit"></i> Edit</button>
