@@ -148,6 +148,7 @@
       <div class="detail-block"><div class="dl-label">Contacto</div><div class="dl-value" id="dContact">—</div></div>
       <div class="detail-block"><div class="dl-label">Redes / Web</div><div class="dl-value" id="dLinks">—</div></div>
       <div class="detail-block"><div class="dl-label">Deal</div><div class="dl-value" id="dDeal">—</div></div>
+      <div class="detail-block"><div class="dl-label">Experiments</div><div class="dl-value" id="dExperiments">—</div></div>
     </div>
 
     <div style="display:flex; gap:8px;">
@@ -184,6 +185,7 @@
       <div class="field"><label># Tickets potential</label><input type="text" id="fTickets"></div>
     </div>
     <div class="field"><label>Comment (nota inicial, opcional)</label><textarea id="fComment"></textarea></div>
+    <div class="field"><label>Experiments</label><textarea id="fExperiments"></textarea></div>
 
     <div class="field-group-label">Contacto</div>
     <div class="field-grid">
@@ -379,9 +381,10 @@ function render(){
     const days = daysSince(l.fecha);
     const u = urgency(days);
     const dayLabel = days===null ? 'sin fecha' : (days + (days===1 ? ' día' : ' días'));
-    const firstEntry = (l.comment || '').split(' - ')[0].trim();
+    const commentEntries = (l.comment || '').split(' - ').map(s=>s.trim()).filter(Boolean);
+    const latestEntry = commentEntries.length ? commentEntries[commentEntries.length - 1] : '';
     const fallback = l.comments ? String(l.comments).split('\n')[0] : '';
-    const touchText = firstEntry || fallback || 'Sin touchpoint registrado';
+    const touchText = latestEntry || fallback || 'Sin touchpoint registrado';
     return `
       <tr class="${u.cls}" data-row="${l.row}">
         <td class="col-rank">${l.rank!=null ? escapeHtml(String(l.rank)) : ''}</td>
@@ -462,6 +465,8 @@ function openDetail(row){
     l.ticketingPartner ? 'Partner actual: ' + escapeHtml(l.ticketingPartner) : ''
   ].filter(Boolean).join('<br>') || '—';
 
+  $('#dExperiments').textContent = l.experiments || '—';
+
   const list = $('#historyList');
   if (!l.comment){
     list.innerHTML = `<p style="color:var(--muted); font-size:13px;">Sin historial todavía.</p>`;
@@ -508,7 +513,7 @@ $('#saveSettingsBtn').addEventListener('click', ()=>{
 
 // ---- new / edit lead ----
 function clearLeadForm(){
-  ['fAccount','fStatus','fVertical','fLocation','fTickets','fComment','fContactName','fPhone','fEmail','fWebsite','fInsta','fLinkedin','fTicketdeal','fTicketingPartner']
+  ['fAccount','fStatus','fVertical','fLocation','fTickets','fComment','fExperiments','fContactName','fPhone','fEmail','fWebsite','fInsta','fLinkedin','fTicketdeal','fTicketingPartner']
     .forEach(id=>$('#'+id).value='');
 }
 
@@ -531,6 +536,7 @@ $('#editLeadBtn').addEventListener('click', ()=>{
   $('#fLocation').value = activeLead.location||'';
   $('#fTickets').value = activeLead.tickets||'';
   $('#fComment').value = activeLead.comment||'';
+  $('#fExperiments').value = activeLead.experiments||'';
   $('#fContactName').value = activeLead.contactName||'';
   $('#fPhone').value = activeLead.phone||'';
   $('#fEmail').value = activeLead.email||'';
@@ -551,7 +557,7 @@ $('#saveLeadBtn').addEventListener('click', async ()=>{
   const fields = {
     account, status: $('#fStatus').value.trim(), vertical: $('#fVertical').value.trim(),
     location: $('#fLocation').value.trim(), tickets: $('#fTickets').value.trim(),
-    comment: $('#fComment').value.trim(), contactName: $('#fContactName').value.trim(),
+    comment: $('#fComment').value.trim(), experiments: $('#fExperiments').value.trim(), contactName: $('#fContactName').value.trim(),
     phone: $('#fPhone').value.trim(), email: $('#fEmail').value.trim(),
     website: $('#fWebsite').value.trim(), insta: $('#fInsta').value.trim(),
     linkedin: $('#fLinkedin').value.trim(), ticketdeal: $('#fTicketdeal').value.trim(),
