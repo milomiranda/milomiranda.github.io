@@ -154,6 +154,7 @@
     <div style="display:flex; gap:8px;">
       <button class="btn-primary" id="logTouchpointFromDetailBtn" style="flex:1;">+ Registrar touchpoint</button>
       <button class="btn-ghost" id="editLeadBtn">Editar</button>
+      <button class="btn-ghost" id="deleteLeadBtn" style="color:var(--stale); border-color:var(--stale);">Eliminar</button>
     </div>
 
     <div class="history">
@@ -549,6 +550,18 @@ $('#editLeadBtn').addEventListener('click', ()=>{
   $('#leadModalSection').textContent = activeLead.account;
   closeOverlay('#detailOverlay');
   openOverlay('#leadOverlay');
+});
+
+$('#deleteLeadBtn').addEventListener('click', async ()=>{
+  if (!activeLead) return;
+  const ok = confirm(`¿Eliminar "${activeLead.account}" por completo?\n\nEsto borra la fila entera del Sheet. No hay un "deshacer" dentro de la app, pero siempre puedes recuperarla desde Archivo > Historial de versiones en Google Sheets.`);
+  if (!ok) return;
+  try{
+    await apiPost('deleteLead', { row: activeLead.row, expectedAccount: activeLead.account });
+    closeOverlay('#detailOverlay');
+    toast('Lead eliminado');
+    loadData();
+  }catch(err){ toast('Error: '+err.message); }
 });
 
 $('#saveLeadBtn').addEventListener('click', async ()=>{
