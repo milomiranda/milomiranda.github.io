@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Leadlist Overview</title>
+<title>Pipeline Tracker</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700;9..40,900&display=swap" rel="stylesheet">
 <style>
@@ -32,24 +32,36 @@
   .controls{display:flex; gap:10px; padding:14px 20px; flex-wrap:wrap;}
   .controls input{flex:1; min-width:180px; font-family:inherit; font-size:14px; padding:10px 12px; border:1px solid var(--border); border-radius:10px; background:var(--card); color:var(--text);}
 
+  .status-filters{display:flex; gap:8px; flex-wrap:wrap; padding:0 20px 14px; max-width:820px; margin:0 auto;}
+  .filter-btn{padding:7px 14px; border-radius:10px; border:1.5px solid var(--border); background:#fafafa; font-family:'DM Sans',sans-serif; font-size:12.5px; font-weight:600; cursor:pointer; transition:all .15s; color:var(--text);}
+  .filter-btn:hover{border-color:var(--text);}
+  .filter-btn.active{background:var(--text); color:#fff; border-color:var(--text);}
+
   main{padding:4px 20px 60px;}
-  .leads-grid{display:flex; flex-direction:column; gap:10px; max-width:760px; margin:0 auto;}
-  .lead-card{background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:15px 17px; display:flex; align-items:center; gap:14px; cursor:pointer;}
-  .lead-card:hover{border-color:#d3d2cb;}
-  .lead-main{flex:1; min-width:0;}
-  .lead-name-row{display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
-  .lead-rank{color:var(--muted); font-size:12px; font-weight:700;}
-  .lead-name{font-weight:700; font-size:15px;}
-  .status-pill{font-size:10.5px; font-weight:700; padding:3px 9px; border-radius:100px; background:#eeeeeb; color:var(--muted); text-transform:uppercase; letter-spacing:.03em;}
-  .lead-sub{color:var(--muted); font-size:12.5px; margin-top:2px;}
-  .lead-note{margin-top:4px; font-size:13px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:480px;}
-  .chip{flex-shrink:0; text-align:center; padding:7px 12px; border-radius:12px; font-weight:900; font-size:12.5px; min-width:78px;}
-  .chip .days-num{display:block; font-size:16px; line-height:1.1;}
-  .chip .days-label{display:block; font-size:9.5px; font-weight:700; text-transform:uppercase; opacity:.85; margin-top:1px;}
-  .u-fresh{background:#eef6df; color:var(--fresh);}
-  .u-warm{background:#faf0dc; color:var(--warm);}
-  .u-stale{background:#fbe6e2; color:var(--stale);}
-  .u-none{background:#efefec; color:var(--none);}
+  .table-scroll{max-width:820px; margin:0 auto; overflow-x:auto;}
+  .leads-table{width:100%; border-collapse:collapse; background:var(--card); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden;}
+  .leads-table th{text-align:left; font-size:10.5px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); padding:10px 12px; border-bottom:1px solid var(--border); background:#fbfbfa;}
+  .leads-table td{padding:10px 12px; border-bottom:1px solid var(--border); vertical-align:top; font-size:13.5px;}
+  .leads-table tbody tr:last-child td{border-bottom:none;}
+  .leads-table tbody tr{cursor:pointer; border-left:4px solid transparent;}
+  .leads-table tbody tr:hover td{background:#fafafa;}
+  .leads-table tr.u-fresh{border-left-color:var(--fresh);}
+  .leads-table tr.u-warm{border-left-color:var(--warm);}
+  .leads-table tr.u-stale{border-left-color:var(--stale);}
+  .leads-table tr.u-none{border-left-color:var(--none);}
+  .col-rank{width:34px; color:var(--muted); font-weight:700; font-size:12.5px;}
+  .col-lead{min-width:110px;}
+  .lead-name{font-weight:700; font-size:14px;}
+  .lead-status-inline{display:inline-block; font-size:10px; font-weight:700; padding:2px 8px; border-radius:100px; background:#eeeeeb; color:var(--muted); text-transform:uppercase; letter-spacing:.02em; margin-top:4px;}
+  .touch-days{display:inline-block; font-weight:800; font-size:11px; padding:2px 7px; border-radius:100px; margin-right:6px; white-space:nowrap;}
+  .touch-days.u-fresh{background:#eef6df; color:var(--fresh);}
+  .touch-days.u-warm{background:#faf0dc; color:var(--warm);}
+  .touch-days.u-stale{background:#fbe6e2; color:var(--stale);}
+  .touch-days.u-none{background:#efefec; color:var(--none);}
+  .touch-text{color:var(--muted); font-size:13px;}
+  @media (max-width:480px){
+    .leads-table th:first-child, .leads-table td:first-child{display:none;}
+  }
   .empty-state{text-align:center; padding:70px 20px; color:var(--muted);}
   .empty-state h2{color:var(--text); font-size:18px; margin-bottom:6px;}
   .empty-state p{font-size:14px; max-width:360px; margin:0 auto 18px;}
@@ -69,7 +81,11 @@
   .modal-actions{display:flex; justify-content:flex-end; gap:8px; margin-top:16px;}
   .history{border-top:1px solid var(--border); margin-top:16px; padding-top:14px;}
   .history h3{font-size:12px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.03em; margin:0 0 10px;}
-  .history-item{padding:9px 11px; border-radius:10px; background:var(--bg); font-size:13px; margin-bottom:8px; white-space:pre-wrap; line-height:1.45;}
+  .history-item{padding:9px 11px; border-radius:10px; background:var(--bg); font-size:13px; margin-bottom:8px; line-height:1.45;}
+  .history-item-row{display:flex; align-items:flex-start; justify-content:space-between; gap:10px;}
+  .history-item-text{white-space:pre-wrap; flex:1;}
+  .history-delete{background:none; border:none; color:var(--muted); font-size:13px; padding:0; flex-shrink:0; cursor:pointer;}
+  .history-delete:hover{color:var(--stale);}
   .detail-block{margin-bottom:14px;}
   .detail-block .dl-label{font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.03em; margin-bottom:4px;}
   .detail-block .dl-value{font-size:14px;}
@@ -81,7 +97,7 @@
 <body>
 
 <div class="topbar">
-  <h1>Leadlist Overview</h1>
+  <h1>Pipeline Tracker</h1>
   <button class="icon-btn" id="settingsBtn" title="Configuración">⚙</button>
 </div>
 
@@ -92,7 +108,16 @@
   <button class="btn-primary" id="newLeadBtn">+ Nuevo lead</button>
 </div>
 
-<main><div class="leads-grid" id="leadsGrid"></div></main>
+<div class="status-filters" id="statusFiltersBar"></div>
+
+<main>
+  <div class="table-scroll">
+    <table class="leads-table">
+      <thead><tr><th class="col-rank">#</th><th class="col-lead">Lead</th><th>Último touchpoint</th></tr></thead>
+      <tbody id="leadsGrid"></tbody>
+    </table>
+  </div>
+</main>
 
 <div class="toast" id="toast"></div>
 
@@ -114,6 +139,10 @@
   <div class="modal" style="max-width:560px;">
     <h2 id="detailName"></h2>
     <div class="modal-sub" id="detailMeta"></div>
+    <div class="field" style="margin-top:8px; margin-bottom:14px;">
+      <label>Status</label>
+      <select id="dStatusSelect"></select>
+    </div>
 
     <div class="detail-grid">
       <div class="detail-block"><div class="dl-label">Contacto</div><div class="dl-value" id="dContact">—</div></div>
@@ -218,6 +247,7 @@ const CONFIG_KEY = 'leadlist_overview_config';
 let config = JSON.parse(localStorage.getItem(CONFIG_KEY) || 'null');
 let sections = [];
 let activeSectionIdx = 0;
+let statusFilter = 'all';
 let activeLead = null;
 let editingRow = null;
 
@@ -253,19 +283,20 @@ async function loadData(){
     sections = data.sections || [];
     if (activeSectionIdx >= sections.length) activeSectionIdx = 0;
     renderTabs();
+    renderStatusFilters();
     render();
   }catch(err){
-    grid.innerHTML = `<div class="empty-state"><h2>No se pudo conectar</h2><p>${err.message}</p></div>`;
+    grid.innerHTML = `<tr><td colspan="3"><div class="empty-state"><h2>No se pudo conectar</h2><p>${err.message}</p></div></td></tr>`;
   }
 }
 
 function renderNotConfigured(){
   $('#tabsBar').innerHTML = '';
-  grid.innerHTML = `<div class="empty-state">
+  grid.innerHTML = `<tr><td colspan="3"><div class="empty-state">
     <h2>Conecta tu Sheet</h2>
     <p>Abre configuración (⚙) y pega la URL de tu Apps Script y tu token.</p>
     <button class="btn-primary" onclick="openOverlay('#settingsOverlay')">Abrir configuración</button>
-  </div>`;
+  </div></td></tr>`;
 }
 
 function renderTabs(){
@@ -273,8 +304,39 @@ function renderTabs(){
     `<button class="tab ${i===activeSectionIdx?'active':''}" data-idx="${i}">${escapeHtml(s.title)} <span style="opacity:.6">(${s.leads.length})</span></button>`
   ).join('');
   $('#tabsBar').querySelectorAll('.tab').forEach(t=>t.addEventListener('click', ()=>{
-    activeSectionIdx = parseInt(t.dataset.idx); renderTabs(); render();
+    activeSectionIdx = parseInt(t.dataset.idx);
+    statusFilter = 'all';
+    renderTabs();
+    renderStatusFilters();
+    render();
   }));
+}
+
+function renderStatusFilters(){
+  const sec = sections[activeSectionIdx];
+  const bar = $('#statusFiltersBar');
+  if (!sec){ bar.innerHTML = ''; return; }
+
+  const counts = {};
+  sec.leads.forEach(l=>{
+    const s = l.status || '(sin status)';
+    counts[s] = (counts[s]||0) + 1;
+  });
+  const statuses = Object.keys(counts);
+
+  let html = `<button class="filter-btn ${statusFilter==='all'?'active':''}" data-status="all">Todos <span style="opacity:.6">(${sec.leads.length})</span></button>`;
+  html += statuses.map(s=>
+    `<button class="filter-btn ${statusFilter===s?'active':''}" data-status="${escapeHtml(s)}">${escapeHtml(s)} <span style="opacity:.6">(${counts[s]})</span></button>`
+  ).join('');
+  bar.innerHTML = html;
+
+  bar.querySelectorAll('.filter-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      statusFilter = btn.dataset.status;
+      renderStatusFilters();
+      render();
+    });
+  });
 }
 
 function daysSince(dateStr){
@@ -286,7 +348,7 @@ function daysSince(dateStr){
 function urgency(days){
   if (days===null) return {cls:'u-none'};
   if (days<=6) return {cls:'u-fresh'};
-  if (days<=13) return {cls:'u-warm'};
+  if (days<=14) return {cls:'u-warm'};
   return {cls:'u-stale'};
 }
 
@@ -296,7 +358,8 @@ function render(){
   const search = $('#searchInput').value.trim().toLowerCase();
 
   let leads = sec.leads.filter(l =>
-    !search || (l.account||'').toLowerCase().includes(search) || (l.contactName||'').toLowerCase().includes(search)
+    (!search || (l.account||'').toLowerCase().includes(search) || (l.contactName||'').toLowerCase().includes(search)) &&
+    (statusFilter==='all' || (l.status || '(sin status)')===statusFilter)
   );
 
   leads = [...leads].sort((a,b)=>{
@@ -308,35 +371,33 @@ function render(){
   });
 
   if (leads.length===0){
-    grid.innerHTML = `<div class="empty-state"><h2>Sin leads en esta sección</h2><p>Agrega el primero con "+ Nuevo lead".</p></div>`;
+    grid.innerHTML = `<tr><td colspan="3"><div class="empty-state"><h2>Sin leads en esta sección</h2><p>Agrega el primero con "+ Nuevo lead".</p></div></td></tr>`;
     return;
   }
 
   grid.innerHTML = leads.map(l=>{
     const days = daysSince(l.fecha);
     const u = urgency(days);
-    const chipText = days===null ? '—' : days;
-    const chipLabel = days===null ? 'sin fecha' : (days===1?'día':'días');
-    const sub = [l.location, l.vertical].filter(Boolean).join(' · ');
-    const noteSource = l.comment || l.comments || '';
-    const notePreview = noteSource.split(' - ')[0];
+    const dayLabel = days===null ? 'sin fecha' : (days + (days===1 ? ' día' : ' días'));
+    const firstEntry = (l.comment || '').split(' - ')[0].trim();
+    const fallback = l.comments ? String(l.comments).split('\n')[0] : '';
+    const touchText = firstEntry || fallback || 'Sin touchpoint registrado';
     return `
-      <div class="lead-card" data-row="${l.row}">
-        <div class="lead-main">
-          <div class="lead-name-row">
-            ${l.rank ? `<span class="lead-rank">#${escapeHtml(String(l.rank))}</span>` : ''}
-            <span class="lead-name">${escapeHtml(l.account||'(sin nombre)')}</span>
-            ${l.status ? `<span class="status-pill">${escapeHtml(l.status)}</span>` : ''}
-          </div>
-          ${sub ? `<div class="lead-sub">${escapeHtml(sub)}</div>` : ''}
-          ${notePreview ? `<div class="lead-note">${escapeHtml(notePreview)}</div>` : ''}
-        </div>
-        <div class="chip ${u.cls}"><span class="days-num">${chipText}</span><span class="days-label">${chipLabel}</span></div>
-      </div>`;
+      <tr class="${u.cls}" data-row="${l.row}">
+        <td class="col-rank">${l.rank!=null ? escapeHtml(String(l.rank)) : ''}</td>
+        <td class="col-lead">
+          <span class="lead-name">${escapeHtml(l.account||'(sin nombre)')}</span>
+          ${l.status ? `<span class="lead-status-inline">${escapeHtml(l.status)}</span>` : ''}
+        </td>
+        <td>
+          <span class="touch-days ${u.cls}">${dayLabel}</span>
+          <span class="touch-text">${escapeHtml(touchText)}</span>
+        </td>
+      </tr>`;
   }).join('');
 
-  grid.querySelectorAll('.lead-card').forEach(card=>{
-    card.addEventListener('click', ()=>openDetail(parseInt(card.dataset.row)));
+  grid.querySelectorAll('tr[data-row]').forEach(row=>{
+    row.addEventListener('click', ()=>openDetail(parseInt(row.dataset.row)));
   });
 }
 
@@ -347,12 +408,41 @@ function findLead(row){
   return null;
 }
 
+const STATUS_OPTIONS = [
+  'Ready for outreach','Waiting for response','Prospect','Convince for video meeting',
+  'Lead enrichment','(Video) Meeting set / Prep',"Don't want to switch ticketing provider"
+];
+
+function populateStatusSelect(currentStatus){
+  const sel = $('#dStatusSelect');
+  const opts = [...STATUS_OPTIONS];
+  if (currentStatus && !opts.includes(currentStatus)) opts.unshift(currentStatus);
+  let html = '';
+  if (!currentStatus) html += `<option value="" selected>(sin status)</option>`;
+  html += opts.map(s=>`<option value="${escapeHtml(s)}" ${s===currentStatus?'selected':''}>${escapeHtml(s)}</option>`).join('');
+  sel.innerHTML = html;
+}
+
+$('#dStatusSelect').addEventListener('change', async (e)=>{
+  if (!activeLead) return;
+  const newStatus = e.target.value;
+  const row = activeLead.row, account = activeLead.account;
+  try{
+    await apiPost('updateLead', { row, expectedAccount: account, fields: { status: newStatus } });
+    toast('Status actualizado');
+    await loadData();
+    const refreshed = findLead(row);
+    if (refreshed) openDetail(refreshed.row);
+  }catch(err){ toast('Error: '+err.message); }
+});
+
 function openDetail(row){
   const l = findLead(row);
   if (!l) return;
   activeLead = l;
   $('#detailName').textContent = l.account || '(sin nombre)';
-  $('#detailMeta').textContent = [l.status, l.location, l.vertical].filter(Boolean).join(' · ');
+  $('#detailMeta').textContent = [l.location, l.vertical].filter(Boolean).join(' · ');
+  populateStatusSelect(l.status);
 
   $('#dContact').innerHTML = [
     l.contactName ? escapeHtml(l.contactName) : '',
@@ -377,7 +467,18 @@ function openDetail(row){
     list.innerHTML = `<p style="color:var(--muted); font-size:13px;">Sin historial todavía.</p>`;
   } else {
     const entries = String(l.comment).split(' - ').map(s=>s.trim()).filter(Boolean);
-    list.innerHTML = entries.map(e=>`<div class="history-item">${escapeHtml(e)}</div>`).join('');
+    list.innerHTML = entries.map((e,i)=>`
+      <div class="history-item">
+        <div class="history-item-row">
+          <span class="history-item-text">${escapeHtml(e)}</span>
+          <button class="history-delete" data-idx="${i}" title="Borrar touchpoint">✕</button>
+        </div>
+      </div>
+    `).join('');
+    list.querySelectorAll('.history-delete').forEach(btn=>{
+      const idx = parseInt(btn.dataset.idx);
+      btn.addEventListener('click', ()=>deleteTouchpointEntry(idx, entries[idx]));
+    });
   }
 
   const legacyBlock = $('#legacyNotesBlock');
@@ -461,8 +562,12 @@ $('#saveLeadBtn').addEventListener('click', async ()=>{
       await apiPost('updateLead', { row: editingRow, expectedAccount: activeLead.account, fields });
       toast('Lead actualizado');
     } else {
-      await apiPost('addLead', { sectionHeaderRow: sections[activeSectionIdx].headerRow, data: fields });
-      toast('Lead agregado');
+      const res = await apiPost('addLead', { sectionHeaderRow: sections[activeSectionIdx].headerRow, data: fields });
+      if (res.result && res.result.emilioWarning) {
+        toast('Agregado a Overview — ' + res.result.emilioWarning);
+      } else {
+        toast('Lead agregado (Overview + Emilio)');
+      }
     }
     closeOverlay('#leadOverlay');
     loadData();
@@ -489,6 +594,18 @@ $('#saveTouchpointBtn').addEventListener('click', async ()=>{
     loadData();
   }catch(err){ toast('Error: '+err.message); }
 });
+
+async function deleteTouchpointEntry(index, text){
+  if (!activeLead) return;
+  if (!confirm('¿Borrar este touchpoint? No se puede deshacer.')) return;
+  try{
+    await apiPost('deleteTouchpoint', { row: activeLead.row, expectedAccount: activeLead.account, entryIndex: index, expectedText: text });
+    toast('Touchpoint borrado');
+    await loadData();
+    const refreshed = findLead(activeLead.row);
+    if (refreshed) openDetail(refreshed.row);
+  }catch(err){ toast('Error: '+err.message); }
+}
 
 $('#searchInput').addEventListener('input', render);
 
