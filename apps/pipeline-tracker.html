@@ -844,12 +844,14 @@ $('#saveTouchpointBtn').addEventListener('click', async ()=>{
   if (!activeLead) return;
   const fecha = $('#tFecha').value, canal = $('#tCanal').value, mensaje = $('#tMensaje').value.trim();
   if (!fecha){ toast('Ponle una fecha'); return; }
+  const row = activeLead.row, account = activeLead.account;
   try{
-    await apiPost('logTouchpoint', { row: activeLead.row, expectedAccount: activeLead.account, fecha, canal, mensaje });
+    await apiPost('logTouchpoint', { row, expectedAccount: account, fecha, canal, mensaje });
     closeOverlay('#touchpointOverlay');
-    closeOverlay('#detailOverlay');
     toast('Touchpoint registrado');
-    loadData();
+    await loadData();
+    const refreshed = findLead(row);
+    if (refreshed) openDetail(refreshed.row);
   }catch(err){ toast('Error: '+err.message); }
 });
 
