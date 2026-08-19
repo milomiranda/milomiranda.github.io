@@ -8,72 +8,108 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700;9..40,900&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#f6f6f4; --card:#ffffff; --accent:#c5fe00; --accent-ink:#3a4400;
-    --text:#14140f; --muted:#767368; --border:#e6e5e0;
-    --fresh:#5c8a00; --warm:#b9791a; --stale:#c8402f; --none:#9a978d;
-    --radius:14px;
+    --bg:#f7f6f2; --card:#ffffff; --card-soft:#fbfaf7;
+    --accent:#c5fe00; --accent-ink:#3a4400; --accent-soft:#eef8c8;
+    --text:#14140f; --muted:#79766c; --border:#e8e6e0;
+    --fresh:#5c8a00; --fresh-soft:#eef6df;
+    --warm:#b9791a; --warm-soft:#fbf1de;
+    --stale:#c8402f; --stale-soft:#fce9e6;
+    --none:#9a978d; --none-soft:#f0efeb;
+    --radius:16px; --radius-sm:10px;
+    --shadow-sm:0 1px 2px rgba(20,20,15,.05);
+    --shadow-md:0 6px 20px -6px rgba(20,20,15,.12), 0 2px 6px -2px rgba(20,20,15,.06);
+    --shadow-lg:0 20px 50px -14px rgba(20,20,15,.22);
+    --ease:cubic-bezier(.4,0,.2,1);
+    --ease-soft:cubic-bezier(.16,1,.3,1);
   }
   *{box-sizing:border-box;}
   body{margin:0; background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; -webkit-font-smoothing:antialiased;}
-  .topbar{position:sticky; top:0; z-index:20; display:flex; align-items:center; justify-content:space-between; padding:18px 20px; background:var(--bg); border-bottom:1px solid var(--border);}
-  .topbar h1{font-size:19px; font-weight:900; margin:0; letter-spacing:-0.01em;}
-  button{font-family:inherit; cursor:pointer; border:none; border-radius:10px; font-weight:700; font-size:14px; padding:10px 16px; transition:transform .08s ease, opacity .15s ease;}
-  button:active{transform:scale(0.97);}
-  .btn-primary{background:var(--accent); color:var(--accent-ink);}
-  .btn-primary:hover{opacity:.88;}
+  ::selection{background:var(--accent); color:var(--accent-ink);}
+  :focus-visible{outline:2px solid var(--accent-ink); outline-offset:2px; border-radius:4px;}
+  @media (prefers-reduced-motion: reduce){
+    *, *::before, *::after{animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important;}
+  }
+
+  .topbar{position:sticky; top:0; z-index:30; display:flex; align-items:center; justify-content:space-between; padding:16px 20px; background:rgba(247,246,242,.86); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); border-bottom:1px solid var(--border);}
+  .topbar h1{font-size:18px; font-weight:900; margin:0; letter-spacing:-0.01em;}
+
+  button{font-family:inherit; cursor:pointer; border:none; border-radius:var(--radius-sm); font-weight:700; font-size:14px; padding:10px 16px; transition:transform .15s var(--ease-soft), box-shadow .2s var(--ease), background .2s var(--ease), opacity .15s var(--ease), color .15s var(--ease), border-color .15s var(--ease);}
+  button:active{transform:scale(0.96);}
+  .btn-primary{background:var(--accent); color:var(--accent-ink); box-shadow:var(--shadow-sm);}
+  .btn-primary:hover{box-shadow:0 6px 16px -4px rgba(197,254,0,.5); transform:translateY(-1px);}
   .btn-ghost{background:transparent; color:var(--text); border:1px solid var(--border);}
-  .btn-ghost:hover{background:#ececea;}
-  .icon-btn{width:38px; height:38px; padding:0; display:flex; align-items:center; justify-content:center; background:transparent; border:1px solid var(--border); border-radius:10px; font-size:16px;}
+  .btn-ghost:hover{background:var(--card-soft); border-color:#d8d6cf;}
+  .icon-btn{width:38px; height:38px; padding:0; display:flex; align-items:center; justify-content:center; background:var(--card); border:1px solid var(--border); box-shadow:var(--shadow-sm); border-radius:var(--radius-sm); font-size:16px;}
+  .icon-btn:hover{border-color:#d8d6cf; transform:translateY(-1px); box-shadow:var(--shadow-md);}
 
-  .tabs{display:flex; gap:6px; padding:12px 20px; overflow-x:auto; -webkit-overflow-scrolling:touch; border-bottom:1px solid var(--border);}
-  .tab{flex-shrink:0; padding:9px 16px; border-radius:100px; font-size:13.5px; font-weight:700; background:var(--card); border:1px solid var(--border); color:var(--muted); white-space:nowrap;}
-  .tab.active{background:var(--text); color:#fff; border-color:var(--text);}
+  /* ---- nav: sliding pill tabs ---- */
+  .nav-row{padding:14px 20px 0; max-width:820px; margin:0 auto;}
+  .tabs{position:relative; display:flex; gap:2px; overflow-x:auto; -webkit-overflow-scrolling:touch; padding:4px; background:var(--card-soft); border:1px solid var(--border); border-radius:100px; scrollbar-width:none;}
+  .tabs::-webkit-scrollbar{display:none;}
+  .tab-indicator{position:absolute; top:4px; left:0; height:calc(100% - 8px); background:var(--text); border-radius:100px; transition:transform .35s var(--ease-soft), width .35s var(--ease-soft); z-index:0; opacity:0; pointer-events:none;}
+  .tab{position:relative; z-index:1; flex-shrink:0; padding:9px 16px; border-radius:100px; font-size:13px; font-weight:700; background:transparent; border:none; color:var(--muted); white-space:nowrap; transition:color .25s var(--ease);}
+  .tab.active{color:#fff;}
 
-  .controls{display:flex; gap:10px; padding:14px 20px; flex-wrap:wrap;}
-  .controls input{flex:1; min-width:180px; font-family:inherit; font-size:14px; padding:10px 12px; border:1px solid var(--border); border-radius:10px; background:var(--card); color:var(--text);}
+  .toolbar{display:flex; gap:10px; padding:14px 20px 10px; max-width:820px; margin:0 auto; flex-wrap:wrap;}
+  .toolbar input{flex:1; min-width:180px; font-family:inherit; font-size:14px; padding:10px 14px; border:1px solid var(--border); border-radius:var(--radius-sm); background:var(--card); color:var(--text); transition:border-color .2s var(--ease), box-shadow .2s var(--ease);}
+  .toolbar input:focus{outline:none; border-color:var(--accent-ink); box-shadow:0 0 0 3px var(--accent-soft);}
 
-  .status-filters{display:flex; gap:8px; flex-wrap:wrap; padding:0 20px 14px; max-width:820px; margin:0 auto;}
-  .filter-btn{padding:7px 14px; border-radius:10px; border:1.5px solid var(--border); background:#fafafa; font-family:'DM Sans',sans-serif; font-size:12.5px; font-weight:600; cursor:pointer; transition:all .15s; color:var(--text);}
-  .filter-btn:hover{border-color:var(--text);}
-  .filter-btn.active{background:var(--text); color:#fff; border-color:var(--text);}
+  .filters-row{display:flex; gap:8px; flex-wrap:wrap; align-items:center; padding:0 20px 14px; max-width:820px; margin:0 auto;}
+  .filter-btn{padding:6px 13px; border-radius:100px; border:1px solid var(--border); background:var(--card); font-family:'DM Sans',sans-serif; font-size:12px; font-weight:600; cursor:pointer; transition:all .2s var(--ease); color:var(--muted);}
+  .filter-btn:hover{border-color:#d8d6cf; color:var(--text);}
+  .filter-btn.active{background:var(--accent-soft); color:var(--accent-ink); border-color:#d9ee9e; font-weight:700;}
+
+  .archive-toggle{display:flex; align-items:center; gap:6px; cursor:pointer; user-select:none; font-size:12px; color:var(--muted);}
+  .archive-toggle input{accent-color:var(--accent-ink);}
+  .dup-pill{background:var(--warm-soft); color:var(--warm); border:1px solid #f3ddb4; border-radius:100px; padding:5px 12px; font-size:12px; font-weight:700; cursor:pointer; transition:all .2s var(--ease);}
+  .dup-pill:hover{transform:translateY(-1px); box-shadow:var(--shadow-sm);}
 
   main{padding:4px 20px 60px;}
   .table-scroll{max-width:820px; margin:0 auto; overflow-x:auto;}
-  .leads-table{width:100%; border-collapse:collapse; background:var(--card); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden;}
-  .leads-table th{text-align:left; font-size:10.5px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); padding:10px 12px; border-bottom:1px solid var(--border); background:#fbfbfa;}
-  .leads-table td{padding:10px 12px; border-bottom:1px solid var(--border); vertical-align:top; font-size:13.5px;}
+  .leads-table{width:100%; border-collapse:collapse; background:var(--card); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow-sm);}
+  .leads-table th{text-align:left; font-size:10.5px; font-weight:800; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); padding:12px; border-bottom:1px solid var(--border); background:var(--card-soft);}
+  .leads-table td{padding:13px 12px; border-bottom:1px solid var(--border); vertical-align:top; font-size:13.5px;}
   .leads-table tbody tr:last-child td{border-bottom:none;}
-  .leads-table tbody tr{cursor:pointer; border-left:4px solid transparent;}
-  .leads-table tbody tr:hover td{background:#fafafa;}
+  .leads-table tbody tr{cursor:pointer; border-left:3px solid transparent; transition:border-left-width .2s var(--ease), background .2s var(--ease); animation:rowIn .4s var(--ease-soft) both;}
+  .leads-table tbody tr:hover{background:var(--card-soft); border-left-width:4px;}
   .leads-table tr.u-fresh{border-left-color:var(--fresh);}
   .leads-table tr.u-warm{border-left-color:var(--warm);}
   .leads-table tr.u-stale{border-left-color:var(--stale);}
   .leads-table tr.u-none{border-left-color:var(--none);}
-  .col-rank{width:34px; color:var(--muted); font-weight:700; font-size:12.5px;}
+  @keyframes rowIn{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+  .col-rank{width:34px; color:var(--muted); font-weight:700; font-size:12px;}
   .col-lead{min-width:110px;}
   .lead-name{font-weight:700; font-size:14px;}
-  .lead-status-inline{display:inline-block; font-size:10px; font-weight:700; padding:2px 8px; border-radius:100px; background:#eeeeeb; color:var(--muted); text-transform:uppercase; letter-spacing:.02em; margin-top:4px;}
-  .touch-days{display:inline-block; font-weight:800; font-size:11px; padding:2px 7px; border-radius:100px; margin-right:6px; white-space:nowrap;}
-  .touch-days.u-fresh{background:#eef6df; color:var(--fresh);}
-  .touch-days.u-warm{background:#faf0dc; color:var(--warm);}
-  .touch-days.u-stale{background:#fbe6e2; color:var(--stale);}
-  .touch-days.u-none{background:#efefec; color:var(--none);}
+  .lead-status-inline{display:inline-block; font-size:10px; font-weight:700; padding:2px 8px; border-radius:100px; background:var(--none-soft); color:var(--muted); text-transform:uppercase; letter-spacing:.02em; margin-top:5px;}
+  .touch-days{display:inline-block; font-weight:800; font-size:11px; padding:3px 9px; border-radius:100px; margin-right:6px; white-space:nowrap;}
+  .touch-days.u-fresh{background:var(--fresh-soft); color:var(--fresh);}
+  .touch-days.u-warm{background:var(--warm-soft); color:var(--warm);}
+  .touch-days.u-stale{background:var(--stale-soft); color:var(--stale); animation:chipPulse 2.6s ease-in-out infinite;}
+  .touch-days.u-none{background:var(--none-soft); color:var(--none);}
+  @keyframes chipPulse{0%,100%{box-shadow:0 0 0 0 rgba(200,64,47,.28);} 50%{box-shadow:0 0 0 5px rgba(200,64,47,0);}}
   .touch-text{color:var(--muted); font-size:13px;}
+
+  .skel{height:12px; border-radius:6px; background:linear-gradient(90deg, var(--border) 25%, #f1f0ec 50%, var(--border) 75%); background-size:200% 100%; animation:shimmer 1.4s ease-in-out infinite;}
+  @keyframes shimmer{0%{background-position:200% 0;} 100%{background-position:-200% 0;}}
+
   @media (max-width:480px){
     .leads-table th:first-child, .leads-table td:first-child{display:none;}
   }
-  .empty-state{text-align:center; padding:70px 20px; color:var(--muted);}
-  .empty-state h2{color:var(--text); font-size:18px; margin-bottom:6px;}
-  .empty-state p{font-size:14px; max-width:360px; margin:0 auto 18px;}
+  .empty-state{text-align:center; padding:60px 20px;}
+  .empty-state .ee-orb{width:52px; height:52px; margin:0 auto 16px; border-radius:50%; background:radial-gradient(circle at 35% 30%, var(--accent-soft), transparent 70%), var(--card-soft); border:1px solid var(--border);}
+  .empty-state h2{color:var(--text); font-size:17px; margin-bottom:6px; font-weight:800;}
+  .empty-state p{font-size:13.5px; color:var(--muted); max-width:320px; margin:0 auto 18px;}
 
-  .overlay{position:fixed; inset:0; background:rgba(20,20,15,0.4); display:none; align-items:flex-start; justify-content:center; padding:32px 16px; z-index:100; overflow-y:auto;}
-  .overlay.open{display:flex;}
-  .modal{background:var(--card); border-radius:var(--radius); padding:22px; width:100%; max-width:560px;}
-  .modal h2{margin:0 0 4px; font-size:17px; font-weight:900;}
+  .overlay{position:fixed; inset:0; background:rgba(20,20,15,0.38); backdrop-filter:blur(2px); display:flex; align-items:flex-start; justify-content:center; padding:32px 16px; z-index:100; overflow-y:auto; opacity:0; visibility:hidden; pointer-events:none; transition:opacity .25s var(--ease);}
+  .overlay.open{opacity:1; visibility:visible; pointer-events:auto;}
+  .modal{background:var(--card); border-radius:20px; padding:24px; width:100%; max-width:560px; box-shadow:var(--shadow-lg); transform:scale(.96) translateY(10px); transition:transform .3s var(--ease-soft);}
+  .overlay.open .modal{transform:scale(1) translateY(0);}
+  .modal h2{margin:0 0 4px; font-size:18px; font-weight:900; letter-spacing:-.01em;}
   .modal .modal-sub{color:var(--muted); font-size:12.5px; margin-bottom:16px;}
   .field{margin-bottom:12px;}
   .field label{display:block; font-size:12px; font-weight:700; color:var(--muted); margin-bottom:5px;}
-  .field input, .field select, .field textarea{width:100%; font-family:inherit; font-size:14px; padding:9px 11px; border:1px solid var(--border); border-radius:10px; background:var(--bg); color:var(--text);}
+  .field input, .field select, .field textarea{width:100%; font-family:inherit; font-size:14px; padding:10px 12px; border:1px solid var(--border); border-radius:var(--radius-sm); background:var(--bg); color:var(--text); transition:border-color .2s var(--ease), box-shadow .2s var(--ease);}
+  .field input:focus, .field select:focus, .field textarea:focus{outline:none; border-color:var(--accent-ink); box-shadow:0 0 0 3px var(--accent-soft); background:var(--card);}
   .field textarea{resize:vertical; min-height:60px;}
   .field-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
   .field-group-label{font-size:11px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin:16px 0 8px; border-top:1px solid var(--border); padding-top:14px;}
@@ -81,17 +117,23 @@
   .modal-actions{display:flex; justify-content:flex-end; gap:8px; margin-top:16px;}
   .history{border-top:1px solid var(--border); margin-top:16px; padding-top:14px;}
   .history h3{font-size:12px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.03em; margin:0 0 10px;}
-  .history-item{padding:9px 11px; border-radius:10px; background:var(--bg); font-size:13px; margin-bottom:8px; line-height:1.45;}
+  .history-item{padding:10px 12px; border-radius:var(--radius-sm); background:var(--card-soft); font-size:13px; margin-bottom:8px; line-height:1.5; border:1px solid var(--border);}
   .history-item-row{display:flex; align-items:flex-start; justify-content:space-between; gap:10px;}
   .history-item-text{white-space:pre-wrap; flex:1;}
-  .history-delete{background:none; border:none; color:var(--muted); font-size:13px; padding:0; flex-shrink:0; cursor:pointer;}
+  .history-delete{background:none; border:none; color:var(--muted); font-size:13px; padding:0; flex-shrink:0; cursor:pointer; transition:color .15s var(--ease);}
   .history-delete:hover{color:var(--stale);}
   .detail-block{margin-bottom:14px;}
   .detail-block .dl-label{font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.03em; margin-bottom:4px;}
-  .detail-block .dl-value{font-size:14px;}
-  .detail-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:14px;}
-  .toast{position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:var(--text); color:#fff; padding:11px 18px; border-radius:10px; font-size:13.5px; font-weight:600; opacity:0; pointer-events:none; transition:opacity .2s ease; z-index:200;}
-  .toast.show{opacity:1;}
+  .detail-block .dl-value{font-size:14px; line-height:1.5;}
+  .detail-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px;}
+  .hint-box{background:var(--fresh-soft); border:1px solid #d7ecb0; border-radius:var(--radius-sm); padding:10px 13px; font-size:12.5px; color:#4a6b00; margin-bottom:14px; animation:hintIn .3s var(--ease-soft) both;}
+  @keyframes hintIn{from{opacity:0; transform:translateY(-4px);} to{opacity:1; transform:translateY(0);}}
+  .dup-pair{padding:11px 0; border-bottom:1px solid var(--border); font-size:13.5px;}
+  .dup-pair:last-child{border-bottom:none;}
+  .dup-pair .dp-names{font-weight:700;}
+  .dup-pair .dp-meta{color:var(--muted); font-size:12px; margin-top:2px;}
+  .toast{position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(8px); background:var(--text); color:#fff; padding:12px 20px; border-radius:100px; font-size:13.5px; font-weight:600; opacity:0; pointer-events:none; transition:opacity .25s var(--ease-soft), transform .25s var(--ease-soft); z-index:200; box-shadow:var(--shadow-lg);}
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
 </style>
 </head>
 <body>
@@ -101,14 +143,27 @@
   <button class="icon-btn" id="settingsBtn" title="Configuración">⚙</button>
 </div>
 
-<div class="tabs" id="tabsBar"></div>
+<div class="nav-row">
+  <div class="tabs" id="tabsBar">
+    <div class="tab-indicator" id="tabIndicator"></div>
+    <div id="tabsButtons" style="display:contents;"></div>
+  </div>
+</div>
 
-<div class="controls">
+<div class="toolbar">
   <input type="text" id="searchInput" placeholder="Buscar cuenta o contacto...">
   <button class="btn-primary" id="newLeadBtn">+ Nuevo lead</button>
 </div>
 
-<div class="status-filters" id="statusFiltersBar"></div>
+<div class="filters-row" id="statusFiltersBar"></div>
+
+<div class="filters-row" id="insightsBar">
+  <label class="archive-toggle">
+    <input type="checkbox" id="hideInactiveCb" checked>
+    Ocultar inactivos (60+ días) <span id="inactiveCount"></span>
+  </label>
+  <button class="dup-pill" id="duplicatesPill" style="display:none;"></button>
+</div>
 
 <main>
   <div class="table-scroll">
@@ -120,6 +175,16 @@
 </main>
 
 <div class="toast" id="toast"></div>
+
+<!-- Duplicates -->
+<div class="overlay" id="duplicatesOverlay">
+  <div class="modal">
+    <h2>Posibles duplicados</h2>
+    <div class="modal-sub">Nombres de cuenta parecidos en toda tu Leadlist — revisa si son el mismo lead repetido.</div>
+    <div id="duplicatesList"></div>
+    <div class="modal-actions"><button class="btn-ghost" data-close>Cerrar</button></div>
+  </div>
+</div>
 
 <!-- Settings -->
 <div class="overlay" id="settingsOverlay">
@@ -143,6 +208,7 @@
       <label>Status</label>
       <select id="dStatusSelect"></select>
     </div>
+    <div class="hint-box" id="channelHint" style="display:none;"></div>
 
     <div class="detail-grid">
       <div class="detail-block"><div class="dl-label">Contacto</div><div class="dl-value" id="dContact">—</div></div>
@@ -281,21 +347,35 @@ async function apiPost(action, data){
 
 async function loadData(){
   if (!config || !config.url || !config.token){ renderNotConfigured(); return; }
+  renderSkeleton();
   try{
     const data = await apiGet();
     sections = data.sections || [];
     if (activeSectionIdx >= sections.length) activeSectionIdx = 0;
     renderTabs();
     renderStatusFilters();
+    updateDuplicatesPill();
     render();
   }catch(err){
     grid.innerHTML = `<tr><td colspan="3"><div class="empty-state"><h2>No se pudo conectar</h2><p>${err.message}</p></div></td></tr>`;
   }
 }
 
+function renderSkeleton(){
+  grid.innerHTML = Array.from({length:5}).map(()=>`
+    <tr>
+      <td><div class="skel" style="width:16px;"></div></td>
+      <td><div class="skel" style="width:70%; margin-bottom:6px;"></div><div class="skel" style="width:40%; height:8px;"></div></td>
+      <td><div class="skel" style="width:85%;"></div></td>
+    </tr>
+  `).join('');
+}
+
 function renderNotConfigured(){
-  $('#tabsBar').innerHTML = '';
+  $('#tabsButtons').innerHTML = '';
+  $('#tabIndicator').style.opacity = '0';
   grid.innerHTML = `<tr><td colspan="3"><div class="empty-state">
+    <div class="ee-orb"></div>
     <h2>Conecta tu Sheet</h2>
     <p>Abre configuración (⚙) y pega la URL de tu Apps Script y tu token.</p>
     <button class="btn-primary" onclick="openOverlay('#settingsOverlay')">Abrir configuración</button>
@@ -303,17 +383,28 @@ function renderNotConfigured(){
 }
 
 function renderTabs(){
-  $('#tabsBar').innerHTML = sections.map((s,i)=>
+  $('#tabsButtons').innerHTML = sections.map((s,i)=>
     `<button class="tab ${i===activeSectionIdx?'active':''}" data-idx="${i}">${escapeHtml(s.title)} <span style="opacity:.6">(${s.leads.length})</span></button>`
   ).join('');
-  $('#tabsBar').querySelectorAll('.tab').forEach(t=>t.addEventListener('click', ()=>{
+  $('#tabsButtons').querySelectorAll('.tab').forEach(t=>t.addEventListener('click', ()=>{
     activeSectionIdx = parseInt(t.dataset.idx);
     statusFilter = 'all';
     renderTabs();
     renderStatusFilters();
     render();
   }));
+  requestAnimationFrame(positionTabIndicator);
 }
+
+function positionTabIndicator(){
+  const activeBtn = document.querySelector('#tabsButtons .tab.active');
+  const indicator = $('#tabIndicator');
+  if (!activeBtn || !indicator){ if (indicator) indicator.style.opacity = '0'; return; }
+  indicator.style.opacity = '1';
+  indicator.style.width = activeBtn.offsetWidth + 'px';
+  indicator.style.transform = `translateX(${activeBtn.offsetLeft}px)`;
+}
+window.addEventListener('resize', () => positionTabIndicator());
 
 function renderStatusFilters(){
   const sec = sections[activeSectionIdx];
@@ -365,6 +456,16 @@ function render(){
     (statusFilter==='all' || (l.status || '(sin status)')===statusFilter)
   );
 
+  const hideInactive = $('#hideInactiveCb').checked;
+  const inactiveCount = sec.leads.filter(l => { const d = daysSince(l.fecha); return d !== null && d >= INACTIVE_DAYS; }).length;
+  $('#inactiveCount').textContent = inactiveCount ? `(${inactiveCount})` : '';
+  if (hideInactive) {
+    leads = leads.filter(l => {
+      const d = daysSince(l.fecha);
+      return !(d !== null && d >= INACTIVE_DAYS);
+    });
+  }
+
   leads = [...leads].sort((a,b)=>{
     const da = daysSince(a.fecha), db = daysSince(b.fecha);
     if (da===null && db===null) return (a.rank||0)-(b.rank||0);
@@ -374,11 +475,13 @@ function render(){
   });
 
   if (leads.length===0){
-    grid.innerHTML = `<tr><td colspan="3"><div class="empty-state"><h2>Sin leads en esta sección</h2><p>Agrega el primero con "+ Nuevo lead".</p></div></td></tr>`;
+    grid.innerHTML = `<tr><td colspan="3"><div class="empty-state"><div class="ee-orb"></div><h2>Sin leads en esta sección</h2><p>Agrega el primero para empezar a darle seguimiento.</p><button class="btn-primary" id="emptyNewLeadBtn">+ Nuevo lead</button></div></td></tr>`;
+    const btn = document.getElementById('emptyNewLeadBtn');
+    if (btn) btn.addEventListener('click', () => $('#newLeadBtn').click());
     return;
   }
 
-  grid.innerHTML = leads.map(l=>{
+  grid.innerHTML = leads.map((l,idx)=>{
     const days = daysSince(l.fecha);
     const u = urgency(days);
     const dayLabel = days===null ? 'sin fecha' : (days + (days===1 ? ' día' : ' días'));
@@ -386,8 +489,9 @@ function render(){
     const latestEntry = commentEntries.length ? commentEntries[commentEntries.length - 1] : '';
     const fallback = l.comments ? String(l.comments).split('\n')[0] : '';
     const touchText = latestEntry || fallback || 'Sin touchpoint registrado';
+    const delay = Math.min(idx * 35, 280);
     return `
-      <tr class="${u.cls}" data-row="${l.row}">
+      <tr class="${u.cls}" data-row="${l.row}" style="animation-delay:${delay}ms">
         <td class="col-rank">${l.rank!=null ? escapeHtml(String(l.rank)) : ''}</td>
         <td class="col-lead">
           <span class="lead-name">${escapeHtml(l.account||'(sin nombre)')}</span>
@@ -409,6 +513,76 @@ function escapeHtml(str){ return String(str).replace(/[&<>"']/g, m=>({'&':'&amp;
 
 function findLead(row){
   for (const s of sections){ const l = s.leads.find(x=>x.row===row); if (l) return l; }
+  return null;
+}
+
+// ---- duplicados ----
+const INACTIVE_DAYS = 60;
+
+function normalizeForMatch(name){
+  return String(name||'').toLowerCase().replace(/[^\w\s]/g,' ').split(/\s+/).filter(Boolean);
+}
+function jaccardSimilarity(a,b){
+  const setA = new Set(a), setB = new Set(b);
+  if (!setA.size || !setB.size) return 0;
+  const inter = [...setA].filter(t=>setB.has(t)).length;
+  const union = new Set([...setA, ...setB]).size;
+  return union === 0 ? 0 : inter/union;
+}
+function findDuplicates(){
+  const allLeads = [];
+  sections.forEach(sec => sec.leads.forEach(l => allLeads.push(Object.assign({}, l, {sectionTitle: sec.title}))));
+  const pairs = [];
+  for (let i=0;i<allLeads.length;i++){
+    for (let j=i+1;j<allLeads.length;j++){
+      const a = allLeads[i], b = allLeads[j];
+      if (!a.account || !b.account) continue;
+      const sim = jaccardSimilarity(normalizeForMatch(a.account), normalizeForMatch(b.account));
+      if (sim >= 0.4) pairs.push({ a, b, sim });
+    }
+  }
+  return pairs.sort((x,y)=>y.sim-x.sim);
+}
+function updateDuplicatesPill(){
+  const pairs = findDuplicates();
+  const pill = $('#duplicatesPill');
+  if (pairs.length){
+    pill.style.display = '';
+    pill.textContent = `⚠️ ${pairs.length} posible${pairs.length>1?'s':''} duplicado${pairs.length>1?'s':''}`;
+  } else {
+    pill.style.display = 'none';
+  }
+}
+$('#duplicatesPill').addEventListener('click', ()=>{
+  const pairs = findDuplicates();
+  $('#duplicatesList').innerHTML = pairs.map(p => `
+    <div class="dup-pair">
+      <div class="dp-names">${escapeHtml(p.a.account)} ⟷ ${escapeHtml(p.b.account)}</div>
+      <div class="dp-meta">${escapeHtml(p.a.sectionTitle)} (fila ${p.a.row}) — ${escapeHtml(p.b.sectionTitle)} (fila ${p.b.row}) · ${Math.round(p.sim*100)}% parecido</div>
+    </div>
+  `).join('') || '<p style="color:var(--muted);font-size:13px;">Sin duplicados detectados.</p>';
+  openOverlay('#duplicatesOverlay');
+});
+
+// ---- sugerencia de próximo canal ----
+// Heurística simple: si los últimos 3 touchpoints seguidos fueron por el
+// mismo canal, sugiere probar algo distinto. No es "IA" — es solo
+// detectar un patrón obvio en tus propios datos.
+function suggestNextChannel(lead){
+  const entries = (lead.comment || '').split(' - ').map(s=>s.trim()).filter(Boolean);
+  if (entries.length < 3) return null;
+  const recent = entries.slice(-3);
+  const canales = recent.map(e => {
+    const m = e.match(/^\d{1,2} of \w+(?:, \d{4})?\/([^\/]*)\/Message:/);
+    return m ? m[1].trim() : null;
+  });
+  if (canales.some(c => !c)) return null;
+  if (canales[0].toLowerCase() === canales[1].toLowerCase() && canales[1].toLowerCase() === canales[2].toLowerCase()){
+    const stuck = canales[0];
+    const all = ['WhatsApp','Email','Llamada','Instagram','LinkedIn','Presencial'];
+    const alts = all.filter(c => c.toLowerCase() !== stuck.toLowerCase()).slice(0,2);
+    return { stuckChannel: stuck, suggestion: alts.join(' o ') };
+  }
   return null;
 }
 
@@ -448,6 +622,15 @@ function openDetail(row){
   $('#detailMeta').textContent = [l.location, l.vertical].filter(Boolean).join(' · ');
   populateStatusSelect(l.status);
 
+  const hint = suggestNextChannel(l);
+  const hintBox = $('#channelHint');
+  if (hint) {
+    hintBox.style.display = '';
+    hintBox.textContent = `💡 3 intentos seguidos por ${hint.stuckChannel} sin avance — prueba ${hint.suggestion}.`;
+  } else {
+    hintBox.style.display = 'none';
+  }
+
   $('#dContact').innerHTML = [
     l.contactName ? escapeHtml(l.contactName) : '',
     l.phone ? escapeHtml(l.phone) : '',
@@ -477,7 +660,7 @@ function openDetail(row){
       <div class="history-item">
         <div class="history-item-row">
           <span class="history-item-text">${escapeHtml(e)}</span>
-          <button class="history-delete" data-idx="${i}" title="Borrar touchpoint">✕</button>
+          <button class="history-delete" data-idx="${i}" title="Eliminar touchpoint">✕</button>
         </div>
       </div>
     `).join('');
@@ -616,10 +799,10 @@ $('#saveTouchpointBtn').addEventListener('click', async ()=>{
 
 async function deleteTouchpointEntry(index, text){
   if (!activeLead) return;
-  if (!confirm('¿Borrar este touchpoint? No se puede deshacer.')) return;
+  if (!confirm('¿Eliminar este touchpoint? No se puede deshacer.')) return;
   try{
     await apiPost('deleteTouchpoint', { row: activeLead.row, expectedAccount: activeLead.account, entryIndex: index, expectedText: text });
-    toast('Touchpoint borrado');
+    toast('Touchpoint eliminado');
     await loadData();
     const refreshed = findLead(activeLead.row);
     if (refreshed) openDetail(refreshed.row);
@@ -627,6 +810,7 @@ async function deleteTouchpointEntry(index, text){
 }
 
 $('#searchInput').addEventListener('input', render);
+$('#hideInactiveCb').addEventListener('change', render);
 
 loadData();
 </script>
