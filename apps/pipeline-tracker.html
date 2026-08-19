@@ -662,9 +662,15 @@ Object.keys(INLINE_FIELD_MAP).forEach(id => {
     const oldVal = activeLead[key] != null ? String(activeLead[key]) : '';
     if (newVal === oldVal) return;
     try{
-      await apiPost('updateLead', { row: activeLead.row, expectedAccount: activeLead.account, fields: { [key]: newVal } });
+      const res = await apiPost('updateLead', { row: activeLead.row, expectedAccount: activeLead.account, fields: { [key]: newVal } });
       activeLead[key] = newVal;
-      toast('Guardado');
+      if (res.result && res.result.emilioWarning) {
+        toast(res.result.emilioWarning);
+      } else if (res.result && res.result.emilioSynced) {
+        toast('Guardado (también en Emilio)');
+      } else {
+        toast('Guardado');
+      }
       loadData();
     }catch(err){
       toast('Error: '+err.message);
@@ -817,8 +823,14 @@ $('#saveLeadBtn').addEventListener('click', async ()=>{
   };
   try{
     if (editingRow){
-      await apiPost('updateLead', { row: editingRow, expectedAccount: activeLead.account, fields });
-      toast('Lead actualizado');
+      const res = await apiPost('updateLead', { row: editingRow, expectedAccount: activeLead.account, fields });
+      if (res.result && res.result.emilioWarning) {
+        toast(res.result.emilioWarning);
+      } else if (res.result && res.result.emilioSynced) {
+        toast('Lead actualizado (también en Emilio)');
+      } else {
+        toast('Lead actualizado');
+      }
     } else {
       const res = await apiPost('addLead', { sectionHeaderRow: sections[activeSectionIdx].headerRow, data: fields });
       if (res.result && res.result.emilioWarning) {
