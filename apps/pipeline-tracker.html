@@ -15,6 +15,11 @@
     --warm:#b9791a; --warm-soft:#fbf1de;
     --stale:#c8402f; --stale-soft:#fce9e6;
     --none:#9a978d; --none-soft:#f0efeb;
+    --purple:#7c5cbf; --purple-soft:#efe9fa;
+    --pink:#c2478d; --pink-soft:#fbe6f1;
+    --orange:#c1631f; --orange-soft:#fbeadb;
+    --teal:#1f8a7a; --teal-soft:#dff3ef;
+    --blue:#3465c2; --blue-soft:#e3ebfb;
     --radius:16px; --radius-sm:10px;
     --shadow-sm:0 1px 2px rgba(20,20,15,.05);
     --shadow-md:0 6px 20px -6px rgba(20,20,15,.12), 0 2px 6px -2px rgba(20,20,15,.06);
@@ -81,6 +86,21 @@
   .col-lead{min-width:110px;}
   .lead-name{font-weight:700; font-size:14px;}
   .lead-status-inline{display:inline-block; font-size:10px; font-weight:700; padding:2px 8px; border-radius:100px; background:var(--none-soft); color:var(--muted); text-transform:uppercase; letter-spacing:.02em; margin-top:5px;}
+  .lead-status-inline.st-none{background:var(--none-soft); color:var(--none);}
+  .lead-status-inline.st-purple{background:var(--purple-soft); color:var(--purple);}
+  .lead-status-inline.st-pink{background:var(--pink-soft); color:var(--pink);}
+  .lead-status-inline.st-orange{background:var(--orange-soft); color:var(--orange);}
+  .lead-status-inline.st-teal{background:var(--teal-soft); color:var(--teal);}
+  .lead-status-inline.st-blue{background:var(--blue-soft); color:var(--blue);}
+  .lead-status-inline.st-accent{background:var(--accent-soft); color:var(--accent-ink);}
+  .status-dot{display:inline-block; width:7px; height:7px; border-radius:50%; margin-right:5px; vertical-align:middle; flex-shrink:0;}
+  .status-dot.st-none{background:var(--none);}
+  .status-dot.st-purple{background:var(--purple);}
+  .status-dot.st-pink{background:var(--pink);}
+  .status-dot.st-orange{background:var(--orange);}
+  .status-dot.st-teal{background:var(--teal);}
+  .status-dot.st-blue{background:var(--blue);}
+  .status-dot.st-accent{background:var(--accent-ink);}
   .touch-days{display:inline-block; font-weight:800; font-size:11px; padding:3px 9px; border-radius:100px; margin-right:6px; white-space:nowrap;}
   .touch-days.u-fresh{background:var(--fresh-soft); color:var(--fresh);}
   .touch-days.u-warm{background:var(--warm-soft); color:var(--warm);}
@@ -141,6 +161,14 @@
   .dup-pair:last-child{border-bottom:none;}
   .dup-pair .dp-names{font-weight:700;}
   .dup-pair .dp-meta{color:var(--muted); font-size:12px; margin-top:2px;}
+  .suggestion-card{display:flex; align-items:flex-start; justify-content:space-between; gap:10px; padding:12px 0; border-bottom:1px solid var(--border);}
+  .suggestion-card:last-child{border-bottom:none;}
+  .suggestion-main{flex:1; min-width:0;}
+  .suggestion-account{font-weight:700; font-size:13.5px;}
+  .suggestion-meta{color:var(--muted); font-size:12px; margin:2px 0 4px;}
+  .suggestion-snippet{font-size:13px; color:var(--text);}
+  .suggestion-actions{display:flex; gap:6px; flex-shrink:0;}
+  .suggestion-actions button{padding:6px 11px; font-size:12px;}
   .toast{position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(8px); background:var(--text); color:#fff; padding:12px 20px; border-radius:100px; font-size:13.5px; font-weight:600; opacity:0; pointer-events:none; transition:opacity .25s var(--ease-soft), transform .25s var(--ease-soft); z-index:200; box-shadow:var(--shadow-lg);}
   .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
 </style>
@@ -171,6 +199,7 @@
     Hide inactive (60+ days) <span id="inactiveCount"></span>
   </label>
   <button class="dup-pill" id="duplicatesPill" style="display:none;"></button>
+  <button class="filter-btn" id="scanBtn">🔎 Find touchpoints (Gmail + Calendar)</button>
 </div>
 
 <main>
@@ -190,6 +219,16 @@
     <h2>Possible duplicates</h2>
     <div class="modal-sub">Similar account names across your whole Leadlist — check if they're the same lead entered twice.</div>
     <div id="duplicatesList"></div>
+    <div class="modal-actions"><button class="btn-ghost" data-close>Close</button></div>
+  </div>
+</div>
+
+<!-- Suggested touchpoints -->
+<div class="overlay" id="suggestionsOverlay">
+  <div class="modal">
+    <h2>Suggested touchpoints</h2>
+    <div class="modal-sub">Found in Gmail and Calendar since each lead's last logged touchpoint. Nothing gets saved until you approve it.</div>
+    <div id="suggestionsList"></div>
     <div class="modal-actions"><button class="btn-ghost" data-close>Close</button></div>
   </div>
 </div>
@@ -452,7 +491,7 @@ function renderStatusFilters(){
 
   let html = `<button class="filter-btn ${statusFilter==='all'?'active':''}" data-status="all">All <span style="opacity:.6">(${sec.leads.length})</span></button>`;
   html += statuses.map(s=>
-    `<button class="filter-btn ${statusFilter===s?'active':''}" data-status="${escapeHtml(s)}">${escapeHtml(s)} <span style="opacity:.6">(${counts[s]})</span></button>`
+    `<button class="filter-btn ${statusFilter===s?'active':''}" data-status="${escapeHtml(s)}"><span class="status-dot ${statusColorClass(s)}"></span>${escapeHtml(s)} <span style="opacity:.6">(${counts[s]})</span></button>`
   ).join('');
   bar.innerHTML = html;
 
@@ -476,6 +515,25 @@ function urgency(days){
   if (days<=6) return {cls:'u-fresh'};
   if (days<=14) return {cls:'u-warm'};
   return {cls:'u-stale'};
+}
+
+// Paleta propia para status (morado/rosa/naranja/verde azulado/azul),
+// completamente separada del verde/ámbar/rojo que usan los chips de
+// urgencia — así "status" y "qué tan urgente es" no se mezclan visualmente.
+const STATUS_COLOR_MAP = {
+  'ready for outreach': 'st-blue',
+  'waiting for response': 'st-orange',
+  'prospect': 'st-blue',
+  'convince for video meeting': 'st-purple',
+  'lead enrichment': 'st-teal',
+  '(video) meeting set / prep': 'st-pink',
+  "don't want to switch ticketing provider": 'st-none',
+  'customer': 'st-accent',
+  'waiting on data': 'st-none'
+};
+function statusColorClass(status){
+  if (!status) return 'st-none';
+  return STATUS_COLOR_MAP[String(status).trim().toLowerCase()] || 'st-none';
 }
 
 function render(){
@@ -527,7 +585,7 @@ function render(){
         <td class="col-rank">${l.rank!=null ? escapeHtml(String(l.rank)) : ''}</td>
         <td class="col-lead">
           <span class="lead-name">${escapeHtml(l.account||'(no name)')}</span>
-          ${l.status ? `<span class="lead-status-inline">${escapeHtml(l.status)}</span>` : ''}
+          ${l.status ? `<span class="lead-status-inline ${statusColorClass(l.status)}">${escapeHtml(l.status)}</span>` : ''}
         </td>
         <td>
           <span class="touch-days ${u.cls}">${dayLabel}</span>
@@ -595,6 +653,78 @@ $('#duplicatesPill').addEventListener('click', ()=>{
   `).join('') || '<p style="color:var(--muted);font-size:13px;">No duplicates detected.</p>';
   openOverlay('#duplicatesOverlay');
 });
+
+// ---- Gmail + Calendar suggested touchpoints ----
+let currentSuggestions = [];
+
+$('#scanBtn').addEventListener('click', async () => {
+  const btn = $('#scanBtn');
+  const original = btn.textContent;
+  btn.textContent = 'Scanning...';
+  btn.disabled = true;
+  try {
+    const [gmailRes, calRes] = await Promise.all([
+      apiPost('scanGmail', {}),
+      apiPost('scanCalendar', {})
+    ]);
+    const gmailSuggestions = gmailRes.result || [];
+    const calSuggestions = calRes.result || [];
+    currentSuggestions = [...gmailSuggestions, ...calSuggestions].sort((a,b) => b.date.localeCompare(a.date));
+    renderSuggestions();
+    openOverlay('#suggestionsOverlay');
+  } catch(err) {
+    toast('Error: ' + err.message);
+  } finally {
+    btn.textContent = original;
+    btn.disabled = false;
+  }
+});
+
+function renderSuggestions(){
+  const list = $('#suggestionsList');
+  if (!currentSuggestions.length) {
+    list.innerHTML = `<p style="color:var(--muted); font-size:13px;">No new touchpoints found.</p>`;
+    return;
+  }
+  list.innerHTML = currentSuggestions.map((s, i) => `
+    <div class="suggestion-card">
+      <div class="suggestion-main">
+        <div class="suggestion-account">${escapeHtml(s.account)}</div>
+        <div class="suggestion-meta">${escapeHtml(s.date)} · ${escapeHtml(s.channel)} · ${s.source === 'gmail' ? 'Gmail' : 'Calendar'}</div>
+        <div class="suggestion-snippet">${escapeHtml(s.snippet)}</div>
+      </div>
+      <div class="suggestion-actions">
+        <button class="btn-primary suggestion-log" data-idx="${i}">Log it</button>
+        <button class="btn-ghost suggestion-dismiss" data-idx="${i}">Dismiss</button>
+      </div>
+    </div>
+  `).join('');
+
+  list.querySelectorAll('.suggestion-log').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const idx = parseInt(btn.dataset.idx);
+      const s = currentSuggestions[idx];
+      btn.disabled = true;
+      try {
+        await apiPost('logTouchpoint', { row: s.row, expectedAccount: s.account, fecha: s.date, canal: s.channel, mensaje: s.snippet });
+        toast('Touchpoint logged for ' + s.account);
+        currentSuggestions.splice(idx, 1);
+        renderSuggestions();
+        loadData();
+      } catch(err) {
+        toast('Error: ' + err.message);
+        btn.disabled = false;
+      }
+    });
+  });
+  list.querySelectorAll('.suggestion-dismiss').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = parseInt(btn.dataset.idx);
+      currentSuggestions.splice(idx, 1);
+      renderSuggestions();
+    });
+  });
+}
 
 // ---- next-channel suggestion ----
 // Simple heuristic: if the last 3 touchpoints in a row were via the same
