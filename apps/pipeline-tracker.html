@@ -126,6 +126,15 @@
   .detail-block .dl-label{font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.03em; margin-bottom:4px;}
   .detail-block .dl-value{font-size:14px; line-height:1.5;}
   .detail-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px;}
+  .inline-edit{display:block; width:100%; font-family:inherit; font-size:13.5px; color:var(--text); background:transparent; border:1px solid transparent; border-radius:8px; padding:5px 6px; margin:0 0 2px -6px; transition:background .15s var(--ease), border-color .15s var(--ease);}
+  .inline-edit:hover{background:var(--card-soft);}
+  .inline-edit:focus{outline:none; background:var(--bg); border-color:var(--accent-ink); box-shadow:0 0 0 3px var(--accent-soft);}
+  .inline-edit::placeholder{color:var(--muted); opacity:.55;}
+  textarea.inline-edit{resize:vertical; min-height:44px;}
+  .inline-edit-row{display:flex; align-items:center; gap:4px;}
+  .inline-edit-row .inline-edit{flex:1;}
+  .inline-open{flex-shrink:0; width:26px; height:26px; padding:0; display:flex; align-items:center; justify-content:center; background:transparent; border:1px solid var(--border); border-radius:8px; font-size:12px; color:var(--muted);}
+  .inline-open:hover{border-color:var(--accent-ink); color:var(--accent-ink);}
   .hint-box{background:var(--fresh-soft); border:1px solid #d7ecb0; border-radius:var(--radius-sm); padding:10px 13px; font-size:12.5px; color:#4a6b00; margin-bottom:14px; animation:hintIn .3s var(--ease-soft) both;}
   @keyframes hintIn{from{opacity:0; transform:translateY(-4px);} to{opacity:1; transform:translateY(0);}}
   .dup-pair{padding:11px 0; border-bottom:1px solid var(--border); font-size:13.5px;}
@@ -146,7 +155,6 @@
 <div class="nav-row">
   <div class="tabs" id="tabsBar">
     <div class="tab-indicator" id="tabIndicator"></div>
-    <div id="tabsButtons" style="display:contents;"></div>
   </div>
 </div>
 
@@ -211,10 +219,28 @@
     <div class="hint-box" id="channelHint" style="display:none;"></div>
 
     <div class="detail-grid">
-      <div class="detail-block"><div class="dl-label">Contacto</div><div class="dl-value" id="dContact">—</div></div>
-      <div class="detail-block"><div class="dl-label">Redes / Web</div><div class="dl-value" id="dLinks">—</div></div>
-      <div class="detail-block"><div class="dl-label">Deal</div><div class="dl-value" id="dDeal">—</div></div>
-      <div class="detail-block"><div class="dl-label">Experiments</div><div class="dl-value" id="dExperiments">—</div></div>
+      <div class="detail-block">
+        <div class="dl-label">Contacto</div>
+        <input type="text" id="dContactName" class="inline-edit" placeholder="Nombre de contacto">
+        <input type="text" id="dPhone" class="inline-edit" placeholder="Teléfono">
+        <input type="text" id="dEmail" class="inline-edit" placeholder="E-mail">
+      </div>
+      <div class="detail-block">
+        <div class="dl-label">Redes / Web</div>
+        <div class="inline-edit-row"><input type="text" id="dWebsite" class="inline-edit" placeholder="Website"><button type="button" class="inline-open" data-target="dWebsite" title="Abrir">↗</button></div>
+        <div class="inline-edit-row"><input type="text" id="dInsta" class="inline-edit" placeholder="Instagram"><button type="button" class="inline-open" data-target="dInsta" title="Abrir">↗</button></div>
+        <div class="inline-edit-row"><input type="text" id="dLinkedin" class="inline-edit" placeholder="LinkedIn"><button type="button" class="inline-open" data-target="dLinkedin" title="Abrir">↗</button></div>
+      </div>
+      <div class="detail-block">
+        <div class="dl-label">Deal</div>
+        <input type="text" id="dTicketdeal" class="inline-edit" placeholder="Ticketdeal">
+        <input type="text" id="dTickets" class="inline-edit" placeholder="# Tickets potential">
+        <input type="text" id="dTicketingPartner" class="inline-edit" placeholder="Ticketing Partner actual">
+      </div>
+      <div class="detail-block">
+        <div class="dl-label">Experiments</div>
+        <textarea id="dExperimentsField" class="inline-edit" rows="3" placeholder="Experiments"></textarea>
+      </div>
     </div>
 
     <div style="display:flex; gap:8px;">
@@ -372,7 +398,7 @@ function renderSkeleton(){
 }
 
 function renderNotConfigured(){
-  $('#tabsButtons').innerHTML = '';
+  $('#tabsBar').querySelectorAll('.tab').forEach(el => el.remove());
   $('#tabIndicator').style.opacity = '0';
   grid.innerHTML = `<tr><td colspan="3"><div class="empty-state">
     <div class="ee-orb"></div>
@@ -383,21 +409,27 @@ function renderNotConfigured(){
 }
 
 function renderTabs(){
-  $('#tabsButtons').innerHTML = sections.map((s,i)=>
-    `<button class="tab ${i===activeSectionIdx?'active':''}" data-idx="${i}">${escapeHtml(s.title)} <span style="opacity:.6">(${s.leads.length})</span></button>`
-  ).join('');
-  $('#tabsButtons').querySelectorAll('.tab').forEach(t=>t.addEventListener('click', ()=>{
-    activeSectionIdx = parseInt(t.dataset.idx);
-    statusFilter = 'all';
-    renderTabs();
-    renderStatusFilters();
-    render();
-  }));
+  const bar = $('#tabsBar');
+  bar.querySelectorAll('.tab').forEach(el => el.remove());
+  sections.forEach((s, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'tab' + (i === activeSectionIdx ? ' active' : '');
+    btn.dataset.idx = i;
+    btn.innerHTML = `${escapeHtml(s.title)} <span style="opacity:.6">(${s.leads.length})</span>`;
+    btn.addEventListener('click', () => {
+      activeSectionIdx = i;
+      statusFilter = 'all';
+      renderTabs();
+      renderStatusFilters();
+      render();
+    });
+    bar.appendChild(btn);
+  });
   requestAnimationFrame(positionTabIndicator);
 }
 
 function positionTabIndicator(){
-  const activeBtn = document.querySelector('#tabsButtons .tab.active');
+  const activeBtn = document.querySelector('#tabsBar .tab.active');
   const indicator = $('#tabIndicator');
   if (!activeBtn || !indicator){ if (indicator) indicator.style.opacity = '0'; return; }
   indicator.style.opacity = '1';
@@ -614,6 +646,39 @@ $('#dStatusSelect').addEventListener('change', async (e)=>{
   }catch(err){ toast('Error: '+err.message); }
 });
 
+// ---- edición en línea (contacto, redes, deal, experiments) ----
+const INLINE_FIELD_MAP = {
+  dContactName: 'contactName', dPhone: 'phone', dEmail: 'email',
+  dWebsite: 'website', dInsta: 'insta', dLinkedin: 'linkedin',
+  dTicketdeal: 'ticketdeal', dTickets: 'tickets', dTicketingPartner: 'ticketingPartner',
+  dExperimentsField: 'experiments'
+};
+Object.keys(INLINE_FIELD_MAP).forEach(id => {
+  const el = document.getElementById(id);
+  el.addEventListener('blur', async () => {
+    if (!activeLead) return;
+    const key = INLINE_FIELD_MAP[id];
+    const newVal = el.value.trim();
+    const oldVal = activeLead[key] != null ? String(activeLead[key]) : '';
+    if (newVal === oldVal) return;
+    try{
+      await apiPost('updateLead', { row: activeLead.row, expectedAccount: activeLead.account, fields: { [key]: newVal } });
+      activeLead[key] = newVal;
+      toast('Guardado');
+      loadData();
+    }catch(err){
+      toast('Error: '+err.message);
+      el.value = oldVal;
+    }
+  });
+});
+document.querySelectorAll('.inline-open').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const input = document.getElementById(btn.dataset.target);
+    if (input && input.value.trim()) window.open(input.value.trim(), '_blank', 'noopener');
+  });
+});
+
 function openDetail(row){
   const l = findLead(row);
   if (!l) return;
@@ -631,25 +696,16 @@ function openDetail(row){
     hintBox.style.display = 'none';
   }
 
-  $('#dContact').innerHTML = [
-    l.contactName ? escapeHtml(l.contactName) : '',
-    l.phone ? escapeHtml(l.phone) : '',
-    l.email ? escapeHtml(l.email) : ''
-  ].filter(Boolean).join('<br>') || '—';
-
-  $('#dLinks').innerHTML = [
-    l.website ? `<a href="${escapeHtml(l.website)}" target="_blank" rel="noopener">Website</a>` : '',
-    l.insta ? `<a href="${escapeHtml(l.insta)}" target="_blank" rel="noopener">Instagram</a>` : '',
-    l.linkedin ? `<a href="${escapeHtml(l.linkedin)}" target="_blank" rel="noopener">LinkedIn</a>` : ''
-  ].filter(Boolean).join('<br>') || '—';
-
-  $('#dDeal').innerHTML = [
-    l.ticketdeal ? 'Ticketdeal: ' + escapeHtml(l.ticketdeal) : '',
-    l.tickets ? '# Tickets: ' + escapeHtml(String(l.tickets)) : '',
-    l.ticketingPartner ? 'Partner actual: ' + escapeHtml(l.ticketingPartner) : ''
-  ].filter(Boolean).join('<br>') || '—';
-
-  $('#dExperiments').textContent = l.experiments || '—';
+  $('#dContactName').value = l.contactName || '';
+  $('#dPhone').value = l.phone || '';
+  $('#dEmail').value = l.email || '';
+  $('#dWebsite').value = l.website || '';
+  $('#dInsta').value = l.insta || '';
+  $('#dLinkedin').value = l.linkedin || '';
+  $('#dTicketdeal').value = l.ticketdeal || '';
+  $('#dTickets').value = l.tickets || '';
+  $('#dTicketingPartner').value = l.ticketingPartner || '';
+  $('#dExperimentsField').value = l.experiments || '';
 
   const list = $('#historyList');
   if (!l.comment){
