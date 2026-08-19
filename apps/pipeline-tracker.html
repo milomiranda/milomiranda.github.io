@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -149,7 +149,7 @@
 
 <div class="topbar">
   <h1>Pipeline Tracker</h1>
-  <button class="icon-btn" id="settingsBtn" title="Configuración">⚙</button>
+  <button class="icon-btn" id="settingsBtn" title="Settings">⚙</button>
 </div>
 
 <div class="nav-row">
@@ -159,8 +159,8 @@
 </div>
 
 <div class="toolbar">
-  <input type="text" id="searchInput" placeholder="Buscar cuenta o contacto...">
-  <button class="btn-primary" id="newLeadBtn">+ Nuevo lead</button>
+  <input type="text" id="searchInput" placeholder="Search account or contact...">
+  <button class="btn-primary" id="newLeadBtn">+ New lead</button>
 </div>
 
 <div class="filters-row" id="statusFiltersBar"></div>
@@ -168,7 +168,7 @@
 <div class="filters-row" id="insightsBar">
   <label class="archive-toggle">
     <input type="checkbox" id="hideInactiveCb" checked>
-    Ocultar inactivos (60+ días) <span id="inactiveCount"></span>
+    Hide inactive (60+ days) <span id="inactiveCount"></span>
   </label>
   <button class="dup-pill" id="duplicatesPill" style="display:none;"></button>
 </div>
@@ -176,7 +176,7 @@
 <main>
   <div class="table-scroll">
     <table class="leads-table">
-      <thead><tr><th class="col-rank">#</th><th class="col-lead">Lead</th><th>Último touchpoint</th></tr></thead>
+      <thead><tr><th class="col-rank">#</th><th class="col-lead">Lead</th><th>Last touchpoint</th></tr></thead>
       <tbody id="leadsGrid"></tbody>
     </table>
   </div>
@@ -187,22 +187,22 @@
 <!-- Duplicates -->
 <div class="overlay" id="duplicatesOverlay">
   <div class="modal">
-    <h2>Posibles duplicados</h2>
-    <div class="modal-sub">Nombres de cuenta parecidos en toda tu Leadlist — revisa si son el mismo lead repetido.</div>
+    <h2>Possible duplicates</h2>
+    <div class="modal-sub">Similar account names across your whole Leadlist — check if they're the same lead entered twice.</div>
     <div id="duplicatesList"></div>
-    <div class="modal-actions"><button class="btn-ghost" data-close>Cerrar</button></div>
+    <div class="modal-actions"><button class="btn-ghost" data-close>Close</button></div>
   </div>
 </div>
 
 <!-- Settings -->
 <div class="overlay" id="settingsOverlay">
   <div class="modal">
-    <h2>Configuración</h2>
-    <div class="field"><label>URL del Apps Script (Web App)</label><input type="text" id="cfgUrl" placeholder="https://script.google.com/macros/s/.../exec"></div>
-    <div class="field"><label>Token secreto</label><input type="text" id="cfgToken"></div>
+    <h2>Settings</h2>
+    <div class="field"><label>Apps Script URL (Web App)</label><input type="text" id="cfgUrl" placeholder="https://script.google.com/macros/s/.../exec"></div>
+    <div class="field"><label>Secret token</label><input type="text" id="cfgToken"></div>
     <div class="modal-actions">
-      <button class="btn-ghost" data-close>Cancelar</button>
-      <button class="btn-primary" id="saveSettingsBtn">Guardar y conectar</button>
+      <button class="btn-ghost" data-close>Cancel</button>
+      <button class="btn-primary" id="saveSettingsBtn">Save and connect</button>
     </div>
   </div>
 </div>
@@ -220,22 +220,22 @@
 
     <div class="detail-grid">
       <div class="detail-block">
-        <div class="dl-label">Contacto</div>
-        <input type="text" id="dContactName" class="inline-edit" placeholder="Nombre de contacto">
-        <input type="text" id="dPhone" class="inline-edit" placeholder="Teléfono">
+        <div class="dl-label">Contact</div>
+        <input type="text" id="dContactName" class="inline-edit" placeholder="Contact name">
+        <input type="text" id="dPhone" class="inline-edit" placeholder="Phone">
         <input type="text" id="dEmail" class="inline-edit" placeholder="E-mail">
       </div>
       <div class="detail-block">
-        <div class="dl-label">Redes / Web</div>
-        <div class="inline-edit-row"><input type="text" id="dWebsite" class="inline-edit" placeholder="Website"><button type="button" class="inline-open" data-target="dWebsite" title="Abrir">↗</button></div>
-        <div class="inline-edit-row"><input type="text" id="dInsta" class="inline-edit" placeholder="Instagram"><button type="button" class="inline-open" data-target="dInsta" title="Abrir">↗</button></div>
-        <div class="inline-edit-row"><input type="text" id="dLinkedin" class="inline-edit" placeholder="LinkedIn"><button type="button" class="inline-open" data-target="dLinkedin" title="Abrir">↗</button></div>
+        <div class="dl-label">Links / Web</div>
+        <div class="inline-edit-row"><input type="text" id="dWebsite" class="inline-edit" placeholder="Website"><button type="button" class="inline-open" data-target="dWebsite" title="Open">↗</button></div>
+        <div class="inline-edit-row"><input type="text" id="dInsta" class="inline-edit" placeholder="Instagram"><button type="button" class="inline-open" data-target="dInsta" title="Open">↗</button></div>
+        <div class="inline-edit-row"><input type="text" id="dLinkedin" class="inline-edit" placeholder="LinkedIn"><button type="button" class="inline-open" data-target="dLinkedin" title="Open">↗</button></div>
       </div>
       <div class="detail-block">
         <div class="dl-label">Deal</div>
         <input type="text" id="dTicketdeal" class="inline-edit" placeholder="Ticketdeal">
         <input type="text" id="dTickets" class="inline-edit" placeholder="# Tickets potential">
-        <input type="text" id="dTicketingPartner" class="inline-edit" placeholder="Ticketing Partner actual">
+        <input type="text" id="dTicketingPartner" class="inline-edit" placeholder="Current ticketing partner">
       </div>
       <div class="detail-block">
         <div class="dl-label">Experiments</div>
@@ -244,30 +244,30 @@
     </div>
 
     <div style="display:flex; gap:8px;">
-      <button class="btn-primary" id="logTouchpointFromDetailBtn" style="flex:1;">+ Registrar touchpoint</button>
-      <button class="btn-ghost" id="editLeadBtn">Editar</button>
-      <button class="btn-ghost" id="deleteLeadBtn" style="color:var(--stale); border-color:var(--stale);">Eliminar</button>
+      <button class="btn-primary" id="logTouchpointFromDetailBtn" style="flex:1;">+ Log touchpoint</button>
+      <button class="btn-ghost" id="editLeadBtn">Edit</button>
+      <button class="btn-ghost" id="deleteLeadBtn" style="color:var(--stale); border-color:var(--stale);">Delete</button>
     </div>
 
     <div class="history">
-      <h3>Historial (Comment)</h3>
+      <h3>History (Comment)</h3>
       <div id="historyList"></div>
     </div>
     <div class="history" id="legacyNotesBlock" style="display:none;">
-      <h3>Notas anteriores (Comments)</h3>
+      <h3>Previous notes (Comments)</h3>
       <div class="history-item" id="legacyNotesText"></div>
     </div>
-    <div class="modal-actions"><button class="btn-ghost" data-close>Cerrar</button></div>
+    <div class="modal-actions"><button class="btn-ghost" data-close>Close</button></div>
   </div>
 </div>
 
 <!-- New / Edit lead -->
 <div class="overlay" id="leadOverlay">
   <div class="modal">
-    <h2 id="leadModalTitle">Nuevo lead</h2>
+    <h2 id="leadModalTitle">New lead</h2>
     <div class="modal-sub" id="leadModalSection"></div>
 
-    <div class="field-group-label">Básico</div>
+    <div class="field-group-label">Basic</div>
     <div class="field"><label>Account</label><input type="text" id="fAccount"></div>
     <div class="field-grid">
       <div class="field"><label>Status</label><input type="text" id="fStatus" list="statusList"></div>
@@ -277,10 +277,10 @@
       <div class="field"><label>Location</label><input type="text" id="fLocation"></div>
       <div class="field"><label># Tickets potential</label><input type="text" id="fTickets"></div>
     </div>
-    <div class="field"><label>Comment (nota inicial, opcional)</label><textarea id="fComment"></textarea></div>
+    <div class="field"><label>Comment (initial note, optional)</label><textarea id="fComment"></textarea></div>
     <div class="field"><label>Experiments</label><textarea id="fExperiments"></textarea></div>
 
-    <div class="field-group-label">Contacto</div>
+    <div class="field-group-label">Contact</div>
     <div class="field-grid">
       <div class="field"><label>Contact name</label><input type="text" id="fContactName"></div>
       <div class="field"><label>Phone</label><input type="text" id="fPhone"></div>
@@ -311,8 +311,8 @@
     </datalist>
 
     <div class="modal-actions">
-      <button class="btn-ghost" data-close>Cancelar</button>
-      <button class="btn-primary" id="saveLeadBtn">Guardar</button>
+      <button class="btn-ghost" data-close>Cancel</button>
+      <button class="btn-primary" id="saveLeadBtn">Save</button>
     </div>
   </div>
 </div>
@@ -320,19 +320,19 @@
 <!-- Log touchpoint -->
 <div class="overlay" id="touchpointOverlay">
   <div class="modal">
-    <h2>Registrar touchpoint</h2>
-    <div class="field"><label>Fecha</label><input type="date" id="tFecha"></div>
+    <h2>Log touchpoint</h2>
+    <div class="field"><label>Date</label><input type="date" id="tFecha"></div>
     <div class="field">
-      <label>Vía</label>
+      <label>Channel</label>
       <select id="tCanal">
-        <option>WhatsApp</option><option>Email</option><option>Llamada</option>
-        <option>Instagram</option><option>LinkedIn</option><option>Presencial</option><option>Otro</option>
+        <option>WhatsApp</option><option>Email</option><option>Call</option>
+        <option>Instagram</option><option>LinkedIn</option><option>In person</option><option>Other</option>
       </select>
     </div>
-    <div class="field"><label>Mensaje</label><textarea id="tMensaje" placeholder="Qué se habló..."></textarea></div>
+    <div class="field"><label>Message</label><textarea id="tMensaje" placeholder="What was discussed..."></textarea></div>
     <div class="modal-actions">
-      <button class="btn-ghost" data-close>Cancelar</button>
-      <button class="btn-primary" id="saveTouchpointBtn">Guardar</button>
+      <button class="btn-ghost" data-close>Cancel</button>
+      <button class="btn-primary" id="saveTouchpointBtn">Save</button>
     </div>
   </div>
 </div>
@@ -361,9 +361,9 @@ async function apiGet(){
   if (json.error) throw new Error(json.error);
   return json;
 }
-// Sin header Content-Type a propósito — evita el preflight CORS que
-// Apps Script no maneja bien. El body llega como texto plano y
-// doPost lo parsea igual con JSON.parse(e.postData.contents).
+// No Content-Type header on purpose — avoids the CORS preflight that
+// Apps Script doesn't handle well. The body arrives as plain text and
+// doPost parses it the same way with JSON.parse(e.postData.contents).
 async function apiPost(action, data){
   const res = await fetch(config.url, { method:'POST', body: JSON.stringify({ token: config.token, action, data }) });
   const json = await res.json();
@@ -383,7 +383,7 @@ async function loadData(){
     updateDuplicatesPill();
     render();
   }catch(err){
-    grid.innerHTML = `<tr><td colspan="3"><div class="empty-state"><h2>No se pudo conectar</h2><p>${err.message}</p></div></td></tr>`;
+    grid.innerHTML = `<tr><td colspan="3"><div class="empty-state"><h2>Couldn't connect</h2><p>${err.message}</p></div></td></tr>`;
   }
 }
 
@@ -402,9 +402,9 @@ function renderNotConfigured(){
   $('#tabIndicator').style.opacity = '0';
   grid.innerHTML = `<tr><td colspan="3"><div class="empty-state">
     <div class="ee-orb"></div>
-    <h2>Conecta tu Sheet</h2>
-    <p>Abre configuración (⚙) y pega la URL de tu Apps Script y tu token.</p>
-    <button class="btn-primary" onclick="openOverlay('#settingsOverlay')">Abrir configuración</button>
+    <h2>Connect your Sheet</h2>
+    <p>Open Settings (⚙) and paste your Apps Script URL and token.</p>
+    <button class="btn-primary" onclick="openOverlay('#settingsOverlay')">Open settings</button>
   </div></td></tr>`;
 }
 
@@ -445,12 +445,12 @@ function renderStatusFilters(){
 
   const counts = {};
   sec.leads.forEach(l=>{
-    const s = l.status || '(sin status)';
+    const s = l.status || '(no status)';
     counts[s] = (counts[s]||0) + 1;
   });
   const statuses = Object.keys(counts);
 
-  let html = `<button class="filter-btn ${statusFilter==='all'?'active':''}" data-status="all">Todos <span style="opacity:.6">(${sec.leads.length})</span></button>`;
+  let html = `<button class="filter-btn ${statusFilter==='all'?'active':''}" data-status="all">All <span style="opacity:.6">(${sec.leads.length})</span></button>`;
   html += statuses.map(s=>
     `<button class="filter-btn ${statusFilter===s?'active':''}" data-status="${escapeHtml(s)}">${escapeHtml(s)} <span style="opacity:.6">(${counts[s]})</span></button>`
   ).join('');
@@ -485,7 +485,7 @@ function render(){
 
   let leads = sec.leads.filter(l =>
     (!search || (l.account||'').toLowerCase().includes(search) || (l.contactName||'').toLowerCase().includes(search)) &&
-    (statusFilter==='all' || (l.status || '(sin status)')===statusFilter)
+    (statusFilter==='all' || (l.status || '(no status)')===statusFilter)
   );
 
   const hideInactive = $('#hideInactiveCb').checked;
@@ -507,7 +507,7 @@ function render(){
   });
 
   if (leads.length===0){
-    grid.innerHTML = `<tr><td colspan="3"><div class="empty-state"><div class="ee-orb"></div><h2>Sin leads en esta sección</h2><p>Agrega el primero para empezar a darle seguimiento.</p><button class="btn-primary" id="emptyNewLeadBtn">+ Nuevo lead</button></div></td></tr>`;
+    grid.innerHTML = `<tr><td colspan="3"><div class="empty-state"><div class="ee-orb"></div><h2>No leads in this section</h2><p>Add the first one to start following up.</p><button class="btn-primary" id="emptyNewLeadBtn">+ New lead</button></div></td></tr>`;
     const btn = document.getElementById('emptyNewLeadBtn');
     if (btn) btn.addEventListener('click', () => $('#newLeadBtn').click());
     return;
@@ -516,17 +516,17 @@ function render(){
   grid.innerHTML = leads.map((l,idx)=>{
     const days = daysSince(l.fecha);
     const u = urgency(days);
-    const dayLabel = days===null ? 'sin fecha' : (days + (days===1 ? ' día' : ' días'));
+    const dayLabel = days===null ? 'no date' : (days + (days===1 ? ' day' : ' days'));
     const commentEntries = (l.comment || '').split(' - ').map(s=>s.trim()).filter(Boolean);
     const latestEntry = commentEntries.length ? commentEntries[commentEntries.length - 1] : '';
     const fallback = l.comments ? String(l.comments).split('\n')[0] : '';
-    const touchText = latestEntry || fallback || 'Sin touchpoint registrado';
+    const touchText = latestEntry || fallback || 'No touchpoint logged';
     const delay = Math.min(idx * 35, 280);
     return `
       <tr class="${u.cls}" data-row="${l.row}" style="animation-delay:${delay}ms">
         <td class="col-rank">${l.rank!=null ? escapeHtml(String(l.rank)) : ''}</td>
         <td class="col-lead">
-          <span class="lead-name">${escapeHtml(l.account||'(sin nombre)')}</span>
+          <span class="lead-name">${escapeHtml(l.account||'(no name)')}</span>
           ${l.status ? `<span class="lead-status-inline">${escapeHtml(l.status)}</span>` : ''}
         </td>
         <td>
@@ -548,7 +548,7 @@ function findLead(row){
   return null;
 }
 
-// ---- duplicados ----
+// ---- duplicates ----
 const INACTIVE_DAYS = 60;
 
 function normalizeForMatch(name){
@@ -580,7 +580,7 @@ function updateDuplicatesPill(){
   const pill = $('#duplicatesPill');
   if (pairs.length){
     pill.style.display = '';
-    pill.textContent = `⚠️ ${pairs.length} posible${pairs.length>1?'s':''} duplicado${pairs.length>1?'s':''}`;
+    pill.textContent = `⚠️ ${pairs.length} possible duplicate${pairs.length>1?'s':''}`;
   } else {
     pill.style.display = 'none';
   }
@@ -590,16 +590,16 @@ $('#duplicatesPill').addEventListener('click', ()=>{
   $('#duplicatesList').innerHTML = pairs.map(p => `
     <div class="dup-pair">
       <div class="dp-names">${escapeHtml(p.a.account)} ⟷ ${escapeHtml(p.b.account)}</div>
-      <div class="dp-meta">${escapeHtml(p.a.sectionTitle)} (fila ${p.a.row}) — ${escapeHtml(p.b.sectionTitle)} (fila ${p.b.row}) · ${Math.round(p.sim*100)}% parecido</div>
+      <div class="dp-meta">${escapeHtml(p.a.sectionTitle)} (row ${p.a.row}) — ${escapeHtml(p.b.sectionTitle)} (row ${p.b.row}) · ${Math.round(p.sim*100)}% match</div>
     </div>
-  `).join('') || '<p style="color:var(--muted);font-size:13px;">Sin duplicados detectados.</p>';
+  `).join('') || '<p style="color:var(--muted);font-size:13px;">No duplicates detected.</p>';
   openOverlay('#duplicatesOverlay');
 });
 
-// ---- sugerencia de próximo canal ----
-// Heurística simple: si los últimos 3 touchpoints seguidos fueron por el
-// mismo canal, sugiere probar algo distinto. No es "IA" — es solo
-// detectar un patrón obvio en tus propios datos.
+// ---- next-channel suggestion ----
+// Simple heuristic: if the last 3 touchpoints in a row were via the same
+// channel, suggest trying something different. This isn't "AI" — it's
+// just spotting an obvious pattern in your own data.
 function suggestNextChannel(lead){
   const entries = (lead.comment || '').split(' - ').map(s=>s.trim()).filter(Boolean);
   if (entries.length < 3) return null;
@@ -611,9 +611,9 @@ function suggestNextChannel(lead){
   if (canales.some(c => !c)) return null;
   if (canales[0].toLowerCase() === canales[1].toLowerCase() && canales[1].toLowerCase() === canales[2].toLowerCase()){
     const stuck = canales[0];
-    const all = ['WhatsApp','Email','Llamada','Instagram','LinkedIn','Presencial'];
+    const all = ['WhatsApp','Email','Call','Instagram','LinkedIn','In person'];
     const alts = all.filter(c => c.toLowerCase() !== stuck.toLowerCase()).slice(0,2);
-    return { stuckChannel: stuck, suggestion: alts.join(' o ') };
+    return { stuckChannel: stuck, suggestion: alts.join(' or ') };
   }
   return null;
 }
@@ -628,7 +628,7 @@ function populateStatusSelect(currentStatus){
   const opts = [...STATUS_OPTIONS];
   if (currentStatus && !opts.includes(currentStatus)) opts.unshift(currentStatus);
   let html = '';
-  if (!currentStatus) html += `<option value="" selected>(sin status)</option>`;
+  if (!currentStatus) html += `<option value="" selected>(no status)</option>`;
   html += opts.map(s=>`<option value="${escapeHtml(s)}" ${s===currentStatus?'selected':''}>${escapeHtml(s)}</option>`).join('');
   sel.innerHTML = html;
 }
@@ -639,14 +639,14 @@ $('#dStatusSelect').addEventListener('change', async (e)=>{
   const row = activeLead.row, account = activeLead.account;
   try{
     await apiPost('updateLead', { row, expectedAccount: account, fields: { status: newStatus } });
-    toast('Status actualizado');
+    toast('Status updated');
     await loadData();
     const refreshed = findLead(row);
     if (refreshed) openDetail(refreshed.row);
   }catch(err){ toast('Error: '+err.message); }
 });
 
-// ---- edición en línea (contacto, redes, deal, experiments) ----
+// ---- inline editing (contact, links, deal, experiments) ----
 const INLINE_FIELD_MAP = {
   dContactName: 'contactName', dPhone: 'phone', dEmail: 'email',
   dWebsite: 'website', dInsta: 'insta', dLinkedin: 'linkedin',
@@ -667,9 +667,9 @@ Object.keys(INLINE_FIELD_MAP).forEach(id => {
       if (res.result && res.result.emilioWarning) {
         toast(res.result.emilioWarning);
       } else if (res.result && res.result.emilioSynced) {
-        toast('Guardado (también en Emilio)');
+        toast('Saved (also in Emilio)');
       } else {
-        toast('Guardado');
+        toast('Saved');
       }
       loadData();
     }catch(err){
@@ -689,7 +689,7 @@ function openDetail(row){
   const l = findLead(row);
   if (!l) return;
   activeLead = l;
-  $('#detailName').textContent = l.account || '(sin nombre)';
+  $('#detailName').textContent = l.account || '(no name)';
   $('#detailMeta').textContent = [l.location, l.vertical].filter(Boolean).join(' · ');
   populateStatusSelect(l.status);
 
@@ -697,7 +697,7 @@ function openDetail(row){
   const hintBox = $('#channelHint');
   if (hint) {
     hintBox.style.display = '';
-    hintBox.textContent = `💡 3 intentos seguidos por ${hint.stuckChannel} sin avance — prueba ${hint.suggestion}.`;
+    hintBox.textContent = `💡 3 attempts in a row via ${hint.stuckChannel} with no progress — try ${hint.suggestion}.`;
   } else {
     hintBox.style.display = 'none';
   }
@@ -715,14 +715,14 @@ function openDetail(row){
 
   const list = $('#historyList');
   if (!l.comment){
-    list.innerHTML = `<p style="color:var(--muted); font-size:13px;">Sin historial todavía.</p>`;
+    list.innerHTML = `<p style="color:var(--muted); font-size:13px;">No history yet.</p>`;
   } else {
     const entries = String(l.comment).split(' - ').map(s=>s.trim()).filter(Boolean);
     list.innerHTML = entries.map((e,i)=>`
       <div class="history-item">
         <div class="history-item-row">
           <span class="history-item-text">${escapeHtml(e)}</span>
-          <button class="history-delete" data-idx="${i}" title="Eliminar touchpoint">✕</button>
+          <button class="history-delete" data-idx="${i}" title="Delete touchpoint">✕</button>
         </div>
       </div>
     `).join('');
@@ -750,7 +750,7 @@ $('#settingsBtn').addEventListener('click', ()=>{
 });
 $('#saveSettingsBtn').addEventListener('click', ()=>{
   const url = $('#cfgUrl').value.trim(), token = $('#cfgToken').value.trim();
-  if (!url || !token){ toast('Falta la URL o el token'); return; }
+  if (!url || !token){ toast('Missing the URL or token'); return; }
   config = { url, token };
   localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
   closeOverlay('#settingsOverlay');
@@ -764,11 +764,11 @@ function clearLeadForm(){
 }
 
 $('#newLeadBtn').addEventListener('click', ()=>{
-  if (!sections[activeSectionIdx]){ toast('No hay sección activa'); return; }
+  if (!sections[activeSectionIdx]){ toast('No active section'); return; }
   editingRow = null;
   clearLeadForm();
-  $('#leadModalTitle').textContent = 'Nuevo lead';
-  $('#leadModalSection').textContent = 'Sección: ' + sections[activeSectionIdx].title;
+  $('#leadModalTitle').textContent = 'New lead';
+  $('#leadModalSection').textContent = 'Section: ' + sections[activeSectionIdx].title;
   openOverlay('#leadOverlay');
 });
 
@@ -791,7 +791,7 @@ $('#editLeadBtn').addEventListener('click', ()=>{
   $('#fLinkedin').value = activeLead.linkedin||'';
   $('#fTicketdeal').value = activeLead.ticketdeal||'';
   $('#fTicketingPartner').value = activeLead.ticketingPartner||'';
-  $('#leadModalTitle').textContent = 'Editar lead';
+  $('#leadModalTitle').textContent = 'Edit lead';
   $('#leadModalSection').textContent = activeLead.account;
   closeOverlay('#detailOverlay');
   openOverlay('#leadOverlay');
@@ -799,19 +799,19 @@ $('#editLeadBtn').addEventListener('click', ()=>{
 
 $('#deleteLeadBtn').addEventListener('click', async ()=>{
   if (!activeLead) return;
-  const ok = confirm(`¿Eliminar "${activeLead.account}" por completo?\n\nEsto borra la fila entera del Sheet. No hay un "deshacer" dentro de la app, pero siempre puedes recuperarla desde Archivo > Historial de versiones en Google Sheets.`);
+  const ok = confirm(`Delete "${activeLead.account}" completely?\n\nThis removes the whole row from the Sheet. There's no "undo" inside the app, but you can always recover it from File > Version history in Google Sheets.`);
   if (!ok) return;
   try{
     await apiPost('deleteLead', { row: activeLead.row, expectedAccount: activeLead.account });
     closeOverlay('#detailOverlay');
-    toast('Lead eliminado');
+    toast('Lead deleted');
     loadData();
   }catch(err){ toast('Error: '+err.message); }
 });
 
 $('#saveLeadBtn').addEventListener('click', async ()=>{
   const account = $('#fAccount').value.trim();
-  if (!account){ toast('Ponle un nombre de cuenta'); return; }
+  if (!account){ toast('Enter an account name'); return; }
   const fields = {
     account, status: $('#fStatus').value.trim(), vertical: $('#fVertical').value.trim(),
     location: $('#fLocation').value.trim(), tickets: $('#fTickets').value.trim(),
@@ -827,16 +827,16 @@ $('#saveLeadBtn').addEventListener('click', async ()=>{
       if (res.result && res.result.emilioWarning) {
         toast(res.result.emilioWarning);
       } else if (res.result && res.result.emilioSynced) {
-        toast('Lead actualizado (también en Emilio)');
+        toast('Lead updated (also in Emilio)');
       } else {
-        toast('Lead actualizado');
+        toast('Lead updated');
       }
     } else {
       const res = await apiPost('addLead', { sectionHeaderRow: sections[activeSectionIdx].headerRow, data: fields });
       if (res.result && res.result.emilioWarning) {
-        toast('Agregado a Overview — ' + res.result.emilioWarning);
+        toast('Added to Overview — ' + res.result.emilioWarning);
       } else {
-        toast('Lead agregado (Overview + Emilio)');
+        toast('Lead added (Overview + Emilio)');
       }
     }
     closeOverlay('#leadOverlay');
@@ -855,12 +855,12 @@ $('#logTouchpointFromDetailBtn').addEventListener('click', ()=>{
 $('#saveTouchpointBtn').addEventListener('click', async ()=>{
   if (!activeLead) return;
   const fecha = $('#tFecha').value, canal = $('#tCanal').value, mensaje = $('#tMensaje').value.trim();
-  if (!fecha){ toast('Ponle una fecha'); return; }
+  if (!fecha){ toast('Enter a date'); return; }
   const row = activeLead.row, account = activeLead.account;
   try{
     await apiPost('logTouchpoint', { row, expectedAccount: account, fecha, canal, mensaje });
     closeOverlay('#touchpointOverlay');
-    toast('Touchpoint registrado');
+    toast('Touchpoint logged');
     await loadData();
     const refreshed = findLead(row);
     if (refreshed) openDetail(refreshed.row);
@@ -869,10 +869,10 @@ $('#saveTouchpointBtn').addEventListener('click', async ()=>{
 
 async function deleteTouchpointEntry(index, text){
   if (!activeLead) return;
-  if (!confirm('¿Eliminar este touchpoint? No se puede deshacer.')) return;
+  if (!confirm('Delete this touchpoint? This can\'t be undone.')) return;
   try{
     await apiPost('deleteTouchpoint', { row: activeLead.row, expectedAccount: activeLead.account, entryIndex: index, expectedText: text });
-    toast('Touchpoint eliminado');
+    toast('Touchpoint deleted');
     await loadData();
     const refreshed = findLead(activeLead.row);
     if (refreshed) openDetail(refreshed.row);
