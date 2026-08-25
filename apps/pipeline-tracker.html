@@ -37,6 +37,14 @@
 
   .topbar{position:sticky; top:0; z-index:30; display:flex; align-items:center; justify-content:space-between; padding:16px 20px; background:rgba(247,246,242,.86); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); border-bottom:1px solid var(--border);}
   .topbar h1{font-size:18px; font-weight:900; margin:0; letter-spacing:-0.01em;}
+  .topbar-actions{display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
+  .lang-switch{display:flex; gap:2px;}
+  .lang-btn{font-family:inherit; background:transparent; border:1px solid var(--border); color:var(--muted); font-size:11px; font-weight:800; letter-spacing:.03em; padding:6px 9px; cursor:pointer; border-radius:var(--radius-sm);}
+  .lang-btn + .lang-btn{margin-left:-1px;}
+  .lang-btn.active{background:var(--text); color:#fff; border-color:var(--text);}
+  @media (max-width:480px){
+    .topbar h1{display:none;}
+  }
 
   button{font-family:inherit; cursor:pointer; border:none; border-radius:var(--radius-sm); font-weight:700; font-size:14px; padding:10px 16px; transition:transform .15s var(--ease-soft), box-shadow .2s var(--ease), background .2s var(--ease), opacity .15s var(--ease), color .15s var(--ease), border-color .15s var(--ease);}
   button:active{transform:scale(0.96);}
@@ -171,13 +179,31 @@
   .suggestion-actions button{padding:6px 11px; font-size:12px;}
   .toast{position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(8px); background:var(--text); color:#fff; padding:12px 20px; border-radius:100px; font-size:13.5px; font-weight:600; opacity:0; pointer-events:none; transition:opacity .25s var(--ease-soft), transform .25s var(--ease-soft); z-index:200; box-shadow:var(--shadow-lg);}
   .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+
+  /* ---- guided tour ---- */
+  .tour-overlay{position:fixed; inset:0; z-index:500; display:none; pointer-events:none;}
+  .tour-overlay.open{display:block;}
+  .tour-spotlight{position:fixed; z-index:501; border-radius:12px; box-shadow:0 0 0 9999px rgba(20,20,15,.6); transition:top .3s var(--ease-soft), left .3s var(--ease-soft), width .3s var(--ease-soft), height .3s var(--ease-soft), opacity .2s ease; opacity:0; pointer-events:none;}
+  .tour-tooltip{position:fixed; z-index:502; background:var(--card); border-radius:var(--radius); padding:18px; width:300px; max-width:calc(100vw - 32px); box-shadow:var(--shadow-lg); pointer-events:auto; transition:top .3s var(--ease-soft), left .3s var(--ease-soft);}
+  .tour-progress{font-size:11px; font-weight:800; color:var(--muted); letter-spacing:.05em; text-transform:uppercase; margin-bottom:6px;}
+  .tour-title{font-size:16px; font-weight:900; margin-bottom:8px; letter-spacing:-.01em;}
+  .tour-body{font-size:13.5px; color:var(--muted); line-height:1.55; margin-bottom:16px;}
+  .tour-actions{display:flex; align-items:center; gap:8px;}
+  .tour-actions .btn-ghost, .tour-actions .btn-primary{padding:8px 14px; font-size:13px;}
 </style>
 </head>
 <body>
 
 <div class="topbar">
   <h1>Pipeline Tracker</h1>
-  <button class="icon-btn" id="settingsBtn" title="Settings">⚙</button>
+  <div class="topbar-actions">
+    <div class="lang-switch">
+      <button class="lang-btn active" data-lang="en">EN</button>
+      <button class="lang-btn" data-lang="nl">NL</button>
+    </div>
+    <button class="btn-ghost" id="tourBtn" data-t="tourBtnLabel">Guided Tour</button>
+    <button class="icon-btn" id="settingsBtn" title="Settings" data-t-title="settingsTitle">⚙</button>
+  </div>
 </div>
 
 <div class="nav-row">
@@ -187,8 +213,8 @@
 </div>
 
 <div class="toolbar">
-  <input type="text" id="searchInput" placeholder="Search account or contact...">
-  <button class="btn-primary" id="newLeadBtn">+ New lead</button>
+  <input type="text" id="searchInput" placeholder="Search account or contact..." data-t-placeholder="searchPlaceholder">
+  <button class="btn-primary" id="newLeadBtn" data-t="newLeadBtn">+ New lead</button>
 </div>
 
 <div class="filters-row" id="statusFiltersBar"></div>
@@ -196,16 +222,16 @@
 <div class="filters-row" id="insightsBar">
   <label class="archive-toggle">
     <input type="checkbox" id="hideInactiveCb" checked>
-    Hide inactive (60+ days) <span id="inactiveCount"></span>
+    <span data-t="hideInactiveLabel">Hide inactive (60+ days)</span> <span id="inactiveCount"></span>
   </label>
   <button class="dup-pill" id="duplicatesPill" style="display:none;"></button>
-  <button class="filter-btn" id="scanBtn">🔎 Find touchpoints (Gmail + Calendar)</button>
+  <button class="filter-btn" id="scanBtn" data-t="scanBtnLabel">🔎 Find touchpoints (Gmail + Calendar)</button>
 </div>
 
 <main>
   <div class="table-scroll">
     <table class="leads-table">
-      <thead><tr><th class="col-rank">#</th><th class="col-lead">Lead</th><th>Last touchpoint</th></tr></thead>
+      <thead><tr><th class="col-rank">#</th><th class="col-lead" data-t="thLead">Lead</th><th data-t="thTouch">Last touchpoint</th></tr></thead>
       <tbody id="leadsGrid"></tbody>
     </table>
   </div>
@@ -216,32 +242,32 @@
 <!-- Duplicates -->
 <div class="overlay" id="duplicatesOverlay">
   <div class="modal">
-    <h2>Possible duplicates</h2>
-    <div class="modal-sub">Similar account names across your whole Leadlist — check if they're the same lead entered twice.</div>
+    <h2 data-t="dupTitle">Possible duplicates</h2>
+    <div class="modal-sub" data-t="dupSub">Similar account names across your whole Leadlist — check if they're the same lead entered twice.</div>
     <div id="duplicatesList"></div>
-    <div class="modal-actions"><button class="btn-ghost" data-close>Close</button></div>
+    <div class="modal-actions"><button class="btn-ghost" data-close data-t="close">Close</button></div>
   </div>
 </div>
 
 <!-- Suggested touchpoints -->
 <div class="overlay" id="suggestionsOverlay">
   <div class="modal">
-    <h2>Suggested touchpoints</h2>
-    <div class="modal-sub">Found in Gmail and Calendar since each lead's last logged touchpoint. Nothing gets saved until you approve it.</div>
+    <h2 data-t="sugTitle">Suggested touchpoints</h2>
+    <div class="modal-sub" data-t="sugSub">Found in Gmail and Calendar since each lead's last logged touchpoint. Nothing gets saved until you approve it.</div>
     <div id="suggestionsList"></div>
-    <div class="modal-actions"><button class="btn-ghost" data-close>Close</button></div>
+    <div class="modal-actions"><button class="btn-ghost" data-close data-t="close">Close</button></div>
   </div>
 </div>
 
 <!-- Settings -->
 <div class="overlay" id="settingsOverlay">
   <div class="modal">
-    <h2>Settings</h2>
-    <div class="field"><label>Apps Script URL (Web App)</label><input type="text" id="cfgUrl" placeholder="https://script.google.com/macros/s/.../exec"></div>
-    <div class="field"><label>Secret token</label><input type="text" id="cfgToken"></div>
+    <h2 data-t="settingsModalTitle">Settings</h2>
+    <div class="field"><label data-t="cfgUrlLabel">Apps Script URL (Web App)</label><input type="text" id="cfgUrl" placeholder="https://script.google.com/macros/s/.../exec"></div>
+    <div class="field"><label data-t="cfgTokenLabel">Secret token</label><input type="text" id="cfgToken"></div>
     <div class="modal-actions">
-      <button class="btn-ghost" data-close>Cancel</button>
-      <button class="btn-primary" id="saveSettingsBtn">Save and connect</button>
+      <button class="btn-ghost" data-close data-t="cancel">Cancel</button>
+      <button class="btn-primary" id="saveSettingsBtn" data-t="saveConnect">Save and connect</button>
     </div>
   </div>
 </div>
@@ -283,20 +309,20 @@
     </div>
 
     <div style="display:flex; gap:8px;">
-      <button class="btn-primary" id="logTouchpointFromDetailBtn" style="flex:1;">+ Log touchpoint</button>
-      <button class="btn-ghost" id="editLeadBtn">Edit</button>
-      <button class="btn-ghost" id="deleteLeadBtn" style="color:var(--stale); border-color:var(--stale);">Delete</button>
+      <button class="btn-primary" id="logTouchpointFromDetailBtn" style="flex:1;" data-t="logTouchpointBtn">+ Log touchpoint</button>
+      <button class="btn-ghost" id="editLeadBtn" data-t="editBtn">Edit</button>
+      <button class="btn-ghost" id="deleteLeadBtn" style="color:var(--stale); border-color:var(--stale);" data-t="deleteBtn">Delete</button>
     </div>
 
     <div class="history">
-      <h3>History (Comment)</h3>
+      <h3 data-t="historyTitle">History (Comment)</h3>
       <div id="historyList"></div>
     </div>
     <div class="history" id="legacyNotesBlock" style="display:none;">
-      <h3>Previous notes (Comments)</h3>
+      <h3 data-t="legacyTitle">Previous notes (Comments)</h3>
       <div class="history-item" id="legacyNotesText"></div>
     </div>
-    <div class="modal-actions"><button class="btn-ghost" data-close>Close</button></div>
+    <div class="modal-actions"><button class="btn-ghost" data-close data-t="close">Close</button></div>
   </div>
 </div>
 
@@ -306,7 +332,7 @@
     <h2 id="leadModalTitle">New lead</h2>
     <div class="modal-sub" id="leadModalSection"></div>
 
-    <div class="field-group-label">Basic</div>
+    <div class="field-group-label" data-t="groupBasic">Basic</div>
     <div class="field"><label>Account</label><input type="text" id="fAccount"></div>
     <div class="field-grid">
       <div class="field"><label>Status</label><input type="text" id="fStatus" list="statusList"></div>
@@ -319,7 +345,7 @@
     <div class="field"><label>Comment (initial note, optional)</label><textarea id="fComment"></textarea></div>
     <div class="field"><label>Experiments</label><textarea id="fExperiments"></textarea></div>
 
-    <div class="field-group-label">Contact</div>
+    <div class="field-group-label" data-t="groupContact">Contact</div>
     <div class="field-grid">
       <div class="field"><label>Contact name</label><input type="text" id="fContactName"></div>
       <div class="field"><label>Phone</label><input type="text" id="fPhone"></div>
@@ -333,7 +359,7 @@
       <div class="field"><label>Linkedin</label><input type="text" id="fLinkedin"></div>
     </div>
 
-    <div class="field-group-label">Deal</div>
+    <div class="field-group-label" data-t="groupDeal">Deal</div>
     <div class="field-grid">
       <div class="field"><label>Ticketdeal</label><input type="text" id="fTicketdeal"></div>
       <div class="field"><label>Ticketing Partner</label><input type="text" id="fTicketingPartner"></div>
@@ -350,8 +376,8 @@
     </datalist>
 
     <div class="modal-actions">
-      <button class="btn-ghost" data-close>Cancel</button>
-      <button class="btn-primary" id="saveLeadBtn">Save</button>
+      <button class="btn-ghost" data-close data-t="cancel">Cancel</button>
+      <button class="btn-primary" id="saveLeadBtn" data-t="save">Save</button>
     </div>
   </div>
 </div>
@@ -359,19 +385,35 @@
 <!-- Log touchpoint -->
 <div class="overlay" id="touchpointOverlay">
   <div class="modal">
-    <h2>Log touchpoint</h2>
-    <div class="field"><label>Date</label><input type="date" id="tFecha"></div>
+    <h2 data-t="logTouchpointModalTitle">Log touchpoint</h2>
+    <div class="field"><label data-t="dateLabel">Date</label><input type="date" id="tFecha"></div>
     <div class="field">
-      <label>Channel</label>
+      <label data-t="channelLabel">Channel</label>
       <select id="tCanal">
         <option>WhatsApp</option><option>Email</option><option>Call</option>
         <option>Instagram</option><option>LinkedIn</option><option>In person</option><option>Other</option>
       </select>
     </div>
-    <div class="field"><label>Message</label><textarea id="tMensaje" placeholder="What was discussed..."></textarea></div>
+    <div class="field"><label data-t="messageLabel">Message</label><textarea id="tMensaje" placeholder="What was discussed..." data-t-placeholder="discussedPlaceholder"></textarea></div>
     <div class="modal-actions">
-      <button class="btn-ghost" data-close>Cancel</button>
-      <button class="btn-primary" id="saveTouchpointBtn">Save</button>
+      <button class="btn-ghost" data-close data-t="cancel">Cancel</button>
+      <button class="btn-primary" id="saveTouchpointBtn" data-t="save">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Guided tour -->
+<div class="tour-overlay" id="tourOverlay">
+  <div class="tour-spotlight" id="tourSpotlight"></div>
+  <div class="tour-tooltip" id="tourTooltip">
+    <div class="tour-progress" id="tourProgress"></div>
+    <div class="tour-title" id="tourTitle"></div>
+    <div class="tour-body" id="tourBody"></div>
+    <div class="tour-actions">
+      <button class="btn-ghost" id="tourSkipBtn" data-t="tourSkip">Skip</button>
+      <div style="flex:1;"></div>
+      <button class="btn-ghost" id="tourBackBtn" data-t="tourBack">Back</button>
+      <button class="btn-primary" id="tourNextBtn" data-t="tourNext">Next</button>
     </div>
   </div>
 </div>
@@ -387,6 +429,143 @@ let editingRow = null;
 
 const $ = sel => document.querySelector(sel);
 const grid = $('#leadsGrid');
+
+// ---- i18n ----
+// Field names/placeholders that mirror real Sheet columns (Account,
+// Status, Vertical, Contact name, etc.) are intentionally NOT translated
+// here — same policy as the earlier ES→EN pass, so the UI never implies
+// a column has a different "real" name per language.
+const I18N = {
+  en: {
+    tourBtnLabel: 'Guided Tour', settingsTitle: 'Settings',
+    searchPlaceholder: 'Search account or contact...', newLeadBtn: '+ New lead',
+    hideInactiveLabel: 'Hide inactive (60+ days)', scanBtnLabel: '🔎 Find touchpoints (Gmail + Calendar)', scanning: 'Scanning...',
+    thLead: 'Lead', thTouch: 'Last touchpoint',
+    dupTitle: 'Possible duplicates', dupSub: "Similar account names across your whole Leadlist — check if they're the same lead entered twice.",
+    sugTitle: 'Suggested touchpoints', sugSub: "Found in Gmail and Calendar since each lead's last logged touchpoint. Nothing gets saved until you approve it.",
+    close: 'Close', cancel: 'Cancel', save: 'Save',
+    settingsModalTitle: 'Settings', cfgUrlLabel: 'Apps Script URL (Web App)', cfgTokenLabel: 'Secret token', saveConnect: 'Save and connect',
+    logTouchpointBtn: '+ Log touchpoint', editBtn: 'Edit', deleteBtn: 'Delete',
+    historyTitle: 'History (Comment)', legacyTitle: 'Previous notes (Comments)',
+    groupBasic: 'Basic', groupContact: 'Contact', groupDeal: 'Deal',
+    logTouchpointModalTitle: 'Log touchpoint', dateLabel: 'Date', channelLabel: 'Channel', messageLabel: 'Message', discussedPlaceholder: 'What was discussed...',
+    tourSkip: 'Skip', tourBack: 'Back', tourNext: 'Next',
+    couldntConnect: "Couldn't connect", connectYourSheet: 'Connect your Sheet',
+    connectBody: 'Open Settings (⚙) and paste your Apps Script URL and token.', openSettingsBtn: 'Open settings',
+    noLeadsTitle: 'No leads in this section', noLeadsBody: 'Add the first one to start following up.',
+    noDate: 'no date', day: ' day', days: ' days', noTouchpoint: 'No touchpoint logged', noName: '(no name)',
+    statusUpdated: 'Status updated', saved: 'Saved', savedEmilio: 'Saved (also in Emilio)',
+    missingUrlToken: 'Missing the URL or token', noActiveSection: 'No active section', enterAccountName: 'Enter an account name',
+    leadUpdated: 'Lead updated', leadUpdatedEmilio: 'Lead updated (also in Emilio)',
+    addedOverviewPrefix: 'Added to Overview — ', leadAddedEmilio: 'Lead added (Overview + Emilio)',
+    enterDate: 'Enter a date', touchpointLogged: 'Touchpoint logged', touchpointDeleted: 'Touchpoint deleted', leadDeleted: 'Lead deleted',
+    touchpointLoggedFor: 'Touchpoint logged for ', errorPrefix: 'Error: ',
+    deleteLeadConfirm: (name) => `Delete "${name}" completely?\n\nThis removes the whole row from the Sheet. There's no "undo" inside the app, but you can always recover it from File > Version history in Google Sheets.`,
+    deleteTouchpointConfirm: "Delete this touchpoint? This can't be undone.",
+    channelHint: (stuck, sug) => `💡 3 attempts in a row via ${stuck} with no progress — try ${sug}.`,
+    noHistory: 'No history yet.', noNewTouchpoints: 'No new touchpoints found.',
+    logIt: 'Log it', dismiss: 'Dismiss', srcGmail: 'Gmail', srcCalendar: 'Calendar',
+    duplicatesPill: (n) => `⚠️ ${n} possible duplicate${n>1?'s':''}`, noDuplicates: 'No duplicates detected.',
+    dupMeta: (aTitle,aRow,bTitle,bRow,pct) => `${aTitle} (row ${aRow}) — ${bTitle} (row ${bRow}) · ${pct}% match`,
+    noStatus: '(no status)', all: 'All', sectionPrefix: 'Section: ', newLeadTitle: 'New lead', editLeadTitle: 'Edit lead',
+    tour: [
+      { title: 'Welcome to Pipeline Tracker', body: 'A quick walkthrough of every part of the app and what it\'s for. Click "Skip" anytime to exit.' },
+      { title: 'Settings', body: 'Connect the app to your Google Sheet here — paste your Apps Script URL and secret token. You only need to do this once per device/browser.' },
+      { title: 'Sections', body: 'Each tab is a market block from your Overview tab (Mexico City, Barcelona...). They\'re detected automatically — add a new block in the Sheet and it shows up here with no code changes.' },
+      { title: 'Search', body: "Filters by account or contact name within the section you're currently viewing." },
+      { title: 'New lead', body: "Adds a lead to whichever section tab is active right now — it's inserted right after the last lead in that section." },
+      { title: 'Status filters', body: 'One pill per Status value that exists in this section, color-coded, with a count. Click one to filter, "All" to clear it.' },
+      { title: 'Hide inactive & duplicates', body: 'The checkbox hides leads with 60+ days since their last touchpoint — a view-only filter, nothing gets deleted. The yellow pill appears when similar account names are found anywhere in your Leadlist.' },
+      { title: 'Find touchpoints (Gmail + Calendar)', body: 'Scans your Gmail and Calendar for activity involving your leads, and shows suggested touchpoints you can approve or dismiss — nothing gets logged automatically.' },
+      { title: 'The table', body: 'Rank, lead name + status, and the most recent touchpoint. The colored left border and day-count chip tell you how urgent a follow-up is — green is recent, yellow is getting stale, red (with a subtle pulse) means it\'s been too long. Click any row to open the full detail.' },
+      { title: 'Opening a lead', body: "Let's open one to show you the detail view." },
+      { title: 'Status dropdown', body: 'Pick a new status and it saves immediately — no need to open the full edit form for this.' },
+      { title: 'Contact, Links, Deal, Experiments', body: 'These fields are editable right here — type and click elsewhere to save. It updates Overview, and if this lead exists in Emilio under the same name, that too.' },
+      { title: 'Log touchpoint', body: 'Saves date, channel and message — it gets added to your Comment history and updates the Fecha/Canal columns used to calculate urgency.' },
+      { title: 'History', body: 'Each entry has its own ✕ to delete just that one, if you logged something by mistake.' },
+      { title: 'Edit & Delete', body: '"Edit" opens the full form for Account, Vertical, Location, and # Tickets. "Delete" removes the row entirely from the Sheet — you\'ll be asked to confirm first.' }
+    ]
+  },
+  nl: {
+    tourBtnLabel: 'Rondleiding', settingsTitle: 'Instellingen',
+    searchPlaceholder: 'Zoek op account of contactpersoon...', newLeadBtn: '+ Nieuwe lead',
+    hideInactiveLabel: 'Verberg inactief (60+ dagen)', scanBtnLabel: '🔎 Zoek touchpoints (Gmail + Agenda)', scanning: 'Bezig met zoeken...',
+    thLead: 'Lead', thTouch: 'Laatste touchpoint',
+    dupTitle: 'Mogelijke duplicaten', dupSub: 'Vergelijkbare accountnamen in je hele Leadlist — controleer of het dezelfde lead is die twee keer is toegevoegd.',
+    sugTitle: 'Voorgestelde touchpoints', sugSub: 'Gevonden in Gmail en Agenda sinds het laatst geregistreerde touchpoint van elke lead. Er wordt niets opgeslagen totdat jij het goedkeurt.',
+    close: 'Sluiten', cancel: 'Annuleren', save: 'Opslaan',
+    settingsModalTitle: 'Instellingen', cfgUrlLabel: 'Apps Script URL (Web App)', cfgTokenLabel: 'Geheime token', saveConnect: 'Opslaan en verbinden',
+    logTouchpointBtn: '+ Touchpoint registreren', editBtn: 'Bewerken', deleteBtn: 'Verwijderen',
+    historyTitle: 'Geschiedenis (Comment)', legacyTitle: 'Eerdere notities (Comments)',
+    groupBasic: 'Basis', groupContact: 'Contact', groupDeal: 'Deal',
+    logTouchpointModalTitle: 'Touchpoint registreren', dateLabel: 'Datum', channelLabel: 'Kanaal', messageLabel: 'Bericht', discussedPlaceholder: 'Wat is er besproken...',
+    tourSkip: 'Overslaan', tourBack: 'Terug', tourNext: 'Volgende',
+    couldntConnect: 'Kon geen verbinding maken', connectYourSheet: 'Verbind je Sheet',
+    connectBody: 'Open Instellingen (⚙) en plak je Apps Script URL en token.', openSettingsBtn: 'Instellingen openen',
+    noLeadsTitle: 'Geen leads in deze sectie', noLeadsBody: 'Voeg de eerste toe om te beginnen met opvolgen.',
+    noDate: 'geen datum', day: ' dag', days: ' dagen', noTouchpoint: 'Geen touchpoint geregistreerd', noName: '(geen naam)',
+    statusUpdated: 'Status bijgewerkt', saved: 'Opgeslagen', savedEmilio: 'Opgeslagen (ook in Emilio)',
+    missingUrlToken: 'URL of token ontbreekt', noActiveSection: 'Geen actieve sectie', enterAccountName: 'Voer een accountnaam in',
+    leadUpdated: 'Lead bijgewerkt', leadUpdatedEmilio: 'Lead bijgewerkt (ook in Emilio)',
+    addedOverviewPrefix: 'Toegevoegd aan Overview — ', leadAddedEmilio: 'Lead toegevoegd (Overview + Emilio)',
+    enterDate: 'Voer een datum in', touchpointLogged: 'Touchpoint geregistreerd', touchpointDeleted: 'Touchpoint verwijderd', leadDeleted: 'Lead verwijderd',
+    touchpointLoggedFor: 'Touchpoint geregistreerd voor ', errorPrefix: 'Fout: ',
+    deleteLeadConfirm: (name) => `"${name}" volledig verwijderen?\n\nDit verwijdert de hele rij uit de Sheet. Er is geen "ongedaan maken" in de app, maar je kunt de rij altijd terugzetten via Bestand > Versiegeschiedenis in Google Sheets.`,
+    deleteTouchpointConfirm: 'Dit touchpoint verwijderen? Dit kan niet ongedaan worden gemaakt.',
+    channelHint: (stuck, sug) => `💡 3 pogingen op rij via ${stuck} zonder resultaat — probeer ${sug}.`,
+    noHistory: 'Nog geen geschiedenis.', noNewTouchpoints: 'Geen nieuwe touchpoints gevonden.',
+    logIt: 'Registreren', dismiss: 'Negeren', srcGmail: 'Gmail', srcCalendar: 'Agenda',
+    duplicatesPill: (n) => `⚠️ ${n} mogelijk${n>1?'e':''} duplicaat${n>1?'en':''}`, noDuplicates: 'Geen duplicaten gevonden.',
+    dupMeta: (aTitle,aRow,bTitle,bRow,pct) => `${aTitle} (rij ${aRow}) — ${bTitle} (rij ${bRow}) · ${pct}% overeenkomst`,
+    noStatus: '(geen status)', all: 'All', sectionPrefix: 'Sectie: ', newLeadTitle: 'Nieuwe lead', editLeadTitle: 'Lead bewerken',
+    tour: [
+      { title: 'Welkom bij Pipeline Tracker', body: 'Een korte rondleiding langs elk onderdeel van de app en waar het voor is. Klik op "Overslaan" om op elk moment te stoppen.' },
+      { title: 'Instellingen', body: 'Verbind de app hier met je Google Sheet — plak je Apps Script URL en geheime token. Dit hoef je maar één keer per apparaat/browser te doen.' },
+      { title: 'Secties', body: 'Elke tab is een marktblok uit je Overview-tab (Mexico City, Barcelona...). Ze worden automatisch gedetecteerd — voeg een nieuw blok toe in de Sheet en het verschijnt hier, zonder code aan te passen.' },
+      { title: 'Zoeken', body: 'Filtert op account- of contactnaam binnen de sectie die je op dit moment bekijkt.' },
+      { title: 'Nieuwe lead', body: 'Voegt een lead toe aan de sectie-tab die op dit moment actief is — wordt direct na de laatste lead in die sectie ingevoegd.' },
+      { title: 'Statusfilters', body: 'Eén pill per Status-waarde die in deze sectie voorkomt, met kleur en aantal. Klik om te filteren, "All" om het filter te wissen.' },
+      { title: 'Inactief verbergen & duplicaten', body: 'Het vinkje verbergt leads met 60+ dagen sinds hun laatste touchpoint — alleen een weergavefilter, er wordt niets verwijderd. De gele pill verschijnt wanneer vergelijkbare accountnamen worden gevonden in je hele Leadlist.' },
+      { title: 'Zoek touchpoints (Gmail + Agenda)', body: 'Doorzoekt je Gmail en Agenda op activiteit met je leads, en toont voorgestelde touchpoints die je kunt goedkeuren of negeren — er wordt nooit automatisch iets geregistreerd.' },
+      { title: 'De tabel', body: 'Rang, leadnaam + status, en het meest recente touchpoint. De gekleurde rand links en de dagenteller vertellen je hoe urgent opvolging is — groen is recent, geel wordt verouderd, rood (met een subtiele puls) betekent dat het te lang geleden is. Klik op een rij om het volledige detail te openen.' },
+      { title: 'Een lead openen', body: 'Laten we er een openen om je de detailweergave te laten zien.' },
+      { title: 'Status-dropdown', body: 'Kies een nieuwe status en deze wordt direct opgeslagen — je hoeft hiervoor niet het volledige bewerkformulier te openen.' },
+      { title: 'Contact, Links, Deal, Experiments', body: 'Deze velden zijn hier direct bewerkbaar — typ en klik ergens anders om op te slaan. Het werkt Overview bij, en als deze lead onder dezelfde naam in Emilio bestaat, ook daar.' },
+      { title: 'Touchpoint registreren', body: 'Slaat datum, kanaal en bericht op — wordt toegevoegd aan je Comment-geschiedenis en werkt de Fecha/Canal-kolommen bij die gebruikt worden om urgentie te berekenen.' },
+      { title: 'Geschiedenis', body: 'Elke vermelding heeft zijn eigen ✕ om alleen die ene te verwijderen, als je per ongeluk iets verkeerd hebt geregistreerd.' },
+      { title: 'Bewerken & Verwijderen', body: '"Bewerken" opent het volledige formulier voor Account, Vertical, Location en # Tickets. "Verwijderen" verwijdert de rij volledig uit de Sheet — je wordt eerst om bevestiging gevraagd.' }
+    ]
+  }
+};
+
+let currentLang = 'en';
+try { currentLang = localStorage.getItem('pt_lang') || 'en'; } catch(e) {}
+
+function t(key){
+  const dict = I18N[currentLang] || I18N.en;
+  return (key in dict) ? dict[key] : I18N.en[key];
+}
+
+function applyStaticI18n(){
+  document.documentElement.lang = currentLang;
+  document.querySelectorAll('[data-t]').forEach(el => { el.textContent = t(el.dataset.t); });
+  document.querySelectorAll('[data-t-placeholder]').forEach(el => { el.placeholder = t(el.dataset.tPlaceholder); });
+  document.querySelectorAll('[data-t-title]').forEach(el => { el.title = t(el.dataset.tTitle); });
+  document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.lang === currentLang));
+}
+
+function setLanguage(lang){
+  currentLang = lang;
+  try { localStorage.setItem('pt_lang', lang); } catch(e) {}
+  applyStaticI18n();
+  renderTabs();
+  renderStatusFilters();
+  render();
+  if ($('#detailOverlay').classList.contains('open') && activeLead) openDetail(activeLead.row);
+}
+document.querySelectorAll('.lang-btn').forEach(btn => {
+  btn.addEventListener('click', () => setLanguage(btn.dataset.lang));
+});
 
 function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2400); }
 function openOverlay(id){ $(id).classList.add('open'); }
@@ -422,7 +601,7 @@ async function loadData(){
     updateDuplicatesPill();
     render();
   }catch(err){
-    grid.innerHTML = `<tr><td colspan="3"><div class="empty-state"><h2>Couldn't connect</h2><p>${err.message}</p></div></td></tr>`;
+    grid.innerHTML = `<tr><td colspan="3"><div class="empty-state"><h2>${t('couldntConnect')}</h2><p>${err.message}</p></div></td></tr>`;
   }
 }
 
@@ -441,9 +620,9 @@ function renderNotConfigured(){
   $('#tabIndicator').style.opacity = '0';
   grid.innerHTML = `<tr><td colspan="3"><div class="empty-state">
     <div class="ee-orb"></div>
-    <h2>Connect your Sheet</h2>
-    <p>Open Settings (⚙) and paste your Apps Script URL and token.</p>
-    <button class="btn-primary" onclick="openOverlay('#settingsOverlay')">Open settings</button>
+    <h2>${t('connectYourSheet')}</h2>
+    <p>${t('connectBody')}</p>
+    <button class="btn-primary" onclick="openOverlay('#settingsOverlay')">${t('openSettingsBtn')}</button>
   </div></td></tr>`;
 }
 
@@ -484,12 +663,12 @@ function renderStatusFilters(){
 
   const counts = {};
   sec.leads.forEach(l=>{
-    const s = l.status || '(no status)';
+    const s = l.status || t('noStatus');
     counts[s] = (counts[s]||0) + 1;
   });
   const statuses = Object.keys(counts);
 
-  let html = `<button class="filter-btn ${statusFilter==='all'?'active':''}" data-status="all">All <span style="opacity:.6">(${sec.leads.length})</span></button>`;
+  let html = `<button class="filter-btn ${statusFilter==='all'?'active':''}" data-status="all">${t('all')} <span style="opacity:.6">(${sec.leads.length})</span></button>`;
   html += statuses.map(s=>
     `<button class="filter-btn ${statusFilter===s?'active':''}" data-status="${escapeHtml(s)}"><span class="status-dot ${statusColorClass(s)}"></span>${escapeHtml(s)} <span style="opacity:.6">(${counts[s]})</span></button>`
   ).join('');
@@ -543,7 +722,7 @@ function render(){
 
   let leads = sec.leads.filter(l =>
     (!search || (l.account||'').toLowerCase().includes(search) || (l.contactName||'').toLowerCase().includes(search)) &&
-    (statusFilter==='all' || (l.status || '(no status)')===statusFilter)
+    (statusFilter==='all' || (l.status || t('noStatus'))===statusFilter)
   );
 
   const hideInactive = $('#hideInactiveCb').checked;
@@ -565,7 +744,7 @@ function render(){
   });
 
   if (leads.length===0){
-    grid.innerHTML = `<tr><td colspan="3"><div class="empty-state"><div class="ee-orb"></div><h2>No leads in this section</h2><p>Add the first one to start following up.</p><button class="btn-primary" id="emptyNewLeadBtn">+ New lead</button></div></td></tr>`;
+    grid.innerHTML = `<tr><td colspan="3"><div class="empty-state"><div class="ee-orb"></div><h2>${t('noLeadsTitle')}</h2><p>${t('noLeadsBody')}</p><button class="btn-primary" id="emptyNewLeadBtn">${t('newLeadBtn')}</button></div></td></tr>`;
     const btn = document.getElementById('emptyNewLeadBtn');
     if (btn) btn.addEventListener('click', () => $('#newLeadBtn').click());
     return;
@@ -574,17 +753,17 @@ function render(){
   grid.innerHTML = leads.map((l,idx)=>{
     const days = daysSince(l.fecha);
     const u = urgency(days);
-    const dayLabel = days===null ? 'no date' : (days + (days===1 ? ' day' : ' days'));
+    const dayLabel = days===null ? t('noDate') : (days + (days===1 ? t('day') : t('days')));
     const commentEntries = (l.comment || '').split(' - ').map(s=>s.trim()).filter(Boolean);
     const latestEntry = commentEntries.length ? commentEntries[commentEntries.length - 1] : '';
     const fallback = l.comments ? String(l.comments).split('\n')[0] : '';
-    const touchText = latestEntry || fallback || 'No touchpoint logged';
+    const touchText = latestEntry || fallback || t('noTouchpoint');
     const delay = Math.min(idx * 35, 280);
     return `
       <tr class="${u.cls}" data-row="${l.row}" style="animation-delay:${delay}ms">
         <td class="col-rank">${l.rank!=null ? escapeHtml(String(l.rank)) : ''}</td>
         <td class="col-lead">
-          <span class="lead-name">${escapeHtml(l.account||'(no name)')}</span>
+          <span class="lead-name">${escapeHtml(l.account||t('noName'))}</span>
           ${l.status ? `<span class="lead-status-inline ${statusColorClass(l.status)}">${escapeHtml(l.status)}</span>` : ''}
         </td>
         <td>
@@ -638,7 +817,7 @@ function updateDuplicatesPill(){
   const pill = $('#duplicatesPill');
   if (pairs.length){
     pill.style.display = '';
-    pill.textContent = `⚠️ ${pairs.length} possible duplicate${pairs.length>1?'s':''}`;
+    pill.textContent = t('duplicatesPill')(pairs.length);
   } else {
     pill.style.display = 'none';
   }
@@ -648,9 +827,9 @@ $('#duplicatesPill').addEventListener('click', ()=>{
   $('#duplicatesList').innerHTML = pairs.map(p => `
     <div class="dup-pair">
       <div class="dp-names">${escapeHtml(p.a.account)} ⟷ ${escapeHtml(p.b.account)}</div>
-      <div class="dp-meta">${escapeHtml(p.a.sectionTitle)} (row ${p.a.row}) — ${escapeHtml(p.b.sectionTitle)} (row ${p.b.row}) · ${Math.round(p.sim*100)}% match</div>
+      <div class="dp-meta">${t('dupMeta')(escapeHtml(p.a.sectionTitle), p.a.row, escapeHtml(p.b.sectionTitle), p.b.row, Math.round(p.sim*100))}</div>
     </div>
-  `).join('') || '<p style="color:var(--muted);font-size:13px;">No duplicates detected.</p>';
+  `).join('') || `<p style="color:var(--muted);font-size:13px;">${t('noDuplicates')}</p>`;
   openOverlay('#duplicatesOverlay');
 });
 
@@ -660,7 +839,7 @@ let currentSuggestions = [];
 $('#scanBtn').addEventListener('click', async () => {
   const btn = $('#scanBtn');
   const original = btn.textContent;
-  btn.textContent = 'Scanning...';
+  btn.textContent = t('scanning');
   btn.disabled = true;
   try {
     const [gmailRes, calRes] = await Promise.all([
@@ -673,7 +852,7 @@ $('#scanBtn').addEventListener('click', async () => {
     renderSuggestions();
     openOverlay('#suggestionsOverlay');
   } catch(err) {
-    toast('Error: ' + err.message);
+    toast(t('errorPrefix') + err.message);
   } finally {
     btn.textContent = original;
     btn.disabled = false;
@@ -683,19 +862,19 @@ $('#scanBtn').addEventListener('click', async () => {
 function renderSuggestions(){
   const list = $('#suggestionsList');
   if (!currentSuggestions.length) {
-    list.innerHTML = `<p style="color:var(--muted); font-size:13px;">No new touchpoints found.</p>`;
+    list.innerHTML = `<p style="color:var(--muted); font-size:13px;">${t('noNewTouchpoints')}</p>`;
     return;
   }
   list.innerHTML = currentSuggestions.map((s, i) => `
     <div class="suggestion-card">
       <div class="suggestion-main">
         <div class="suggestion-account">${escapeHtml(s.account)}</div>
-        <div class="suggestion-meta">${escapeHtml(s.date)} · ${escapeHtml(s.channel)} · ${s.source === 'gmail' ? 'Gmail' : 'Calendar'}</div>
+        <div class="suggestion-meta">${escapeHtml(s.date)} · ${escapeHtml(s.channel)} · ${s.source === 'gmail' ? t('srcGmail') : t('srcCalendar')}</div>
         <div class="suggestion-snippet">${escapeHtml(s.snippet)}</div>
       </div>
       <div class="suggestion-actions">
-        <button class="btn-primary suggestion-log" data-idx="${i}">Log it</button>
-        <button class="btn-ghost suggestion-dismiss" data-idx="${i}">Dismiss</button>
+        <button class="btn-primary suggestion-log" data-idx="${i}">${t('logIt')}</button>
+        <button class="btn-ghost suggestion-dismiss" data-idx="${i}">${t('dismiss')}</button>
       </div>
     </div>
   `).join('');
@@ -707,12 +886,12 @@ function renderSuggestions(){
       btn.disabled = true;
       try {
         await apiPost('logTouchpoint', { row: s.row, expectedAccount: s.account, fecha: s.date, canal: s.channel, mensaje: s.snippet });
-        toast('Touchpoint logged for ' + s.account);
+        toast(t('touchpointLoggedFor') + s.account);
         currentSuggestions.splice(idx, 1);
         renderSuggestions();
         loadData();
       } catch(err) {
-        toast('Error: ' + err.message);
+        toast(t('errorPrefix') + err.message);
         btn.disabled = false;
       }
     });
@@ -727,7 +906,7 @@ function renderSuggestions(){
         currentSuggestions.splice(idx, 1);
         renderSuggestions();
       } catch(err) {
-        toast('Error: ' + err.message);
+        toast(t('errorPrefix') + err.message);
         btn.disabled = false;
       }
     });
@@ -766,7 +945,7 @@ function populateStatusSelect(currentStatus){
   const opts = [...STATUS_OPTIONS];
   if (currentStatus && !opts.includes(currentStatus)) opts.unshift(currentStatus);
   let html = '';
-  if (!currentStatus) html += `<option value="" selected>(no status)</option>`;
+  if (!currentStatus) html += `<option value="" selected>${t('noStatus')}</option>`;
   html += opts.map(s=>`<option value="${escapeHtml(s)}" ${s===currentStatus?'selected':''}>${escapeHtml(s)}</option>`).join('');
   sel.innerHTML = html;
 }
@@ -777,11 +956,11 @@ $('#dStatusSelect').addEventListener('change', async (e)=>{
   const row = activeLead.row, account = activeLead.account;
   try{
     await apiPost('updateLead', { row, expectedAccount: account, fields: { status: newStatus } });
-    toast('Status updated');
+    toast(t('statusUpdated'));
     await loadData();
     const refreshed = findLead(row);
     if (refreshed) openDetail(refreshed.row);
-  }catch(err){ toast('Error: '+err.message); }
+  }catch(err){ toast(t('errorPrefix')+err.message); }
 });
 
 // ---- inline editing (contact, links, deal, experiments) ----
@@ -805,13 +984,13 @@ Object.keys(INLINE_FIELD_MAP).forEach(id => {
       if (res.result && res.result.emilioWarning) {
         toast(res.result.emilioWarning);
       } else if (res.result && res.result.emilioSynced) {
-        toast('Saved (also in Emilio)');
+        toast(t('savedEmilio'));
       } else {
-        toast('Saved');
+        toast(t('saved'));
       }
       loadData();
     }catch(err){
-      toast('Error: '+err.message);
+      toast(t('errorPrefix')+err.message);
       el.value = oldVal;
     }
   });
@@ -827,7 +1006,7 @@ function openDetail(row){
   const l = findLead(row);
   if (!l) return;
   activeLead = l;
-  $('#detailName').textContent = l.account || '(no name)';
+  $('#detailName').textContent = l.account || t('noName');
   $('#detailMeta').textContent = [l.location, l.vertical].filter(Boolean).join(' · ');
   populateStatusSelect(l.status);
 
@@ -835,7 +1014,7 @@ function openDetail(row){
   const hintBox = $('#channelHint');
   if (hint) {
     hintBox.style.display = '';
-    hintBox.textContent = `💡 3 attempts in a row via ${hint.stuckChannel} with no progress — try ${hint.suggestion}.`;
+    hintBox.textContent = t('channelHint')(hint.stuckChannel, hint.suggestion);
   } else {
     hintBox.style.display = 'none';
   }
@@ -853,7 +1032,7 @@ function openDetail(row){
 
   const list = $('#historyList');
   if (!l.comment){
-    list.innerHTML = `<p style="color:var(--muted); font-size:13px;">No history yet.</p>`;
+    list.innerHTML = `<p style="color:var(--muted); font-size:13px;">${t('noHistory')}</p>`;
   } else {
     const entries = String(l.comment).split(' - ').map(s=>s.trim()).filter(Boolean);
     list.innerHTML = entries.map((e,i)=>`
@@ -888,7 +1067,7 @@ $('#settingsBtn').addEventListener('click', ()=>{
 });
 $('#saveSettingsBtn').addEventListener('click', ()=>{
   const url = $('#cfgUrl').value.trim(), token = $('#cfgToken').value.trim();
-  if (!url || !token){ toast('Missing the URL or token'); return; }
+  if (!url || !token){ toast(t('missingUrlToken')); return; }
   config = { url, token };
   localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
   closeOverlay('#settingsOverlay');
@@ -902,11 +1081,11 @@ function clearLeadForm(){
 }
 
 $('#newLeadBtn').addEventListener('click', ()=>{
-  if (!sections[activeSectionIdx]){ toast('No active section'); return; }
+  if (!sections[activeSectionIdx]){ toast(t('noActiveSection')); return; }
   editingRow = null;
   clearLeadForm();
-  $('#leadModalTitle').textContent = 'New lead';
-  $('#leadModalSection').textContent = 'Section: ' + sections[activeSectionIdx].title;
+  $('#leadModalTitle').textContent = t('newLeadTitle');
+  $('#leadModalSection').textContent = t('sectionPrefix') + sections[activeSectionIdx].title;
   openOverlay('#leadOverlay');
 });
 
@@ -929,7 +1108,7 @@ $('#editLeadBtn').addEventListener('click', ()=>{
   $('#fLinkedin').value = activeLead.linkedin||'';
   $('#fTicketdeal').value = activeLead.ticketdeal||'';
   $('#fTicketingPartner').value = activeLead.ticketingPartner||'';
-  $('#leadModalTitle').textContent = 'Edit lead';
+  $('#leadModalTitle').textContent = t('editLeadTitle');
   $('#leadModalSection').textContent = activeLead.account;
   closeOverlay('#detailOverlay');
   openOverlay('#leadOverlay');
@@ -937,19 +1116,19 @@ $('#editLeadBtn').addEventListener('click', ()=>{
 
 $('#deleteLeadBtn').addEventListener('click', async ()=>{
   if (!activeLead) return;
-  const ok = confirm(`Delete "${activeLead.account}" completely?\n\nThis removes the whole row from the Sheet. There's no "undo" inside the app, but you can always recover it from File > Version history in Google Sheets.`);
+  const ok = confirm(t('deleteLeadConfirm')(activeLead.account));
   if (!ok) return;
   try{
     await apiPost('deleteLead', { row: activeLead.row, expectedAccount: activeLead.account });
     closeOverlay('#detailOverlay');
-    toast('Lead deleted');
+    toast(t('leadDeleted'));
     loadData();
-  }catch(err){ toast('Error: '+err.message); }
+  }catch(err){ toast(t('errorPrefix')+err.message); }
 });
 
 $('#saveLeadBtn').addEventListener('click', async ()=>{
   const account = $('#fAccount').value.trim();
-  if (!account){ toast('Enter an account name'); return; }
+  if (!account){ toast(t('enterAccountName')); return; }
   const fields = {
     account, status: $('#fStatus').value.trim(), vertical: $('#fVertical').value.trim(),
     location: $('#fLocation').value.trim(), tickets: $('#fTickets').value.trim(),
@@ -965,21 +1144,21 @@ $('#saveLeadBtn').addEventListener('click', async ()=>{
       if (res.result && res.result.emilioWarning) {
         toast(res.result.emilioWarning);
       } else if (res.result && res.result.emilioSynced) {
-        toast('Lead updated (also in Emilio)');
+        toast(t('leadUpdatedEmilio'));
       } else {
-        toast('Lead updated');
+        toast(t('leadUpdated'));
       }
     } else {
       const res = await apiPost('addLead', Object.assign({ sectionHeaderRow: sections[activeSectionIdx].headerRow }, fields));
       if (res.result && res.result.emilioWarning) {
-        toast('Added to Overview — ' + res.result.emilioWarning);
+        toast(t('addedOverviewPrefix') + res.result.emilioWarning);
       } else {
-        toast('Lead added (Overview + Emilio)');
+        toast(t('leadAddedEmilio'));
       }
     }
     closeOverlay('#leadOverlay');
     loadData();
-  }catch(err){ toast('Error: '+err.message); }
+  }catch(err){ toast(t('errorPrefix')+err.message); }
 });
 
 // ---- touchpoint ----
@@ -993,33 +1172,146 @@ $('#logTouchpointFromDetailBtn').addEventListener('click', ()=>{
 $('#saveTouchpointBtn').addEventListener('click', async ()=>{
   if (!activeLead) return;
   const fecha = $('#tFecha').value, canal = $('#tCanal').value, mensaje = $('#tMensaje').value.trim();
-  if (!fecha){ toast('Enter a date'); return; }
+  if (!fecha){ toast(t('enterDate')); return; }
   const row = activeLead.row, account = activeLead.account;
   try{
     await apiPost('logTouchpoint', { row, expectedAccount: account, fecha, canal, mensaje });
     closeOverlay('#touchpointOverlay');
-    toast('Touchpoint logged');
+    toast(t('touchpointLogged'));
     await loadData();
     const refreshed = findLead(row);
     if (refreshed) openDetail(refreshed.row);
-  }catch(err){ toast('Error: '+err.message); }
+  }catch(err){ toast(t('errorPrefix')+err.message); }
 });
 
 async function deleteTouchpointEntry(index, text){
   if (!activeLead) return;
-  if (!confirm('Delete this touchpoint? This can\'t be undone.')) return;
+  if (!confirm(t('deleteTouchpointConfirm'))) return;
   try{
     await apiPost('deleteTouchpoint', { row: activeLead.row, expectedAccount: activeLead.account, entryIndex: index, expectedText: text });
-    toast('Touchpoint deleted');
+    toast(t('touchpointDeleted'));
     await loadData();
     const refreshed = findLead(activeLead.row);
     if (refreshed) openDetail(refreshed.row);
-  }catch(err){ toast('Error: '+err.message); }
+  }catch(err){ toast(t('errorPrefix')+err.message); }
 }
 
 $('#searchInput').addEventListener('input', render);
 $('#hideInactiveCb').addEventListener('change', render);
 
+// ---- guided tour ----
+function buildTourSteps(){
+  const T = t('tour');
+  return [
+    { title: T[0].title, body: T[0].body, target: null },
+    { title: T[1].title, body: T[1].body, target: '#settingsBtn' },
+    { title: T[2].title, body: T[2].body, target: '#tabsBar' },
+    { title: T[3].title, body: T[3].body, target: '#searchInput' },
+    { title: T[4].title, body: T[4].body, target: '#newLeadBtn' },
+    { title: T[5].title, body: T[5].body, target: '#statusFiltersBar' },
+    { title: T[6].title, body: T[6].body, target: '#insightsBar' },
+    { title: T[7].title, body: T[7].body, target: '#scanBtn' },
+    { title: T[8].title, body: T[8].body, target: '#leadsGrid' },
+    { title: T[9].title, body: T[9].body, target: null, before: function(){
+        const sec = sections[activeSectionIdx];
+        if (sec && sec.leads && sec.leads.length) openDetail(sec.leads[0].row);
+      } },
+    { title: T[10].title, body: T[10].body, target: '#dStatusSelect', requiresDetail: true },
+    { title: T[11].title, body: T[11].body, target: '.detail-grid', requiresDetail: true },
+    { title: T[12].title, body: T[12].body, target: '#logTouchpointFromDetailBtn', requiresDetail: true },
+    { title: T[13].title, body: T[13].body, target: '#historyList', requiresDetail: true },
+    { title: T[14].title, body: T[14].body, target: '#editLeadBtn', requiresDetail: true }
+  ];
+}
+
+let tourSteps = [];
+let tourIndex = 0;
+
+function startTour(){
+  closeOverlay('#detailOverlay');
+  tourSteps = buildTourSteps();
+  tourIndex = 0;
+  showTourStep();
+}
+
+function endTour(){
+  $('#tourOverlay').classList.remove('open');
+}
+
+function stepIsUsable(step){
+  if (step.requiresDetail && !$('#detailOverlay').classList.contains('open')) return false;
+  if (step.target && !document.querySelector(step.target)) return false;
+  return true;
+}
+
+function showTourStep(){
+  while (tourIndex < tourSteps.length){
+    const step = tourSteps[tourIndex];
+    if (step.before) step.before();
+    if (stepIsUsable(step)) break;
+    tourIndex++;
+  }
+  if (tourIndex >= tourSteps.length){ endTour(); return; }
+  renderTourStep(tourSteps[tourIndex]);
+}
+
+function renderTourStep(step){
+  $('#tourOverlay').classList.add('open');
+  $('#tourProgress').textContent = (tourIndex + 1) + ' / ' + tourSteps.length;
+  $('#tourTitle').textContent = step.title;
+  $('#tourBody').textContent = step.body;
+  $('#tourBackBtn').style.visibility = tourIndex === 0 ? 'hidden' : 'visible';
+
+  const spotlight = $('#tourSpotlight');
+  const tooltip = $('#tourTooltip');
+
+  if (!step.target){
+    spotlight.style.opacity = '0';
+    tooltip.style.top = '50%';
+    tooltip.style.left = '50%';
+    tooltip.style.transform = 'translate(-50%, -50%)';
+    return;
+  }
+
+  const el = document.querySelector(step.target);
+  el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  setTimeout(() => {
+    const rect = el.getBoundingClientRect();
+    const pad = 8;
+    spotlight.style.opacity = '1';
+    spotlight.style.top = (rect.top - pad) + 'px';
+    spotlight.style.left = (rect.left - pad) + 'px';
+    spotlight.style.width = (rect.width + pad * 2) + 'px';
+    spotlight.style.height = (rect.height + pad * 2) + 'px';
+
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const top = spaceBelow > 240 ? rect.bottom + 16 : Math.max(16, rect.top - 230);
+    const left = Math.min(Math.max(16, rect.left), window.innerWidth - 316);
+    tooltip.style.transform = 'none';
+    tooltip.style.top = top + 'px';
+    tooltip.style.left = left + 'px';
+  }, 280);
+}
+
+function tourNext(){ tourIndex++; showTourStep(); }
+function tourBack(){
+  tourIndex--;
+  while (tourIndex >= 0){
+    const step = tourSteps[tourIndex];
+    if (step.before) step.before();
+    if (stepIsUsable(step)) break;
+    tourIndex--;
+  }
+  if (tourIndex < 0) tourIndex = 0;
+  showTourStep();
+}
+
+$('#tourBtn').addEventListener('click', startTour);
+$('#tourNextBtn').addEventListener('click', tourNext);
+$('#tourBackBtn').addEventListener('click', tourBack);
+$('#tourSkipBtn').addEventListener('click', endTour);
+
+applyStaticI18n();
 loadData();
 </script>
 </body>
