@@ -718,10 +718,18 @@ function renderSuggestions(){
     });
   });
   list.querySelectorAll('.suggestion-dismiss').forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', async () => {
       const idx = parseInt(btn.dataset.idx);
-      currentSuggestions.splice(idx, 1);
-      renderSuggestions();
+      const s = currentSuggestions[idx];
+      btn.disabled = true;
+      try {
+        await apiPost('dismissSuggestion', { id: s.id });
+        currentSuggestions.splice(idx, 1);
+        renderSuggestions();
+      } catch(err) {
+        toast('Error: ' + err.message);
+        btn.disabled = false;
+      }
     });
   });
 }
@@ -962,7 +970,7 @@ $('#saveLeadBtn').addEventListener('click', async ()=>{
         toast('Lead updated');
       }
     } else {
-      const res = await apiPost('addLead', { sectionHeaderRow: sections[activeSectionIdx].headerRow, data: fields });
+      const res = await apiPost('addLead', Object.assign({ sectionHeaderRow: sections[activeSectionIdx].headerRow }, fields));
       if (res.result && res.result.emilioWarning) {
         toast('Added to Overview — ' + res.result.emilioWarning);
       } else {
