@@ -140,6 +140,8 @@
   }
   .btn-lime { background: var(--lime); color: var(--black); }
   .btn-lime:hover { background: #d4ff33; }
+  .btn-outline { background: transparent; color: #fff; border: 1.5px solid #3A3A3A; }
+  .btn-outline:hover { border-color: #6B7280; }
   .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
   /* ---------- Preview pane ---------- */
@@ -251,6 +253,7 @@
 
     <div class="btn-row">
       <button class="btn btn-lime" id="copyBtn">Copy for email</button>
+      <button class="btn btn-outline" id="downloadBtn" style="margin-top:10px;">Download HTML</button>
     </div>
   </div>
 
@@ -303,6 +306,7 @@
   const desktopBtn = document.getElementById('desktopBtn');
   const mobileBtn = document.getElementById('mobileBtn');
   const copyBtn = document.getElementById('copyBtn');
+  const downloadBtn = document.getElementById('downloadBtn');
   const bulletListEl = document.getElementById('bulletList');
   const addBulletBtn = document.getElementById('addBulletBtn');
   const shopLinkInput = document.getElementById('shopLinkInput');
@@ -573,6 +577,19 @@
       }
     }
     setTimeout(() => { copyBtn.textContent = originalLabel; }, 2200);
+  });
+
+  downloadBtn.addEventListener('click', () => {
+    const html = buildFinalHtml();
+    const blob = new Blob([html], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = currentId + '-' + currentLang() + '.html';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   });
 
   // init
