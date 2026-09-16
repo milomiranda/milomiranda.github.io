@@ -60,6 +60,14 @@
   .upload-html-btn:hover { border-color: var(--lime); color: var(--lime); }
   #htmlUploadInput { display: none; }
 
+  .back-btn {
+    display: block; width: 100%; margin-top: 8px; text-align: center;
+    font-size: 12px; font-weight: 700; color: #9CA3AF;
+    background: transparent; border: 1.5px solid #2A2A2A; border-radius: 9999px; padding: 9px 10px;
+    cursor: pointer; transition: border-color 0.15s, color 0.15s;
+  }
+  .back-btn:hover { border-color: #6B7280; color: #fff; }
+
   .lang-toggle {
     display: flex; gap: 6px; background: #151515; border: 1px solid #2A2A2A; border-radius: 12px; padding: 4px;
   }
@@ -109,15 +117,19 @@
   }
   .alt-input::placeholder { color: #6B7280; }
   .alt-input:focus { outline: 2px solid var(--lime); outline-offset: 1px; }
+  .alt-input:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .control-note {
+    font-size: 11.5px; color: #6B7280; font-style: italic; margin-top: 8px;
+  }
 
   .code-area {
-    width: 100%; min-height: 220px; resize: vertical;
+    width: 100%; min-height: 180px; resize: vertical;
     padding: 12px; border-radius: 10px; border: 1px solid #2A2A2A;
     background: #0F0F0F; color: #D1D5DB; font-size: 11.5px; line-height: 1.5;
     font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
   }
   .code-area:focus { outline: 2px solid var(--lime); outline-offset: 1px; }
-  #customImageInput { display: none; }
 
   /* Bullet editor */
   .bullet-list { display: flex; flex-direction: column; gap: 8px; }
@@ -141,6 +153,20 @@
     cursor: pointer; margin-top: 2px;
   }
   .add-bullet-btn:hover { border-color: var(--lime); color: var(--lime); }
+
+  /* Generic content editor (custom uploads) */
+  .content-list {
+    display: flex; flex-direction: column; gap: 8px;
+    max-height: 340px; overflow-y: auto; padding-right: 4px;
+  }
+  .content-item input, .content-item textarea {
+    width: 100%; padding: 8px 10px; border-radius: 8px; border: 1px solid #2A2A2A;
+    background: #151515; color: #fff; font-size: 12.5px; font-family: inherit;
+    resize: vertical;
+  }
+  .content-item textarea { min-height: 44px; }
+  .content-item input:focus, .content-item textarea:focus { outline: 2px solid var(--lime); outline-offset: 1px; }
+  .content-item + .content-item { margin-top: 0; }
 
   .info-note {
     font-size: 12px; line-height: 1.6; color: #9CA3AF;
@@ -222,60 +248,67 @@
       <select id="templateSelect"></select>
       <label class="upload-html-btn" for="htmlUploadInput">⬆ Upload your own HTML</label>
       <input type="file" id="htmlUploadInput" accept=".html,.htm,text/html" />
+      <button id="backBtn" class="back-btn" style="display:none;">← Back to templates</button>
     </div>
 
-    <div id="structuredControls">
-      <div>
-        <label class="field-label">Language</label>
-        <div class="lang-toggle" id="langToggle">
-          <button data-lang="en" class="active">EN</button>
-          <button data-lang="es">ES</button>
-          <button data-lang="nl">NL</button>
-        </div>
-      </div>
-
-      <div class="divider"></div>
-
-      <div>
-        <label class="field-label" for="shopLinkInput">"See your shop" button link</label>
-        <input type="url" id="shopLinkInput" class="alt-input" placeholder="https://ticketapp.shop/xxxxx" />
-      </div>
-
-      <div class="divider"></div>
-
-      <div>
-        <label class="field-label">Image (goes inside the black box, below the headline)</label>
-        <div id="dropZone" class="drop-zone">
-          <span class="plus">+</span>
-          <span class="hint"><b>Click to upload</b> or drag an image here</span>
-        </div>
-        <input type="file" id="fileInput" accept="image/*" />
-        <div id="thumbRow" class="thumb-row" style="display:none; margin-top:12px;">
-          <img id="thumbImg" src="" alt="" />
-          <div class="thumb-meta">
-            <div class="name" id="thumbName">image.png</div>
-            <div class="dims" id="thumbDims">—</div>
-          </div>
-          <button class="remove-btn" id="removeBtn" title="Remove image">✕</button>
-        </div>
-      </div>
-
-      <div class="divider"></div>
-
-      <div>
-        <label class="field-label">Bullet points</label>
-        <div class="bullet-list" id="bulletList"></div>
-        <button class="add-bullet-btn" id="addBulletBtn">+ Add bullet point</button>
+    <div>
+      <label class="field-label">Language</label>
+      <div class="lang-toggle" id="langToggle">
+        <button data-lang="en" class="active">EN</button>
+        <button data-lang="es">ES</button>
+        <button data-lang="nl">NL</button>
       </div>
     </div>
 
-    <div id="customControls" style="display:none;">
-      <div>
-        <label class="field-label" for="customSourceArea">HTML source</label>
-        <textarea id="customSourceArea" class="code-area" spellcheck="false"></textarea>
+    <div class="divider"></div>
+
+    <div>
+      <label class="field-label" for="shopLinkInput">"See your shop" button link</label>
+      <input type="url" id="shopLinkInput" class="alt-input" placeholder="https://ticketapp.shop/xxxxx" />
+      <div class="control-note" id="shopLinkNote" style="display:none;">No shop button detected in this HTML.</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div>
+      <label class="field-label">Image (goes inside the black box, below the headline)</label>
+      <div id="dropZone" class="drop-zone">
+        <span class="plus">+</span>
+        <span class="hint"><b>Click to upload</b> or drag an image here</span>
       </div>
-      <button class="add-bullet-btn" id="insertImageBtn" style="width:100%; justify-content:center; margin-top:10px;">+ Insert image at cursor</button>
-      <input type="file" id="customImageInput" accept="image/*" />
+      <input type="file" id="fileInput" accept="image/*" />
+      <div id="thumbRow" class="thumb-row" style="display:none; margin-top:12px;">
+        <img id="thumbImg" src="" alt="" />
+        <div class="thumb-meta">
+          <div class="name" id="thumbName">image.png</div>
+          <div class="dims" id="thumbDims">—</div>
+        </div>
+        <button class="remove-btn" id="removeBtn" title="Remove image">✕</button>
+      </div>
+      <div class="control-note" id="imageNote" style="display:none;">No image slot detected in this HTML.</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div>
+      <label class="field-label">Bullet points</label>
+      <div class="bullet-list" id="bulletList"></div>
+      <button class="add-bullet-btn" id="addBulletBtn">+ Add bullet point</button>
+      <div class="control-note" id="bulletNote" style="display:none;">No bullet list detected in this HTML.</div>
+    </div>
+
+    <div class="divider" id="contentDivider" style="display:none;"></div>
+
+    <div id="contentSection" style="display:none;">
+      <label class="field-label">All other text in this email</label>
+      <div class="content-list" id="contentList"></div>
+    </div>
+
+    <div class="divider" id="rawDivider" style="display:none;"></div>
+
+    <div id="rawSection" style="display:none;">
+      <label class="field-label">Advanced: edit HTML source</label>
+      <textarea id="customSourceArea" class="code-area" spellcheck="false"></textarea>
     </div>
 
     <div class="info-note" id="infoNote">
@@ -313,16 +346,24 @@
   const IMG_MARKER = '<!--IMAGE_SLOT-->';
   const BULLET_MARKER = '<!--BULLET_LIST-->';
   const LANGS = ['en', 'es', 'nl'];
+  const parser = new DOMParser();
 
-  // Per-template state, independent of language
-  const perTemplateImage = {};   // { templateId: { dataUrl, name, dims, alt } }
-  const perTemplateBullets = {}; // { templateId: { lang: [ "text", ... ] } }
-  const perTemplateLang = {};    // { templateId: 'en' | 'es' | 'nl' }
-  const perTemplateShopLink = {}; // { templateId: "https://..." }
+  // ---- Built-in template state ----
+  const perTemplateImage = {};
+  const perTemplateBullets = {};
+  const perTemplateShopLink = {};
+
+  // ---- Shared / custom state ----
+  const perTemplateLang = {};
+  const customDoc = {}; // { templateId: { en: Document, es: Document, nl: Document } }
+  const customImageMeta = {}; // { "templateId::lang": { name, dims } } — cosmetic only
 
   let currentId = null;
+  let lastBuiltinId = null;
 
   const templateSelect = document.getElementById('templateSelect');
+  const htmlUploadInput = document.getElementById('htmlUploadInput');
+  const backBtn = document.getElementById('backBtn');
   const langToggle = document.getElementById('langToggle');
   const dropZone = document.getElementById('dropZone');
   const fileInput = document.getElementById('fileInput');
@@ -331,6 +372,7 @@
   const thumbName = document.getElementById('thumbName');
   const thumbDims = document.getElementById('thumbDims');
   const removeBtn = document.getElementById('removeBtn');
+  const imageNote = document.getElementById('imageNote');
   const previewFrame = document.getElementById('previewFrame');
   const previewLabel = document.getElementById('previewLabel');
   const frameWrap = document.getElementById('frameWrap');
@@ -340,17 +382,19 @@
   const downloadBtn = document.getElementById('downloadBtn');
   const bulletListEl = document.getElementById('bulletList');
   const addBulletBtn = document.getElementById('addBulletBtn');
+  const bulletNote = document.getElementById('bulletNote');
   const shopLinkInput = document.getElementById('shopLinkInput');
-  const htmlUploadInput = document.getElementById('htmlUploadInput');
-  const structuredControls = document.getElementById('structuredControls');
-  const customControls = document.getElementById('customControls');
+  const shopLinkNote = document.getElementById('shopLinkNote');
+  const contentSection = document.getElementById('contentSection');
+  const contentDivider = document.getElementById('contentDivider');
+  const contentList = document.getElementById('contentList');
+  const rawSection = document.getElementById('rawSection');
+  const rawDivider = document.getElementById('rawDivider');
   const customSourceArea = document.getElementById('customSourceArea');
-  const insertImageBtn = document.getElementById('insertImageBtn');
-  const customImageInput = document.getElementById('customImageInput');
   const infoNote = document.getElementById('infoNote');
 
   const STRUCTURED_NOTE = 'Edits update the preview live. Switching language swaps all the copy and bullets for that template. When it looks right, use <b>Copy for email</b> to paste the styled result straight into Gmail/Outlook.';
-  const CUSTOM_NOTE = 'This is your uploaded HTML. Edit the source directly — the preview updates live. Use <b>Insert image at cursor</b> to drop in a picture, then <b>Copy for email</b> or <b>Download HTML</b> when it looks right.';
+  const CUSTOM_NOTE = 'Every piece of text in your upload is editable — bullets and the shop link have their own fields above, everything else is listed under "All other text". Each language tab keeps its own independent copy. The source box at the bottom is there for anything structural.';
 
   Object.keys(TEMPLATES).forEach((id) => {
     const opt = document.createElement('option');
@@ -370,6 +414,11 @@
     return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
 
+  function isCustomCurrent() {
+    const tpl = TEMPLATES[currentId];
+    return !!(tpl && tpl.isCustom);
+  }
+
   function currentLang() {
     return perTemplateLang[currentId] || 'en';
   }
@@ -378,6 +427,100 @@
     return TEMPLATES[currentId].translations[currentLang()];
   }
 
+  function getDoc() {
+    return customDoc[currentId] && customDoc[currentId][currentLang()];
+  }
+
+  function serializeDoc(doc) {
+    return '<!DOCTYPE html>\n' + doc.documentElement.outerHTML;
+  }
+
+  function imageMetaKey() {
+    return currentId + '::' + currentLang();
+  }
+
+  // ---------- Bullets (DOM-based for custom, array-based for built-in) ----------
+  function bulletListHtml(items) {
+    // Keep every item, even blank ones — blanks are stripped later at final-output time.
+    // This matters for custom uploads: the DOM is the live editor state, so a freshly
+    // added blank bullet must still exist as a row for getBullets() to find it again.
+    const rows = items
+      .map((t) => '<tr><td><span class="arrow-glyph">→</span>' + escapeHtml(t) + '</td></tr>')
+      .join('');
+    return (
+      '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" class="arrow-row">' +
+      rows +
+      '</table>'
+    );
+  }
+
+  function stripEmptyBulletRows(html) {
+    return html.replace(/<tr><td><span class="arrow-glyph">→<\/span>\s*<\/td><\/tr>/g, '');
+  }
+
+  function findBulletTable(doc) {
+    return doc.querySelector('table.arrow-row');
+  }
+
+  function getBullets() {
+    if (isCustomCurrent()) {
+      const doc = getDoc();
+      const table = findBulletTable(doc);
+      if (!table) return null;
+      return Array.from(table.querySelectorAll('tr')).map((tr) => {
+        const td = tr.querySelector('td');
+        if (!td) return '';
+        const clone = td.cloneNode(true);
+        const glyph = clone.querySelector('.arrow-glyph');
+        if (glyph) glyph.remove();
+        return clone.textContent.trim();
+      });
+    }
+    return (perTemplateBullets[currentId] && perTemplateBullets[currentId][currentLang()]) || [];
+  }
+
+  function setBullets(items) {
+    if (isCustomCurrent()) {
+      const doc = getDoc();
+      const table = findBulletTable(doc);
+      if (!table) return;
+      const fresh = parser.parseFromString(bulletListHtml(items), 'text/html');
+      const newTable = doc.importNode(fresh.querySelector('table.arrow-row'), true);
+      table.replaceWith(newTable);
+      syncRawFromDoc();
+    } else {
+      perTemplateBullets[currentId][currentLang()] = items;
+    }
+  }
+
+  // ---------- Shop link ----------
+  function findShopButton(doc) {
+    return Array.from(doc.querySelectorAll('a')).find(
+      (a) => a.classList.contains('btn') && a.classList.contains('btn-lime')
+    );
+  }
+
+  function getShopLink() {
+    if (isCustomCurrent()) {
+      const a = findShopButton(getDoc());
+      return a ? a.getAttribute('href') : null;
+    }
+    return perTemplateShopLink[currentId] || '';
+  }
+
+  function setShopLink(v) {
+    if (isCustomCurrent()) {
+      const a = findShopButton(getDoc());
+      if (a) {
+        a.setAttribute('href', v);
+        syncRawFromDoc();
+      }
+    } else {
+      perTemplateShopLink[currentId] = v;
+    }
+  }
+
+  // ---------- Image ----------
   function placeholderBoxHtml() {
     const label = PLACEHOLDER_COPY[currentLang()] || PLACEHOLDER_COPY.en;
     return (
@@ -399,32 +542,133 @@
     );
   }
 
-  function bulletListHtml(items) {
-    const rows = items
-      .filter((t) => t.trim().length > 0)
-      .map((t) => '<tr><td><span class="arrow-glyph">→</span>' + escapeHtml(t) + '</td></tr>')
-      .join('');
-    return (
-      '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" class="arrow-row">' +
-      rows +
-      '</table>'
-    );
+  function findHeroInsertionPoint(doc) {
+    const tds = Array.from(doc.querySelectorAll('td'));
+    const heroTd = tds.find((td) => (td.getAttribute('style') || '').replace(/\s/g, '').includes('background:#0A0A0A'));
+    if (!heroTd) return null;
+    const h1 = heroTd.querySelector('.h1');
+    if (!h1) return null;
+    const tr = h1.closest('tr');
+    return tr || null;
   }
 
-  function isCustomCurrent() {
-    const tpl = TEMPLATES[currentId];
-    return !!(tpl && tpl.isCustom);
+  function getImageInfo(doc) {
+    const img = doc.querySelector('img');
+    if (img) return { mode: 'replace', el: img };
+    const anchorTr = findHeroInsertionPoint(doc);
+    if (anchorTr) return { mode: 'insert', anchorTr: anchorTr };
+    return { mode: 'none' };
   }
 
+  function setImage(dataUrl, name, dims) {
+    if (isCustomCurrent()) {
+      const doc = getDoc();
+      const info = getImageInfo(doc);
+      if (info.mode === 'replace') {
+        info.el.setAttribute('src', dataUrl);
+        info.el.setAttribute('alt', '');
+      } else if (info.mode === 'insert') {
+        const spacer1 = doc.createElement('tr');
+        spacer1.innerHTML = '<td style="height:18px;"></td>';
+        const wrap = parser.parseFromString('<table><tbody>' + imageRowHtml(dataUrl, '') + '</tbody></table>', 'text/html');
+        const imgTr = doc.importNode(wrap.querySelector('tr'), true);
+        const spacer2 = doc.createElement('tr');
+        spacer2.innerHTML = '<td style="height:18px;"></td>';
+        info.anchorTr.after(spacer1, imgTr, spacer2);
+      }
+      syncRawFromDoc();
+      customImageMeta[imageMetaKey()] = { name: name, dims: dims };
+    } else {
+      perTemplateImage[currentId] = { dataUrl: dataUrl, name: name, dims: dims, alt: '' };
+    }
+  }
+
+  function clearImage() {
+    if (isCustomCurrent()) {
+      const doc = getDoc();
+      const info = getImageInfo(doc);
+      if (info.mode === 'replace' && info.el) {
+        const tr = info.el.closest('tr');
+        if (tr) tr.remove(); else info.el.remove();
+        syncRawFromDoc();
+      }
+      delete customImageMeta[imageMetaKey()];
+    } else {
+      delete perTemplateImage[currentId];
+    }
+  }
+
+  // ---------- Generic content (every other text node) ----------
+  function collectTextNodes(doc) {
+    const bulletTable = findBulletTable(doc);
+    const walker = doc.createTreeWalker(doc.body, NodeFilter.SHOW_TEXT, null);
+    const nodes = [];
+    let n;
+    while ((n = walker.nextNode())) {
+      const parentTag = n.parentElement ? n.parentElement.tagName : '';
+      if (parentTag === 'SCRIPT' || parentTag === 'STYLE' || parentTag === 'TITLE') continue;
+      if (bulletTable && bulletTable.contains(n)) continue;
+      if (!n.textContent || !n.textContent.trim()) continue;
+      nodes.push(n);
+    }
+    return nodes;
+  }
+
+  function renderContentEditor() {
+    contentList.innerHTML = '';
+    if (!isCustomCurrent()) {
+      contentSection.style.display = 'none';
+      contentDivider.style.display = 'none';
+      return;
+    }
+    const doc = getDoc();
+    const nodes = collectTextNodes(doc);
+    if (!nodes.length) {
+      contentSection.style.display = 'none';
+      contentDivider.style.display = 'none';
+      return;
+    }
+    contentSection.style.display = 'block';
+    contentDivider.style.display = 'block';
+
+    nodes.forEach((node) => {
+      const wrap = document.createElement('div');
+      wrap.className = 'content-item';
+      const text = node.textContent;
+      const long = text.trim().length > 60;
+      const field = document.createElement(long ? 'textarea' : 'input');
+      if (!long) field.type = 'text';
+      field.value = text;
+      field.addEventListener('input', () => {
+        node.textContent = field.value;
+        syncRawFromDoc();
+        render();
+      });
+      wrap.appendChild(field);
+      contentList.appendChild(wrap);
+    });
+  }
+
+  // ---------- Raw <-> DOM sync ----------
+  function syncRawFromDoc() {
+    if (!isCustomCurrent()) return;
+    customSourceArea.value = serializeDoc(getDoc());
+  }
+
+  function reparseRawIntoDoc() {
+    if (!customDoc[currentId]) customDoc[currentId] = {};
+    customDoc[currentId][currentLang()] = parser.parseFromString(customSourceArea.value, 'text/html');
+  }
+
+  // ---------- Build / render ----------
   function buildFinalHtml() {
     const tpl = TEMPLATES[currentId];
     if (tpl.isCustom) {
-      return tpl.html;
+      return stripEmptyBulletRows(serializeDoc(getDoc()));
     }
     const copy = currentCopy();
     let html = tpl.html;
 
-    // Replace every __T_KEY__ token with its translated value
     Object.keys(copy).forEach((key) => {
       if (key === 'bullets') return;
       const token = '__T_' + key + '__';
@@ -438,7 +682,7 @@
     html = html.replace(IMG_MARKER, imgHtml);
 
     const bullets = (perTemplateBullets[currentId] && perTemplateBullets[currentId][currentLang()]) || [];
-    html = html.replace(BULLET_MARKER, bulletListHtml(bullets));
+    html = html.replace(BULLET_MARKER, stripEmptyBulletRows(bulletListHtml(bullets)));
 
     const shopLink = (perTemplateShopLink[currentId] || '').trim() || (TEMPLATES[currentId].default_shop_link || '#');
     html = html.split('__SHOP_LINK__').join(escapeHtml(shopLink));
@@ -453,20 +697,18 @@
     previewLabel.textContent = tpl.label;
   }
 
-  function applyModeUI() {
-    const custom = isCustomCurrent();
-    structuredControls.style.display = custom ? 'none' : 'block';
-    customControls.style.display = custom ? 'block' : 'none';
-    infoNote.innerHTML = custom ? CUSTOM_NOTE : STRUCTURED_NOTE;
-    if (custom) {
-      customSourceArea.value = TEMPLATES[currentId].html;
-    }
-  }
-
   function renderBulletEditor() {
-    const bullets = (perTemplateBullets[currentId] && perTemplateBullets[currentId][currentLang()]) || [];
+    const items = getBullets();
     bulletListEl.innerHTML = '';
-    bullets.forEach((text, idx) => {
+    if (items === null) {
+      addBulletBtn.style.display = 'none';
+      bulletNote.style.display = 'block';
+      return;
+    }
+    addBulletBtn.style.display = 'inline-flex';
+    bulletNote.style.display = 'none';
+
+    items.forEach((text, idx) => {
       const row = document.createElement('div');
       row.className = 'bullet-item';
 
@@ -479,7 +721,9 @@
       input.value = text;
       input.placeholder = 'Bullet text';
       input.addEventListener('input', () => {
-        perTemplateBullets[currentId][currentLang()][idx] = input.value;
+        const arr = getBullets().slice();
+        arr[idx] = input.value;
+        setBullets(arr);
         render();
       });
 
@@ -488,7 +732,9 @@
       del.textContent = '✕';
       del.title = 'Remove bullet';
       del.addEventListener('click', () => {
-        perTemplateBullets[currentId][currentLang()].splice(idx, 1);
+        const arr = getBullets().slice();
+        arr.splice(idx, 1);
+        setBullets(arr);
         renderBulletEditor();
         render();
       });
@@ -507,34 +753,131 @@
     });
   }
 
-  function updateShopLinkSidebar() {
-    shopLinkInput.value = perTemplateShopLink[currentId] || '';
+  function updateShopLinkUI() {
+    const value = getShopLink();
+    if (value === null) {
+      shopLinkInput.value = '';
+      shopLinkInput.disabled = true;
+      shopLinkNote.style.display = 'block';
+    } else {
+      shopLinkInput.disabled = false;
+      shopLinkNote.style.display = 'none';
+      shopLinkInput.value = value;
+    }
   }
 
-  function updateImageSidebar() {
-    const img = perTemplateImage[currentId];
-    if (img) {
+  function updateImageUI() {
+    let meta = null;
+    let detected = true;
+
+    if (isCustomCurrent()) {
+      const doc = getDoc();
+      const info = getImageInfo(doc);
+      detected = info.mode !== 'none';
+      if (info.mode === 'replace') {
+        const cosmetic = customImageMeta[imageMetaKey()];
+        meta = {
+          dataUrl: info.el.getAttribute('src'),
+          name: (cosmetic && cosmetic.name) || 'Existing image',
+          dims: (cosmetic && cosmetic.dims) || ''
+        };
+      }
+    } else {
+      meta = perTemplateImage[currentId] || null;
+    }
+
+    if (meta) {
       thumbRow.style.display = 'flex';
-      thumbImg.src = img.dataUrl;
-      thumbName.textContent = img.name;
-      thumbDims.textContent = img.dims;
+      thumbImg.src = meta.dataUrl;
+      thumbName.textContent = meta.name;
+      thumbDims.textContent = meta.dims;
     } else {
       thumbRow.style.display = 'none';
     }
+
+    dropZone.style.display = detected ? 'block' : 'none';
+    imageNote.style.display = detected ? 'none' : 'block';
+  }
+
+  function applyModeUI() {
+    const custom = isCustomCurrent();
+    rawSection.style.display = custom ? 'block' : 'none';
+    rawDivider.style.display = custom ? 'block' : 'none';
+    backBtn.style.display = custom ? 'block' : 'none';
+    infoNote.innerHTML = custom ? CUSTOM_NOTE : STRUCTURED_NOTE;
+    if (custom) {
+      customSourceArea.value = serializeDoc(getDoc());
+    }
+  }
+
+  function refreshAllUI() {
+    renderLangToggle();
+    updateShopLinkUI();
+    updateImageUI();
+    renderBulletEditor();
+    renderContentEditor();
+    render();
   }
 
   templateSelect.addEventListener('change', () => {
     currentId = templateSelect.value;
+    if (!isCustomCurrent()) lastBuiltinId = currentId;
     applyModeUI();
-    renderLangToggle();
-    updateShopLinkSidebar();
-    updateImageSidebar();
+    refreshAllUI();
+  });
+
+  backBtn.addEventListener('click', () => {
+    if (!lastBuiltinId) return;
+    templateSelect.value = lastBuiltinId;
+    currentId = lastBuiltinId;
+    applyModeUI();
+    refreshAllUI();
+  });
+
+  htmlUploadInput.addEventListener('change', (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const id = 'custom-' + Date.now();
+      const label = file.name.replace(/\.html?$/i, '');
+      const raw = ev.target.result;
+      const baseDoc = parser.parseFromString(raw, 'text/html');
+
+      TEMPLATES[id] = { label: label, isCustom: true };
+      customDoc[id] = {
+        en: baseDoc.cloneNode(true),
+        es: baseDoc.cloneNode(true),
+        nl: baseDoc.cloneNode(true)
+      };
+      perTemplateLang[id] = 'en';
+
+      const opt = document.createElement('option');
+      opt.value = id;
+      opt.textContent = '📄 ' + label;
+      templateSelect.appendChild(opt);
+      templateSelect.value = id;
+      currentId = id;
+
+      applyModeUI();
+      refreshAllUI();
+    };
+    reader.readAsText(file);
+    htmlUploadInput.value = '';
+  });
+
+  customSourceArea.addEventListener('input', () => {
+    if (!isCustomCurrent()) return;
+    reparseRawIntoDoc();
+    updateShopLinkUI();
+    updateImageUI();
     renderBulletEditor();
+    renderContentEditor();
     render();
   });
 
   shopLinkInput.addEventListener('input', () => {
-    perTemplateShopLink[currentId] = shopLinkInput.value;
+    setShopLink(shopLinkInput.value);
     render();
   });
 
@@ -542,9 +885,10 @@
     const btn = e.target.closest('button[data-lang]');
     if (!btn) return;
     perTemplateLang[currentId] = btn.dataset.lang;
-    renderLangToggle();
-    renderBulletEditor();
-    render();
+    if (isCustomCurrent()) {
+      customSourceArea.value = serializeDoc(getDoc());
+    }
+    refreshAllUI();
   });
 
   function handleFile(file) {
@@ -554,13 +898,8 @@
       const dataUrl = e.target.result;
       const im = new Image();
       im.onload = () => {
-        perTemplateImage[currentId] = {
-          dataUrl: dataUrl,
-          name: file.name,
-          dims: im.width + ' × ' + im.height,
-          alt: ''
-        };
-        updateImageSidebar();
+        setImage(dataUrl, file.name, im.width + ' × ' + im.height);
+        updateImageUI();
         render();
       };
       im.src = dataUrl;
@@ -591,13 +930,15 @@
   });
 
   removeBtn.addEventListener('click', () => {
-    delete perTemplateImage[currentId];
-    updateImageSidebar();
+    clearImage();
+    updateImageUI();
     render();
   });
 
   addBulletBtn.addEventListener('click', () => {
-    perTemplateBullets[currentId][currentLang()].push('');
+    const arr = (getBullets() || []).slice();
+    arr.push('');
+    setBullets(arr);
     renderBulletEditor();
     const inputs = bulletListEl.querySelectorAll('input');
     if (inputs.length) inputs[inputs.length - 1].focus();
@@ -639,67 +980,14 @@
     setTimeout(() => { copyBtn.textContent = originalLabel; }, 2200);
   });
 
-  htmlUploadInput.addEventListener('change', (e) => {
-    const file = e.target.files && e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      const id = 'custom-' + Date.now();
-      const label = file.name.replace(/\.html?$/i, '');
-      TEMPLATES[id] = {
-        label: label,
-        html: ev.target.result,
-        isCustom: true
-      };
-      const opt = document.createElement('option');
-      opt.value = id;
-      opt.textContent = '📄 ' + label;
-      templateSelect.appendChild(opt);
-      templateSelect.value = id;
-      currentId = id;
-      applyModeUI();
-      render();
-    };
-    reader.readAsText(file);
-    htmlUploadInput.value = '';
-  });
-
-  customSourceArea.addEventListener('input', () => {
-    if (!isCustomCurrent()) return;
-    TEMPLATES[currentId].html = customSourceArea.value;
-    render();
-  });
-
-  insertImageBtn.addEventListener('click', () => customImageInput.click());
-  customImageInput.addEventListener('change', (e) => {
-    const file = e.target.files && e.target.files[0];
-    if (!file || !isCustomCurrent()) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      const dataUrl = ev.target.result;
-      const imgTag = '<img src="' + dataUrl + '" alt="" style="max-width:100%; display:block; border-radius:12px;" />';
-      const start = customSourceArea.selectionStart || 0;
-      const end = customSourceArea.selectionEnd || 0;
-      const current = customSourceArea.value;
-      const updated = current.slice(0, start) + imgTag + current.slice(end);
-      customSourceArea.value = updated;
-      TEMPLATES[currentId].html = updated;
-      const caret = start + imgTag.length;
-      customSourceArea.focus();
-      customSourceArea.setSelectionRange(caret, caret);
-      render();
-    };
-    reader.readAsDataURL(file);
-    customImageInput.value = '';
-  });
-
   downloadBtn.addEventListener('click', () => {
     const html = buildFinalHtml();
     const blob = new Blob([html], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
+    const safeLabel = (TEMPLATES[currentId].label || currentId).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
     a.href = url;
-    a.download = isCustomCurrent() ? (currentId + '.html') : (currentId + '-' + currentLang() + '.html');
+    a.download = safeLabel + '-' + currentLang() + '.html';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -708,13 +996,10 @@
 
   // init
   currentId = Object.keys(TEMPLATES)[0];
+  lastBuiltinId = currentId;
   templateSelect.value = currentId;
   applyModeUI();
-  renderLangToggle();
-  updateShopLinkSidebar();
-  updateImageSidebar();
-  renderBulletEditor();
-  render();
+  refreshAllUI();
 })();
 </script>
 
