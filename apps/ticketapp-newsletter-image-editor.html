@@ -252,6 +252,14 @@
       <button id="backBtn" class="back-btn" style="display:none;">← Back to templates</button>
     </div>
 
+    <div id="upgradeSection" style="display:none;">
+      <div class="info-note">
+        <b>Upgrade available.</b> This file is missing some recent template updates:
+        <ul id="upgradeList" style="margin:8px 0 0; padding-left:18px;"></ul>
+      </div>
+      <button class="btn btn-lime" id="upgradeBtn" style="margin-top:10px;">Upgrade this file</button>
+    </div>
+
     <div>
       <label class="field-label">Language</label>
       <div class="lang-toggle" id="langToggle">
@@ -376,6 +384,9 @@
   const templateSelect = document.getElementById('templateSelect');
   const htmlUploadInput = document.getElementById('htmlUploadInput');
   const backBtn = document.getElementById('backBtn');
+  const upgradeSection = document.getElementById('upgradeSection');
+  const upgradeList = document.getElementById('upgradeList');
+  const upgradeBtn = document.getElementById('upgradeBtn');
   const langToggle = document.getElementById('langToggle');
   const dropZone = document.getElementById('dropZone');
   const fileInput = document.getElementById('fileInput');
@@ -615,6 +626,159 @@
     } else {
       delete perTemplateImage[currentId];
     }
+  }
+
+  // ---------- Upgrade detection / fixes (custom uploads only) ----------
+  const WHATSAPP_LINKS = {
+    en: 'https://api.whatsapp.com/send/?phone=31643735292&text=Hi+Emilio%2C+I%27d+like+to+know+more+about+Ticketapp.&type=phone_number&app_absent=0',
+    es: 'https://api.whatsapp.com/send/?phone=31643735292&text=Hola+Emilio%2C+me+gustar%C3%ADa+saber+m%C3%A1s+sobre+Ticketapp.&type=phone_number&app_absent=0',
+    nl: 'https://api.whatsapp.com/send/?phone=31643735292&text=Hoi+Emilio%2C+ik+wil+graag+meer+weten+over+Ticketapp.&type=phone_number&app_absent=0',
+  };
+  const WHATSAPP_LABELS = {
+    en: 'MESSAGE ME ON WHATSAPP →',
+    es: 'ESCRÍBEME POR WHATSAPP →',
+    nl: 'STUUR ME EEN WHATSAPP →',
+  };
+  const BOOK_BTN_LANG_BY_TEXT = {
+    'BOOK A CALL →': 'en',
+    'AGENDAR LLAMADA →': 'es',
+    'PLAN EEN GESPREK →': 'nl',
+  };
+
+  function detectLangFromBookText(text) {
+    return BOOK_BTN_LANG_BY_TEXT[(text || '').trim()] || 'en';
+  }
+
+  function hasWhatsappSibling(tr) {
+    let sib = tr.nextElementSibling;
+    for (let i = 0; i < 3 && sib; i++) {
+      if (sib.querySelector('a[href*="wa.me"], a[href*="api.whatsapp.com"]')) return true;
+      if (sib.querySelector('a')) return false;
+      sib = sib.nextElementSibling;
+    }
+    return false;
+  }
+
+  function countEmDashes(doc) {
+    let count = 0;
+    const walker = doc.createTreeWalker(doc.body, NodeFilter.SHOW_TEXT, null);
+    let n;
+    while ((n = walker.nextNode())) {
+      const tag = n.parentElement ? n.parentElement.tagName : '';
+      if (tag === 'SCRIPT' || tag === 'STYLE') continue;
+      const m = n.textContent.match(/—/g);
+      if (m) count += m.length;
+    }
+    return count;
+  }
+
+  function detectUpgrades(doc) {
+    const issues = [];
+
+    const shopCount = doc.querySelectorAll('a.btn.btn-lime').length;
+    if (shopCount) {
+      issues.push({ id: 'shopBtn', label: shopCount + ' shop button' + (shopCount > 1 ? 's' : '') + ' still using the old lime pill style' });
+    }
+
+    const oldCalendly = doc.querySelectorAll('a[href*="calendly.com/emilio-ticketapp/30min"]').length;
+    if (oldCalendly) {
+      issues.push({ id: 'calendly', label: 'Old Calendly link still in use (/30min)' });
+    }
+
+    const calendlyAnchors = Array.from(doc.querySelectorAll('a[href*="calendly.com"]'));
+    const missingWa = calendlyAnchors.filter((a) => {
+      const tr = a.closest('tr');
+      return tr && !hasWhatsappSibling(tr);
+    }).length;
+    if (missingWa) {
+      issues.push({ id: 'whatsapp', label: 'No WhatsApp button next to ' + missingWa + ' Calendly link' + (missingWa > 1 ? 's' : '') });
+    }
+
+    const dashCount = countEmDashes(doc);
+    if (dashCount) {
+      issues.push({ id: 'emdash', label: dashCount + ' em dash' + (dashCount > 1 ? 'es' : '') + ' found in the copy' });
+    }
+
+    return issues;
+  }
+
+  function ensureLinkBlueCss(doc) {
+    const style = doc.querySelector('style');
+    if (!style) return;
+    if (style.textContent.indexOf('.link-blue') !== -1) return;
+    style.textContent += '\n  .link-blue { background:#2563EB; color:#FFFFFF; text-decoration:underline; }\n';
+  }
+
+  function applyUpgrades(doc) {
+    const shopBtns = doc.querySelectorAll('a.btn.btn-lime');
+    if (shopBtns.length) {
+      shopBtns.forEach((a) => {
+        a.classList.remove('btn-lime');
+        a.classList.add('link-blue');
+      });
+      ensureLinkBlueCss(doc);
+    }
+
+    doc.querySelectorAll('a[href*="calendly.com/emilio-ticketapp/30min"]').forEach((a) => {
+      a.setAttribute('href', a.getAttribute('href').replace('/30min', '/new-meeting'));
+    });
+
+    Array.from(doc.querySelectorAll('a[href*="calendly.com"]')).forEach((a) => {
+      const tr = a.closest('tr');
+      if (!tr || hasWhatsappSibling(tr)) return;
+      const lang = detectLangFromBookText(a.textContent);
+      const td = a.closest('td');
+      const align = (td && td.getAttribute('align')) || 'left';
+
+      const spacer = doc.createElement('tr');
+      spacer.innerHTML = '<td style="height:12px;"></td>';
+
+      const waTr = doc.createElement('tr');
+      const waTd = doc.createElement('td');
+      waTd.setAttribute('align', align);
+      const waA = doc.createElement('a');
+      waA.setAttribute('href', WHATSAPP_LINKS[lang]);
+      waA.setAttribute('class', 'btn btn-outline');
+      waA.textContent = WHATSAPP_LABELS[lang];
+      waTd.appendChild(waA);
+      waTr.appendChild(waTd);
+
+      tr.after(spacer, waTr);
+    });
+
+    const walker = doc.createTreeWalker(doc.body, NodeFilter.SHOW_TEXT, null);
+    const textNodes = [];
+    let n;
+    while ((n = walker.nextNode())) {
+      const tag = n.parentElement ? n.parentElement.tagName : '';
+      if (tag === 'SCRIPT' || tag === 'STYLE') continue;
+      if (n.textContent.indexOf('—') !== -1) textNodes.push(n);
+    }
+    textNodes.forEach((node) => { node.textContent = node.textContent.replace(/—/g, '-'); });
+  }
+
+  function updateUpgradeUI() {
+    if (!isCustomCurrent()) {
+      upgradeSection.style.display = 'none';
+      return;
+    }
+    const doc = getDoc();
+    if (!doc) {
+      upgradeSection.style.display = 'none';
+      return;
+    }
+    const issues = detectUpgrades(doc);
+    if (!issues.length) {
+      upgradeSection.style.display = 'none';
+      return;
+    }
+    upgradeSection.style.display = 'block';
+    upgradeList.innerHTML = '';
+    issues.forEach((iss) => {
+      const li = document.createElement('li');
+      li.textContent = iss.label;
+      upgradeList.appendChild(li);
+    });
   }
 
   // ---------- Generic content (every other text node) ----------
@@ -865,6 +1029,7 @@
     updateImageUI();
     renderBulletEditor();
     renderContentEditor();
+    updateUpgradeUI();
     render();
   }
 
@@ -951,6 +1116,17 @@
       copySubjectBtn.textContent = 'Copy failed';
     }
     setTimeout(() => { copySubjectBtn.textContent = original; }, 1800);
+  });
+
+  upgradeBtn.addEventListener('click', () => {
+    const doc = getDoc();
+    if (!doc) return;
+    applyUpgrades(doc);
+    syncRawFromDoc();
+    updateUpgradeUI();
+    updateShopLinkUI();
+    renderContentEditor();
+    render();
   });
 
   langToggle.addEventListener('click', (e) => {
