@@ -244,6 +244,13 @@
   <div class="sidebar">
     <div class="brand">ticketapp<span>.</span> newsletter editor</div>
 
+    <div class="lang-toggle" id="modeToggle" style="margin-top:2px;">
+      <button type="button" data-mode="newsletter" class="active">Newsletter</button>
+      <button type="button" data-mode="cold">Cold Emails</button>
+      <button type="button" data-mode="objection">Objections</button>
+    </div>
+
+    <div id="newsletterPanel" style="display:contents;">
     <div>
       <label class="field-label" for="templateSelect">Template</label>
       <select id="templateSelect"></select>
@@ -340,6 +347,60 @@
       <button class="btn btn-lime" id="copyBtn">Copy for email</button>
       <button class="btn btn-outline" id="downloadBtn" style="margin-top:10px;">Download HTML</button>
     </div>
+    </div>
+
+    <div id="coldEmailPanel" style="display:none;">
+      <div>
+        <label class="field-label" for="coldTemplateSelect">Cold email template</label>
+        <select id="coldTemplateSelect"></select>
+      </div>
+
+      <div class="divider"></div>
+
+      <div>
+        <label class="field-label" for="coldNameInput">Prospect / venue name</label>
+        <input type="text" id="coldNameInput" class="alt-input" placeholder="e.g. Roxy CDMX" />
+      </div>
+
+      <div class="info-note">
+        Type the prospect's name above - it fills in automatically everywhere it appears in the email. When it looks right, hit <b>Copy email</b> and paste straight into Gmail.
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-lime" id="coldCopyBtn">Copy email</button>
+      </div>
+    </div>
+
+    <div id="objectionPanel" style="display:none;">
+      <div>
+        <label class="field-label" for="objectionCategorySelect">Objection category</label>
+        <select id="objectionCategorySelect"></select>
+      </div>
+
+      <div>
+        <label class="field-label" for="objectionOptionSelect" style="margin-top:14px;">Option</label>
+        <select id="objectionOptionSelect"></select>
+      </div>
+
+      <div class="divider"></div>
+
+      <div>
+        <label class="field-label">Language</label>
+        <div class="lang-toggle" id="objectionLangToggle">
+          <button type="button" data-lang="en" class="active">EN</button>
+          <button type="button" data-lang="es">ES</button>
+          <button type="button" data-lang="nl">NL</button>
+        </div>
+      </div>
+
+      <div class="info-note">
+        Pick the objection and the language, then hit <b>Copy message</b> to paste straight into WhatsApp, email, or wherever the conversation is happening.
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-lime" id="objectionCopyBtn">Copy message</button>
+      </div>
+    </div>
   </div>
 
   <div class="preview-pane">
@@ -353,6 +414,28 @@
       </div>
       <div class="email-frame-wrap desktop" id="frameWrap">
         <iframe id="previewFrame" title="Email preview"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <div class="preview-pane" id="coldPreviewPane" style="display:none;">
+    <div class="preview-shell">
+      <div class="preview-toolbar">
+        <div class="subject">Previewing: <b id="coldPreviewLabel">-</b></div>
+      </div>
+      <div class="email-frame-wrap desktop" style="padding:44px 48px;">
+        <div id="coldPreviewText" style="white-space:pre-wrap; font-family:'Inter',ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif; font-size:15px; line-height:1.7; color:#111827; max-height:78vh; overflow-y:auto;"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="preview-pane" id="objectionPreviewPane" style="display:none;">
+    <div class="preview-shell">
+      <div class="preview-toolbar">
+        <div class="subject">Previewing: <b id="objectionPreviewLabel">-</b></div>
+      </div>
+      <div class="email-frame-wrap desktop" style="padding:44px 48px;">
+        <div id="objectionPreviewText" style="white-space:pre-wrap; font-family:'Inter',ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif; font-size:15px; line-height:1.7; color:#111827; max-height:78vh; overflow-y:auto;"></div>
       </div>
     </div>
   </div>
@@ -1326,6 +1409,385 @@
   templateSelect.value = currentId;
   applyModeUI();
   refreshAllUI();
+})();
+</script>
+
+<!--
+  COLD EMAILS TOOL
+  Fully separate from the newsletter editor above: its own script, its own DOM
+  ids, its own state. Nothing in this block reads or writes any newsletter
+  variable, and nothing above knows this block exists. Safe to extend later
+  (more markets / templates) without touching the newsletter code.
+-->
+<script>
+(function () {
+  var NAME_TOKEN = '{{NAME}}';
+
+  var COLD_TEMPLATES = [
+    {
+      id: 'mx_short_en',
+      label: 'Mexican Market - Short (EN)',
+      body: [
+        'Hi ' + NAME_TOKEN + ',',
+        '',
+        "I'm Emilio, Partner Manager at Ticketapp. We help many of the top clubs across Europe grow their revenue, increase customer spending and grow upsell through ticketing.",
+        '',
+        "We're now expanding into Mexico and " + NAME_TOKEN + " was the first name that came to mind (I'm Mexican myself). We've clearly seen how you guys move a crowd, and you really fit the profile of what we want to partner up with.",
+        '',
+        "We'll be in Mexico City in September and would love to sit down. Would you be interested in meeting up?",
+        '',
+        'Big hug,',
+        'Emilio Miranda'
+      ].join('\n')
+    },
+    {
+      id: 'mx_short_es',
+      label: 'Mexican Market - Short (ES)',
+      body: [
+        'Hola equipo de ' + NAME_TOKEN + ',',
+        '',
+        'Soy Emilio, Partner Manager en Ticketapp (https://ticketapp.com/). Trabajamos con clubes, venues y organizadores en Europa para ayudarles a vender más, generar nuevas oportunidades de revenue y conocer mejor a su audiencia.',
+        '',
+        'Estamos expandiéndonos a México y ' + NAME_TOKEN + ' fue uno de los primeros lugares que tuve en mente.',
+        '',
+        'Más que ser únicamente una plataforma de ticketing, buscamos trabajar como partners: entender cómo funciona cada venue y construir juntos ideas y soluciones que les ayuden a crecer.',
+        '',
+        'Además, Ticketapp no tiene coste para el organizador: el comprador cubre el service fee y nosotros ponemos la tecnología y nuestro equipo detrás de la colaboración.',
+        '',
+        'Estaremos en CDMX en septiembre y me encantaría conocerlos. Si les interesa explorar qué podríamos construir juntos, que les parece reunirnos esta semana o la que viene en una videollamada?',
+        '',
+        'Un abrazo y espero conocerlos pronto,',
+        'Emilio Miranda'
+      ].join('\n')
+    },
+    {
+      id: 'mx_long_en',
+      label: 'Mexican Market - Long (EN)',
+      body: [
+        'Hi ' + NAME_TOKEN + ' team,',
+        '',
+        "I'm Emilio, Partner Manager at Ticketapp. We help clubs and venues across Europe increase their revenue through ticket sales, upselling, and customer data.",
+        '',
+        'What I believe could be particularly interesting for ' + NAME_TOKEN + " is our business model: Ticketapp doesn't charge the organizer anything to use our platform. The buyer covers the service fee, while we provide the venue with the infrastructure to sell tickets, drive upselling, and collect valuable customer data to make better commercial decisions.",
+        '',
+        'Across Europe, we work with venues such as Unlimited Albufeira, Tropics Lloret de Mar, ClubNL in Mallorca, as well as other clubs in Ibiza, Amsterdam, and Chersonissos.',
+        '',
+        "We're currently expanding into Mexico, and " + NAME_TOKEN + " was one of the first venues that came to mind. I'm Mexican myself, and I've seen how you bring people together and create a great atmosphere. I believe you're a great fit for the type of venues we're looking to partner with.",
+        '',
+        'In short: we give you the tools to sell more and better understand your customers, at no cost to the organizer.',
+        '',
+        "My team and I will be in Mexico City in September, and we'd love to meet you in person. Before then, I'd be happy to show you the platform in a 20-30 minute video call and see if it could make sense for " + NAME_TOKEN + '.',
+        '',
+        'If this sounds interesting, you can choose a day and time that works best for you here: https://calendly.com/emilio-ticketapp/new-meeting',
+        '',
+        'Best,',
+        'Emilio Miranda'
+      ].join('\n')
+    },
+    {
+      id: 'mx_long_es',
+      label: 'Mexican Market - Long (ES)',
+      body: [
+        'Buen día equipo de ' + NAME_TOKEN + ',',
+        '',
+        'Soy Emilio, Partner Manager en Ticketapp (https://ticketapp.com/). Trabajamos con clubes, venues y organizadores ayudándoles a aumentar sus ingresos a través de ticketing, upselling y un mejor uso de los datos de sus compradores.',
+        '',
+        'Pero no nos vemos únicamente como una plataforma de ticketing. Nuestra forma de trabajar es mucho más cercana a una colaboración: entendemos cómo funciona cada venue, qué quieren conseguir y qué oportunidades existen alrededor de sus eventos para, a partir de ahí, construimos soluciones e ideas junto con su equipo.',
+        '',
+        'Nuestro modelo hace que esta colaboración sea especialmente sencilla: Ticketapp no le cobra al organizador por utilizar la plataforma. El comprador cubre el coste del servicio, mientras nosotros ponemos a disposición del venue toda nuestra infraestructura, tecnología y acompañamiento.',
+        '',
+        'En Europa trabajamos con venues como Unlimited Albufeira, Tropics Lloret de Mar, ClubNL en Mallorca y otros clubes en Ibiza, Ámsterdam y Chersonissos.',
+        '',
+        'Actualmente estamos expandiéndonos a México y ' + NAME_TOKEN + ' fue uno de los primeros lugares que tuve en mente. He visto cómo logran mover a la gente y crear un gran ambiente, y creo que hay mucho potencial para explorar lo que podríamos construir juntos.',
+        '',
+        'Mi equipo y yo estaremos en Ciudad de México en septiembre y nos encantaría conocerlos personalmente. Antes de eso, me gustaría enseñarles lo que hacemos en una videollamada de 20-30 minutos, conocer un poco más sobre ' + NAME_TOKEN + ' y explorar si podemos encontrar oportunidades interesantes para ambas partes.',
+        '',
+        'Si les interesa, pueden elegir directamente el día y horario que mejor les funcione aquí: https://calendly.com/emilio-ticketapp/new-meeting',
+        '',
+        'Un abrazo,',
+        'Emilio Miranda'
+      ].join('\n')
+    }
+  ];
+
+  var modeToggle = document.getElementById('modeToggle');
+  var newsletterPanel = document.getElementById('newsletterPanel');
+  var coldEmailPanel = document.getElementById('coldEmailPanel');
+  // First .preview-pane in the document is always the original newsletter one -
+  // it's the only one that exists on initial page load, before this script (or
+  // the objection-handling script after it) ever adds the other preview panes.
+  var newsletterPreviewPane = document.querySelector('.preview-pane');
+  var coldPreviewPane = document.getElementById('coldPreviewPane');
+  var coldTemplateSelect = document.getElementById('coldTemplateSelect');
+  var coldNameInput = document.getElementById('coldNameInput');
+  var coldPreviewText = document.getElementById('coldPreviewText');
+  var coldPreviewLabel = document.getElementById('coldPreviewLabel');
+  var coldCopyBtn = document.getElementById('coldCopyBtn');
+
+  if (!modeToggle || !newsletterPanel || !coldEmailPanel || !coldPreviewPane || !coldTemplateSelect) return;
+
+  COLD_TEMPLATES.forEach(function (t) {
+    var opt = document.createElement('option');
+    opt.value = t.id;
+    opt.textContent = t.label;
+    coldTemplateSelect.appendChild(opt);
+  });
+
+  function currentColdTemplate() {
+    var id = coldTemplateSelect.value || COLD_TEMPLATES[0].id;
+    for (var i = 0; i < COLD_TEMPLATES.length; i++) {
+      if (COLD_TEMPLATES[i].id === id) return COLD_TEMPLATES[i];
+    }
+    return COLD_TEMPLATES[0];
+  }
+
+  function mergedColdText() {
+    var t = currentColdTemplate();
+    var name = (coldNameInput.value || '').trim() || '[Name]';
+    return t.body.split(NAME_TOKEN).join(name);
+  }
+
+  function renderColdPreview() {
+    var t = currentColdTemplate();
+    coldPreviewText.textContent = mergedColdText();
+    coldPreviewLabel.textContent = t.label;
+  }
+
+  coldTemplateSelect.addEventListener('change', renderColdPreview);
+  coldNameInput.addEventListener('input', renderColdPreview);
+
+  if (coldCopyBtn) {
+    coldCopyBtn.addEventListener('click', function () {
+      var original = coldCopyBtn.textContent;
+      navigator.clipboard.writeText(mergedColdText()).then(
+        function () {
+          coldCopyBtn.textContent = 'Copied!';
+          setTimeout(function () { coldCopyBtn.textContent = original; }, 1800);
+        },
+        function () {
+          coldCopyBtn.textContent = 'Copy failed';
+          setTimeout(function () { coldCopyBtn.textContent = original; }, 1800);
+        }
+      );
+    });
+  }
+
+  // Table-driven so any tool added later (this one, or a future one appended
+  // after it) just registers a {mode, panel, preview} entry here instead of
+  // every tool needing its own hardcoded on/off logic for every other tool.
+  var MODE_PANELS = [
+    { mode: 'newsletter', panel: newsletterPanel, preview: newsletterPreviewPane },
+    { mode: 'cold', panel: coldEmailPanel, preview: coldPreviewPane }
+  ];
+
+  window.__ticketappRegisterModePanel = function (entry) {
+    MODE_PANELS.push(entry);
+  };
+
+  function setMode(mode) {
+    MODE_PANELS.forEach(function (p) {
+      var active = p.mode === mode;
+      if (p.panel) p.panel.style.display = active ? 'contents' : 'none';
+      if (p.preview) p.preview.style.display = active ? '' : 'none';
+    });
+    var buttons = modeToggle.querySelectorAll('button[data-mode]');
+    for (var i = 0; i < buttons.length; i++) {
+      var active2 = buttons[i].getAttribute('data-mode') === mode;
+      buttons[i].classList.toggle('active', active2);
+    }
+  }
+
+  window.__ticketappSetMode = setMode;
+
+  modeToggle.addEventListener('click', function (e) {
+    var btn = e.target.closest ? e.target.closest('button[data-mode]') : null;
+    if (!btn) return;
+    setMode(btn.getAttribute('data-mode'));
+  });
+
+  // init - defaults to Newsletter mode, so the app looks and behaves exactly
+  // as before unless the user actively switches to Cold Emails.
+  coldTemplateSelect.value = COLD_TEMPLATES[0].id;
+  renderColdPreview();
+})();
+</script>
+
+<!--
+  OBJECTION HANDLING TOOL
+  Also fully separate: own script, own DOM ids, own state. Only touches the
+  shared mode-toggle registry exposed by the Cold Emails script above (never
+  the newsletter code) so all three tools share one set of tab buttons.
+-->
+<script>
+(function () {
+  var OBJECTIONS = [
+    {
+      id: 'resident_advisor',
+      label: 'Resident Advisor',
+      options: [
+        {
+          id: 'ra_1',
+          label: 'Option 1',
+          en: "Totally understand, and we're not asking you to leave Resident Advisor. RA is great for discovery and community reach, we offer something different.\n\nWhat Ticketapp adds is the layer RA doesn't cover: your own branded ticketing, direct customer data ownership, and full control over your sales flow, online and at the door.\n\nTo make the switch worth your while from day one, we offer a signing bonus paid upfront, which gets deducted gradually from your ticket sales across your next events. No out-of-pocket costs. You start earning before you even feel the transition.\n\nThe goal isn't to replace your current setup overnight, it's a mutual collaboration. You keep the RA visibility, we handle the transactional side with better margins and tools built for how you actually operate.\n\nWould a 20-minute call be useful to see if the numbers make sense for your next event?",
+          es: "Lo entiendo perfectamente, y no les estamos pidiendo que dejen de utilizar Resident Advisor. RA es una excelente plataforma para dar visibilidad a sus eventos y llegar a su comunidad; nosotros ofrecemos algo diferente.\n\nLo que Ticketapp aporta es la parte que RA no cubre: su propia plataforma de venta de entradas personalizada con su marca, acceso y propiedad directa de los datos de sus clientes, y control total sobre su proceso de venta, tanto online como en puerta.\n\nPara que el cambio les resulte beneficioso desde el primer día, ofrecemos un bono de incorporación pagado por adelantado, que se va descontando gradualmente de las ventas de entradas de sus próximos eventos. No tienen que hacer ningún desembolso inicial. Empiezan recibiendo ingresos incluso antes de notar la transición.\n\nEl objetivo no es reemplazar de un día para otro la forma en la que trabajan actualmente, sino construir una colaboración mutua. Pueden seguir aprovechando la visibilidad y alcance de RA, mientras nosotros gestionamos la parte transaccional con mejores márgenes y herramientas diseñadas para adaptarse a la forma en la que realmente operan.\n\n¿Les vendría bien una llamada de 20 minutos para revisar los números y ver si tiene sentido para su próximo evento?",
+          nl: "Helemaal begrijpelijk, en we vragen jullie niet om te stoppen met Resident Advisor. RA is geweldig voor discovery en bereik binnen de community, wij bieden iets anders.\n\nWat Ticketapp toevoegt is de laag die RA niet dekt: je eigen gebrande ticketing, directe eigendom van klantdata, en volledige controle over je verkoopproces, zowel online als aan de deur.\n\nOm de overstap vanaf dag één de moeite waard te maken, bieden we een ondertekenbonus die vooraf wordt uitbetaald en geleidelijk wordt verrekend met je ticketverkoop over je volgende events. Geen kosten vooraf. Je begint te verdienen nog voordat je de overstap echt voelt.\n\nHet doel is niet om je huidige setup van de ene op de andere dag te vervangen, het is een wederzijdse samenwerking. Je behoudt de zichtbaarheid van RA, wij regelen het transactionele deel met betere marges en tools die aansluiten op hoe je daadwerkelijk werkt.\n\nZou een gesprek van 20 minuten nuttig zijn om te kijken of de cijfers kloppen voor je volgende event?"
+        },
+        {
+          id: 'ra_2',
+          label: 'Option 2',
+          en: "We get it, switching providers isn't a priority when things are running. But let's talk numbers for a second.\n\nWith Resident Advisor, you're paying per-ticket fees AND giving away your customer data. With Ticketapp, you own both your margin and your audience.\n\nWe'll put a signing bonus on the table upfront, real money, deducted from future sales, so there's zero financial risk to try us on your next event. If it doesn't outperform, you walk away having lost nothing.\n\nOne event. That's all we're asking.",
+          es: "Lo entendemos, cambiar de proveedor no es una prioridad cuando las cosas están funcionando bien. Pero hablemos de números un momento.\n\nCon Resident Advisor, están pagando comisiones por cada entrada Y cediendo los datos de sus clientes. Con Ticketapp, son dueños tanto de su margen como de su audiencia.\n\nPonemos sobre la mesa un bono de incorporación por adelantado, dinero real, que se descuenta de las ventas futuras, para que probarnos en su próximo evento no represente ningún riesgo financiero. Si no supera sus expectativas, no habrán perdido nada.\n\nUn solo evento. Eso es todo lo que pedimos.",
+          nl: "We snappen het, van provider wisselen is geen prioriteit als alles goed loopt. Maar laten we het even over de cijfers hebben.\n\nBij Resident Advisor betaal je fees per ticket ÉN geef je je klantdata weg. Bij Ticketapp ben je eigenaar van zowel je marge als je publiek.\n\nWe leggen vooraf een ondertekenbonus op tafel, echt geld, verrekend met toekomstige verkopen, zodat het financieel geen enkel risico is om ons te proberen bij je volgende event. Presteren we niet beter, dan stap je zonder verlies weer uit.\n\nÉén event. Meer vragen we niet."
+        },
+        {
+          id: 'ra_3',
+          label: 'Option 3',
+          en: "Resident Advisor built the scene, respect. But RA is a discovery platform. When someone buys your ticket through RA, that buyer belongs to RA, not to you.\n\nTicketapp gives you your own ticketing infrastructure, your brand, your data, your relationship with your crowd. And to get started, we offer a signing bonus paid in advance, recovered through your upcoming sales.\n\nThe best promoters we work with use both. RA to be found. Ticketapp to own the relationship.\n\nWorth a conversation?",
+          es: "Resident Advisor construyó la escena, con todo el respeto. Pero RA es una plataforma de descubrimiento. Cuando alguien compra su entrada a través de RA, ese comprador le pertenece a RA, no a ustedes.\n\nTicketapp les da su propia infraestructura de ticketing, su marca, sus datos, su relación con su público. Y para empezar, ofrecemos un bono de incorporación pagado por adelantado, que se recupera a través de sus próximas ventas.\n\nLos mejores promotores con los que trabajamos usan ambas plataformas. RA para que los encuentren. Ticketapp para ser dueños de la relación.\n\n¿Vale la pena una conversación?",
+          nl: "Resident Advisor heeft de scene mede opgebouwd, alle respect. Maar RA is een discovery-platform. Als iemand jouw ticket via RA koopt, is die koper van RA, niet van jou.\n\nTicketapp geeft je je eigen ticketinginfrastructuur, je eigen merk, je eigen data, je eigen relatie met je publiek. En om te starten bieden we een ondertekenbonus die vooraf wordt uitbetaald en wordt terugverdiend via je aankomende verkopen.\n\nDe beste promoters waarmee we werken gebruiken beide. RA om gevonden te worden. Ticketapp om de relatie in eigen hand te houden.\n\nDe moeite van een gesprek waard?"
+        },
+        {
+          id: 'ra_4',
+          label: 'Option 4',
+          en: "Most ticketing providers sell you a checkout page. We're building something different.\n\nTicketapp already supports WhatsApp-native ticket sales, AI-powered upsells, and a payout system that puts commission in your pocket automatically. RA isn't going there anytime soon.\n\nFor new partners we offer a signing bonus upfront, you see the value before you feel any cost. This isn't about replacing what works today. It's about being ready for how events are sold tomorrow.\n\nHappy to show you a live demo, no deck, just the product.",
+          es: "La mayoría de los proveedores de ticketing les venden una simple página de pago. Nosotros estamos construyendo algo diferente.\n\nTicketapp ya cuenta con venta de entradas nativa por WhatsApp, upsells impulsados por IA, y un sistema de pagos que deposita las comisiones directamente en su bolsillo de forma automática. RA no va a llegar ahí en el corto plazo.\n\nPara los nuevos partners ofrecemos un bono de incorporación por adelantado, para que vean el valor antes de sentir cualquier costo. Esto no se trata de reemplazar lo que hoy les funciona. Se trata de estar listos para cómo se venderán los eventos mañana.\n\nCon gusto les muestro una demo en vivo, sin presentaciones, solo el producto.",
+          nl: "De meeste ticketingproviders verkopen je een afrekenpagina. Wij bouwen iets anders.\n\nTicketapp ondersteunt nu al native ticketverkoop via WhatsApp, AI-gestuurde upsells, en een uitbetalingssysteem dat je commissie automatisch op je rekening zet. RA gaat die kant voorlopig niet op.\n\nVoor nieuwe partners bieden we een ondertekenbonus vooraf, je ziet de waarde voordat je iets van de kosten voelt. Het gaat er niet om te vervangen wat nu werkt. Het gaat erom klaar te zijn voor hoe events morgen verkocht worden.\n\nIk laat je graag een live demo zien, geen presentatie, gewoon het product."
+        }
+      ]
+    },
+    {
+      id: 'whatsapp_reservations',
+      label: 'Whatsapp Reservations or No Ticketing',
+      options: [
+        {
+          id: 'wa_1',
+          label: 'Option 1',
+          en: "How's your reservation flow looking right now? Because for most promoters we talk to, it goes something like this:\n\n100 DMs on WhatsApp. Half say \"I'm coming\" and never pay. You're copy-pasting names into a spreadsheet at midnight. Someone screenshots a fake confirmation. The door is chaos.\n\nThat's not a ticketing problem, that's a systems problem. And it's costing you time, money, and guests.\n\nTicketapp gives you a real ticketshop in 24 hours, branded, online, with payment upfront. Guests get a QR code. You get a live dashboard. The WhatsApp flood stops.\n\nOne link. That's your entire reservation flow, replaced.",
+          es: "¿Cómo se ve su flujo de reservaciones ahora mismo? Porque para la mayoría de los promotores con los que hablamos, se parece a esto:\n\n100 DMs en WhatsApp. La mitad dice \"ahí voy\" y nunca paga. Están copiando y pegando nombres en una hoja de cálculo a medianoche. Alguien manda una captura de una confirmación falsa. La puerta es un caos.\n\nEso no es un problema de ticketing, es un problema de sistemas. Y les está costando tiempo, dinero e invitados.\n\nTicketapp les da una ticketshop real en 24 horas, con su marca, en línea, con pago por adelantado. Sus invitados reciben un código QR. Ustedes obtienen un dashboard en vivo. La avalancha de WhatsApp se detiene.\n\nUn solo link. Así de simple se reemplaza todo su flujo de reservaciones.",
+          nl: "Hoe ziet jouw reserveringsflow er nu uit? Want bij de meeste promoters met wie we praten, ziet het er ongeveer zo uit:\n\n100 DM's op WhatsApp. De helft zegt \"ik kom\" en betaalt nooit. Je zit om middernacht namen te kopiëren en plakken in een spreadsheet. Iemand stuurt een screenshot van een nep-bevestiging. Aan de deur is het chaos.\n\nDat is geen ticketingprobleem, dat is een systemenprobleem. En het kost je tijd, geld en gasten.\n\nTicketapp geeft je binnen 24 uur een echte ticketshop, gebrand, online, met betaling vooraf. Gasten krijgen een QR-code. Jij krijgt een live dashboard. De WhatsApp-vloed stopt.\n\nÉén link. Dat vervangt je hele reserveringsflow."
+        },
+        {
+          id: 'wa_2',
+          label: 'Option 2',
+          en: "Your events deserve better than a WhatsApp thread.\n\nWhen guests reserve through DMs, there's no confirmation, no payment, no guarantee they show up, and no data left behind when it's over. You're working twice as hard for half the result.\n\nWith Ticketapp you get a branded ticketshop that handles everything: reservations, payments, guest lists, door scanning. Your guests get a seamless experience. You get a full picture of your audience, before, during, and after every event.\n\nIt looks professional because it is. And it takes less work than managing your current inbox.",
+          es: "Sus eventos merecen algo mejor que un chat de WhatsApp.\n\nCuando los invitados reservan por DM, no hay confirmación, no hay pago, no hay garantía de que asistan, y no queda ningún dato cuando todo termina. Están trabajando el doble para obtener la mitad del resultado.\n\nCon Ticketapp obtienen una ticketshop con su marca que se encarga de todo: reservaciones, pagos, listas de invitados, escaneo en la puerta. Sus invitados tienen una experiencia sin fricciones. Ustedes obtienen una imagen completa de su audiencia, antes, durante y después de cada evento.\n\nSe ve profesional porque lo es. Y requiere menos trabajo que administrar su bandeja de entrada actual.",
+          nl: "Jouw events verdienen beter dan een WhatsApp-groep.\n\nAls gasten via DM's reserveren, is er geen bevestiging, geen betaling, geen garantie dat ze komen opdagen, en blijft er geen data over als het voorbij is. Je werkt twee keer zo hard voor de helft van het resultaat.\n\nMet Ticketapp krijg je een gebrande ticketshop die alles regelt: reserveringen, betalingen, gastenlijsten, scannen aan de deur. Je gasten krijgen een soepele ervaring. Jij krijgt een compleet beeld van je publiek, voor, tijdens en na elk event.\n\nHet oogt professioneel omdat het dat ook is. En het kost minder werk dan je huidige inbox bijhouden."
+        },
+        {
+          id: 'wa_3',
+          label: 'Option 3',
+          en: "We're not asking you to leave WhatsApp, we're asking you to make it work properly.\n\nRight now you're using it as a reservation tool, and it wasn't built for that. Confirmations get lost. People ghost. You have no idea who's actually paid until the night itself.\n\nTicketapp has native WhatsApp ticket sales, guests buy directly in the chat they already use, get an instant QR confirmation, and you get a real-time list of who's coming and who's paid. No spreadsheet. No stress.\n\nSame channel. Completely different experience, for you and for them.",
+          es: "No les estamos pidiendo que dejen WhatsApp, les estamos pidiendo que lo hagan funcionar de verdad.\n\nAhora mismo lo están usando como herramienta de reservaciones, y no fue diseñado para eso. Las confirmaciones se pierden. La gente desaparece. No saben quién realmente pagó hasta la noche del evento.\n\nTicketapp tiene venta de entradas nativa por WhatsApp: los invitados compran directamente en el chat que ya usan, reciben una confirmación instantánea con QR, y ustedes obtienen una lista en tiempo real de quién viene y quién pagó. Sin hojas de cálculo. Sin estrés.\n\nEl mismo canal. Una experiencia completamente distinta, tanto para ustedes como para ellos.",
+          nl: "We vragen je niet om WhatsApp te verlaten, we vragen je om het eindelijk goed te laten werken.\n\nOp dit moment gebruik je het als reserveringstool, en daar is het niet voor gebouwd. Bevestigingen raken kwijt. Mensen laten niets meer horen. Je hebt geen idee wie er daadwerkelijk betaald heeft tot de avond zelf.\n\nTicketapp heeft native ticketverkoop via WhatsApp: gasten kopen rechtstreeks in de chat die ze al gebruiken, krijgen direct een QR-bevestiging, en jij krijgt een realtime lijst van wie er komt en wie er betaald heeft. Geen spreadsheet. Geen stress.\n\nHetzelfde kanaal. Een compleet andere ervaring, voor jou en voor hen."
+        }
+      ]
+    }
+  ];
+
+  var objectionPanel = document.getElementById('objectionPanel');
+  var objectionPreviewPane = document.getElementById('objectionPreviewPane');
+  var categorySelect = document.getElementById('objectionCategorySelect');
+  var optionSelect = document.getElementById('objectionOptionSelect');
+  var langToggle = document.getElementById('objectionLangToggle');
+  var previewText = document.getElementById('objectionPreviewText');
+  var previewLabel = document.getElementById('objectionPreviewLabel');
+  var copyBtn = document.getElementById('objectionCopyBtn');
+
+  if (!objectionPanel || !categorySelect || !optionSelect || !langToggle) return;
+
+  var currentLang = 'en';
+
+  OBJECTIONS.forEach(function (cat) {
+    var opt = document.createElement('option');
+    opt.value = cat.id;
+    opt.textContent = cat.label;
+    categorySelect.appendChild(opt);
+  });
+
+  function currentCategory() {
+    var id = categorySelect.value || OBJECTIONS[0].id;
+    for (var i = 0; i < OBJECTIONS.length; i++) {
+      if (OBJECTIONS[i].id === id) return OBJECTIONS[i];
+    }
+    return OBJECTIONS[0];
+  }
+
+  function currentOption() {
+    var cat = currentCategory();
+    var id = optionSelect.value || cat.options[0].id;
+    for (var i = 0; i < cat.options.length; i++) {
+      if (cat.options[i].id === id) return cat.options[i];
+    }
+    return cat.options[0];
+  }
+
+  function populateOptions() {
+    var cat = currentCategory();
+    optionSelect.innerHTML = '';
+    cat.options.forEach(function (o) {
+      var opt = document.createElement('option');
+      opt.value = o.id;
+      opt.textContent = o.label;
+      optionSelect.appendChild(opt);
+    });
+  }
+
+  function currentText() {
+    var cat = currentCategory();
+    var o = currentOption();
+    return o[currentLang] || o.en;
+  }
+
+  function renderPreview() {
+    var cat = currentCategory();
+    var o = currentOption();
+    if (previewText) previewText.textContent = currentText();
+    if (previewLabel) previewLabel.textContent = cat.label + ' - ' + o.label + ' (' + currentLang.toUpperCase() + ')';
+  }
+
+  categorySelect.addEventListener('change', function () {
+    populateOptions();
+    renderPreview();
+  });
+  optionSelect.addEventListener('change', renderPreview);
+
+  langToggle.addEventListener('click', function (e) {
+    var btn = e.target.closest ? e.target.closest('button[data-lang]') : null;
+    if (!btn) return;
+    currentLang = btn.getAttribute('data-lang');
+    var buttons = langToggle.querySelectorAll('button[data-lang]');
+    for (var i = 0; i < buttons.length; i++) {
+      buttons[i].classList.toggle('active', buttons[i] === btn);
+    }
+    renderPreview();
+  });
+
+  if (copyBtn) {
+    copyBtn.addEventListener('click', function () {
+      var original = copyBtn.textContent;
+      navigator.clipboard.writeText(currentText()).then(
+        function () {
+          copyBtn.textContent = 'Copied!';
+          setTimeout(function () { copyBtn.textContent = original; }, 1800);
+        },
+        function () {
+          copyBtn.textContent = 'Copy failed';
+          setTimeout(function () { copyBtn.textContent = original; }, 1800);
+        }
+      );
+    });
+  }
+
+  // Register with the shared mode-toggle switcher exposed by the Cold Emails
+  // script, so clicking "Objections" shows this panel/preview and hides the
+  // other two, without this file needing to know anything about them.
+  if (window.__ticketappRegisterModePanel) {
+    window.__ticketappRegisterModePanel({ mode: 'objection', panel: objectionPanel, preview: objectionPreviewPane });
+  }
+
+  // init
+  populateOptions();
+  renderPreview();
 })();
 </script>
 
