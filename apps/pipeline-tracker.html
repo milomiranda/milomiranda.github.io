@@ -96,6 +96,7 @@
   @keyframes rowIn{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
   .col-rank{width:34px; color:var(--muted); font-weight:700; font-size:12px;}
   .col-lead{min-width:110px;}
+  .col-deal{color:var(--muted); font-size:13px; white-space:nowrap;}
   .lead-name{font-weight:700; font-size:14px;}
   .lead-status-inline{display:inline-block; font-size:10px; font-weight:700; padding:2px 8px; border-radius:100px; background:var(--none-soft); color:var(--muted); text-transform:uppercase; letter-spacing:.02em; margin-top:5px;}
   .lead-status-inline.st-none{background:var(--none-soft); color:var(--none);}
@@ -127,6 +128,7 @@
 
   @media (max-width:480px){
     .leads-table th:first-child, .leads-table td:first-child{display:none;}
+    .col-deal{display:none;}
   }
   .empty-state{text-align:center; padding:60px 20px;}
   .empty-state .ee-orb{width:52px; height:52px; margin:0 auto 16px; border-radius:50%; background:radial-gradient(circle at 35% 30%, var(--accent-soft), transparent 70%), var(--card-soft); border:1px solid var(--border);}
@@ -241,7 +243,7 @@
 <main>
   <div class="table-scroll">
     <table class="leads-table">
-      <thead><tr><th class="col-rank">#</th><th class="col-lead" data-t="thLead">Lead</th><th data-t="thTouch">Last touchpoint</th></tr></thead>
+      <thead><tr><th class="col-rank">#</th><th class="col-lead" data-t="thLead">Lead</th><th data-t="thTouch">Last touchpoint</th><th class="col-deal">Ticketdeal</th></tr></thead>
       <tbody id="leadsGrid"></tbody>
     </table>
   </div>
@@ -618,7 +620,7 @@ async function loadData(){
     updateDuplicatesPill();
     render();
   }catch(err){
-    grid.innerHTML = `<tr><td colspan="3"><div class="empty-state"><h2>${t('couldntConnect')}</h2><p>${err.message}</p></div></td></tr>`;
+    grid.innerHTML = `<tr><td colspan="4"><div class="empty-state"><h2>${t('couldntConnect')}</h2><p>${err.message}</p></div></td></tr>`;
   }
 }
 
@@ -636,6 +638,7 @@ function renderSkeleton(){
       <td><div class="skel" style="width:16px;"></div></td>
       <td><div class="skel" style="width:70%; margin-bottom:6px;"></div><div class="skel" style="width:40%; height:8px;"></div></td>
       <td><div class="skel" style="width:85%;"></div></td>
+      <td><div class="skel" style="width:60%;"></div></td>
     </tr>
   `).join('');
 }
@@ -643,7 +646,7 @@ function renderSkeleton(){
 function renderNotConfigured(){
   $('#tabsBar').querySelectorAll('.tab').forEach(el => el.remove());
   $('#tabIndicator').style.opacity = '0';
-  grid.innerHTML = `<tr><td colspan="3"><div class="empty-state">
+  grid.innerHTML = `<tr><td colspan="4"><div class="empty-state">
     <div class="ee-orb"></div>
     <h2>${t('connectYourSheet')}</h2>
     <p>${t('connectBody')}</p>
@@ -769,7 +772,7 @@ function render(){
   });
 
   if (leads.length===0){
-    grid.innerHTML = `<tr><td colspan="3"><div class="empty-state"><div class="ee-orb"></div><h2>${t('noLeadsTitle')}</h2><p>${t('noLeadsBody')}</p><button class="btn-primary" id="emptyNewLeadBtn">${t('newLeadBtn')}</button></div></td></tr>`;
+    grid.innerHTML = `<tr><td colspan="4"><div class="empty-state"><div class="ee-orb"></div><h2>${t('noLeadsTitle')}</h2><p>${t('noLeadsBody')}</p><button class="btn-primary" id="emptyNewLeadBtn">${t('newLeadBtn')}</button></div></td></tr>`;
     const btn = document.getElementById('emptyNewLeadBtn');
     if (btn) btn.addEventListener('click', () => $('#newLeadBtn').click());
     return;
@@ -796,6 +799,7 @@ function render(){
           <span class="touch-count" title="${t('touchpointCount')(commentEntries.length)}">💬 ${commentEntries.length}</span>
           <span class="touch-text">${escapeHtml(touchText)}</span>
         </td>
+        <td class="col-deal">${l.ticketdeal ? escapeHtml(String(l.ticketdeal)) : ''}</td>
       </tr>`;
   }).join('');
 
