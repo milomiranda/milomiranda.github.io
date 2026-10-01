@@ -217,6 +217,17 @@
     .fa-summary-item.kickback .fa-summary-value { color: #8a6200; }
     .fa-summary-item.real .fa-summary-value { color: #3a6200; }
     .fa-check { font-size: 11.5px; margin-top: 12px; font-weight: 600; }
+    .fa-floor-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; background: #fafafa; border: 1.5px solid #ebebeb; border-radius: 10px; padding: 10px 14px; }
+    .fa-floor-label { font-size: 12px; color: #777; font-weight: 600; }
+    .fa-floor-input-wrap { max-width: 130px; }
+    .fa-floor-input-wrap input { text-align: right; }
+    .fa-split-row { margin-top: 14px; }
+    .fa-summary-item.trueKb { background: #fde2e1; }
+    .fa-summary-item.trueKb .fa-summary-label { color: #b3261e; }
+    .fa-summary-item.trueKb .fa-summary-value { color: #8c1f17; }
+    .fa-summary-item.extra { background: #eef3ff; }
+    .fa-summary-item.extra .fa-summary-label { color: #3b5bc9; }
+    .fa-summary-item.extra .fa-summary-value { color: #2a3f8f; }
     .fa-cat-grid { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px; }
     .fa-cat-card { flex: 1; min-width: 195px; background: #fafafa; border: 1.5px solid #ebebeb; border-radius: 12px; padding: 14px 16px; }
     .fa-cat-title { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #999; margin-bottom: 10px; }
@@ -241,6 +252,14 @@
 
     <textarea class="fa-textarea" id="feeJsonInput" placeholder='Paste JSON here, e.g. { "total": 200, "self": {...}, "other": {...}, "specific": {...}, "generic": {...} }' oninput="parseFeeJson()"></textarea>
 
+    <div class="fa-floor-row">
+      <label class="fa-floor-label" for="faFloorInput">Our target service fee (floor)</label>
+      <div class="input-wrap fa-floor-input-wrap">
+        <div class="prefix">€</div>
+        <input type="number" id="faFloorInput" min="0" step="0.01" value="1.00" oninput="parseFeeJson()" />
+      </div>
+    </div>
+
     <div class="fa-error" id="feeAnalyzerError"></div>
 
     <div class="fa-results" id="feeAnalyzerResults">
@@ -249,16 +268,28 @@
           <div class="fa-summary-label">Total service cost</div>
           <div class="fa-summary-value" id="faTotal">—</div>
         </div>
-        <div class="fa-summary-item kickback">
-          <div class="fa-summary-label">Kickback (self)</div>
-          <div class="fa-summary-value" id="faKickback">—</div>
-        </div>
         <div class="fa-summary-item real">
-          <div class="fa-summary-label">Real service cost (other)</div>
+          <div class="fa-summary-label">Retained by us (other)</div>
           <div class="fa-summary-value" id="faReal">—</div>
+        </div>
+        <div class="fa-summary-item kickback">
+          <div class="fa-summary-label">Paid to organizer (self)</div>
+          <div class="fa-summary-value" id="faKickback">—</div>
         </div>
       </div>
       <div class="fa-check" id="faCheck"></div>
+
+      <div class="fa-summary fa-split-row">
+        <div class="fa-summary-item trueKb">
+          <div class="fa-summary-label">True kickback (costs us)</div>
+          <div class="fa-summary-value" id="faTrueKickback">—</div>
+        </div>
+        <div class="fa-summary-item extra">
+          <div class="fa-summary-label">Extra to organizer (no cost to us)</div>
+          <div class="fa-summary-value" id="faExtra">—</div>
+        </div>
+      </div>
+      <div class="fa-check" id="faFloorNote"></div>
 
       <div class="fa-cat-grid">
         <div class="fa-cat-card">
@@ -1319,11 +1350,34 @@ function parseFeeJson() {
   const checkEl = document.getElementById('faCheck');
   const diff = Math.abs(total - (kickbackCash + realCash));
   if (diff < 0.01) {
-    checkEl.textContent = `✓ Total (${fmtFaEur(total)}) = Real cost (${fmtFaEur(realCash)}) + Kickback (${fmtFaEur(kickbackCash)})`;
+    checkEl.textContent = `✓ Total (${fmtFaEur(total)}) = Retained by us (${fmtFaEur(realCash)}) + Paid to organizer (${fmtFaEur(kickbackCash)})`;
     checkEl.style.color = '#5a8200';
   } else {
-    checkEl.textContent = `⚠ Total (${fmtFaEur(total)}) doesn't equal Real + Kickback (${fmtFaEur(realCash + kickbackCash)}) — off by ${fmtFaEur(diff)}`;
+    checkEl.textContent = `⚠ Total (${fmtFaEur(total)}) doesn't equal Retained + Paid to organizer (${fmtFaEur(realCash + kickbackCash)}) — off by ${fmtFaEur(diff)}`;
     checkEl.style.color = '#b3261e';
+  }
+
+  // Floor-based split: our target service fee is always `floor`.
+  // If what we retain (realCash/"other") is below that floor, the shortfall is a
+  // true kickback — it's coming out of our own fee. Anything beyond that shortfall
+  // is just extra money the organizer gets, which doesn't cost us anything.
+  const floor = parseFloat(document.getElementById('faFloorInput').value) || 0;
+  const trueKickback = Math.max(0, floor - realCash);
+  const extraToOrganizer = Math.max(0, kickbackCash - trueKickback);
+
+  document.getElementById('faTrueKickback').textContent = fmtFaEur(trueKickback);
+  document.getElementById('faExtra').textContent = fmtFaEur(extraToOrganizer);
+
+  const floorNoteEl = document.getElementById('faFloorNote');
+  if (total < floor) {
+    floorNoteEl.textContent = `⚠ Total (${fmtFaEur(total)}) is below our own floor (${fmtFaEur(floor)}) — this product doesn't even cover our target fee`;
+    floorNoteEl.style.color = '#b3261e';
+  } else if (realCash >= floor) {
+    floorNoteEl.textContent = `✓ We retained our full target fee (${fmtFaEur(floor)}) — the ${fmtFaEur(kickbackCash)} paid to the organizer is pure extra, not a loss to us`;
+    floorNoteEl.style.color = '#5a8200';
+  } else {
+    floorNoteEl.textContent = `⚠ We only retained ${fmtFaEur(realCash)} of our ${fmtFaEur(floor)} target — ${fmtFaEur(trueKickback)} is a real kickback out of our own fee`;
+    floorNoteEl.style.color = '#b3261e';
   }
 
   resEl.style.display = 'block';
