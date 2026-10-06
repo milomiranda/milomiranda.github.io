@@ -269,6 +269,11 @@
   .btn-row .btn { margin-top:0 !important; }
   .info-note { font-size:11.5px; }
   .sidebar::-webkit-scrollbar { width:8px; } .sidebar::-webkit-scrollbar-thumb { background:#2A2A2A; border-radius:8px; }
+  .checklist { display:flex; flex-wrap:wrap; gap:6px; }
+  .check-item { border:1px solid #2A2A2A; background:#151515; color:#9CA3AF; border-radius:9999px; padding:5px 10px; font-size:11.5px; font-weight:700; cursor:pointer; font-family:inherit; }
+  .check-item.done { color:#0A0A0A; background:var(--lime); border-color:var(--lime); }
+  .check-item.todo { color:#FBBF24; border-color:#5B4A12; }
+  .check-item:hover { filter:brightness(1.15); }
   .chip-list { display:flex; flex-direction:column; gap:6px; }
   .chip { text-align:left; background:#151515; border:1px solid #2A2A2A; color:#D1D5DB; border-radius:10px; padding:9px 11px; font-size:12.5px; line-height:1.4; cursor:pointer; font-family:inherit; }
   .chip::before { content:'+ '; color:var(--lime); font-weight:800; }
@@ -297,7 +302,7 @@
 
     <div id="newsletterPanel" style="display:contents;">
 
-      <details class="sec" open>
+      <details class="sec" open id="secTemplate">
         <summary><span class="num">1</span> Template &amp; language</summary>
         <div class="sec-body">
           <div>
@@ -329,26 +334,8 @@
         </div>
       </details>
 
-      <details class="sec" open>
-        <summary><span class="num">2</span> Subject &amp; headline</summary>
-        <div class="sec-body">
-          <div>
-            <label class="field-label" for="subjectSelect">Email subject</label>
-            <select id="subjectSelect"></select>
-            <input type="text" id="subjectInput" class="alt-input" style="margin-top:8px;" placeholder="Pick a suggestion above, or write your own" />
-            <button type="button" class="back-btn" id="copySubjectBtn" style="margin-top:8px;">Copy subject</button>
-            <div class="control-note" id="subjectNote" style="display:none;">No subject options for a custom upload - write your own above.</div>
-          </div>
-          <div class="divider" id="headlineDivider" style="display:none;"></div>
-          <div id="headlineSection" style="display:none;">
-            <label class="field-label" for="headlineSelect">Headline (pick one)</label>
-            <select id="headlineSelect"></select>
-          </div>
-        </div>
-      </details>
-
-      <details class="sec" open>
-        <summary><span class="num">3</span> Ticketshop button</summary>
+      <details class="sec" open id="secButton">
+        <summary><span class="num">2</span> Ticketshop button</summary>
         <div class="sec-body">
           <label class="mini-label" for="shopLinkInput">Link (where the button goes)</label>
           <input type="url" id="shopLinkInput" class="alt-input" placeholder="https://ticketapp.shop/xxxxx" />
@@ -358,8 +345,8 @@
         </div>
       </details>
 
-      <details class="sec" open>
-        <summary><span class="num">4</span> Hero image</summary>
+      <details class="sec" open id="secImage">
+        <summary><span class="num">3</span> Hero image</summary>
         <div class="sec-body">
           <p class="help">Appears inside the black box, under the headline.</p>
           <div id="dropZone" class="drop-zone">
@@ -387,8 +374,8 @@
         </div>
       </details>
 
-      <details class="sec" open>
-        <summary><span class="num">5</span> Feature list</summary>
+      <details class="sec" open id="secBullets">
+        <summary><span class="num">4</span> Feature list</summary>
         <div class="sec-body">
           <div class="bullet-list" id="bulletList"></div>
           <button class="add-bullet-btn" id="addBulletBtn">+ Add bullet point</button>
@@ -401,7 +388,25 @@
         </div>
       </details>
 
-      <div class="divider" id="contentDivider" style="display:none;"></div>
+            <details class="sec" open id="secSubject">
+        <summary><span class="num">5</span> Subject &amp; headline</summary>
+        <div class="sec-body">
+          <div>
+            <label class="field-label" for="subjectSelect">Email subject</label>
+            <select id="subjectSelect"></select>
+            <input type="text" id="subjectInput" class="alt-input" style="margin-top:8px;" placeholder="Pick a suggestion above, or write your own" />
+            <button type="button" class="back-btn" id="copySubjectBtn" style="margin-top:8px;">Copy subject</button>
+            <div class="control-note" id="subjectNote" style="display:none;">No subject options for a custom upload - write your own above.</div>
+          </div>
+          <div class="divider" id="headlineDivider" style="display:none;"></div>
+          <div id="headlineSection" style="display:none;">
+            <label class="field-label" for="headlineSelect">Headline (pick one)</label>
+            <select id="headlineSelect"></select>
+          </div>
+        </div>
+      </details>
+
+<div class="divider" id="contentDivider" style="display:none;"></div>
       <div id="contentSection" class="sec-plain" style="display:none;">
         <label class="field-label">All other text in this email</label>
         <div class="content-list" id="contentList"></div>
@@ -418,6 +423,7 @@
       </div>
 
       <div class="btn-row">
+        <div class="checklist" id="checklist" title="Click an item to jump to that step"></div>
         <button class="btn btn-lime" id="copyBtn">Copy for email</button>
         <button class="btn btn-outline" id="downloadBtn">Download HTML</button>
       </div>
@@ -1113,6 +1119,7 @@
     if (!tpl) return;
     previewFrame.srcdoc = buildFinalHtml();
     previewLabel.textContent = tpl.label;
+    updateChecklist();
   }
 
 
@@ -1547,6 +1554,7 @@
     const val = subs[idx] || '';
     subjectInput.value = val;
     perTemplateSubject[currentId][currentLang()] = val;
+    updateChecklist();
   });
 
   headlineSelect.addEventListener('change', () => {
@@ -1559,6 +1567,7 @@
 
   subjectInput.addEventListener('input', () => {
     perTemplateSubject[currentId][currentLang()] = subjectInput.value;
+    updateChecklist();
   });
 
   copySubjectBtn.addEventListener('click', async () => {
@@ -1677,13 +1686,76 @@
     return '<!DOCTYPE html>\n' + d.documentElement.outerHTML;
   }
 
+
+  // ---------- Ready-to-send checklist + subject at top of copied email ----------
+  const checklistEl = document.getElementById('checklist');
+  const DEFAULT_LINKS = {};
+  Object.keys(TEMPLATES).forEach((id) => { DEFAULT_LINKS[id] = (TEMPLATES[id].default_shop_link || '').trim(); });
+
+  function computeChecklist() {
+    const custom = isCustomCurrent();
+    const items = [];
+    const link = (getShopLink() || '').trim();
+    if (custom) {
+      if (getShopLink() !== null) items.push({ label: 'Link', done: !!link && link !== '#', sec: 'secButton' });
+    } else {
+      items.push({ label: 'Link', done: !!link && link !== DEFAULT_LINKS[currentId], sec: 'secButton' });
+    }
+    if (custom) {
+      const info = getImageInfo(getDoc());
+      if (info.mode !== 'none') items.push({ label: 'Image', done: info.mode === 'replace', sec: 'secImage' });
+    } else {
+      items.push({ label: 'Image', done: !!perTemplateImage[currentId], sec: 'secImage' });
+    }
+    const bl = getBullets();
+    if (bl !== null) items.push({ label: 'Bullets', done: bl.some((b) => (b || '').trim()), sec: 'secBullets' });
+    if (!custom) items.push({ label: 'Subject', done: !!(subjectInput.value || '').trim(), sec: 'secSubject' });
+    return items;
+  }
+
+  function updateChecklist() {
+    if (!checklistEl) return;
+    checklistEl.innerHTML = '';
+    computeChecklist().forEach((it) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'check-item ' + (it.done ? 'done' : 'todo');
+      b.textContent = (it.done ? '✓ ' : '○ ') + it.label;
+      b.addEventListener('click', () => {
+        const sec = document.getElementById(it.sec);
+        if (sec) { sec.open = true; sec.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+      });
+      checklistEl.appendChild(b);
+    });
+  }
+
+  function addSubjectBlock(htmlStr) {
+    const subject = (subjectInput.value || '').trim();
+    if (!subject) return htmlStr;
+    const d = parser.parseFromString(htmlStr, 'text/html');
+    const box = d.createElement('div');
+    box.setAttribute('style', 'font-family:Arial,Helvetica,sans-serif; font-size:14px; color:#111827; padding:0 0 12px; margin:0 0 16px; border-bottom:1px dashed #9CA3AF;');
+    const lbl = d.createElement('b');
+    lbl.textContent = 'Subject: ';
+    const val = d.createElement('span');
+    val.textContent = subject;
+    const hint = d.createElement('span');
+    hint.setAttribute('style', 'color:#9CA3AF; font-size:12px;');
+    hint.textContent = '   (copy this into the subject line, then delete this line)';
+    box.appendChild(lbl); box.appendChild(val); box.appendChild(hint);
+    d.body.insertBefore(box, d.body.firstChild);
+    return '<!DOCTYPE html>\n' + d.documentElement.outerHTML;
+  }
+
   copyBtn.addEventListener('click', async () => {
-    const html = stripForClipboard(buildFinalHtml());
+    const missing = computeChecklist().filter((i) => !i.done).map((i) => i.label.toLowerCase());
+    if (missing.length && !window.confirm('Not done yet: ' + missing.join(', ') + '.\n\nCopy for email anyway?')) return;
+    const html = addSubjectBlock(stripForClipboard(buildFinalHtml()));
     const originalLabel = copyBtn.textContent;
     try {
       if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
         const htmlBlob = new Blob([html], { type: 'text/html' });
-        const textBlob = new Blob([previewFrame.contentDocument ? previewFrame.contentDocument.body.innerText : html], { type: 'text/plain' });
+        const textBlob = new Blob([(subjectInput.value ? 'Subject: ' + subjectInput.value + '\n\n' : '') + (previewFrame.contentDocument ? previewFrame.contentDocument.body.innerText : html)], { type: 'text/plain' });
         await navigator.clipboard.write([
           new ClipboardItem({ 'text/html': htmlBlob, 'text/plain': textBlob })
         ]);
