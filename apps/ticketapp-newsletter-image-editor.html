@@ -302,8 +302,22 @@
 
     <div id="newsletterPanel" style="display:contents;">
 
+      <details class="sec" open id="secButton">
+        <summary><span class="num">1</span> Reset &amp; ticketshop link</summary>
+        <div class="sec-body">
+          <div class="tool-row">
+            <button id="resetBtn" class="back-btn" title="Clear all your edits on this template">&#8634; Reset</button>
+          </div>
+          <label class="mini-label" for="shopLinkInput">Link (where the button goes)</label>
+          <input type="url" id="shopLinkInput" class="alt-input" placeholder="https://ticketapp.shop/xxxxx" />
+          <label class="mini-label" for="shopBtnTextInput">Button text</label>
+          <input type="text" id="shopBtnTextInput" class="alt-input" placeholder="e.g. Check your ticketshop live" />
+          <div class="control-note" id="shopLinkNote" style="display:none;">No shop button detected in this HTML.</div>
+        </div>
+      </details>
+
       <details class="sec" open id="secTemplate">
-        <summary><span class="num">1</span> Template &amp; language</summary>
+        <summary><span class="num">2</span> Template &amp; language</summary>
         <div class="sec-body">
           <div>
             <label class="field-label" for="templateSelect">Template</label>
@@ -328,20 +342,8 @@
           <div class="tool-row">
             <label class="upload-html-btn" for="htmlUploadInput" title="Open an existing email HTML to edit it here">&#11014; Upload HTML</label>
             <input type="file" id="htmlUploadInput" accept=".html,.htm,text/html" />
-            <button id="resetBtn" class="back-btn" title="Clear all your edits on this template">&#8634; Reset</button>
             <button id="backBtn" class="back-btn" style="display:none;">&larr; Templates</button>
           </div>
-        </div>
-      </details>
-
-      <details class="sec" open id="secButton">
-        <summary><span class="num">2</span> Ticketshop button</summary>
-        <div class="sec-body">
-          <label class="mini-label" for="shopLinkInput">Link (where the button goes)</label>
-          <input type="url" id="shopLinkInput" class="alt-input" placeholder="https://ticketapp.shop/xxxxx" />
-          <label class="mini-label" for="shopBtnTextInput">Button text</label>
-          <input type="text" id="shopBtnTextInput" class="alt-input" placeholder="e.g. Check your ticketshop live" />
-          <div class="control-note" id="shopLinkNote" style="display:none;">No shop button detected in this HTML.</div>
         </div>
       </details>
 
@@ -1439,7 +1441,17 @@
   }
 
   templateSelect.addEventListener('change', () => {
+    const prevId = currentId;
+    const carried = (perTemplateShopLink[prevId] || '').trim();
     currentId = templateSelect.value;
+    if (!isCustomCurrent() && TEMPLATES[prevId] && carried && carried !== (TEMPLATES[prevId].default_shop_link || '').trim()) {
+      const cur = (perTemplateShopLink[currentId] || '').trim();
+      if (!cur || cur === (TEMPLATES[currentId].default_shop_link || '').trim()) perTemplateShopLink[currentId] = carried;
+    }
+    if (!isCustomCurrent() && TEMPLATES[prevId] && !(prevId in customDoc) && perTemplateImage[prevId] && !perTemplateImage[currentId]) {
+      perTemplateImage[currentId] = perTemplateImage[prevId];
+      if (perTemplateImageMode[prevId]) perTemplateImageMode[currentId] = perTemplateImageMode[prevId];
+    }
     if (!isCustomCurrent()) lastBuiltinId = currentId;
     applyModeUI();
     refreshAllUI();
