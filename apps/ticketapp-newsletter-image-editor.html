@@ -320,6 +320,14 @@
         </div>
         <button class="remove-btn" id="removeBtn" title="Remove image">✕</button>
       </div>
+      <div id="imageModeWrap" style="display:none; margin-top:12px;">
+        <label class="field-label">Photo type</label>
+        <div class="lang-toggle" id="imageModeToggle">
+          <button type="button" data-imgmode="comparison" class="active">Comparison</button>
+          <button type="button" data-imgmode="single">Single photo</button>
+        </div>
+        <div class="control-note" id="imageModeNote">Comparison: full width. Single photo: smaller and centered.</div>
+      </div>
       <div class="control-note" id="imageNote" style="display:none;">No image slot detected in this HTML.</div>
     </div>
 
@@ -461,6 +469,7 @@
 
   // ---- Built-in template state ----
   const perTemplateImage = {};
+  const perTemplateImageMode = {}; // 'comparison' (default, full width) | 'single' (small, centered)
   const perTemplateBullets = {};
   const perTemplateShopLink = {};
   const perTemplateShopBtnText = {};
@@ -492,6 +501,8 @@
   const thumbDims = document.getElementById('thumbDims');
   const removeBtn = document.getElementById('removeBtn');
   const imageNote = document.getElementById('imageNote');
+  const imageModeWrap = document.getElementById('imageModeWrap');
+  const imageModeToggle = document.getElementById('imageModeToggle');
   const previewFrame = document.getElementById('previewFrame');
   const previewLabel = document.getElementById('previewLabel');
   const frameWrap = document.getElementById('frameWrap');
@@ -689,13 +700,51 @@
     );
   }
 
-  function imageRowHtml(dataUrl, alt) {
+  const SINGLE_IMG_WIDTH = 240;
+
+  function imageRowHtml(dataUrl, alt, mode) {
     const safeAlt = escapeHtml(alt);
+    if (mode === 'single') {
+      return (
+        '<tr><td align="center" style="padding:0; text-align:center;">' +
+        '<img src="' + dataUrl + '" width="' + SINGLE_IMG_WIDTH + '" style="width:' + SINGLE_IMG_WIDTH + 'px; max-width:100%; height:auto; border-radius:12px; display:block; margin:0 auto;" alt="' + safeAlt + '" />' +
+        '</td></tr>'
+      );
+    }
     return (
       '<tr><td style="padding:0;">' +
       '<img src="' + dataUrl + '" width="536" style="width:100%; max-width:100%; border-radius:12px; display:block;" alt="' + safeAlt + '" />' +
       '</td></tr>'
     );
+  }
+
+  function getImageMode() {
+    if (isCustomCurrent()) {
+      const info = getImageInfo(getDoc());
+      return info.mode === 'replace' && info.el.getAttribute('width') === String(SINGLE_IMG_WIDTH) ? 'single' : 'comparison';
+    }
+    return perTemplateImageMode[currentId] || 'comparison';
+  }
+
+  function setImageMode(mode) {
+    if (isCustomCurrent()) {
+      const info = getImageInfo(getDoc());
+      if (info.mode !== 'replace') return;
+      const img = info.el;
+      const td = img.closest('td');
+      if (mode === 'single') {
+        img.setAttribute('width', String(SINGLE_IMG_WIDTH));
+        img.setAttribute('style', 'width:' + SINGLE_IMG_WIDTH + 'px; max-width:100%; height:auto; border-radius:12px; display:block; margin:0 auto;');
+        if (td) { td.setAttribute('align', 'center'); td.style.textAlign = 'center'; }
+      } else {
+        img.setAttribute('width', '536');
+        img.setAttribute('style', 'width:100%; max-width:100%; border-radius:12px; display:block;');
+        if (td) { td.removeAttribute('align'); td.style.textAlign = ''; }
+      }
+      syncRawFromDoc();
+    } else {
+      perTemplateImageMode[currentId] = mode;
+    }
   }
 
   function findHeroInsertionPoint(doc) {
@@ -726,7 +775,7 @@
       } else if (info.mode === 'insert') {
         const spacer1 = doc.createElement('tr');
         spacer1.innerHTML = '<td style="height:18px;"></td>';
-        const wrap = parser.parseFromString('<table><tbody>' + imageRowHtml(dataUrl, '') + '</tbody></table>', 'text/html');
+        const wrap = parser.parseFromString('<table><tbody>' + imageRowHtml(dataUrl, '', 'comparison') + '</tbody></table>', 'text/html');
         const imgTr = doc.importNode(wrap.querySelector('tr'), true);
         const spacer2 = doc.createElement('tr');
         spacer2.innerHTML = '<td style="height:18px;"></td>';
@@ -989,7 +1038,7 @@
     });
 
     const img = perTemplateImage[currentId];
-    const imgHtml = img ? imageRowHtml(img.dataUrl, img.alt) : placeholderBoxHtml();
+    const imgHtml = img ? imageRowHtml(img.dataUrl, img.alt, perTemplateImageMode[currentId]) : placeholderBoxHtml();
     html = html.replace(IMG_MARKER, imgHtml);
 
     const bullets = (perTemplateBullets[currentId] && perTemplateBullets[currentId][currentLang()]) || [];
@@ -1167,8 +1216,14 @@
       thumbImg.src = meta.dataUrl;
       thumbName.textContent = meta.name;
       thumbDims.textContent = meta.dims;
+      imageModeWrap.style.display = 'block';
+      const curMode = getImageMode();
+      imageModeToggle.querySelectorAll('button[data-imgmode]').forEach((b) => {
+        b.classList.toggle('active', b.getAttribute('data-imgmode') === curMode);
+      });
     } else {
       thumbRow.style.display = 'none';
+      imageModeWrap.style.display = 'none';
     }
 
     dropZone.style.display = detected ? 'block' : 'none';
@@ -1239,6 +1294,7 @@
       });
       perTemplateShopLink[currentId] = TEMPLATES[currentId].default_shop_link || '';
       delete perTemplateImage[currentId];
+      delete perTemplateImageMode[currentId];
     }
     applyModeUI();
     refreshAllUI();
@@ -1374,6 +1430,14 @@
     };
     reader.readAsDataURL(file);
   }
+
+  imageModeToggle.addEventListener('click', (e) => {
+    const btn = e.target.closest ? e.target.closest('button[data-imgmode]') : null;
+    if (!btn) return;
+    setImageMode(btn.getAttribute('data-imgmode'));
+    updateImageUI();
+    render();
+  });
 
   dropZone.addEventListener('click', () => fileInput.click());
   fileInput.addEventListener('change', (e) => {
