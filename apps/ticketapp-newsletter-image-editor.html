@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Ticketapp - Newsletter Editor</title>
+<title>Ticketapp - Message Studio</title>
 <style>
   :root {
     --black: #0A0A0A;
@@ -236,182 +236,240 @@
     border: none;
     display: block;
   }
+
+  /* ---------- UX layer: cards, steps, sticky actions ---------- */
+  .sidebar { gap: 14px; scroll-behavior: smooth; }
+  .brand { display:flex; align-items:center; justify-content:space-between; font-size:16px; }
+  .brand small { font-size:11px; font-weight:600; color:#6B7280; letter-spacing:0; }
+  .mode-tabs { padding:4px; }
+  .mode-tabs button { padding:11px 6px; font-size:12.5px; }
+  .divider { display:none !important; }
+  details.sec { background:#111114; border:1px solid #232327; border-radius:14px; }
+  details.sec > summary {
+    list-style:none; cursor:pointer; display:flex; align-items:center; gap:10px;
+    padding:13px 14px; font-size:13.5px; font-weight:700; color:#F3F4F6; user-select:none;
+  }
+  details.sec > summary::-webkit-details-marker { display:none; }
+  details.sec > summary::after { content:'\25BE'; margin-left:auto; color:#6B7280; font-size:14px; transition:transform .15s; }
+  details.sec:not([open]) > summary::after { transform:rotate(-90deg); }
+  details.sec > summary:hover { color:#fff; }
+  .num { width:22px; height:22px; border-radius:50%; background:var(--lime); color:#0A0A0A; font-size:12px; font-weight:800; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .sec-body { padding:2px 14px 14px; display:flex; flex-direction:column; gap:10px; }
+  .sec-plain { background:#111114; border:1px solid #232327; border-radius:14px; padding:14px; }
+  .mini-label { font-size:11.5px; font-weight:600; color:#9CA3AF; margin:2px 0 -4px; display:block; }
+  .help { font-size:12px; color:#6B7280; line-height:1.5; margin:-2px 0 0; }
+  .tool-row { display:flex; gap:8px; flex-wrap:wrap; }
+  .tool-row > * { flex:1 1 auto; margin:0 !important; width:auto !important; min-width:0; white-space:nowrap; }
+  .tool-row .upload-html-btn, .tool-row .back-btn { padding:8px 10px; font-size:11.5px; }
+  .btn-row {
+    position:sticky; bottom:0; margin:auto -22px -22px; padding:16px 22px 22px;
+    background:linear-gradient(to top, #0A0A0A 72%, rgba(10,10,10,0));
+    display:flex; flex-direction:column; gap:8px; z-index:5;
+  }
+  .btn-row .btn { margin-top:0 !important; }
+  .info-note { font-size:11.5px; }
+  .sidebar::-webkit-scrollbar { width:8px; } .sidebar::-webkit-scrollbar-thumb { background:#2A2A2A; border-radius:8px; }
+  .chip-list { display:flex; flex-direction:column; gap:6px; }
+  .chip { text-align:left; background:#151515; border:1px solid #2A2A2A; color:#D1D5DB; border-radius:10px; padding:9px 11px; font-size:12.5px; line-height:1.4; cursor:pointer; font-family:inherit; }
+  .chip::before { content:'+ '; color:var(--lime); font-weight:800; }
+  .chip:hover { border-color:var(--lime); color:#fff; }
+  .suggest-wrap { border-top:1px solid #232327; padding-top:12px; margin-top:4px; }
+  @media (max-width: 860px) {
+    .app { flex-direction:column; height:auto; }
+    .sidebar { width:100%; min-width:0; max-height:none; overflow:visible; }
+    .btn-row { position:static; margin:0; padding:0; background:none; }
+    .preview-pane { padding:16px 10px; }
+    iframe { height:70vh; }
+  }
 </style>
 </head>
 <body>
 
 <div class="app">
   <div class="sidebar">
-    <div class="brand">ticketapp<span>.</span> newsletter editor</div>
+    <div class="brand"><div>ticketapp<span>.</span> studio</div><small>emails &amp; replies</small></div>
 
-    <div class="lang-toggle" id="modeToggle" style="margin-top:2px;">
+    <div class="lang-toggle mode-tabs" id="modeToggle">
       <button type="button" data-mode="newsletter" class="active">Newsletter</button>
       <button type="button" data-mode="cold">Cold Emails</button>
       <button type="button" data-mode="objection">Objections</button>
     </div>
 
     <div id="newsletterPanel" style="display:contents;">
-    <div>
-      <label class="field-label" for="templateSelect">Template</label>
-      <select id="templateSelect"></select>
-      <label class="upload-html-btn" for="htmlUploadInput">⬆ Upload your own HTML</label>
-      <input type="file" id="htmlUploadInput" accept=".html,.htm,text/html" />
-      <button id="backBtn" class="back-btn" style="display:none;">← Back to templates</button>
-      <button id="resetBtn" class="back-btn" style="margin-top:8px;">↺ Reset template</button>
-    </div>
 
-    <div id="upgradeSection" style="display:none;">
-      <div class="info-note">
-        <b>Upgrade available.</b> This file is missing some recent template updates:
-        <ul id="upgradeList" style="margin:8px 0 0; padding-left:18px;"></ul>
-      </div>
-      <button class="btn btn-lime" id="upgradeBtn" style="margin-top:10px;">Upgrade this file</button>
-    </div>
-
-    <div>
-      <label class="field-label">Language</label>
-      <div class="lang-toggle" id="langToggle">
-        <button data-lang="en" class="active">EN</button>
-        <button data-lang="es">ES</button>
-        <button data-lang="nl">NL</button>
-      </div>
-    </div>
-
-    <div class="divider"></div>
-
-    <div>
-      <label class="field-label" for="subjectSelect">Subject line</label>
-      <select id="subjectSelect"></select>
-      <input type="text" id="subjectInput" class="alt-input" style="margin-top:8px;" placeholder="Email subject" />
-      <button type="button" class="back-btn" id="copySubjectBtn" style="margin-top:8px;">Copy subject</button>
-      <div class="control-note" id="subjectNote" style="display:none;">No subject options for a custom upload - write your own above.</div>
-    </div>
-
-    <div class="divider" id="headlineDivider" style="display:none;"></div>
-
-    <div id="headlineSection" style="display:none;">
-      <label class="field-label" for="headlineSelect">Headline</label>
-      <select id="headlineSelect"></select>
-    </div>
-
-    <div class="divider"></div>
-
-    <div>
-      <label class="field-label" for="shopLinkInput">"Check your ticketshop" button</label>
-      <input type="url" id="shopLinkInput" class="alt-input" placeholder="https://ticketapp.shop/xxxxx" />
-      <input type="text" id="shopBtnTextInput" class="alt-input" style="margin-top:8px;" placeholder="Button text" />
-      <div class="control-note" id="shopLinkNote" style="display:none;">No shop button detected in this HTML.</div>
-    </div>
-
-    <div class="divider"></div>
-
-    <div>
-      <label class="field-label">Image (goes inside the black box, below the headline)</label>
-      <div id="dropZone" class="drop-zone">
-        <span class="plus">+</span>
-        <span class="hint"><b>Click to upload</b> or drag an image here</span>
-      </div>
-      <input type="file" id="fileInput" accept="image/*" />
-      <div id="thumbRow" class="thumb-row" style="display:none; margin-top:12px;">
-        <img id="thumbImg" src="" alt="" />
-        <div class="thumb-meta">
-          <div class="name" id="thumbName">image.png</div>
-          <div class="dims" id="thumbDims">-</div>
+      <details class="sec" open>
+        <summary><span class="num">1</span> Template &amp; language</summary>
+        <div class="sec-body">
+          <div>
+            <label class="field-label" for="templateSelect">Template</label>
+            <select id="templateSelect"></select>
+            <p class="help" id="templatePurpose" style="margin-top:8px;"></p>
+          </div>
+          <div>
+            <label class="field-label">Language</label>
+            <div class="lang-toggle" id="langToggle">
+              <button data-lang="en" class="active">EN</button>
+              <button data-lang="es">ES</button>
+              <button data-lang="nl">NL</button>
+            </div>
+          </div>
+          <div id="upgradeSection" style="display:none;">
+            <div class="info-note">
+              <b>Upgrade available.</b> This file is missing some recent template updates:
+              <ul id="upgradeList" style="margin:8px 0 0; padding-left:18px;"></ul>
+            </div>
+            <button class="btn btn-lime" id="upgradeBtn" style="margin-top:10px;">Upgrade this file</button>
+          </div>
+          <div class="tool-row">
+            <label class="upload-html-btn" for="htmlUploadInput" title="Open an existing email HTML to edit it here">&#11014; Upload HTML</label>
+            <input type="file" id="htmlUploadInput" accept=".html,.htm,text/html" />
+            <button id="resetBtn" class="back-btn" title="Clear all your edits on this template">&#8634; Reset</button>
+            <button id="backBtn" class="back-btn" style="display:none;">&larr; Templates</button>
+          </div>
         </div>
-        <button class="remove-btn" id="removeBtn" title="Remove image">✕</button>
-      </div>
-      <div id="imageModeWrap" style="display:none; margin-top:12px;">
-        <label class="field-label">Photo type</label>
-        <div class="lang-toggle" id="imageModeToggle">
-          <button type="button" data-imgmode="comparison" class="active">Comparison</button>
-          <button type="button" data-imgmode="single">Single photo</button>
+      </details>
+
+      <details class="sec" open>
+        <summary><span class="num">2</span> Subject &amp; headline</summary>
+        <div class="sec-body">
+          <div>
+            <label class="field-label" for="subjectSelect">Email subject</label>
+            <select id="subjectSelect"></select>
+            <input type="text" id="subjectInput" class="alt-input" style="margin-top:8px;" placeholder="Pick a suggestion above, or write your own" />
+            <button type="button" class="back-btn" id="copySubjectBtn" style="margin-top:8px;">Copy subject</button>
+            <div class="control-note" id="subjectNote" style="display:none;">No subject options for a custom upload - write your own above.</div>
+          </div>
+          <div class="divider" id="headlineDivider" style="display:none;"></div>
+          <div id="headlineSection" style="display:none;">
+            <label class="field-label" for="headlineSelect">Headline (pick one)</label>
+            <select id="headlineSelect"></select>
+          </div>
         </div>
-        <div class="control-note" id="imageModeNote">Comparison: full width. Single photo: smaller and centered.</div>
+      </details>
+
+      <details class="sec" open>
+        <summary><span class="num">3</span> Ticketshop button</summary>
+        <div class="sec-body">
+          <label class="mini-label" for="shopLinkInput">Link (where the button goes)</label>
+          <input type="url" id="shopLinkInput" class="alt-input" placeholder="https://ticketapp.shop/xxxxx" />
+          <label class="mini-label" for="shopBtnTextInput">Button text</label>
+          <input type="text" id="shopBtnTextInput" class="alt-input" placeholder="e.g. Check your ticketshop live" />
+          <div class="control-note" id="shopLinkNote" style="display:none;">No shop button detected in this HTML.</div>
+        </div>
+      </details>
+
+      <details class="sec" open>
+        <summary><span class="num">4</span> Hero image</summary>
+        <div class="sec-body">
+          <p class="help">Appears inside the black box, under the headline.</p>
+          <div id="dropZone" class="drop-zone">
+            <span class="plus">+</span>
+            <span class="hint"><b>Click to upload</b> or drag an image here</span>
+          </div>
+          <input type="file" id="fileInput" accept="image/*" />
+          <div id="thumbRow" class="thumb-row" style="display:none;">
+            <img id="thumbImg" src="" alt="" />
+            <div class="thumb-meta">
+              <div class="name" id="thumbName">image.png</div>
+              <div class="dims" id="thumbDims">-</div>
+            </div>
+            <button class="remove-btn" id="removeBtn" title="Remove image">&#10005;</button>
+          </div>
+          <div id="imageModeWrap" style="display:none;">
+            <label class="field-label">Photo type</label>
+            <div class="lang-toggle" id="imageModeToggle">
+              <button type="button" data-imgmode="comparison" class="active">Comparison</button>
+              <button type="button" data-imgmode="single">Single photo</button>
+            </div>
+            <div class="control-note" id="imageModeNote">Comparison: full width. Single photo: smaller and centered.</div>
+          </div>
+          <div class="control-note" id="imageNote" style="display:none;">No image slot detected in this HTML.</div>
+        </div>
+      </details>
+
+      <details class="sec" open>
+        <summary><span class="num">5</span> Feature list</summary>
+        <div class="sec-body">
+          <div class="bullet-list" id="bulletList"></div>
+          <button class="add-bullet-btn" id="addBulletBtn">+ Add bullet point</button>
+          <div class="control-note" id="bulletNote" style="display:none;">No bullet list detected in this HTML.</div>
+          <div class="suggest-wrap" id="suggestWrap" style="display:none;">
+            <label class="field-label">Suggested bullets</label>
+            <p class="help" id="suggestHelp">Click one to add it. It will be inserted in <b id="suggestLang">English</b>, matching the language selected above.</p>
+            <div class="chip-list" id="suggestList"></div>
+          </div>
+        </div>
+      </details>
+
+      <div class="divider" id="contentDivider" style="display:none;"></div>
+      <div id="contentSection" class="sec-plain" style="display:none;">
+        <label class="field-label">All other text in this email</label>
+        <div class="content-list" id="contentList"></div>
       </div>
-      <div class="control-note" id="imageNote" style="display:none;">No image slot detected in this HTML.</div>
-    </div>
 
-    <div class="divider"></div>
+      <div class="divider" id="rawDivider" style="display:none;"></div>
+      <div id="rawSection" class="sec-plain" style="display:none;">
+        <label class="field-label">Advanced: edit HTML source</label>
+        <textarea id="customSourceArea" class="code-area" spellcheck="false"></textarea>
+      </div>
 
-    <div>
-      <label class="field-label">Bullet points</label>
-      <div class="bullet-list" id="bulletList"></div>
-      <button class="add-bullet-btn" id="addBulletBtn">+ Add bullet point</button>
-      <div class="control-note" id="bulletNote" style="display:none;">No bullet list detected in this HTML.</div>
-    </div>
+      <div class="info-note" id="infoNote">
+        Edits update the preview live. Switching language swaps all the copy and bullets for that template. When it looks right, use <b>Copy for email</b> to paste the styled result straight into Gmail/Outlook.
+      </div>
 
-    <div class="divider" id="contentDivider" style="display:none;"></div>
-
-    <div id="contentSection" style="display:none;">
-      <label class="field-label">All other text in this email</label>
-      <div class="content-list" id="contentList"></div>
-    </div>
-
-    <div class="divider" id="rawDivider" style="display:none;"></div>
-
-    <div id="rawSection" style="display:none;">
-      <label class="field-label">Advanced: edit HTML source</label>
-      <textarea id="customSourceArea" class="code-area" spellcheck="false"></textarea>
-    </div>
-
-    <div class="info-note" id="infoNote">
-      Edits update the preview live. Switching language swaps all the copy and bullets for that template. When it looks right, use <b>Copy for email</b> to paste the styled result straight into Gmail/Outlook.
-    </div>
-
-    <div class="btn-row">
-      <button class="btn btn-lime" id="copyBtn">Copy for email</button>
-      <button class="btn btn-outline" id="downloadBtn" style="margin-top:10px;">Download HTML</button>
-    </div>
+      <div class="btn-row">
+        <button class="btn btn-lime" id="copyBtn">Copy for email</button>
+        <button class="btn btn-outline" id="downloadBtn">Download HTML</button>
+      </div>
     </div>
 
     <div id="coldEmailPanel" style="display:none;">
-      <div>
-        <label class="field-label" for="coldTemplateSelect">Cold email template</label>
-        <select id="coldTemplateSelect"></select>
-      </div>
-
-      <div class="divider"></div>
-
-      <div>
-        <label class="field-label" for="coldNameInput">Prospect / venue name</label>
-        <input type="text" id="coldNameInput" class="alt-input" placeholder="e.g. Roxy CDMX" />
-      </div>
-
-      <div class="info-note">
-        Type the prospect's name above - it fills in automatically everywhere it appears in the email. When it looks right, hit <b>Copy email</b> and paste straight into Gmail.
-      </div>
-
+      <details class="sec" open>
+        <summary><span class="num">1</span> Choose a template</summary>
+        <div class="sec-body">
+          <label class="field-label" for="coldTemplateSelect">Cold email</label>
+          <select id="coldTemplateSelect"></select>
+        </div>
+      </details>
+      <details class="sec" open>
+        <summary><span class="num">2</span> Who is it for?</summary>
+        <div class="sec-body">
+          <label class="field-label" for="coldNameInput">Prospect / venue name</label>
+          <input type="text" id="coldNameInput" class="alt-input" placeholder="e.g. Roxy CDMX" />
+          <p class="help">The name fills in automatically everywhere it appears in the email.</p>
+        </div>
+      </details>
+      <div class="info-note">Check the preview, then hit <b>Copy email</b> and paste straight into Gmail.</div>
       <div class="btn-row">
         <button class="btn btn-lime" id="coldCopyBtn">Copy email</button>
       </div>
     </div>
 
     <div id="objectionPanel" style="display:none;">
-      <div>
-        <label class="field-label" for="objectionCategorySelect">Objection category</label>
-        <select id="objectionCategorySelect"></select>
-      </div>
-
-      <div>
-        <label class="field-label" for="objectionOptionSelect" style="margin-top:14px;">Option</label>
-        <select id="objectionOptionSelect"></select>
-      </div>
-
-      <div class="divider"></div>
-
-      <div>
-        <label class="field-label">Language</label>
-        <div class="lang-toggle" id="objectionLangToggle">
-          <button type="button" data-lang="en" class="active">EN</button>
-          <button type="button" data-lang="es">ES</button>
-          <button type="button" data-lang="nl">NL</button>
+      <details class="sec" open>
+        <summary><span class="num">1</span> Which objection?</summary>
+        <div class="sec-body">
+          <div>
+            <label class="field-label" for="objectionCategorySelect">Category</label>
+            <select id="objectionCategorySelect"></select>
+          </div>
+          <div>
+            <label class="field-label" for="objectionOptionSelect">Option</label>
+            <select id="objectionOptionSelect"></select>
+          </div>
         </div>
-      </div>
-
-      <div class="info-note">
-        Pick the objection and the language, then hit <b>Copy message</b> to paste straight into WhatsApp, email, or wherever the conversation is happening.
-      </div>
-
+      </details>
+      <details class="sec" open>
+        <summary><span class="num">2</span> Language</summary>
+        <div class="sec-body">
+          <div class="lang-toggle" id="objectionLangToggle">
+            <button type="button" data-lang="en" class="active">EN</button>
+            <button type="button" data-lang="es">ES</button>
+            <button type="button" data-lang="nl">NL</button>
+          </div>
+        </div>
+      </details>
+      <div class="info-note">Pick the objection and language, then <b>Copy message</b> to paste into WhatsApp, email, or wherever the conversation is.</div>
       <div class="btn-row">
         <button class="btn btn-lime" id="objectionCopyBtn">Copy message</button>
       </div>
@@ -1057,7 +1115,126 @@
     previewLabel.textContent = tpl.label;
   }
 
+
+  // ---------- Template purpose (shown in the admin panel, English) ----------
+  const TEMPLATE_PURPOSE = {
+    revenue: 'Pitches ticketing as a revenue channel: more than a QR code, with upsells, cross-sell and sponsoring.',
+    tickets2000: 'Switching offer: first 2,000 tickets free, then reasons to move over.',
+    enough: 'Challenges the current provider: does it only "work", or also grow revenue, brand and returning visitors?',
+    weeztix: 'For organisers still on Weeztix: shows what their ticketing could look like somewhere else.'
+  };
+  const langNames = { en: 'English', es: 'Spanish', nl: 'Dutch' };
+  const purposeEl = document.getElementById('templatePurpose');
+  function updateTemplatePurpose() {
+    if (!purposeEl) return;
+    purposeEl.textContent = isCustomCurrent()
+      ? 'Your uploaded email: edit any text, link or image.'
+      : (TEMPLATE_PURPOSE[currentId] || '');
+  }
+
+  // ---------- Suggested bullets ----------
+  // Admin panel shows the English text; clicking inserts the version for the
+  // template's current language. nlClause = Dutch phrasing that fits the
+  // "Stap over als je vindt dat:" lead-in of the 2,000 Tickets template.
+  // Only claims already used elsewhere in this app's copy.
+  const ALL_T = ['revenue', 'tickets2000', 'enough', 'weeztix'];
+  const BULLET_SUGGESTIONS = [
+    { t: ALL_T, en: 'Real-time sales dashboard, from presale to doors',
+      es: 'Dashboard de ventas en tiempo real, desde la preventa hasta la puerta',
+      nl: 'Realtime verkoopdashboard, van presale tot aan de deur',
+      nlClause: 'Je verkoop graag realtime wilt volgen, van presale tot aan de deur' },
+    { t: ['tickets2000', 'enough', 'weeztix'], en: 'Door scanning and guest lists in one place',
+      es: 'Escaneo en puerta y listas de invitados en un solo lugar',
+      nl: 'Deurscanning en gastenlijsten op één plek',
+      nlClause: 'Je deurscanning en gastenlijsten het liefst op één plek wilt hebben' },
+    { t: ['revenue', 'tickets2000', 'weeztix'], en: 'Automatic commission tracking and payouts for your promoters',
+      es: 'Seguimiento y pago automático de comisiones para tus promotores',
+      nl: 'Automatische commissietracking en uitbetalingen voor je promoters',
+      nlClause: 'Je promoters automatisch wilt uitbetalen en hun commissie wilt volgen' },
+    { t: ALL_T, kw: ['whatsapp'], en: 'WhatsApp-native ticket sales, right inside the chat',
+      es: 'Venta de boletos nativa por WhatsApp, directamente en el chat',
+      nl: 'Native ticketverkoop via WhatsApp, direct in de chat',
+      nlClause: 'Je tickets direct in WhatsApp wilt kunnen verkopen' },
+    { t: ALL_T, en: 'AI-powered upsells that grow every order',
+      es: 'Upsells impulsados por IA que hacen crecer cada pedido',
+      nl: 'AI-gestuurde upsells die elke bestelling laten groeien',
+      nlClause: 'Je met AI-gestuurde upsells elke bestelling wilt laten groeien' },
+    { t: ['tickets2000', 'enough'], kw: ['data', 'datos'], en: 'Your customer data and buyer relationship stay yours',
+      es: 'Los datos y la relación con tus compradores siguen siendo tuyos',
+      nl: 'Je klantdata en de relatie met je kopers blijven van jou',
+      nlClause: 'Je klantdata en de relatie met je kopers zelf wilt houden' },
+    { t: ['revenue', 'tickets2000', 'weeztix'], en: 'Sharp, honest ticket pricing',
+      es: 'Precios por boleto claros y justos',
+      nl: 'Een scherpe en eerlijke ticketprijs',
+      nlClause: 'Je een scherpe en eerlijke ticketprijs belangrijk vindt' },
+    { t: ALL_T, en: 'A branded ticketshop live in 24 hours',
+      es: 'Una taquilla con tu marca lista en 24 horas',
+      nl: 'Een gebrande ticketshop live binnen 24 uur',
+      nlClause: 'Je binnen 24 uur een ticketshop in je eigen stijl wilt hebben' },
+    { t: ['revenue', 'enough', 'weeztix'], en: 'Meta Pixel and Conversions API to measure and optimise your ads',
+      es: 'Meta Pixel y Conversions API para medir y optimizar tus anuncios',
+      nl: 'Meta Pixel en Conversions API om je advertenties te meten en te optimaliseren',
+      nlClause: 'Je advertenties wilt meten en optimaliseren met Meta Pixel en Conversions API' },
+    { t: ['tickets2000', 'enough', 'weeztix'], en: 'Instant QR confirmation for every guest',
+      es: 'Confirmación instantánea con QR para cada invitado',
+      nl: 'Directe QR-bevestiging voor elke gast',
+      nlClause: 'Elke gast direct een QR-bevestiging moet krijgen' },
+    { t: ['tickets2000', 'enough', 'weeztix'], en: 'A partner who builds ideas with you, not just a checkout',
+      es: 'Un partner que construye ideas contigo, no solo una página de pago',
+      nl: 'Een partner die met je meedenkt, niet alleen een checkout',
+      nlClause: 'Je een partner wilt die met je meedenkt, niet alleen een checkout' }
+  ];
+
+  function suggestionText(sug) {
+    const lang = currentLang();
+    if (lang === 'nl' && currentId === 'tickets2000' && sug.nlClause) return sug.nlClause;
+    return sug[lang] || sug.en;
+  }
+
+  const suggestWrap = document.getElementById('suggestWrap');
+  const suggestList = document.getElementById('suggestList');
+  const suggestLangEl = document.getElementById('suggestLang');
+
+  function renderSuggestions() {
+    if (!suggestWrap) return;
+    const items = getBullets();
+    if (items === null) { suggestWrap.style.display = 'none'; return; }
+    const existing = items.map((x) => (x || '').trim().toLowerCase()).filter(Boolean);
+    const custom = isCustomCurrent();
+    const visible = BULLET_SUGGESTIONS.filter((sug) => {
+      if (!custom && sug.t.indexOf(currentId) === -1) return false;
+      const txt = suggestionText(sug).trim().toLowerCase();
+      if (existing.indexOf(txt) !== -1) return false;
+      if (sug.kw && existing.some((e) => sug.kw.some((k) => e.indexOf(k) !== -1))) return false;
+      return true;
+    });
+    suggestList.innerHTML = '';
+    visible.forEach((sug) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'chip';
+      b.textContent = sug.en;
+      b.addEventListener('click', () => {
+        const arr = (getBullets() || []).slice();
+        while (arr.length && !(arr[arr.length - 1] || '').trim()) arr.pop();
+        arr.push(suggestionText(sug));
+        setBullets(arr);
+        renderBulletEditor();
+        render();
+      });
+      suggestList.appendChild(b);
+    });
+    if (suggestLangEl) suggestLangEl.textContent = langNames[currentLang()] || 'English';
+    suggestWrap.style.display = visible.length ? 'block' : 'none';
+  }
+
+
   function renderBulletEditor() {
+    renderBulletEditorCore();
+    renderSuggestions();
+  }
+
+  function renderBulletEditorCore() {
     const items = getBullets();
     bulletListEl.innerHTML = '';
     if (items === null) {
@@ -1242,6 +1419,7 @@
   }
 
   function refreshAllUI() {
+    updateTemplatePurpose();
     renderLangToggle();
     updateSubjectUI();
     updateHeadlineUI();
@@ -1486,8 +1664,21 @@
     mobileBtn.classList.add('active'); desktopBtn.classList.remove('active');
   });
 
+  // When pasted into Gmail, the <title> and the hidden inbox-preview (preheader)
+  // div lose their hiding and show up as visible text at the top. Strip both
+  // from what goes on the clipboard (the preview and Download HTML are unchanged).
+  function stripForClipboard(htmlStr) {
+    const d = parser.parseFromString(htmlStr, 'text/html');
+    d.querySelectorAll('title').forEach((el) => el.remove());
+    d.querySelectorAll('body div[style]').forEach((el) => {
+      const st = (el.getAttribute('style') || '').replace(/\s/g, '').toLowerCase();
+      if (st.includes('display:none') || st.includes('max-height:0')) el.remove();
+    });
+    return '<!DOCTYPE html>\n' + d.documentElement.outerHTML;
+  }
+
   copyBtn.addEventListener('click', async () => {
-    const html = buildFinalHtml();
+    const html = stripForClipboard(buildFinalHtml());
     const originalLabel = copyBtn.textContent;
     try {
       if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
